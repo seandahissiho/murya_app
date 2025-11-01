@@ -1,0 +1,98 @@
+import 'package:beamer/beamer.dart';
+import 'package:flutter/material.dart';
+import 'package:murya/helpers.dart';
+import 'package:murya/screens/base.dart';
+import 'package:murya/screens/competencies_family_details/competencies_family_details.dart';
+import 'package:murya/screens/home.dart';
+import 'package:murya/screens/job_details/job_details.dart';
+import 'package:murya/screens/landing/landing.dart';
+import 'package:murya/screens/search/search.dart';
+
+class AppRoutes {
+  static const String landing = '/landing';
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String forgotPassword = '/forgot-password';
+
+  static const String home = '/home';
+  static const String profile = '/profile';
+
+  // allModules
+  static const String allModules = '/all-modules';
+  static const String accountModule = '/account';
+  static const String searchModule = '/search';
+  static const String userStatsModule = '/user-stats';
+
+  // Jobs
+  static const String jobDetails = '/job/:id/details';
+  // competencyFamilyDetails
+  static const String competencyFamilyDetails = '/job/:jobId/competency-family/:cfId/details';
+
+  // legalMentions
+  static const String legalMentions = '/legal-mentions';
+  // privacyPolicy
+  static const String privacyPolicy = '/privacy-policy';
+  // cookieSettings
+  static const String cookieSettings = '/cookie-settings';
+  // accessibility
+  static const String accessibility = '/accessibility';
+
+  static const List<String> unguardedRoutes = [
+    landing,
+    login,
+    register,
+    forgotPassword,
+  ];
+
+  static const List<String> navPaths = [
+    landing,
+  ];
+}
+
+const List<String> routesWithoutHeader = [
+  AppRoutes.landing,
+  AppRoutes.login,
+  AppRoutes.register,
+  AppRoutes.forgotPassword,
+];
+
+List<BeamLocation<RouteInformationSerializable<dynamic>>> beamLocations = [
+  LandingLocation(),
+  HomeLocation(), // HomeLocation(),
+  MainSearchLocation(),
+  JobDetailsLocation(),
+  CfDetailsLocation(),
+  BaseLocation(),
+  OtherLocation(), // Add other locations as needed
+];
+
+class OtherLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+  @override
+  List<String> get pathPatterns => ['*'];
+
+  @override
+  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+    return [
+      BeamPage(
+        key: const ValueKey('other'),
+        title: '404 Not Found',
+        child: InkWell(
+          onTap: () {
+            navigateToPath(context, to: AppRoutes.landing);
+          },
+          child: const Center(
+            child: Text('Page not found', style: TextStyle(color: Colors.black)),
+          ),
+        ),
+      ),
+    ];
+  }
+}
+
+const List<String> allRoutes = [
+  AppRoutes.landing,
+  AppRoutes.login,
+  AppRoutes.register,
+  AppRoutes.forgotPassword,
+  AppRoutes.home,
+];

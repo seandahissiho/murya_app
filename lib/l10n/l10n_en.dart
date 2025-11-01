@@ -1,0 +1,81 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'l10n.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get appTitle => 'NAVY';
+
+  @override
+  String greeting(String name) {
+    return 'Hello $name!';
+  }
+
+  @override
+  String get landing_page_title => 'Landing Page';
+
+  @override
+  String get landing_first_title => 'Enhance your skills';
+
+  @override
+  String get landing_first_subtitle =>
+      'Registration and login to Murya are free';
+
+  @override
+  String get landing_first_button1 => 'Sign up';
+
+  @override
+  String get landing_first_button2 => 'Log in';
+
+  @override
+  String get landing_second_title => 'Advance in your profession';
+
+  @override
+  String get landing_second_subtitle => 'Browsing the Murya catalog is free';
+
+  @override
+  String get landing_second_button => 'Search';
+
+  @override
+  String get footer_language_english => '🇬🇧 English';
+
+  @override
+  String get footer_language_french => '🇫🇷 Français';
+
+  @override
+  String get footer_legal_mentions => 'Legal notice';
+
+  @override
+  String get footer_privacy_policy => 'Privacy policy';
+
+  @override
+  String get footer_cookie_settings => 'Cookie settings';
+
+  @override
+  String get footer_accessibility => 'Accessibility';
+
+  @override
+  String get footer_copyright => '© 2025 Murya SAS';
+
+  @override
+  String get search_placeholder => 'Search for skills and professions';
+
+  @override
+  String get user_stats_module_title => 'User Statistics';
+
+  @override
+  String get user_stats_module_subtitle => 'Overview of your activity';
+
+  @override
+  String get user_stats_module_button => 'View Details';
+
+  @override
+  String searchNoResults(String query) {
+    return 'No results found for \"$query\".';
+  }
+}

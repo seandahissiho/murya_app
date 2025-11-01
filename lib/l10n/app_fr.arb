@@ -1,0 +1,98 @@
+{
+  "@@locale": "fr",
+  "appTitle": "NAVY",
+  "greeting": "Bonjour {name}!",
+  "@greeting": {
+    "description": "Salue l'utilisateur par son nom",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "landing_page_title": "Page d’accueil",
+  "@landing_page_title": {
+    "description": "Titre de la page d'atterrissage"
+  },
+  "landing_first_title": "Augmentez vos compétences",
+  "@landing_first_title": {
+    "description": "Titre de la première boîte sur la page d'atterrissage"
+  },
+  "landing_first_subtitle": "L’inscription et la connexion à Murya sont gratuites",
+  "@landing_first_subtitle": {
+    "description": "Sous-titre de la première boîte sur la page d'atterrissage"
+  },
+  "landing_first_button1": "Inscription",
+  "@landing_first_button1": {
+    "description": "Texte du premier bouton de la première boîte"
+  },
+  "landing_first_button2": "Connexion",
+  "@landing_first_button2": {
+    "description": "Texte du second bouton de la première boîte"
+  },
+  "landing_second_title": "Progressez dans votre métier",
+  "@landing_second_title": {
+    "description": "Titre de la deuxième boîte sur la page d'atterrissage"
+  },
+  "landing_second_subtitle": "La consultation du catalogue de Murya est libre",
+  "@landing_second_subtitle": {
+    "description": "Sous-titre de la deuxième boîte sur la page d'atterrissage"
+  },
+  "landing_second_button": "Rechercher",
+  "@landing_second_button": {
+    "description": "Texte du bouton de la deuxième boîte"
+  },
+  "footer_language_english": "🇬🇧 English",
+  "@footer_language_english": {
+    "description": "Libellé du changement de langue vers l'anglais"
+  },
+  "footer_language_french": "🇫🇷 Français",
+  "@footer_language_french": {
+    "description": "Libellé du changement de langue vers le français"
+  },
+  "footer_legal_mentions": "Mentions légales",
+  "@footer_legal_mentions": {
+    "description": "Lien vers les mentions légales"
+  },
+  "footer_privacy_policy": "Règles de confidentialité",
+  "@footer_privacy_policy": {
+    "description": "Lien vers les règles de confidentialité"
+  },
+  "footer_cookie_settings": "Paramètres des cookies",
+  "@footer_cookie_settings": {
+    "description": "Lien vers les paramètres des cookies"
+  },
+  "footer_accessibility": "Accessibilité",
+  "@footer_accessibility": {
+    "description": "Lien vers la page accessibilité"
+  },
+  "footer_copyright": "2025 Murya SAS",
+  "@footer_copyright": {
+    "description": "Droits d'auteur affichés dans le pied de page"
+  },
+  "search_placeholder": "Rechercher des compétences et des métiers",
+  "@search_placeholder": {
+    "description": "Texte d'espace réservé pour la barre de recherche"
+  },
+  "user_stats_module_title": "Statistiques de l''utilisateur",
+  "@user_stats_module_title": {
+    "description": "Titre du module des statistiques de l'utilisateur"
+  },
+  "user_stats_module_subtitle": "Aperçu des performances et de la progression",
+  "@user_stats_module_subtitle": {
+    "description": "Sous-titre du module des statistiques de l'utilisateur"
+  },
+  "user_stats_module_button": "Voir les détails",
+  "@user_stats_module_button": {
+    "description": "Texte du bouton dans le module des statistiques de l'utilisateur"
+  },
+  "searchNoResults": "Aucun résultat trouvé pour \"{query}\".",
+  "@searchNoResults": {
+    "description": "Message affiché lorsque la recherche ne retourne aucun résultat",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  }
+}

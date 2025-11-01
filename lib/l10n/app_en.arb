@@ -1,0 +1,98 @@
+{
+  "@@locale": "en",
+  "appTitle": "NAVY",
+  "greeting": "Hello {name}!",
+  "@greeting": {
+    "description": "Greets the user by name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "landing_page_title": "Landing Page",
+  "@landing_page_title": {
+    "description": "Title of the landing page"
+  },
+  "landing_first_title": "Enhance your skills",
+  "@landing_first_title": {
+    "description": "Title of the first box on the landing page"
+  },
+  "landing_first_subtitle": "Registration and login to Murya are free",
+  "@landing_first_subtitle": {
+    "description": "Subtitle of the first box on the landing page"
+  },
+  "landing_first_button1": "Sign up",
+  "@landing_first_button1": {
+    "description": "Text of the first button in the first box"
+  },
+  "landing_first_button2": "Log in",
+  "@landing_first_button2": {
+    "description": "Text of the second button in the first box"
+  },
+  "landing_second_title": "Advance in your profession",
+  "@landing_second_title": {
+    "description": "Title of the second box on the landing page"
+  },
+  "landing_second_subtitle": "Browsing the Murya catalog is free",
+  "@landing_second_subtitle": {
+    "description": "Subtitle of the second box on the landing page"
+  },
+  "landing_second_button": "Search",
+  "@landing_second_button": {
+    "description": "Text of the button in the second box"
+  },
+  "footer_language_english": "🇬🇧 English",
+  "@footer_language_english": {
+    "description": "Label for switching the language to English"
+  },
+  "footer_language_french": "🇫🇷 Français",
+  "@footer_language_french": {
+    "description": "Label for switching the language to French"
+  },
+  "footer_legal_mentions": "Legal notice",
+  "@footer_legal_mentions": {
+    "description": "Link to the legal notice page"
+  },
+  "footer_privacy_policy": "Privacy policy",
+  "@footer_privacy_policy": {
+    "description": "Link to the privacy policy page"
+  },
+  "footer_cookie_settings": "Cookie settings",
+  "@footer_cookie_settings": {
+    "description": "Link to the cookie settings page"
+  },
+  "footer_accessibility": "Accessibility",
+  "@footer_accessibility": {
+    "description": "Link to the accessibility page"
+  },
+  "footer_copyright": "© 2025 Murya SAS",
+  "@footer_copyright": {
+    "description": "Copyright notice displayed in the footer"
+  },
+  "search_placeholder": "Search for skills and professions",
+  "@search_placeholder": {
+    "description": "Placeholder text for the search bar on the landing page"
+  },
+  "user_stats_module_title": "User Statistics",
+  "@user_stats_module_title": {
+    "description": "Title of the user statistics module"
+  },
+  "user_stats_module_subtitle": "Overview of your activity",
+  "@user_stats_module_subtitle": {
+    "description": "Subtitle of the user statistics module"
+  },
+  "user_stats_module_button": "View Details",
+  "@user_stats_module_button": {
+    "description": "Text of the button in the user statistics module"
+  },
+  "searchNoResults": "No results found for \"{query}\".",
+  "@searchNoResults": {
+    "description": "Message displayed when no search results are found",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  }
+}
