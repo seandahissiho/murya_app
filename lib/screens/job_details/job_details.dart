@@ -162,17 +162,183 @@ class RoundedRadarChart extends StatelessWidget {
   }
 }
 
+class InteractiveRoundedRadarChart extends StatefulWidget {
+  final List<String> labels;
+  final List<double> values;
+  final double maxValue;
+  final double cornerRadius;
+
+  const InteractiveRoundedRadarChart({
+    Key? key,
+    required this.labels,
+    required this.values,
+    this.maxValue = 5.0,
+    this.cornerRadius = 3.0,
+  }) : super(key: key);
+
+  @override
+  State<InteractiveRoundedRadarChart> createState() => _InteractiveRoundedRadarChartState();
+}
+
+class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarChart> {
+  int? _activeIndex;
+  Offset? _tooltipPos; // in local coordinates
+
+  // Computes the data-points exactly like the painter
+  List<Offset> _computePoints(Size size) {
+    final int n = widget.values.length;
+    final Offset center = Offset(size.width / 2, size.height / 2);
+    final double radius = (size.width / 2) - 8.0; // small padding
+    final double step = 2 * math.pi / n;
+
+    return List.generate(n, (i) {
+      final double v = (widget.values[i] / widget.maxValue).clamp(0.0, 1.0);
+      final double r = radius * v;
+      final double a = -math.pi / 2 + i * step;
+      return Offset(center.dx + r * math.cos(a), center.dy + r * math.sin(a));
+    });
+  }
+
+  // Find nearest point within a threshold
+  int? _hitTest(List<Offset> pts, Offset localPos, double threshold) {
+    int? idx;
+    double best = double.infinity;
+    for (int i = 0; i < pts.length; i++) {
+      final d = (pts[i] - localPos).distance;
+      if (d < threshold && d < best) {
+        best = d;
+        idx = i;
+      }
+    }
+    return idx;
+  }
+
+  void _updateHover(Size size, Offset localPos) {
+    final pts = _computePoints(size);
+    // threshold scales with chart size
+    final double threshold = math.max(10.0, size.width * 0.05);
+    final i = _hitTest(pts, localPos, threshold);
+    setState(() {
+      _activeIndex = i;
+      _tooltipPos = (i != null) ? pts[i] : null; // tooltip at the point center
+    });
+  }
+
+  void _clearHover() {
+    setState(() {
+      _activeIndex = null;
+      _tooltipPos = null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, c) {
+      final side = math.min(c.maxWidth, c.maxHeight);
+
+      return SizedBox(
+        width: side,
+        height: side,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Pointer detector to feed local positions
+            Listener(
+              onPointerHover: (e) => _updateHover(Size.square(side), e.localPosition),
+              onPointerDown: (e) => _updateHover(Size.square(side), e.localPosition),
+              onPointerMove: (e) => _updateHover(Size.square(side), e.localPosition),
+              onPointerUp: (_) => _clearHover(),
+              onPointerCancel: (_) => _clearHover(),
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onLongPressStart: (details) => _updateHover(Size.square(side), details.localPosition),
+                onLongPressMoveUpdate: (details) => _updateHover(Size.square(side), details.localPosition),
+                onLongPressEnd: (_) => _clearHover(),
+                // onTapDown: (details) => _updateHover(Size.square(side), details.localPosition),
+                child: MouseRegion(
+                  opaque: false,
+                  onHover: (e) => _updateHover(Size.square(side), e.localPosition),
+                  onExit: (_) => _clearHover(),
+                  child: CustomPaint(
+                    size: Size.square(side),
+                    painter: _RoundedRadarPainter(
+                      labels: widget.labels,
+                      values: widget.values,
+                      maxValue: widget.maxValue,
+                      cornerRadius: widget.cornerRadius,
+                      highlightIndex: _activeIndex, // highlight active point
+                      highlightColor: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // Tooltip
+            if (_activeIndex != null && _tooltipPos != null)
+              Positioned(
+                left: _tooltipPos!.dx,
+                top: _tooltipPos!.dy,
+                child: _ValueTooltip(
+                  value: widget.values[_activeIndex!],
+                  // nudge the tooltip so it doesn’t cover the dot
+                  offset: const Offset(10, -10),
+                ),
+              ),
+          ],
+        ),
+      );
+    });
+  }
+}
+
+class _ValueTooltip extends StatelessWidget {
+  final double value;
+  final Offset offset;
+
+  const _ValueTooltip({
+    Key? key,
+    required this.value,
+    this.offset = Offset.zero,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final text = value.toStringAsFixed(value % 1 == 0 ? 0 : 2); // "3" or "3.25"
+    return Transform.translate(
+      offset: offset,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.85),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Text(
+            text,
+            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _RoundedRadarPainter extends CustomPainter {
   final List<String> labels;
   final List<double> values;
   final double maxValue;
   final double cornerRadius; // base corner radius; scaled internally
+  final int? highlightIndex; // NEW (optional)
+  final Color highlightColor; // NEW (optional)
 
   _RoundedRadarPainter({
     required this.labels,
     required this.values,
     required this.maxValue,
     required this.cornerRadius,
+    this.highlightIndex,
+    this.highlightColor = Colors.red,
   });
 
   @override
@@ -181,8 +347,8 @@ class _RoundedRadarPainter extends CustomPainter {
     if (n < 3) return; // need 3+ axes
 
     // Parent is square ⇒ width == height. Use (width / 2) minus padding.
-    const double edgePadding = 0.0;
-    final Offset center = Offset(size.width / 2, size.height / 2);
+    const double edgePadding = AppSpacing.containerInsideMargin;
+    final Offset center = Offset(size.width / 2, size.height / 1.85);
     final double radius = (size.width / 2) - edgePadding;
 
     // Global angle step
@@ -210,7 +376,7 @@ class _RoundedRadarPainter extends CustomPainter {
       ..strokeWidth = ringStroke;
 
     final Paint ringPaint = Paint()
-      ..color = AppColors.borderMedium
+      ..color = AppColors.borderMedium.withAlpha(150)
       ..style = PaintingStyle.stroke
       ..strokeWidth = ringStroke;
 
@@ -249,10 +415,13 @@ class _RoundedRadarPainter extends CustomPainter {
     _drawPoints(
       canvas: canvas,
       pts: pts,
-      dotRadius: dotRadius,
+      baseDotRadius: dotRadius,
       borderWidth: dotBorderW,
       fillColor: Colors.black,
       borderColor: Colors.white,
+      highlightIndex: highlightIndex,
+      highlightScale: 1.6, // a bit larger
+      highlightColor: highlightColor,
     );
 
     // 5) Labels near data points with background and a short leader
@@ -275,10 +444,13 @@ class _RoundedRadarPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _RoundedRadarPainter old) {
-    return old.labels != labels || old.values != values || old.maxValue != maxValue || old.cornerRadius != cornerRadius;
-  }
-
+  bool shouldRepaint(covariant _RoundedRadarPainter old) =>
+      old.labels != labels ||
+      old.values != values ||
+      old.maxValue != maxValue ||
+      old.cornerRadius != cornerRadius ||
+      old.highlightIndex != highlightIndex ||
+      old.highlightColor != highlightColor;
   // ---------------------------
   // Helpers
   // ---------------------------
@@ -334,22 +506,27 @@ class _RoundedRadarPainter extends CustomPainter {
   void _drawPoints({
     required Canvas canvas,
     required List<Offset> pts,
-    required double dotRadius,
+    required double baseDotRadius,
     required double borderWidth,
     required Color fillColor,
     required Color borderColor,
+    int? highlightIndex,
+    required double highlightScale,
+    required Color highlightColor,
   }) {
-    for (final point in pts) {
-      final Paint fillPaint = Paint()
-        ..color = fillColor
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(point, dotRadius, fillPaint);
+    for (int i = 0; i < pts.length; i++) {
+      final bool isActive = (highlightIndex != null && i == highlightIndex);
+      final double dotRadius = isActive ? baseDotRadius * highlightScale : baseDotRadius;
+      final Color fill = isActive ? (highlightColor ?? fillColor) : fillColor;
+
+      final Paint fillPaint = Paint()..color = fill;
+      canvas.drawCircle(pts[i], dotRadius, fillPaint);
 
       final Paint borderPaint = Paint()
         ..color = borderColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = borderWidth;
-      canvas.drawCircle(point, dotRadius + borderWidth / 2, borderPaint);
+      canvas.drawCircle(pts[i], dotRadius + borderWidth / 2, borderPaint);
     }
   }
 
@@ -398,15 +575,29 @@ class _RoundedRadarPainter extends CustomPainter {
       tp.layout();
 
       // Base placement (try to keep near the anchor, then clamp to canvas)
-      double x = labelAnchor.dx + (dir.dx >= 0 ? -(tp.width / 2) : -tp.width / 2);
-      double y = labelAnchor.dy + (dir.dy >= 0 ? -0 : -tp.height * 2);
+      double x = 0;
+      double y = 0;
+      if (values[i] > 3.5) {
+        x = labelAnchor.dx + (dir.dx >= 0 ? -(tp.width / (i == 0 ? 2 : 1)) : -tp.width / 10);
+        y = labelAnchor.dy + (dir.dy >= 0 ? 5 : -tp.height * (i == 0 ? 1 : 2.125));
 
-      // Clamp to bounds
-      final double clampPad = -tp.height;
-      final double maxX = (center.dx * 2) - tp.width - clampPad;
-      final double maxY = (center.dy * 2) - tp.height - clampPad;
-      x = x.clamp(clampPad, maxX);
-      y = y.clamp(clampPad, maxY);
+        // Clamp to bounds
+        final double clampPad = -tp.height;
+        final double maxX = (center.dx * 2) - tp.width - clampPad;
+        final double maxY = (center.dy * 2) - tp.height - clampPad;
+        x = x.clamp(clampPad, maxX);
+        y = y.clamp(clampPad, maxY);
+      } else {
+        x = labelAnchor.dx + (dir.dx >= 0 ? (i == 0 ? -tp.width / 2 : 0) : -tp.width);
+        y = labelAnchor.dy + (dir.dy >= 0 ? 0.0 : -tp.height);
+
+        // Clamp to bounds
+        const double clampPad = 6.0;
+        final double maxX = (center.dx * 2) - tp.width - clampPad;
+        final double maxY = (center.dy * 2) - tp.height - clampPad;
+        x = x.clamp(clampPad, maxX);
+        y = y.clamp(clampPad, maxY);
+      }
 
       final Offset textTopLeft = Offset(x, y);
 

@@ -124,7 +124,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         borderRadius: BorderRadius.circular(24),
       ),
       padding: EdgeInsets.all(
-        appSize.screenWidth < 1140 ? AppSpacing.containerInsideMarginSmall : AppSpacing.containerInsideMargin,
+        appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
       ),
       child: LayoutBuilder(builder: (context, constraints) {
         return Column(

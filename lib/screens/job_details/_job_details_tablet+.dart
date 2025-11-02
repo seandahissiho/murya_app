@@ -158,7 +158,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                         SizedBox(
                                           height: constraints.maxWidth,
                                           width: constraints.maxWidth,
-                                          child: RoundedRadarChart(
+                                          child: InteractiveRoundedRadarChart(
                                             labels: _job.competenciesFamilies
                                                 .whereOrEmpty((cf) => cf.parent == null)
                                                 .map((cf) => cf.name)
