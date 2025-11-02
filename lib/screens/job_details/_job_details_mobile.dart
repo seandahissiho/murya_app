@@ -113,7 +113,10 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                       Container(
                         height: constraints.maxWidth,
                         width: constraints.maxWidth,
-                        color: AppColors.backgroundColor,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.sectionMargin,
+                          vertical: AppSpacing.sectionMargin,
+                        ),
                         child: RoundedRadarChart(
                           labels: _job.competenciesFamilies
                               .whereOrEmpty((cf) => cf.parent == null)
@@ -121,7 +124,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                               .toList(),
                           values: _job.competenciesFamilies
                               .whereOrEmpty((cf) => cf.parent == null)
-                              .map((cf) => cf.averageScoreByLevel(level: _detailsLevel))
+                              .map((cf) => cf.averageScoreByLevel(level: _detailsLevel) + 1)
                               .toList(),
                         ),
                       ),

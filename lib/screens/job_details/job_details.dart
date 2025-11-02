@@ -199,7 +199,7 @@ class _RoundedRadarPainter extends CustomPainter {
     final double labelPad = 16.0 * s;
     final double leaderLen = 0.0 * s;
     final double textPadX = 12.0 * s;
-    final double textPadY = 6.0 * s;
+    final double textPadY = 8.0 * s;
     final double labelRadius = 12.0 * s;
     final double cornerR = cornerRadius * s;
 
@@ -398,11 +398,11 @@ class _RoundedRadarPainter extends CustomPainter {
       tp.layout();
 
       // Base placement (try to keep near the anchor, then clamp to canvas)
-      double x = labelAnchor.dx + (dir.dx >= 0 ? 0.0 : -tp.width);
-      double y = labelAnchor.dy + (dir.dy >= 0 ? 0.0 : -tp.height);
+      double x = labelAnchor.dx + (dir.dx >= 0 ? -(tp.width / 2) : -tp.width / 2);
+      double y = labelAnchor.dy + (dir.dy >= 0 ? -0 : -tp.height * 2);
 
       // Clamp to bounds
-      const double clampPad = 6.0;
+      final double clampPad = -tp.height;
       final double maxX = (center.dx * 2) - tp.width - clampPad;
       final double maxY = (center.dy * 2) - tp.height - clampPad;
       x = x.clamp(clampPad, maxX);
