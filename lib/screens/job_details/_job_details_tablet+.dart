@@ -141,10 +141,10 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                     borderRadius: AppRadius.large,
                                   ),
                                   padding: const EdgeInsets.only(
-                                    top: AppSpacing.sectionMargin * 3,
-                                    left: AppSpacing.sectionMargin,
-                                    right: AppSpacing.sectionMargin,
-                                    bottom: AppSpacing.sectionMargin,
+                                    top: AppSpacing.sectionMargin,
+                                    left: AppSpacing.elementMargin,
+                                    right: AppSpacing.elementMargin,
+                                    bottom: AppSpacing.groupMargin,
                                   ),
                                   child: LayoutBuilder(builder: (context, constraints) {
                                     return Column(
@@ -158,19 +158,15 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                         SizedBox(
                                           height: constraints.maxWidth,
                                           width: constraints.maxWidth,
-                                          child: const RoundedRadarChart(
-                                            // titles: _job.competenciesFamilies.map((cf) => cf.name).toList(),
-                                            labels: ['Emphatie', 'Vision', 'Management', 'Analyse', 'Pilotage'],
-                                            // values: _job.competenciesFamilies
-                                            //     .map((cf) => _job.averageProficiencyForFamily(cf, level: _detailsLevel))
-                                            //     .toList(),
-                                            values: [
-                                              5.0,
-                                              4.0,
-                                              3.0,
-                                              2.0,
-                                              4.0,
-                                            ],
+                                          child: RoundedRadarChart(
+                                            labels: _job.competenciesFamilies
+                                                .whereOrEmpty((cf) => cf.parent == null)
+                                                .map((cf) => cf.name)
+                                                .toList(),
+                                            values: _job.competenciesFamilies
+                                                .whereOrEmpty((cf) => cf.parent == null)
+                                                .map((cf) => cf.averageScoreByLevel(level: _detailsLevel))
+                                                .toList(),
                                           ),
                                         ),
                                         AppSpacing.groupMarginBox,
@@ -242,7 +238,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
 
   List<Widget> familiesBuilder() {
     final List<Widget> widgets = [];
-    for (final family in _job.competenciesFamilies) {
+    for (final family in _job.competenciesFamilies.whereOrEmpty((cf) => cf.parent == null)) {
       widgets.add(CFCard(job: _job, family: family));
       widgets.add(AppSpacing.groupMarginBox);
     }

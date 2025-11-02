@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
@@ -14,6 +13,7 @@ import 'package:murya/components/app_footer.dart';
 import 'package:murya/components/dropdown.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
+import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/main.dart';
@@ -148,15 +148,17 @@ class RoundedRadarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: const Size(350, 350),
-      painter: _RoundedRadarPainter(
-        labels: labels,
-        values: values,
-        maxValue: maxValue,
-        cornerRadius: cornerRadius,
-      ),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      return CustomPaint(
+        size: Size(constraints.maxWidth, constraints.maxHeight),
+        painter: _RoundedRadarPainter(
+          labels: labels,
+          values: values,
+          maxValue: maxValue,
+          cornerRadius: cornerRadius,
+        ),
+      );
+    });
   }
 }
 
@@ -164,7 +166,7 @@ class _RoundedRadarPainter extends CustomPainter {
   final List<String> labels;
   final List<double> values;
   final double maxValue;
-  final double cornerRadius;
+  final double cornerRadius; // base corner radius; scaled internally
 
   _RoundedRadarPainter({
     required this.labels,
@@ -176,85 +178,265 @@ class _RoundedRadarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final int n = values.length;
-    if (n < 3) return;
+    if (n < 3) return; // need 3+ axes
 
+    // Parent is square ⇒ width == height. Use (width / 2) minus padding.
+    const double edgePadding = 0.0;
     final Offset center = Offset(size.width / 2, size.height / 2);
-    final double radius = math.min(size.width, size.height) * 0.4;
+    final double radius = (size.width / 2) - edgePadding;
 
+    // Global angle step
     final double angleStep = 2 * math.pi / n;
+
+    // Proportional styling scale (tweak the base divisor if you prefer)
+    final double s = (radius <= 0) ? 1.0 : (radius / 150.0);
+
+    // Scaled cosmetics
+    final double ringStroke = 1.0 * s;
+    final double dataStroke = 3.0 * s;
+    final double dotRadius = 3.0 * s;
+    final double dotBorderW = 1.0 * s;
+    final double labelPad = 16.0 * s;
+    final double leaderLen = 0.0 * s;
+    final double textPadX = 12.0 * s;
+    final double textPadY = 6.0 * s;
+    final double labelRadius = 12.0 * s;
+    final double cornerR = cornerRadius * s;
+
+    // Paints
     final Paint gridPaint = Paint()
       ..color = AppColors.borderLight
-      ..style = PaintingStyle.stroke;
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = ringStroke;
 
-    // draw concentric rings
-    _drawConcentricRoundedPolygons(canvas, size, center, angleStep);
+    final Paint ringPaint = Paint()
+      ..color = AppColors.borderMedium
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = ringStroke;
 
-    // compute polygon points
-    final List<Offset> pts = [];
-    for (int i = 0; i < n; i++) {
+    // 1) Concentric rounded polygons (use actual axis count)
+    _drawConcentricRoundedPolygons(
+      canvas: canvas,
+      center: center,
+      maxRadius: radius,
+      nSides: n,
+      cornerRadius: 16,
+      paint: ringPaint,
+    );
+
+    // 2) Compute data polygon points (scaled by values/maxValue)
+    final List<Offset> pts = List.generate(n, (i) {
       final double val = (values[i] / maxValue).clamp(0.0, 1.0);
       final double r = radius * val;
       final double angle = -math.pi / 2 + (i * angleStep);
-      pts.add(Offset(center.dx + r * math.cos(angle), center.dy + r * math.sin(angle)));
-    }
-
-    _drawData(canvas, pts);
-
-    _drawPoints(canvas, pts);
-
-    // draw axis lines + labels
-    _drawLabelsNearData(canvas, angleStep, n, radius, center, gridPaint);
-  }
-
-  Path _buildRoundedPolygonPath(List<Offset> pts, double r) {
-    final int len = pts.length;
-    if (len == 0) return Path();
-
-    Path path = Path();
-    for (int i = 0; i < len; i++) {
-      final Offset prev = pts[(i + len - 1) % len];
-      final Offset curr = pts[i];
-      final Offset next = pts[(i + 1) % len];
-
-      // compute direction vectors
-      final Offset v1 = (prev - curr);
-      final Offset v2 = (next - curr);
-      final double v1Len = v1.distance;
-      final double v2Len = v2.distance;
-
-      if (v1Len < 0.0001 || v2Len < 0.0001) {
-        continue;
-      }
-
-      final Offset v1norm = v1 / v1Len;
-      final Offset v2norm = v2 / v2Len;
-
-      // compute the outside bisector
-      final Offset bisector = (v1norm + v2norm).normalize();
-      // compute the angle between v1 and v2
-      final double angleBetween = math.acos((v1norm.dot(v2norm)).clamp(-1.0, 1.0));
-      // compute distance from corner to start arc
-      final double dist = r / math.tan(angleBetween / 2);
-
-      final Offset p1 = curr + v1norm * dist;
-      final Offset p2 = curr + v2norm * dist;
-
-      if (i == 0) {
-        path.moveTo(p1.dx, p1.dy);
-      } else {
-        path.lineTo(p1.dx, p1.dy);
-      }
-      path.arcToPoint(
-        p2,
-        radius: Radius.circular(r),
-        clockwise: true,
+      return Offset(
+        center.dx + r * math.cos(angle),
+        center.dy + r * math.sin(angle),
       );
-    }
-    path.close();
-    return path;
+    });
+
+    // 3) Data shape (rounded)
+    _drawData(
+      canvas: canvas,
+      pts: pts,
+      cornerRadius: cornerR,
+      fillColor: Colors.black.withOpacity(0.1),
+      strokeColor: Colors.black,
+      strokeWidth: dataStroke,
+    );
+
+    // 4) Data points (dot + white ring)
+    _drawPoints(
+      canvas: canvas,
+      pts: pts,
+      dotRadius: dotRadius,
+      borderWidth: dotBorderW,
+      fillColor: Colors.black,
+      borderColor: Colors.white,
+    );
+
+    // 5) Labels near data points with background and a short leader
+    _drawLabelsNearData(
+      canvas: canvas,
+      labels: labels,
+      values: values,
+      maxValue: maxValue,
+      center: center,
+      maxRadius: radius,
+      angleStep: angleStep,
+      axisPaint: gridPaint,
+      dotRadius: dotRadius,
+      labelPadding: labelPad,
+      leaderLen: leaderLen,
+      textPadX: textPadX,
+      textPadY: textPadY,
+      bgRadius: labelRadius,
+    );
   }
 
-  Path buildRoundedPolygonPath(List<Offset> pts, double cornerRadius) {
+  @override
+  bool shouldRepaint(covariant _RoundedRadarPainter old) {
+    return old.labels != labels || old.values != values || old.maxValue != maxValue || old.cornerRadius != cornerRadius;
+  }
+
+  // ---------------------------
+  // Helpers
+  // ---------------------------
+
+  void _drawConcentricRoundedPolygons({
+    required Canvas canvas,
+    required Offset center,
+    required double maxRadius,
+    required int nSides,
+    required double cornerRadius,
+    required Paint paint,
+    int rings = 5,
+  }) {
+    for (int i = 1; i <= rings; i++) {
+      final double r = (maxRadius * i / rings);
+      final double angleStep = 2 * math.pi / nSides;
+
+      final List<Offset> ringPts = List.generate(nSides, (j) {
+        final double angle = -math.pi / 2 + (j * angleStep);
+        return Offset(
+          center.dx + r * math.cos(angle),
+          center.dy + r * math.sin(angle),
+        );
+      });
+
+      final Path ringPath = _buildRoundedPolygonPath(ringPts, cornerRadius);
+      canvas.drawPath(ringPath, paint);
+    }
+  }
+
+  void _drawData({
+    required Canvas canvas,
+    required List<Offset> pts,
+    required double cornerRadius,
+    required Color fillColor,
+    required Color strokeColor,
+    required double strokeWidth,
+  }) {
+    final Path path = _buildRoundedPolygonPath(pts, cornerRadius);
+
+    final Paint fill = Paint()
+      ..color = fillColor
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(path, fill);
+
+    final Paint stroke = Paint()
+      ..color = strokeColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+    canvas.drawPath(path, stroke);
+  }
+
+  void _drawPoints({
+    required Canvas canvas,
+    required List<Offset> pts,
+    required double dotRadius,
+    required double borderWidth,
+    required Color fillColor,
+    required Color borderColor,
+  }) {
+    for (final point in pts) {
+      final Paint fillPaint = Paint()
+        ..color = fillColor
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(point, dotRadius, fillPaint);
+
+      final Paint borderPaint = Paint()
+        ..color = borderColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = borderWidth;
+      canvas.drawCircle(point, dotRadius + borderWidth / 2, borderPaint);
+    }
+  }
+
+  void _drawLabelsNearData({
+    required Canvas canvas,
+    required List<String> labels,
+    required List<double> values,
+    required double maxValue,
+    required Offset center,
+    required double maxRadius,
+    required double angleStep,
+    required Paint axisPaint,
+    required double dotRadius,
+    required double labelPadding,
+    required double leaderLen,
+    required double textPadX,
+    required double textPadY,
+    required double bgRadius,
+  }) {
+    final tp = TextPainter(
+      textAlign: TextAlign.left,
+      textDirection: TextDirection.ltr,
+    );
+
+    for (int i = 0; i < labels.length; i++) {
+      final double angle = -math.pi / 2 + (i * angleStep);
+
+      // Data point position
+      final double ratio = ((values[i] == 0 ? (maxValue / 1.5) : values[i]) / maxValue).clamp(0.0, 1.0);
+      final double r = maxRadius * ratio;
+      final Offset dir = Offset(math.cos(angle), math.sin(angle));
+      final Offset dataPt = center + dir * r;
+
+      // Label anchor beyond the dot
+      final Offset labelAnchor = dataPt + dir * (dotRadius + labelPadding);
+
+      // Text layout
+      tp.text = TextSpan(
+        text: labels[i],
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      );
+      tp.layout();
+
+      // Base placement (try to keep near the anchor, then clamp to canvas)
+      double x = labelAnchor.dx + (dir.dx >= 0 ? 0.0 : -tp.width);
+      double y = labelAnchor.dy + (dir.dy >= 0 ? 0.0 : -tp.height);
+
+      // Clamp to bounds
+      const double clampPad = 6.0;
+      final double maxX = (center.dx * 2) - tp.width - clampPad;
+      final double maxY = (center.dy * 2) - tp.height - clampPad;
+      x = x.clamp(clampPad, maxX);
+      y = y.clamp(clampPad, maxY);
+
+      final Offset textTopLeft = Offset(x, y);
+
+      // Background rounded rect with padding
+      final Rect bgRect = Rect.fromLTWH(
+        textTopLeft.dx - textPadX,
+        textTopLeft.dy - textPadY,
+        tp.width + textPadX * 2,
+        tp.height + textPadY * 2,
+      );
+
+      final Paint bgPaint = Paint()..color = AppColors.primaryDefault;
+      final RRect roundedRect = RRect.fromRectAndRadius(bgRect, Radius.circular(bgRadius));
+      canvas.drawRRect(roundedRect, bgPaint);
+
+      // Leader line (short)
+      final Paint leader = Paint()
+        ..color = axisPaint.color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = axisPaint.strokeWidth;
+      canvas.drawLine(dataPt, dataPt + dir * leaderLen, leader);
+
+      // Draw text
+      tp.paint(canvas, textTopLeft);
+    }
+  }
+
+  /// Builds a rounded-corner polygon path from ordered [pts].
+  /// No external vector helpers required; numerically safe with colinear guards.
+  Path _buildRoundedPolygonPath(List<Offset> pts, double cornerRadius) {
     final Path path = Path();
     final int len = pts.length;
     if (len < 2) return path;
@@ -264,20 +446,23 @@ class _RoundedRadarPainter extends CustomPainter {
       final Offset curr = pts[i];
       final Offset next = pts[(i + 1) % len];
 
-      // direction vectors
       final Offset v1 = (prev - curr);
       final Offset v2 = (next - curr);
-
       final double v1Len = v1.distance;
       final double v2Len = v2.distance;
-      if (v1Len == 0 || v2Len == 0) {
-        continue;
-      }
+      if (v1Len == 0 || v2Len == 0) continue;
+
       final Offset v1n = v1 / v1Len;
       final Offset v2n = v2 / v2Len;
 
-      final double angle = math.acos((v1n.dx * v2n.dx + v1n.dy * v2n.dy).clamp(-1.0, 1.0));
-      final double dist = cornerRadius / math.tan(angle / 2);
+      final double dot = (v1n.dx * v2n.dx + v1n.dy * v2n.dy).clamp(-1.0, 1.0);
+      final double angle = math.acos(dot);
+
+      // Distance to cut along each edge so the arc of radius cornerRadius fits.
+      double dist = cornerRadius / math.tan(angle / 2);
+
+      // Guard: don’t overshoot tiny edges
+      dist = math.min(dist, math.min(v1Len, v2Len) * 0.5);
 
       final Offset p1 = curr + v1n * dist;
       final Offset p2 = curr + v2n * dist;
@@ -294,149 +479,9 @@ class _RoundedRadarPainter extends CustomPainter {
         clockwise: true,
       );
     }
+
     path.close();
     return path;
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter old) => true;
-
-  void _drawConcentricRoundedPolygons(Canvas canvas, Size size, Offset center, double angleStep) {
-    const int nSides = 5;
-    final double maxRadius = math.min(size.width, size.height) * 0.4;
-    const double cornerRadius = 16.0;
-    // final double angleStep = 2 * math.pi / nSides;
-    final Paint ringPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = AppColors.borderLight
-      ..strokeWidth = 1;
-
-    for (int i = 1; i <= 5; i++) {
-      final double r = (maxRadius * i / 5);
-      final List<Offset> pts = List.generate(nSides, (j) {
-        final double angle = -math.pi / 2 + (j * angleStep);
-        return Offset(
-          center.dx + r * math.cos(angle),
-          center.dy + r * math.sin(angle),
-        );
-      });
-      final Path ringPath = buildRoundedPolygonPath(pts, cornerRadius);
-      canvas.drawPath(ringPath, ringPaint);
-    }
-  }
-
-  void _drawData(Canvas canvas, List<Offset> pts) {
-    // build rounded-corner path
-    Path path = _buildRoundedPolygonPath(pts, this.cornerRadius);
-
-    // fill
-    final Paint fillPaint = Paint()
-      ..color = Colors.black.withOpacity(0.1)
-      ..style = PaintingStyle.fill;
-    canvas.drawPath(path, fillPaint);
-
-    // stroke
-    final Paint borderPaint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
-    canvas.drawPath(path, borderPaint);
-  }
-
-  void _drawPoints(Canvas canvas, List<Offset> pts) {
-    final Paint dotPaint = Paint()
-      ..color = Colors.black // or whatever color you like for the dot
-      ..style = PaintingStyle.fill;
-
-    const double dotRadius = 5.0; // radius of the small circle
-    const double borderWidth = 2.0; // width of white border
-    for (int i = 0; i < pts.length; i++) {
-      final Offset point = pts[i];
-
-      // 1) Draw the filled circle (your data-dot color)
-      final Paint fillPaint = Paint()
-        ..color = Colors.black // set your fill color
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(point, dotRadius, fillPaint);
-
-      // 2) Draw the white border circle on top
-      final Paint borderPaint = Paint()
-        ..color = Colors.white // white border color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = borderWidth;
-      canvas.drawCircle(point, dotRadius + borderWidth / 2, borderPaint);
-    }
-  }
-
-  void _drawLabelsNearData(
-    Canvas canvas,
-    double angleStep,
-    int n,
-    double maxRadius,
-    Offset center,
-    Paint axisPaint,
-  ) {
-    final tp = TextPainter(textAlign: TextAlign.left, textDirection: TextDirection.ltr);
-
-    const double dotRadius = 5; // same as your data dot
-    const double labelPadding = 16; // distance from dot to label
-    const double leaderLen = 6; // optional leader line length
-    const double textPadding = 8; // inner padding for background box
-    const double borderRadius = 10; // rounded corners for background
-
-    for (int i = 0; i < n; i++) {
-      final double angle = -math.pi / 2 + (i * angleStep);
-
-      // 1) Data point position
-      final double ratio = ((values[i] == 0 ? (maxValue / 1.5) : values[i]) / maxValue).clamp(0.0, 1.0);
-      final double r = maxRadius * ratio;
-      final Offset dir = Offset(math.cos(angle), math.sin(angle));
-      final Offset dataPt = center + dir * r;
-
-      // 2) Label anchor point (just beyond the dot)
-      final Offset labelAnchor = dataPt + dir * (dotRadius + labelPadding);
-
-      // 3) Layout text
-      tp.text = TextSpan(
-        text: labels[i],
-        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
-      );
-      tp.layout();
-
-      // 4) Compute background box position
-      final bool right = dir.dx >= 0;
-      final bool down = dir.dy >= 0;
-      final double x = labelAnchor.dx + (right ? -40.0 : -tp.width + 40.0);
-      final double y = labelAnchor.dy + (down ? 4.0 : -tp.height - (i == 0 ? 0.0 : 12.0));
-      final Offset textTopLeft = Offset(x, y);
-
-      // 5) Define padded rect
-      final Rect bgRect = Rect.fromLTWH(
-        textTopLeft.dx - textPadding,
-        textTopLeft.dy - textPadding / 2,
-        tp.width + textPadding * 2,
-        tp.height + textPadding,
-      );
-
-      // 6) Draw black rounded background
-      final Paint bgPaint = Paint()..color = AppColors.primaryDefault;
-      final RRect roundedRect = RRect.fromRectAndRadius(bgRect, const Radius.circular(borderRadius));
-      canvas.drawRRect(roundedRect, bgPaint);
-
-      // 7) Optional small leader line
-      final Paint leader = Paint()
-        ..color = axisPaint.color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1;
-      canvas.drawLine(dataPt, dataPt + dir * leaderLen, leader);
-
-      // 8) Draw white text centered in padded box
-      final Offset paddedTextOffset = Offset(
-        textTopLeft.dx,
-        textTopLeft.dy,
-      );
-      tp.paint(canvas, paddedTextOffset);
-    }
   }
 }
 

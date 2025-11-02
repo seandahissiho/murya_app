@@ -11,6 +11,7 @@ class Job {
   final Color overlayColor;
   final String imagePath;
   final List<Competency> competencies;
+  final List<CompetencyFamily> competenciesFamilies;
 
   Job({
     required this.id,
@@ -23,6 +24,7 @@ class Job {
     this.overlayColor = const Color(0xFFFFFFFF),
     this.imagePath = '',
     this.competencies = const [],
+    this.competenciesFamilies = const [],
   });
 
   factory Job.fromJson(jobJson) {
@@ -41,20 +43,25 @@ class Job {
       competencies: jobJson['competencies'] != null
           ? (jobJson['competencies'] as List).map((compJson) => Competency.fromJson(compJson)).toList()
           : [],
+      competenciesFamilies: jobJson['competenciesFamilies'] != null
+          ? (jobJson['competenciesFamilies'] as List)
+              .map((familyJson) => CompetencyFamily.fromJson(familyJson))
+              .toList()
+          : [],
     );
 
     return job;
   }
 
-  List<CompetencyFamily> get competenciesFamilies {
-    final Set<CompetencyFamily> familiesSet = {};
-    for (final competency in competencies) {
-      if (competency.families != null) {
-        familiesSet.addAll(competency.families!);
-      }
-    }
-    return familiesSet.toList();
-  }
+  // List<CompetencyFamily> get competenciesFamilies {
+  //   final Set<CompetencyFamily?> familiesSet = {};
+  //   for (final competency in competencies) {
+  //     if (competency.families != null) {
+  //       familiesSet.addAll(competency.families!.whereOrEmpty((family) => family.parent != null));
+  //     }
+  //   }
+  //   return familiesSet.whereOrEmpty((family) => family != null).cast<CompetencyFamily>();
+  // }
 
   static Color parseColor(String hex) {
     String hexCode = hex.replaceAll('#', '');
@@ -74,24 +81,6 @@ class Job {
 
   competenciesPerFamily(CompetencyFamily family) {
     return competencies.where((comp) => comp.families != null && comp.families!.contains(family)).toList();
-  }
-
-  double averageProficiencyForFamily(CompetencyFamily cf, {required int level}) {
-    final comps = competenciesPerFamily(cf);
-    if (comps.isEmpty) return 0.0;
-
-    double total = 0.0;
-    int count = 0;
-
-    for (final comp in comps) {
-      // Assuming each competency has a method getProficiencyLevel that returns a double
-      // based on the provided level string.
-      final proficiency = getProficiencyLevel(comp, level);
-      total += proficiency;
-      count++;
-    }
-
-    return total / count;
   }
 
   getProficiencyLevel(comp, int level) {
@@ -140,11 +129,11 @@ class Competency {
       families: compJson['families'] != null
           ? (compJson['families'] as List).map((familyJson) => CompetencyFamily.fromJson(familyJson)).toList()
           : null,
-      beginnerScore: compJson['beginner_score'],
-      intermediateScore: compJson['intermediate_score'],
-      advancedScore: compJson['advanced_score'],
-      expertScore: compJson['expert_score'],
-      maxScore: compJson['max_score'],
+      beginnerScore: compJson['beginnerScore'],
+      intermediateScore: compJson['intermediateScore'],
+      advancedScore: compJson['advancedScore'],
+      expertScore: compJson['expertScore'],
+      maxScore: compJson['maxScore'],
     );
   }
 }
@@ -154,12 +143,16 @@ class CompetencyFamily {
   final String name;
   final String? description;
   final List<Competency> competencies;
+  final CompetencyFamily? parent;
+  final List<CompetencyFamily> children;
 
   CompetencyFamily({
     required this.id,
     required this.name,
     this.description,
     this.competencies = const [],
+    this.parent,
+    this.children = const [],
   });
 
   factory CompetencyFamily.fromJson(familyJson) {
@@ -169,6 +162,10 @@ class CompetencyFamily {
       description: familyJson['description'],
       competencies: familyJson['competencies'] != null
           ? (familyJson['competencies'] as List).map((compJson) => Competency.fromJson(compJson)).toList()
+          : [],
+      parent: familyJson['parent'] != null ? CompetencyFamily.fromJson(familyJson['parent']) : null,
+      children: familyJson['children'] != null
+          ? (familyJson['children'] as List).map((childJson) => CompetencyFamily.fromJson(childJson)).toList()
           : [],
     );
   }
@@ -224,5 +221,20 @@ class CompetencyFamily {
       }
     }
     return total / competencies.length;
+  }
+
+  double averageScoreByLevel({required int level}) {
+    switch (level) {
+      case 0:
+        return beginnerAverageScore();
+      case 1:
+        return intermediateAverageScore();
+      case 2:
+        return advancedAverageScore();
+      case 3:
+        return expertAverageScore();
+      default:
+        return 0.0;
+    }
   }
 }

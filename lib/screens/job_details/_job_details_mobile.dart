@@ -114,19 +114,15 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                         height: constraints.maxWidth,
                         width: constraints.maxWidth,
                         color: AppColors.backgroundColor,
-                        child: const RoundedRadarChart(
-                          // titles: _job.competenciesFamilies.map((cf) => cf.name).toList(),
-                          labels: ['Emphatie', 'Vision', 'Management', 'Analyse', 'Pilotage'],
-                          // values: _job.competenciesFamilies
-                          //     .map((cf) => _job.averageProficiencyForFamily(cf, level: _detailsLevel))
-                          //     .toList(),
-                          values: [
-                            5.0,
-                            4.0,
-                            3.0,
-                            2.0,
-                            4.0,
-                          ],
+                        child: RoundedRadarChart(
+                          labels: _job.competenciesFamilies
+                              .whereOrEmpty((cf) => cf.parent == null)
+                              .map((cf) => cf.name)
+                              .toList(),
+                          values: _job.competenciesFamilies
+                              .whereOrEmpty((cf) => cf.parent == null)
+                              .map((cf) => cf.averageScoreByLevel(level: _detailsLevel))
+                              .toList(),
                         ),
                       ),
                       AppSpacing.groupMarginBox,
@@ -160,8 +156,10 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                           ),
                         ],
                       ),
-                      AppSpacing.groupMarginBox,
+                      AppSpacing.sectionMarginBox,
                       ...familiesBuilder(),
+                      AppSpacing.sectionMarginBox,
+                      const AppFooter(),
                     ],
                   );
                 }),
@@ -175,7 +173,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
 
   List<Widget> familiesBuilder() {
     final List<Widget> widgets = [];
-    for (final family in _job.competenciesFamilies) {
+    for (final family in _job.competenciesFamilies.whereOrEmpty((cf) => cf.parent == null)) {
       widgets.add(CFCard(job: _job, family: family));
       widgets.add(AppSpacing.groupMarginBox);
     }
