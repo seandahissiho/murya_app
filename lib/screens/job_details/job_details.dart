@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/app_footer.dart';
@@ -16,6 +17,7 @@ import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
+import 'package:murya/l10n/l10n.dart';
 import 'package:murya/main.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/screens/base.dart';
@@ -29,11 +31,12 @@ class JobDetailsLocation extends BeamLocation<RouteInformationSerializable<dynam
 
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+    final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
-      const BeamPage(
-        key: ValueKey('jobDetails-page'),
+      BeamPage(
+        key: ValueKey('jobDetails-page-$languageCode'),
         title: 'JobDetails Page',
-        child: JobDetailsScreen(),
+        child: const JobDetailsScreen(),
       ),
     ];
   }
@@ -62,6 +65,7 @@ class CFCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final nbCompetencies = job.competenciesPerFamily(family).length;
+    final locale = AppLocalizations.of(context);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -105,7 +109,7 @@ class CFCard extends StatelessWidget {
                 ),
                 AppSpacing.tinyMarginBox,
                 Text(
-                  '$nbCompetencies compétence${nbCompetencies > 1 ? 's' : ''}',
+                  locale.competencies_count(nbCompetencies),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: AppColors.textTertiary,
                   ),

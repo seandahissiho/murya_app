@@ -66,7 +66,9 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                   // onLocaleChange(context);
                   context.read<AppBloc>().add(
                         AppChangeLanguage(
-                            language: state.language.code == 'fr' ? AppLanguage.english : AppLanguage.french),
+                          language: state.language.code == 'fr' ? AppLanguage.english : AppLanguage.french,
+                          context: context,
+                        ),
                       );
                 },
                 isLoading: false,
@@ -167,7 +169,9 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
                   // onLocaleChange(context);
                   context.read<AppBloc>().add(
                         AppChangeLanguage(
-                            language: state.language.code == 'fr' ? AppLanguage.english : AppLanguage.french),
+                          language: state.language.code == 'fr' ? AppLanguage.english : AppLanguage.french,
+                          context: context,
+                        ),
                       );
                 },
                 isLoading: false,

@@ -94,5 +94,46 @@
         "type": "String"
       }
     }
-  }
+  },
+  "evaluateSkills": "Évaluer les compétences",
+  "@evaluateSkills": {
+    "description": "Bouton pour évaluer les compétences"
+  },
+  "skillsDiagramTitle": "Diagramme des compétences",
+  "@skillsDiagramTitle": {
+    "description": "Titre du diagramme des compétences"
+  },
+  "skillLevel_easy": "Facile",
+  "@skillLevel_easy": {
+    "description": "Niveau de compétence facile"
+  },
+  "skillLevel_medium": "Moyen",
+  "@skillLevel_medium": {
+    "description": "Niveau de compétence moyen"
+  },
+  "skillLevel_hard": "Difficile",
+  "@skillLevel_hard": {
+    "description": "Niveau de compétence difficile"
+  },
+  "skillLevel_expert": "Expert",
+  "@skillLevel_expert": {
+    "description": "Niveau de compétence expert"
+  },
+  "competencies_count": "{count, plural, =0 {Aucune compétence} =1 {1 compétence} other {{count} compétences}}",
+  "@competencies_count": {
+    "description": "Affiche le nombre de compétences avec une gestion plurielle",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+    "show_more": "Afficher plus",
+    "@show_more": {
+      "description": "Texte pour le bouton 'Afficher plus'"
+    },
+    "show_less": "Voir moins",
+    "@show_less": {
+      "description": "Texte pour le bouton 'Voir moins'"
+    }
 }

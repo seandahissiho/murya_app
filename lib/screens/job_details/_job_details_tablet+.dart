@@ -11,8 +11,6 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
   Job _job = Job.empty();
   int _detailsLevel = 0;
 
-  var options = ["Junior", "Intermédiaire", "Senior", "Expert"];
-
   @override
   void initState() {
     super.initState();
@@ -26,6 +24,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = AppLocalizations.of(context);
+    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
     return BlocConsumer<JobBloc, JobState>(
       listener: (context, state) {
         if (state is JobDetailsLoaded) {
@@ -59,8 +59,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                             },
                             child: SvgPicture.asset(
                               AppIcons.backButtonPath,
-                              width: 32,
-                              height: 32,
+                              width: 40,
+                              height: 40,
                             ),
                           ),
                           const Spacer(),
@@ -73,8 +73,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                             },
                             child: SvgPicture.asset(
                               AppIcons.searchBarCloseIconPath,
-                              width: 32,
-                              height: 32,
+                              width: 40,
+                              height: 40,
                             ),
                           ),
                         ],
@@ -105,15 +105,15 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                   AppXButton(
                                     onPressed: () {},
                                     isLoading: false,
-                                    text: "Évaluer les compétences",
+                                    text: locale.evaluateSkills,
                                     autoResize: false,
                                   ),
                                   AppSpacing.containerInsideMarginBox,
                                   Flexible(
                                     child: SingleChildScrollView(
                                       child: ExpandableText(
-                                        // _job.description,
-                                        FAKER.lorem.sentences(30).join(' '),
+                                        _job.description,
+                                        // FAKER.lorem.sentences(30).join(' '),
                                         style: theme.textTheme.bodyMedium?.copyWith(
                                           color: AppColors.primaryDefault,
                                           overflow: TextOverflow.ellipsis,
@@ -178,7 +178,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                           children: [
                                             Flexible(
                                               child: Text(
-                                                "Diagramme des compétences",
+                                                locale.skillsDiagramTitle,
                                                 style: theme.textTheme.bodyMedium!.copyWith(
                                                     color: AppColors.blackSwatch, fontWeight: FontWeight.w700),
                                                 maxLines: 1,

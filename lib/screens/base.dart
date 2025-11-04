@@ -18,10 +18,11 @@ class BaseLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     final String path = (context.read<AppBloc>().state).newRoute;
     context.read<NotificationBloc>().updateContext(context);
+    final languageCode = context.read<AppBloc>().appLanguage.code;
 
     return [
       BeamPage(
-        key: ValueKey(_getKey(context, path)),
+        key: ValueKey('${_getKey(context, path)}-$languageCode'),
         title: _getTitle(context, path),
         child: _getChild(context, path),
       ),

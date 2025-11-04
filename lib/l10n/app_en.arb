@@ -94,5 +94,46 @@
         "type": "String"
       }
     }
+  },
+  "evaluateSkills": "Evaluate Skills",
+  "@evaluateSkills": {
+    "description": "Button to evaluate skills"
+  },
+  "skillsDiagramTitle": "Skills Diagram",
+  "@skillsDiagramTitle": {
+    "description": "Title of the skills diagram"
+  },
+  "skillLevel_easy": "Easy",
+  "@skillLevel_easy": {
+    "description": "Label for easy skill level"
+  },
+  "skillLevel_medium": "Medium",
+  "@skillLevel_medium": {
+    "description": "Label for medium skill level"
+  },
+  "skillLevel_hard": "Hard",
+  "@skillLevel_hard": {
+    "description": "Label for hard skill level"
+  },
+  "skillLevel_expert": "Expert",
+  "@skillLevel_expert": {
+    "description": "Label for expert skill level"
+  },
+  "competencies_count": "{count, plural, =0 {No competencies} =1 {1 competency} other {{count} competencies}}",
+  "@competencies_count": {
+    "description": "Number of competencies available",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "show_more": "Show more",
+  "@show_more": {
+    "description": "Text for the 'Show More' button"
+  },
+  "show_less": "Show less",
+  "@show_less": {
+    "description": "Text for the 'Show Less' button"
   }
 }

@@ -15,6 +15,10 @@ class BaseRepository {
     api.updateContext(context);
     api.updateToken(token);
   }
+
+  void updateLanguage(String languageCode) {
+    api.updateLanguage(languageCode);
+  }
 }
 
 class ApiEndPoint {
@@ -48,6 +52,10 @@ class Api {
 
   void updateToken(String token) {
     dio.options.headers['Authorization'] = 'Bearer $token';
+  }
+
+  void updateLanguage(String languageCode) {
+    dio.options.headers['accept-language'] = languageCode;
   }
 
   void updateContext(BuildContext context) {

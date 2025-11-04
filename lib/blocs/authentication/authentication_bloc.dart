@@ -8,6 +8,7 @@ import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/repositories/authentication.repository.dart';
+import 'package:murya/repositories/jobs.repository.dart';
 import 'package:murya/repositories/notifications.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
 
@@ -142,6 +143,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     RepositoryProvider.of<AuthenticationRepository>(context).updateDio(token, context);
     RepositoryProvider.of<NotificationRepository>(context).updateDio(token, context);
     RepositoryProvider.of<ProfileRepository>(context).updateDio(token, context);
+    // jobs repository
+    RepositoryProvider.of<JobRepository>(context).updateDio(token, context);
   }
 
   void updateRepositoriesContext(BuildContext context) {

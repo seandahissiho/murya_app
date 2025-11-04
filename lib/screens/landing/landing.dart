@@ -5,6 +5,7 @@ import 'package:blobs/blobs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/components/app_footer.dart';
 import 'package:murya/config/DS.dart';
@@ -23,11 +24,12 @@ class LandingLocation extends BeamLocation<RouteInformationSerializable<dynamic>
 
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+    final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
-      const BeamPage(
-        key: ValueKey('landing-page'),
+      BeamPage(
+        key: ValueKey('landing-page-$languageCode'),
         title: 'Landing Page',
-        child: LandingScreen(),
+        child: const LandingScreen(),
       ),
     ];
   }

@@ -1,5 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/screens/base.dart';
 import 'package:murya/screens/competencies_family_details/competencies_family_details.dart';
@@ -72,9 +74,10 @@ class OtherLocation extends BeamLocation<RouteInformationSerializable<dynamic>> 
 
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+    final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(
-        key: const ValueKey('other'),
+        key: ValueKey('other-$languageCode'),
         title: '404 Not Found',
         child: InkWell(
           onTap: () {

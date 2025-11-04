@@ -19,8 +19,10 @@ class AppChangeRoute extends AppEvent {
 
 class AppChangeLanguage extends AppEvent {
   final AppLanguage language;
+  final BuildContext context;
 
   AppChangeLanguage({
     required this.language,
+    required this.context,
   });
 }

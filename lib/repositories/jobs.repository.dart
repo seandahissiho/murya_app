@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:murya/models/Job.dart';
 import 'package:murya/repositories/base.repository.dart';
 
@@ -15,8 +17,10 @@ class JobRepository extends BaseRepository {
             'query': query,
           },
         );
+        log('Jobs Search Response: ${response.data}');
 
-        final List<Job> jobs = (response.data['data'] as List).map((jobJson) => Job.fromJson(jobJson)).toList();
+        final List<Job> jobs =
+            (response.data['data']['items'] as List).map((jobJson) => Job.fromJson(jobJson)).toList();
         return jobs;
       },
       parentFunctionName: 'JobRepository -> getJob',

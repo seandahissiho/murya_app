@@ -6,6 +6,10 @@ import 'package:murya/config/routes.dart';
 import 'package:murya/localization/locale_controller.dart';
 import 'package:murya/models/country.dart';
 import 'package:murya/repositories/app.repository.dart';
+import 'package:murya/repositories/authentication.repository.dart';
+import 'package:murya/repositories/jobs.repository.dart';
+import 'package:murya/repositories/notifications.repository.dart';
+import 'package:murya/repositories/profile.repository.dart';
 import 'package:provider/provider.dart';
 
 part 'app_event.dart';
@@ -129,6 +133,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   FutureOr<void> _onChangeLanguage(AppChangeLanguage event, Emitter<AppState> emit) {
     _appLanguage = event.language;
+
+    RepositoryProvider.of<AuthenticationRepository>(event.context).updateLanguage(_appLanguage.code);
+    RepositoryProvider.of<NotificationRepository>(event.context).updateLanguage(_appLanguage.code);
+    RepositoryProvider.of<ProfileRepository>(event.context).updateLanguage(_appLanguage.code);
+    // jobs repository
+    RepositoryProvider.of<JobRepository>(event.context).updateLanguage(_appLanguage.code);
+
     emit(AppRouteChanged(
       oldRoute: state.oldRoute,
       newRoute: state.newRoute,
@@ -153,6 +164,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       code: localeProvider.locale?.languageCode == 'fr' ? 'fr' : 'en',
       name: localeProvider.locale?.languageCode == 'fr' ? 'Français' : 'English',
     );
-    add(AppChangeLanguage(language: _appLanguage));
+    add(AppChangeLanguage(
+      language: _appLanguage,
+      context: context,
+    ));
   }
 }

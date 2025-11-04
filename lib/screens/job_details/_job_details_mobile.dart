@@ -11,8 +11,6 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
   Job _job = Job.empty();
   int _detailsLevel = 0;
 
-  var options = ["Junior", "Intermédiaire", "Senior", "Expert"];
-
   @override
   void initState() {
     super.initState();
@@ -26,6 +24,8 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = AppLocalizations.of(context);
+    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
     return BlocConsumer<JobBloc, JobState>(
       listener: (context, state) {
         if (state is JobDetailsLoaded) {
@@ -83,7 +83,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
             AppXButton(
               onPressed: () {},
               isLoading: false,
-              text: "Évaluer les compétences",
+              text: locale.evaluateSkills,
               autoResize: false,
             ),
             AppSpacing.containerInsideMarginBox,
@@ -94,8 +94,8 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ExpandableText(
-                        // _job.description,
-                        FAKER.lorem.sentences(10).join(' '),
+                        _job.description,
+                        // FAKER.lorem.sentences(10).join(' '),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: AppColors.primaryDefault,
                           overflow: TextOverflow.ellipsis,
@@ -105,8 +105,8 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                           decoration: TextDecoration.underline,
                         ),
                         maxLines: 4,
-                        expandText: '\n\nAfficher plus',
-                        collapseText: '\n\nVoir moins',
+                        expandText: '\n\n${locale.show_more}',
+                        collapseText: '\n\n${locale.show_less}',
                         linkEllipsis: false,
                       ),
                       AppSpacing.containerInsideMarginBox,
@@ -133,7 +133,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                           Expanded(
                             flex: 100,
                             child: Text(
-                              "Diagramme des compétences",
+                              locale.skillsDiagramTitle,
                               style: theme.textTheme.bodyMedium!
                                   .copyWith(color: AppColors.blackSwatch, fontWeight: FontWeight.w700),
                               maxLines: 1,

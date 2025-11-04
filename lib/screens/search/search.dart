@@ -4,6 +4,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/components/text_form_field.dart';
 import 'package:murya/config/DS.dart';
@@ -19,11 +20,12 @@ class MainSearchLocation extends BeamLocation<RouteInformationSerializable<dynam
 
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+    final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
-      const BeamPage(
-        key: ValueKey('main-search'),
+      BeamPage(
+        key: ValueKey('main-search-page-$languageCode'),
         title: 'Main Search',
-        child: MainSearchScreen(),
+        child: const MainSearchScreen(),
       ),
     ];
   }

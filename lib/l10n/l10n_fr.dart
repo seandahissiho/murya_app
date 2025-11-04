@@ -80,4 +80,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String searchNoResults(String query) {
     return 'Aucun résultat trouvé pour \"$query\".';
   }
+
+  @override
+  String get evaluateSkills => 'Évaluer les compétences';
+
+  @override
+  String get skillsDiagramTitle => 'Diagramme des compétences';
+
+  @override
+  String get skillLevel_easy => 'Facile';
+
+  @override
+  String get skillLevel_medium => 'Moyen';
+
+  @override
+  String get skillLevel_hard => 'Difficile';
+
+  @override
+  String get skillLevel_expert => 'Expert';
+
+  @override
+  String competencies_count(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count compétences',
+      one: '1 compétence',
+      zero: 'Aucune compétence',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get show_more => 'Afficher plus';
+
+  @override
+  String get show_less => 'Voir moins';
 }

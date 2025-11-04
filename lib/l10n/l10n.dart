@@ -229,6 +229,60 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Aucun résultat trouvé pour \"{query}\".'**
   String searchNoResults(String query);
+
+  /// Bouton pour évaluer les compétences
+  ///
+  /// In fr, this message translates to:
+  /// **'Évaluer les compétences'**
+  String get evaluateSkills;
+
+  /// Titre du diagramme des compétences
+  ///
+  /// In fr, this message translates to:
+  /// **'Diagramme des compétences'**
+  String get skillsDiagramTitle;
+
+  /// Niveau de compétence facile
+  ///
+  /// In fr, this message translates to:
+  /// **'Facile'**
+  String get skillLevel_easy;
+
+  /// Niveau de compétence moyen
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyen'**
+  String get skillLevel_medium;
+
+  /// Niveau de compétence difficile
+  ///
+  /// In fr, this message translates to:
+  /// **'Difficile'**
+  String get skillLevel_hard;
+
+  /// Niveau de compétence expert
+  ///
+  /// In fr, this message translates to:
+  /// **'Expert'**
+  String get skillLevel_expert;
+
+  /// Affiche le nombre de compétences avec une gestion plurielle
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0 {Aucune compétence} =1 {1 compétence} other {{count} compétences}}'**
+  String competencies_count(int count);
+
+  /// Texte pour le bouton 'Afficher plus'
+  ///
+  /// In fr, this message translates to:
+  /// **'Afficher plus'**
+  String get show_more;
+
+  /// Texte pour le bouton 'Voir moins'
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir moins'**
+  String get show_less;
 }
 
 class _AppLocalizationsDelegate
