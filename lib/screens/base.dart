@@ -1,68 +1,59 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:murya/blocs/app/app_bloc.dart';
-import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/config/DS.dart';
-import 'package:murya/config/routes.dart';
-import 'package:murya/helpers.dart';
-import 'package:murya/screens/home.dart';
-import 'package:murya/screens/landing/landing.dart';
-import 'package:murya/screens/search/search.dart';
 
-class BaseLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
-  @override
-  List<String> get pathPatterns => [AppRoutes.home];
-
-  @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
-    final String path = (context.read<AppBloc>().state).newRoute;
-    context.read<NotificationBloc>().updateContext(context);
-    final languageCode = context.read<AppBloc>().appLanguage.code;
-
-    return [
-      BeamPage(
-        key: ValueKey('${_getKey(context, path)}-$languageCode'),
-        title: _getTitle(context, path),
-        child: _getChild(context, path),
-      ),
-    ];
-  }
-
-  String _getKey(BuildContext context, String path) {
-    final String key = path;
-    return 'home-$key';
-  }
-
-  String _getTitle(BuildContext context, String path) {
-    switch (path) {
-      case AppRoutes.home:
-        return 'Home';
-      case AppRoutes.searchModule:
-        return 'Main Search';
-      default:
-        return 'Home';
-    }
-  }
-
-  Widget _getChild(BuildContext context, String path) {
-    switch (path) {
-      case AppRoutes.landing:
-        return const LandingScreen();
-      case AppRoutes.home:
-        return const HomeScreen();
-      case AppRoutes.searchModule:
-        return const MainSearchScreen();
-      default:
-        return InkWell(
-          onTap: () {
-            navigateToPath(context, to: AppRoutes.home);
-          },
-          child: const Center(child: Text('Home Screen')),
-        );
-    }
-  }
-}
+// class BaseLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+//   @override
+//   List<String> get pathPatterns => [AppRoutes.landing];
+//
+//   @override
+//   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+//     final String path = (context.read<AppBloc>().state).newRoute;
+//     context.read<NotificationBloc>().updateContext(context);
+//     final languageCode = context.read<AppBloc>().appLanguage.code;
+//
+//     return [
+//       BeamPage(
+//         key: ValueKey('${_getKey(context, path)}-$languageCode'),
+//         title: _getTitle(context, path),
+//         child: _getChild(context, path),
+//       ),
+//     ];
+//   }
+//
+//   String _getKey(BuildContext context, String path) {
+//     final String key = path;
+//     return 'home-$key';
+//   }
+//
+//   String _getTitle(BuildContext context, String path) {
+//     switch (path) {
+//       case AppRoutes.home:
+//         return 'Home';
+//       case AppRoutes.searchModule:
+//         return 'Main Search';
+//       default:
+//         return 'Home';
+//     }
+//   }
+//
+//   Widget _getChild(BuildContext context, String path) {
+//     switch (path) {
+//       case AppRoutes.landing:
+//         return const LandingScreen();
+//       case AppRoutes.home:
+//         return const HomeScreen();
+//       case AppRoutes.searchModule:
+//         return const MainSearchScreen();
+//       default:
+//         return InkWell(
+//           onTap: () {
+//             navigateToPath(context, to: AppRoutes.home);
+//           },
+//           child: const Center(child: Text('Home Screen')),
+//         );
+//     }
+//   }
+// }
 
 class BaseScreen extends StatefulWidget {
   final Widget? mobileScreen;

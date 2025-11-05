@@ -98,7 +98,7 @@ class CompetencyCard extends StatelessWidget {
                     ],
                   ),
                   if (isMobile) ...[
-                    AppSpacing.groupMarginBox,
+                    AppSpacing.elementMarginBox,
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -174,9 +174,9 @@ class TagWidget extends StatelessWidget {
       ),
       child: Text(
         _getTypeLabel(type, context),
-        style: theme.textTheme.labelSmall?.copyWith(
+        style: theme.textTheme.bodySmall?.copyWith(
           color: _getTextColor(type),
-          fontWeight: FontWeight.w600,
+          // fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -186,9 +186,9 @@ class TagWidget extends StatelessWidget {
     if (type is CompetencyType) {
       switch (type) {
         case CompetencyType.softSkill:
-          return AppColors.tagSoftCompetency;
+          return AppColors.tagSoftSkill;
         case CompetencyType.hardSkill:
-          return AppColors.tagHardCompetency;
+          return AppColors.tagHardSkill;
       }
     } else if (type is Level) {
       switch (type) {
@@ -208,20 +208,20 @@ class TagWidget extends StatelessWidget {
     if (type is CompetencyType) {
       switch (type) {
         case CompetencyType.softSkill:
-          return AppColors.textPrimary;
+          return AppColors.tagSoftSkillText;
         case CompetencyType.hardSkill:
-          return AppColors.textPrimary;
+          return AppColors.tagHardSkillText;
       }
     } else if (type is Level) {
       switch (type) {
         case Level.beginner:
-          return AppColors.textPrimary;
+          return AppColors.tagBeginnerLevelText;
         case Level.intermediate:
-          return AppColors.textPrimary;
+          return AppColors.tagIntermediateLevelText;
         case Level.advanced:
-          return AppColors.textPrimary;
+          return AppColors.tagAdvancedLevelText;
         case Level.expert:
-          return AppColors.textPrimary;
+          return AppColors.tagExpertLevelText;
       }
     }
   }

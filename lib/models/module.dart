@@ -253,7 +253,7 @@ class ModuleBuilder {
               : null,
           button2OnPressed: FAKER.randomGenerator.boolean()
               ? () {
-                  navigateToPath(context, to: AppRoutes.home);
+                  navigateToPath(context, to: AppRoutes.landing);
                 }
               : null,
         );

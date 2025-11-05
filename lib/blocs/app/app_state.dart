@@ -22,7 +22,7 @@ final class AppInitial extends AppState {
     super.isLoading,
     super.showNavBar,
     super.oldRoute,
-    super.newRoute = AppRoutes.home,
+    super.newRoute = AppRoutes.landing,
     super.language,
   });
 

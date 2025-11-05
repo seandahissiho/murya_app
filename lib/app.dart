@@ -97,7 +97,7 @@ class _MyAppState extends State<MyApp> {
 
   final beamerDelegate = BeamerDelegate(
     transitionDelegate: const NoAnimationTransitionDelegate(),
-    initialPath: AppRoutes.home, // Define the initial path
+    initialPath: AppRoutes.landing, // Define the initial path
     locationBuilder: RoutesLocationBuilder(routes: {
       '*': (context, state, data) => const AppScaffold(),
     }),
@@ -110,7 +110,7 @@ class _MyAppState extends State<MyApp> {
           if (!result) {
             context.read<AppBloc>().add(
                   AppChangeRoute(
-                    currentRoute: AppRoutes.home,
+                    currentRoute: AppRoutes.landing,
                     nextRoute: AppRoutes.landing,
                   ),
                 );

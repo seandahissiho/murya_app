@@ -104,7 +104,9 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
             ),
             AppSpacing.containerInsideMarginBox,
             AppXButton(
-              onPressed: () {},
+              onPressed: () {
+                navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id));
+              },
               isLoading: false,
               text: locale.evaluateSkills,
               autoResize: false,

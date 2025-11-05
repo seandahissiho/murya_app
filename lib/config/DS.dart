@@ -187,12 +187,35 @@ class AppColors {
   static const Color backgroundCard = Color(0xFFEDECE4);
 
   // Tags
-  static const Color tagSoftCompetency = Color(0xFFFFF4E5);
-  static const Color tagHardCompetency = Color(0xFFFFF4E5);
-  static const Color tagBeginnerLevel = Color(0xFFFFF4E5);
-  static const Color tagIntermediateLevel = Color(0xFFFFF4E5);
-  static const Color tagAdvancedLevel = Color(0xFFFFF4E5);
-  static const Color tagExpertLevel = Color(0xFFFFF4E5);
+  // rgba(111, 63, 245, 0.2)
+  static const Color tagSoftSkill = Color.fromRGBO(111, 63, 245, 0.2);
+  // rgba(91, 47, 219, 1)
+  static const Color tagSoftSkillText = Color.fromRGBO(91, 47, 219, 1);
+
+  // rgba(58, 176, 194, 0.15)
+  static const Color tagHardSkill = Color.fromRGBO(58, 176, 194, 0.15);
+  // rgba(35, 116, 128, 1)
+  static const Color tagHardSkillText = Color.fromRGBO(35, 116, 128, 1);
+
+  // rgba(0, 168, 112, 0.15)
+  static const Color tagBeginnerLevel = Color.fromRGBO(0, 168, 112, 0.15);
+  // rgba(0, 76, 51, 1)
+  static const Color tagBeginnerLevelText = Color.fromRGBO(0, 76, 51, 1);
+
+  // rgba(245, 163, 63, 0.2)
+  static const Color tagIntermediateLevel = Color.fromRGBO(245, 163, 63, 0.2);
+  // rgba(199, 128, 40, 1)
+  static const Color tagIntermediateLevelText = Color.fromRGBO(199, 128, 40, 1);
+
+  // rgba(255, 59, 48, 0.15)
+  static const Color tagAdvancedLevel = Color.fromRGBO(255, 59, 48, 0.15);
+  // rgba(92, 0, 0, 1)
+  static const Color tagAdvancedLevelText = Color.fromRGBO(92, 0, 0, 1);
+
+  // rgba(13, 13, 13, 0.15)
+  static const Color tagExpertLevel = Color.fromRGBO(199, 40, 128, 0.2);
+  // rgba(13, 13, 13, 1)
+  static const Color tagExpertLevelText = Color.fromRGBO(13, 13, 13, 1);
 
   // Gradient sample (for convenience)
   static const List<Color> gradient = <Color>[
@@ -331,8 +354,8 @@ class AppElevatedButtonStyle {
   static WidgetStateProperty<double> elevation = WidgetStateProperty.all<double>(0);
   static WidgetStateProperty<EdgeInsetsGeometry> padding = WidgetStateProperty.all<EdgeInsetsGeometry>(
     const EdgeInsets.symmetric(
-      horizontal: AppSpacing.buttonHorizontalPadding * 2,
-      vertical: AppSpacing.buttonVerticalPadding,
+      horizontal: AppSpacing.buttonHorizontalPadding * 1.5,
+      vertical: AppSpacing.buttonVerticalPadding * .5,
     ),
   );
   static WidgetStateProperty<Size>? minimumSize;
@@ -369,21 +392,18 @@ class AppElevatedButtonStyle {
             : WidgetStateProperty.all<Size>(
                 const Size.fromHeight(48),
               ),
-        padding: isMobile
-            ? null
-            : WidgetStateProperty.all<EdgeInsetsGeometry>(
-                const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.buttonHorizontalPadding * 1.5,
-                  vertical: AppSpacing.buttonVerticalPadding * .5,
-                ),
-              ),
+        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+          const EdgeInsets.symmetric(
+            horizontal: AppSpacing.buttonHorizontalPadding * 1.5,
+            vertical: AppSpacing.buttonVerticalPadding * .5,
+          ),
+        ),
         textStyle: WidgetStateProperty.all<TextStyle>(
-          themeData.textTheme.labelMedium!.copyWith(
+          themeData.textTheme.bodyMedium!.copyWith(
             color: AppColors.backgroundColor,
             fontSize: textSize.bodyMedium,
-            // fontWeight: FontWeight.w900,
+            fontWeight: isMobile ? FontWeight.w600 : null,
             overflow: TextOverflow.ellipsis,
-            // letterSpacing: textSize.bodyMedium,
           ),
         ),
       ),
@@ -775,17 +795,13 @@ class AppInputDecorationTheme {
             ),
       hintStyle: themeData.textTheme.bodyMedium?.copyWith(
         color: AppColors.whiteSwatch,
-        // letterSpacing: 0,
         fontWeight: FontWeight.w200,
-        height: 0,
       ),
       labelStyle: themeData.textTheme.bodyMedium?.copyWith(
         fontWeight: FontWeight.w600,
-        height: 0,
       ),
       floatingLabelStyle: themeData.textTheme.bodyLarge?.copyWith(
         fontWeight: FontWeight.w600,
-        height: 0,
       ),
     );
   }
@@ -875,100 +891,6 @@ class AppTextThemeData {
     );
   }
 }
-
-// class TextSize {
-//   /// Display Large
-//   late final double displayLarge;
-//   late final double displayMedium;
-//   late final double displaySmall;
-//
-//   /// Headline
-//   late final double headingLarge;
-//   late final double headingMedium;
-//   late final double headingSmall;
-//
-//   /// Title
-//   late final double titleLarge;
-//   late final double titleMedium;
-//   late final double titleSmall;
-//
-//   /// Label
-//   late final double labelLarge;
-//   late final double labelMedium;
-//   late final double labelSmall;
-//
-//   /// Body
-//   late final double bodyLarge;
-//   late final double bodyMedium;
-//   late final double bodySmall;
-//
-//   TextSize({double fontSizeIndex = 0}) {
-//     bool isDesktop = AppBreakpoints.isDesktop || AppBreakpoints.isLargeDesktop;
-//
-//     double displayLarge = 38.0;
-//     double displayMedium = 36.0;
-//     double displaySmall = 32.0;
-//
-//     double headingLarge = 28.0;
-//     double headingMedium = 24.0;
-//     double headingSmall = 20.0;
-//
-//     double titleLarge = 28.0;
-//     double titleMedium = 24.0;
-//     double titleSmall = 20.0;
-//
-//     double labelLarge = 16.0;
-//     double labelMedium = 14.0;
-//     double labelSmall = 12.0;
-//
-//     double bodyLarge = 16.0;
-//     double bodyMedium = 14.0;
-//     double bodySmall = 12.0;
-//
-//     if (kIsWeb) {
-//       if ((Platform.isMacOS || Platform.isWindows || Platform.isLinux) == true) {
-//         displayLarge -= 5;
-//         displayMedium -= 5;
-//         displaySmall -= 5;
-//
-//         headingLarge -= 5;
-//         headingMedium -= 5;
-//         headingSmall -= 5;
-//
-//         titleLarge -= 5;
-//         titleMedium -= 5;
-//         titleSmall -= 5;
-//
-//         labelLarge -= 2;
-//         labelMedium -= 2;
-//         labelSmall -= 2;
-//
-//         bodyLarge -= 2;
-//         bodyMedium -= 2;
-//         bodySmall -= 2;
-//       }
-//     }
-//     this.displayLarge = displayLarge + 1;
-//     this.displayMedium = displayMedium + 1;
-//     this.displaySmall = displaySmall + 1;
-//
-//     this.headingLarge = headingLarge + 1;
-//     this.headingMedium = headingMedium + 1;
-//     this.headingSmall = headingSmall + 1;
-//
-//     this.titleLarge = titleLarge + 1;
-//     this.titleMedium = titleMedium + 1;
-//     this.titleSmall = titleSmall + 1;
-//
-//     this.labelLarge = labelLarge + 1;
-//     this.labelMedium = labelMedium + 1;
-//     this.labelSmall = labelSmall + 1;
-//
-//     this.bodyLarge = bodyLarge + 1;
-//     this.bodyMedium = bodyMedium + 1;
-//     this.bodySmall = bodySmall + 1;
-//   }
-// }
 
 class AppPopupMenuThemeData {
   static PopupMenuThemeData buildTheme(ThemeData themeData, BuildContext context) {

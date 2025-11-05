@@ -103,43 +103,61 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
               ],
             ),
             AppSpacing.groupMarginBox,
-            RichText(
-              text: TextSpan(
-                text: _cf.name,
-                style: GoogleFonts.anton(
-                  color: AppColors.textPrimary,
-                  fontSize: theme.textTheme.displayLarge?.fontSize,
-                  fontWeight: FontWeight.w700,
+            Row(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    color: AppColors.borderLight,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: SvgPicture.asset(
+                    AppIcons.employeeSearchLoupePath,
+                    height: 28,
+                    width: 28,
+                    colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
+                  ),
                 ),
-                children: [
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
-                      child: GestureDetector(
-                        onTap: () async {
-                          await ShareUtils.shareContent(
-                            text: locale.discover_cf_profile(_cf.name),
-                            url: ShareUtils.generateJobDetailsLink(_cf.id),
-                            subject: locale.job_profile_page_title(_cf.name),
-                          );
-                          if (kIsWeb && mounted && context.mounted) {
-                            // On web, there's a good chance we just copied to clipboard
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(locale.link_copied)),
-                            );
-                          }
-                        },
-                        child: Icon(
-                          Icons.ios_share,
-                          size: theme.textTheme.displayLarge!.fontSize! / 1.75,
-                          color: AppColors.primaryDefault,
+                AppSpacing.elementMarginBox,
+                RichText(
+                  text: TextSpan(
+                    text: _cf.name,
+                    style: GoogleFonts.anton(
+                      color: AppColors.textPrimary,
+                      fontSize: theme.textTheme.displayLarge?.fontSize,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    children: [
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
+                          child: GestureDetector(
+                            onTap: () async {
+                              await ShareUtils.shareContent(
+                                text: locale.discover_cf_profile(_cf.name),
+                                url: ShareUtils.generateJobDetailsLink(_cf.id),
+                                subject: locale.job_profile_page_title(_cf.name),
+                              );
+                              if (kIsWeb && mounted && context.mounted) {
+                                // On web, there's a good chance we just copied to clipboard
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(locale.link_copied)),
+                                );
+                              }
+                            },
+                            child: Icon(
+                              Icons.ios_share,
+                              size: theme.textTheme.displayLarge!.fontSize! / 1.75,
+                              color: AppColors.primaryDefault,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             AppSpacing.containerInsideMarginBox,
             Expanded(
@@ -148,23 +166,25 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ExpandableText(
-                        _cf.description ?? '',
-                        // FAKER.lorem.sentences(10).join(' '),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: AppColors.primaryDefault,
-                          overflow: TextOverflow.ellipsis,
+                      if (_cf.description != null && _cf.description!.isNotEmpty) ...[
+                        ExpandableText(
+                          _cf.description ?? '',
+                          // FAKER.lorem.sentences(10).join(' '),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: AppColors.primaryDefault,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          linkStyle: theme.textTheme.labelMedium?.copyWith(
+                            color: AppColors.primaryDefault,
+                            decoration: TextDecoration.underline,
+                          ),
+                          maxLines: 4,
+                          expandText: '\n\n${locale.show_more}',
+                          collapseText: '\n\n${locale.show_less}',
+                          linkEllipsis: false,
                         ),
-                        linkStyle: theme.textTheme.labelMedium?.copyWith(
-                          color: AppColors.primaryDefault,
-                          decoration: TextDecoration.underline,
-                        ),
-                        maxLines: 4,
-                        expandText: '\n\n${locale.show_more}',
-                        collapseText: '\n\n${locale.show_less}',
-                        linkEllipsis: false,
-                      ),
-                      AppSpacing.containerInsideMarginBox,
+                        AppSpacing.containerInsideMarginBox,
+                      ],
                       Container(
                         decoration: const BoxDecoration(
                           color: AppColors.backgroundCard,
@@ -191,6 +211,15 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
           ],
         );
       },
+    );
+  }
+}
+
+extension on SizedBox {
+  dynamic operator *(num other) {
+    return SizedBox(
+      width: width != null ? width! * other : null,
+      height: height != null ? height! * other : null,
     );
   }
 }

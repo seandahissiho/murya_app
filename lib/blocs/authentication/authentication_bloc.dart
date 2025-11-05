@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
-import 'package:murya/config/routes.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/repositories/authentication.repository.dart';
 import 'package:murya/repositories/jobs.repository.dart';
@@ -181,13 +179,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       while (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
-      context.read<AppBloc>().add(
-            AppChangeRoute(
-              currentRoute: AppRoutes.landing,
-              nextRoute: AppRoutes.landing,
-            ),
-          );
-      Beamer.of(context).beamToNamed(AppRoutes.landing);
+      // context.read<AppBloc>().add(
+      //       AppChangeRoute(
+      //         currentRoute: AppRoutes.landing,
+      //         nextRoute: AppRoutes.landing,
+      //       ),
+      //     );
+      // Beamer.of(context).beamToNamed(AppRoutes.landing);
     }
     if (context.mounted) {
       _resetAllBlocs(context);

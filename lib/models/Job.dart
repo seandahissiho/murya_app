@@ -263,7 +263,7 @@ extension CompetencyTypeExtension on CompetencyType {
       case 'soft_skill':
         return CompetencyType.softSkill;
       default:
-        return CompetencyType.hardSkill;
+        throw Exception('Unknown CompetencyType: $type');
     }
   }
 
@@ -292,7 +292,7 @@ extension LevelExtension on Level {
       case 'expert':
         return Level.expert;
       default:
-        return Level.beginner;
+        throw Exception('Unknown Level: $level');
     }
   }
 

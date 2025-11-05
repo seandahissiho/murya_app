@@ -23,7 +23,7 @@ class AppScaffold extends StatefulWidget {
 class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
   final _beamerKey = GlobalKey<BeamerState>();
   final beamerDelegate = BeamerDelegate(
-    initialPath: AppRoutes.home, // Define the initial path
+    initialPath: AppRoutes.landing, // Define the initial path
     transitionDelegate: const NoAnimationTransitionDelegate(),
     locationBuilder: BeamerLocationBuilder(
       beamLocations: beamLocations,
@@ -52,7 +52,7 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
   get _isMainDashboardPath {
     final state = context.read<AppBloc>().state;
     final path = (state).newRoute;
-    return path.startsWith(AppRoutes.home);
+    return path.startsWith(AppRoutes.landing);
   }
 
   @override
@@ -116,7 +116,7 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
           context.read<AppBloc>().add(
                 AppChangeRoute(
                   currentRoute: AppRoutes.login,
-                  nextRoute: AppRoutes.home,
+                  nextRoute: AppRoutes.landing,
                 ),
               );
           _redirectUser(context, authState);
@@ -185,7 +185,7 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
     // }
 
     if (state.isAuthenticated) {
-      Beamer.of(context).beamToNamed(AppRoutes.home);
+      Beamer.of(context).beamToNamed(AppRoutes.landing);
     } else {
       context.read<AppBloc>().add(
             AppChangeRoute(

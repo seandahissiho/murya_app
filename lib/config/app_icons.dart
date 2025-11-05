@@ -29,6 +29,10 @@ class AppIcons {
   static const String frLanguageIconPath = '$basePath/flag_fr.svg';
   // smiling_icon.svg
   static const String smilingIconPath = '$basePath/smiling_icon.svg';
+  // exit_icon.svg
+  static const String exitIconPath = '$basePath/exit_icon.svg';
+  // diamond.svg
+  static const String diamondIconPath = '$basePath/diamond.svg';
 }
 
 class AppImages {

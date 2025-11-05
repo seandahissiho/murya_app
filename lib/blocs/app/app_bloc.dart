@@ -69,7 +69,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   AppLanguage get appLanguage => _appLanguage;
 
-  AppBloc({required BuildContext context}) : super(const AppRouteChanged(newRoute: AppRoutes.home)) {
+  AppBloc({required BuildContext context}) : super(const AppRouteChanged(newRoute: AppRoutes.landing)) {
     on<AppEvent>((event, emit) {
       emit(AppLoading(
         isLoading: true,
