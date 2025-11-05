@@ -258,9 +258,9 @@ enum CompetencyType { hardSkill, softSkill }
 extension CompetencyTypeExtension on CompetencyType {
   static CompetencyType fromString(String type) {
     switch (type.toLowerCase()) {
-      case 'hardskill':
+      case 'hard_skill':
         return CompetencyType.hardSkill;
-      case 'softskill':
+      case 'soft_skill':
         return CompetencyType.softSkill;
       default:
         return CompetencyType.hardSkill;
@@ -283,11 +283,11 @@ enum Level { beginner, intermediate, advanced, expert }
 extension LevelExtension on Level {
   static Level fromString(String level) {
     switch (level.toLowerCase()) {
-      case 'beginner':
+      case 'easy':
         return Level.beginner;
-      case 'intermediate':
+      case 'medium':
         return Level.intermediate;
-      case 'advanced':
+      case 'hard':
         return Level.advanced;
       case 'expert':
         return Level.expert;
