@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 // import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,9 +19,9 @@ import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
-import 'package:murya/main.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/screens/base.dart';
+import 'package:murya/utilities/share_utils.dart';
 
 part '_job_details_mobile.dart';
 part '_job_details_tablet+.dart';

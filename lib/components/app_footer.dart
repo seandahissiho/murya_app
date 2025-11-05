@@ -18,18 +18,24 @@ class AppFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
-      decoration: const BoxDecoration(
-        color: AppColors.backgroundHover,
-        borderRadius: BorderRadius.all(Radius.circular(AppRadius.largeRadius)),
-      ),
-      child: const BaseScreen(
-        mobileScreen: MobileAppFooter(),
-        tabletScreen: TabletAppFooter(),
-        desktopScreen: TabletAppFooter(),
-        useBackgroundColor: false,
-      ),
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
+          decoration: const BoxDecoration(
+            color: AppColors.backgroundHover,
+            borderRadius: BorderRadius.all(Radius.circular(AppRadius.largeRadius)),
+          ),
+          child: const BaseScreen(
+            mobileScreen: MobileAppFooter(),
+            tabletScreen: TabletAppFooter(),
+            desktopScreen: TabletAppFooter(),
+            useBackgroundColor: false,
+          ),
+        ),
+        AppSpacing.pageMarginBox,
+        SizedBox(height: MediaQuery.of(context).padding.bottom),
+      ],
     );
   }
 }
@@ -127,8 +133,6 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              AppSpacing.pageMarginBox,
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
           ),
         );

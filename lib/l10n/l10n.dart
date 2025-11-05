@@ -283,6 +283,72 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Voir moins'**
   String get show_less;
+
+  /// Texte incitant l'utilisateur à découvrir le profil de compétences d'un métier
+  ///
+  /// In fr, this message translates to:
+  /// **'Découvrez le profil de compétences pour le métier de {jobTitle} !'**
+  String discover_job_profile(String jobTitle);
+
+  /// Titre de la page du profil de compétences d'un métier
+  ///
+  /// In fr, this message translates to:
+  /// **'Murya - Profil de compétences : {jobTitle}'**
+  String job_profile_page_title(String jobTitle);
+
+  /// Message affiché lorsque le lien est copié dans le presse-papier
+  ///
+  /// In fr, this message translates to:
+  /// **'Lien copié dans le presse-papier'**
+  String get link_copied;
+
+  /// Texte incitant l'utilisateur à découvrir le profil de compétences d'une famille de compétences
+  ///
+  /// In fr, this message translates to:
+  /// **'Découvrez le profil de compétences pour la famille de compétences {cfTitle} !'**
+  String discover_cf_profile(String cfTitle);
+
+  /// No description provided for @hard_skill.
+  ///
+  /// In fr, this message translates to:
+  /// **'Savoir-faire'**
+  String get hard_skill;
+
+  /// No description provided for @soft_skill.
+  ///
+  /// In fr, this message translates to:
+  /// **'Savoir-être'**
+  String get soft_skill;
+
+  /// No description provided for @easy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Facile'**
+  String get easy;
+
+  /// No description provided for @medium.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyen'**
+  String get medium;
+
+  /// No description provided for @hard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Difficile'**
+  String get hard;
+
+  /// No description provided for @expert.
+  ///
+  /// In fr, this message translates to:
+  /// **'Expert'**
+  String get expert;
+
+  /// Texte pour le bouton 'Consulter'
+  ///
+  /// In fr, this message translates to:
+  /// **'Consulter'**
+  String get consult;
 }
 
 class _AppLocalizationsDelegate

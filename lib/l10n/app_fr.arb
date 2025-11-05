@@ -128,12 +128,56 @@
       }
     }
   },
-    "show_more": "Afficher plus",
-    "@show_more": {
-      "description": "Texte pour le bouton 'Afficher plus'"
-    },
-    "show_less": "Voir moins",
-    "@show_less": {
-      "description": "Texte pour le bouton 'Voir moins'"
+  "show_more": "Afficher plus",
+  "@show_more": {
+    "description": "Texte pour le bouton 'Afficher plus'"
+  },
+  "show_less": "Voir moins",
+  "@show_less": {
+    "description": "Texte pour le bouton 'Voir moins'"
+  },
+  "discover_job_profile": "Découvrez le profil de compétences pour le métier de {jobTitle} !",
+  "@discover_job_profile": {
+    "description": "Texte incitant l'utilisateur à découvrir le profil de compétences d'un métier",
+    "placeholders": {
+      "jobTitle": {
+        "type": "String",
+        "example": "Développeur Flutter"
+      }
+    }
+  },
+  "job_profile_page_title": "Murya - Profil de compétences : {jobTitle}",
+  "@job_profile_page_title": {
+    "description": "Titre de la page du profil de compétences d'un métier",
+    "placeholders": {
+      "jobTitle": {
+        "type": "String",
+        "example": "Développeur Flutter"
+      }
+    }
+  },
+  "link_copied": "Lien copié dans le presse-papier",
+  "@link_copied": {
+    "description": "Message affiché lorsque le lien est copié dans le presse-papier"
+  },
+  "discover_cf_profile": "Découvrez le profil de compétences pour la famille de compétences {cfTitle} !",
+  "@discover_cf_profile": {
+    "description": "Texte incitant l'utilisateur à découvrir le profil de compétences d'une famille de compétences",
+    "placeholders": {
+      "cfTitle": {
+        "type": "String",
+        "example": "Développement Mobile"
+      }
+    }
+  },
+  "hard_skill": "Savoir-faire",
+  "soft_skill": "Savoir-être",
+  "easy": "Facile",
+  "medium": "Moyen",
+  "hard": "Difficile",
+  "expert": "Expert",
+  "consult": "Consulter",
+    "@consult": {
+        "description": "Texte pour le bouton 'Consulter'"
     }
 }

@@ -27,6 +27,8 @@ class AppIcons {
   static const String enLanguageIconPath = '$basePath/flag_us.svg';
   // frLanguageIconPath
   static const String frLanguageIconPath = '$basePath/flag_fr.svg';
+  // smiling_icon.svg
+  static const String smilingIconPath = '$basePath/smiling_icon.svg';
 }
 
 class AppImages {

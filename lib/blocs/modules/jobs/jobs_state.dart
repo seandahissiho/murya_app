@@ -27,6 +27,7 @@ final class JobDetailsLoaded extends JobState {
 
 final class CFDetailsLoaded extends JobState {
   final CompetencyFamily cfamily;
+  final Job job;
 
-  const CFDetailsLoaded({required this.cfamily});
+  const CFDetailsLoaded({required this.cfamily, required this.job});
 }

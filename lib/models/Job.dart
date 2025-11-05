@@ -1,4 +1,5 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:murya/l10n/l10n.dart';
 
 class Job {
   final String id;
@@ -110,6 +111,8 @@ class Competency {
   final int? advancedScore;
   final int? expertScore;
   final int? maxScore;
+  final CompetencyType type;
+  final Level level;
 
   Competency({
     required this.id,
@@ -120,6 +123,8 @@ class Competency {
     this.advancedScore,
     this.expertScore,
     this.maxScore,
+    required this.type,
+    required this.level,
   });
 
   factory Competency.fromJson(compJson) {
@@ -134,6 +139,8 @@ class Competency {
       advancedScore: compJson['advancedScore'],
       expertScore: compJson['expertScore'],
       maxScore: compJson['maxScore'],
+      type: CompetencyTypeExtension.fromString(compJson['type']),
+      level: LevelExtension.fromString(compJson['level']),
     );
   }
 }
@@ -235,6 +242,71 @@ class CompetencyFamily {
         return expertAverageScore();
       default:
         return 0.0;
+    }
+  }
+
+  static CompetencyFamily empty() {
+    return CompetencyFamily(
+      id: '',
+      name: '',
+    );
+  }
+}
+
+enum CompetencyType { hardSkill, softSkill }
+
+extension CompetencyTypeExtension on CompetencyType {
+  static CompetencyType fromString(String type) {
+    switch (type.toLowerCase()) {
+      case 'hardskill':
+        return CompetencyType.hardSkill;
+      case 'softskill':
+        return CompetencyType.softSkill;
+      default:
+        return CompetencyType.hardSkill;
+    }
+  }
+
+  String localisedName(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    switch (this) {
+      case CompetencyType.hardSkill:
+        return locale.hard_skill;
+      case CompetencyType.softSkill:
+        return locale.soft_skill;
+    }
+  }
+}
+
+enum Level { beginner, intermediate, advanced, expert }
+
+extension LevelExtension on Level {
+  static Level fromString(String level) {
+    switch (level.toLowerCase()) {
+      case 'beginner':
+        return Level.beginner;
+      case 'intermediate':
+        return Level.intermediate;
+      case 'advanced':
+        return Level.advanced;
+      case 'expert':
+        return Level.expert;
+      default:
+        return Level.beginner;
+    }
+  }
+
+  String localisedName(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    switch (this) {
+      case Level.beginner:
+        return locale.easy;
+      case Level.intermediate:
+        return locale.medium;
+      case Level.advanced:
+        return locale.hard;
+      case Level.expert:
+        return locale.expert;
     }
   }
 }

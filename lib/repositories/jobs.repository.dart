@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:murya/models/Job.dart';
 import 'package:murya/repositories/base.repository.dart';
 
@@ -17,7 +15,6 @@ class JobRepository extends BaseRepository {
             'query': query,
           },
         );
-        log('Jobs Search Response: ${response.data}');
 
         final List<Job> jobs =
             (response.data['data']['items'] as List).map((jobJson) => Job.fromJson(jobJson)).toList();
@@ -40,7 +37,7 @@ class JobRepository extends BaseRepository {
     );
   }
 
-  Future<Result<CompetencyFamily>> getCFDetails(String jobId, String cfId) async {
+  Future<Result<(CompetencyFamily, Job)>> getCFDetails(String jobId, String cfId) async {
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/jobs/$jobId/competency_families/$cfId/');
@@ -48,7 +45,8 @@ class JobRepository extends BaseRepository {
         final familyJson = response.data['data']['family'];
         familyJson['competencies'] = response.data['data']['competencies'];
         final CompetencyFamily cfamily = CompetencyFamily.fromJson(familyJson);
-        return cfamily;
+        final Job job = Job.fromJson(response.data['data']['job']);
+        return (cfamily, job);
       },
       parentFunctionName: 'JobRepository -> getCFDetails',
     );

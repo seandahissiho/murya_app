@@ -116,11 +116,11 @@ class AppResponse {
 
       return Result(errorResult, errorToDisplay ?? "Une erreur est survenue", null);
     } catch (error, stacktrace) {
-      // debugPrintStack(
-      //   stackTrace: stacktrace,
-      //   label: "$error [$parentFunctionName]",
-      //   maxFrames: 10,
-      // );
+      debugPrintStack(
+        stackTrace: stacktrace,
+        label: "$error [$parentFunctionName]",
+        maxFrames: 10,
+      );
 
       return Result(errorResult, error is String ? error : "Une erreur est survenue", null);
     }

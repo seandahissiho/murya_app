@@ -49,24 +49,24 @@ class TextSize {
     double bodyMedium = 14.0;
     double bodySmall = 12.0;
 
-    this.displayLarge = displayLarge + 1;
-    this.displayMedium = displayMedium + 1;
-    this.displaySmall = displaySmall + 1;
+    this.displayLarge = displayLarge + 2.5;
+    this.displayMedium = displayMedium + 2.5;
+    this.displaySmall = displaySmall + 2.5;
 
-    this.headingLarge = headingLarge + 1;
-    this.headingMedium = headingMedium + 1;
-    this.headingSmall = headingSmall + 1;
+    this.headingLarge = headingLarge + 2.5;
+    this.headingMedium = headingMedium + 2.5;
+    this.headingSmall = headingSmall + 2.5;
 
-    this.titleLarge = titleLarge + 1;
-    this.titleMedium = titleMedium + 1;
-    this.titleSmall = titleSmall + 1;
+    this.titleLarge = titleLarge + 2.5;
+    this.titleMedium = titleMedium + 2.5;
+    this.titleSmall = titleSmall + 2.5;
 
-    this.labelLarge = labelLarge + 1;
-    this.labelMedium = labelMedium + 1;
-    this.labelSmall = labelSmall + 1;
+    this.labelLarge = labelLarge + 2.5;
+    this.labelMedium = labelMedium + 2.5;
+    this.labelSmall = labelSmall + 2.5;
 
-    this.bodyLarge = bodyLarge + 1;
-    this.bodyMedium = bodyMedium + 1;
-    this.bodySmall = bodySmall + 1;
+    this.bodyLarge = bodyLarge + 2.5;
+    this.bodyMedium = bodyMedium + 2.5;
+    this.bodySmall = bodySmall + 2.5;
   }
 }

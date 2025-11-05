@@ -51,11 +51,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              if (Beamer.of(context).canBeamBack) {
-                                context.beamBack();
-                              } else {
-                                navigateToPath(context, to: AppRoutes.searchModule);
-                              }
+                              navigateToPath(context, to: AppRoutes.searchModule);
                             },
                             child: SvgPicture.asset(
                               AppIcons.backButtonPath,
@@ -66,9 +62,6 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                           const Spacer(),
                           GestureDetector(
                             onTap: () {
-                              if (Beamer.of(context).canBeamBack) {
-                                context.beamBack();
-                              }
                               navigateToPath(context, to: AppRoutes.landing);
                             },
                             child: SvgPicture.asset(
@@ -93,12 +86,42 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                 mainAxisSize: MainAxisSize.max,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    _job.title,
-                                    style: GoogleFonts.anton(
-                                      color: AppColors.textPrimary,
-                                      fontSize: theme.textTheme.displayLarge?.fontSize,
-                                      fontWeight: FontWeight.w700,
+                                  RichText(
+                                    text: TextSpan(
+                                      text: _job.title,
+                                      style: GoogleFonts.anton(
+                                        color: AppColors.textPrimary,
+                                        fontSize: theme.textTheme.displayLarge?.fontSize,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                      children: [
+                                        WidgetSpan(
+                                          alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                await ShareUtils.shareContent(
+                                                  text: locale.discover_job_profile(_job.title),
+                                                  url: ShareUtils.generateJobDetailsLink(_job.id),
+                                                  subject: locale.job_profile_page_title(_job.title),
+                                                );
+                                                if (kIsWeb && mounted && context.mounted) {
+                                                  // On web, there's a good chance we just copied to clipboard
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    SnackBar(content: Text(locale.link_copied)),
+                                                  );
+                                                }
+                                              },
+                                              child: Icon(
+                                                Icons.ios_share,
+                                                size: theme.textTheme.displayLarge!.fontSize! / 1.75,
+                                                color: AppColors.primaryDefault,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   AppSpacing.containerInsideMarginBox,
@@ -123,8 +146,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                           decoration: TextDecoration.underline,
                                         ),
                                         maxLines: 100,
-                                        expandText: '\n\nAfficher plus',
-                                        collapseText: '\n\nVoir moins',
+                                        expandText: '\n\n${locale.show_more}',
+                                        collapseText: '\n\n${locale.show_less}',
                                         linkEllipsis: false,
                                       ),
                                     ),

@@ -135,5 +135,49 @@
   "show_less": "Show less",
   "@show_less": {
     "description": "Text for the 'Show Less' button"
+  },
+  "discover_job_profile": "Discover the skills profile for the {jobTitle} job!",
+  "@discover_job_profile": {
+    "description": "Text inviting the user to view a job's skills profile",
+    "placeholders": {
+      "jobTitle": {
+        "type": "String",
+        "example": "Flutter Developer"
+      }
+    }
+  },
+  "job_profile_page_title": "Murya - Skills Profile: {jobTitle}",
+  "@job_profile_page_title": {
+    "description": "Title of the job skills profile page",
+    "placeholders": {
+      "jobTitle": {
+        "type": "String",
+        "example": "Flutter Developer"
+      }
+    }
+  },
+  "link_copied": "Link copied to clipboard",
+  "@link_copied": {
+    "description": "Notification that the link has been copied to the clipboard"
+  },
+  "discover_cf_profile": "Discover the skills profile for the {cfTitle} competency family!",
+  "@discover_cf_profile": {
+    "description": "Text inviting the user to view a competency family's skills profile",
+    "placeholders": {
+      "cfTitle": {
+        "type": "String",
+        "example": "Software Development"
+      }
+    }
+  },
+  "hard_skill": "Hard Skill",
+  "soft_skill": "Soft Skill",
+  "easy": "Easy",
+  "medium": "Medium",
+  "hard": "Hard",
+  "expert": "Expert",
+  "consult": "Consult",
+  "@consult": {
+    "description": "Button to consult or view more details"
   }
 }

@@ -116,4 +116,43 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get show_less => 'Voir moins';
+
+  @override
+  String discover_job_profile(String jobTitle) {
+    return 'Découvrez le profil de compétences pour le métier de $jobTitle !';
+  }
+
+  @override
+  String job_profile_page_title(String jobTitle) {
+    return 'Murya - Profil de compétences : $jobTitle';
+  }
+
+  @override
+  String get link_copied => 'Lien copié dans le presse-papier';
+
+  @override
+  String discover_cf_profile(String cfTitle) {
+    return 'Découvrez le profil de compétences pour la famille de compétences $cfTitle !';
+  }
+
+  @override
+  String get hard_skill => 'Savoir-faire';
+
+  @override
+  String get soft_skill => 'Savoir-être';
+
+  @override
+  String get easy => 'Facile';
+
+  @override
+  String get medium => 'Moyen';
+
+  @override
+  String get hard => 'Difficile';
+
+  @override
+  String get expert => 'Expert';
+
+  @override
+  String get consult => 'Consulter';
 }

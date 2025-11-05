@@ -186,6 +186,14 @@ class AppColors {
   static const Color backgroundInverted = Color(0xFF0D0D0D);
   static const Color backgroundCard = Color(0xFFEDECE4);
 
+  // Tags
+  static const Color tagSoftCompetency = Color(0xFFFFF4E5);
+  static const Color tagHardCompetency = Color(0xFFFFF4E5);
+  static const Color tagBeginnerLevel = Color(0xFFFFF4E5);
+  static const Color tagIntermediateLevel = Color(0xFFFFF4E5);
+  static const Color tagAdvancedLevel = Color(0xFFFFF4E5);
+  static const Color tagExpertLevel = Color(0xFFFFF4E5);
+
   // Gradient sample (for convenience)
   static const List<Color> gradient = <Color>[
     Color(0xFF5F27CD),
@@ -365,15 +373,17 @@ class AppElevatedButtonStyle {
             ? null
             : WidgetStateProperty.all<EdgeInsetsGeometry>(
                 const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.buttonHorizontalPadding * 4, vertical: AppSpacing.buttonVerticalPadding * 2),
+                  horizontal: AppSpacing.buttonHorizontalPadding * 1.5,
+                  vertical: AppSpacing.buttonVerticalPadding * .5,
+                ),
               ),
         textStyle: WidgetStateProperty.all<TextStyle>(
           themeData.textTheme.labelMedium!.copyWith(
             color: AppColors.backgroundColor,
-            fontSize: isMobile ? textSize.bodyMedium : textSize.bodyLarge,
+            fontSize: textSize.bodyMedium,
             // fontWeight: FontWeight.w900,
             overflow: TextOverflow.ellipsis,
-            letterSpacing: .025 * textSize.labelMedium,
+            // letterSpacing: textSize.bodyMedium,
           ),
         ),
       ),
@@ -765,7 +775,7 @@ class AppInputDecorationTheme {
             ),
       hintStyle: themeData.textTheme.bodyMedium?.copyWith(
         color: AppColors.whiteSwatch,
-        letterSpacing: 0,
+        // letterSpacing: 0,
         fontWeight: FontWeight.w200,
         height: 0,
       ),

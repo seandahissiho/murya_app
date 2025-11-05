@@ -63,8 +63,9 @@ class JobBloc extends Bloc<JobEvent, JobState> {
       notificationBloc.add(ErrorNotificationEvent(message: result.error ?? local.user_stats_module_title));
       return;
     }
-    final cfDetails = result.data!;
+    final cfDetails = result.data!.$1;
+    final jobDetails = result.data!.$2;
 
-    emit(CFDetailsLoaded(cfamily: cfDetails));
+    emit(CFDetailsLoaded(cfamily: cfDetails, job: jobDetails));
   }
 }

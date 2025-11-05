@@ -73,24 +73,24 @@ class TextSize {
       bodySmall -= 2;
     }
 
-    this.displayLarge = displayLarge + 1;
-    this.displayMedium = displayMedium + 1;
-    this.displaySmall = displaySmall + 1;
+    this.displayLarge = displayLarge + 10;
+    this.displayMedium = displayMedium + 10;
+    this.displaySmall = displaySmall + 10;
 
-    this.headingLarge = headingLarge + 1;
-    this.headingMedium = headingMedium + 1;
-    this.headingSmall = headingSmall + 1;
+    this.headingLarge = headingLarge + 10;
+    this.headingMedium = headingMedium + 10;
+    this.headingSmall = headingSmall + 10;
 
-    this.titleLarge = titleLarge + 1;
-    this.titleMedium = titleMedium + 1;
-    this.titleSmall = titleSmall + 1;
+    this.titleLarge = titleLarge + 10;
+    this.titleMedium = titleMedium + 10;
+    this.titleSmall = titleSmall + 10;
 
-    this.labelLarge = labelLarge + 1;
-    this.labelMedium = labelMedium + 1;
-    this.labelSmall = labelSmall + 1;
+    this.labelLarge = labelLarge + 10;
+    this.labelMedium = labelMedium + 10;
+    this.labelSmall = labelSmall + 10;
 
-    this.bodyLarge = bodyLarge + 1;
-    this.bodyMedium = bodyMedium + 1;
-    this.bodySmall = bodySmall + 1;
+    this.bodyLarge = bodyLarge + 10;
+    this.bodyMedium = bodyMedium + 10;
+    this.bodySmall = bodySmall + 10;
   }
 }

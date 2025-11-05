@@ -52,25 +52,25 @@ class TextSize {
     double bodySmall = 12.0;
 
     if ((Platform.isMacOS || Platform.isWindows || Platform.isLinux) == true) {
-      displayLarge -= 5;
-      displayMedium -= 5;
-      displaySmall -= 5;
+      displayLarge -= 5 - 5;
+      displayMedium -= 5 - 5;
+      displaySmall -= 5 - 5;
 
-      headingLarge -= 5;
-      headingMedium -= 5;
-      headingSmall -= 5;
+      headingLarge -= 5 - 5;
+      headingMedium -= 5 - 5;
+      headingSmall -= 5 - 5;
 
-      titleLarge -= 5;
-      titleMedium -= 5;
-      titleSmall -= 5;
+      titleLarge -= 5 - 5;
+      titleMedium -= 5 - 5;
+      titleSmall -= 5 - 5;
 
-      labelLarge -= 2;
-      labelMedium -= 2;
-      labelSmall -= 2;
+      labelLarge -= 2 - 5;
+      labelMedium -= 2 - 5;
+      labelSmall -= 2 - 5;
 
-      bodyLarge -= 2;
-      bodyMedium -= 2;
-      bodySmall -= 2;
+      bodyLarge -= 2 - 5;
+      bodyMedium -= 2 - 5;
+      bodySmall -= 2 - 5;
     }
 
     this.displayLarge = displayLarge + 1;
