@@ -31,8 +31,8 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
     return BlocConsumer<JobBloc, JobState>(
       listener: (context, state) {
         if (state is CFDetailsLoaded) {
-          // _cf = state.cfamily;
-          // _job = state.job;
+          _cf = state.cfamily;
+          _job = state.job;
         }
         setState(() {});
       },
