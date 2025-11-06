@@ -17,27 +17,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // Timer.periodic(const Duration(milliseconds: 50), (timer) {
-      //   if (!mounted) {
-      //     timer.cancel();
-      //     return;
-      //   }
-      //   // setState(() {});
-      // });
-      final context = _bodyWrapKey.currentContext;
-      if (context != null) {
-        final box = context.findRenderObject() as RenderBox;
-        mainBodyHey = box.size.height;
-        debugPrint('Wrap height: $mainBodyHey');
-        setState(() {});
-      }
-      final footerContext = _footerWrapKey.currentContext;
-      if (footerContext != null) {
-        final box = footerContext.findRenderObject() as RenderBox;
-        footerHey = box.size.height;
-        debugPrint('Footer height: $footerHey');
-        setState(() {});
-      }
+      calculus();
     });
   }
 
@@ -51,6 +31,10 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           child: BlocConsumer<ModulesBloc, ModulesState>(
             listener: (context, state) {
               setState(() {});
+              Future.delayed(const Duration(microseconds: 1), () {
+                if (!mounted || !this.context.mounted) return;
+                calculus();
+              });
             },
             builder: (context, state) {
               return SizedBox(
@@ -133,6 +117,9 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                                                         boxType: module.nextBoxType(),
                                                       ),
                                                     ));
+
+                                                // Future.delayed(const Duration(milliseconds: 300), () {
+                                                // });
                                               },
                                               child: decorated,
                                             ),
@@ -173,6 +160,24 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
         ),
       ],
     );
+  }
+
+  void calculus() {
+    final context = _bodyWrapKey.currentContext;
+    if (context != null) {
+      final box = context.findRenderObject() as RenderBox;
+      mainBodyHey = box.size.height;
+      debugPrint('Wrap height: $mainBodyHey');
+      setState(() {});
+    }
+    final footerContext = _footerWrapKey.currentContext;
+    if (footerContext != null) {
+      final box = footerContext.findRenderObject() as RenderBox;
+      footerHey = box.size.height;
+      debugPrint('Footer height: $footerHey');
+      setState(() {});
+    }
+    setState(() {});
   }
 }
 

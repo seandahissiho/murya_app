@@ -160,7 +160,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                             child: Text(
                               locale.skillsDiagramTitle,
                               style: theme.textTheme.bodyMedium!
-                                  .copyWith(color: AppColors.blackSwatch, fontWeight: FontWeight.w700),
+                                  .copyWith(color: AppColors.primaryDefault, fontWeight: FontWeight.w700),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -179,7 +179,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                             },
                             labelInside: null,
                             autoResize: true,
-                            foregroundColor: AppColors.blackSwatch,
+                            foregroundColor: AppColors.primaryDefault,
                           ),
                         ],
                       ),

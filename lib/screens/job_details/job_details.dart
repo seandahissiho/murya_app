@@ -67,6 +67,7 @@ class CFCard extends StatelessWidget {
     final theme = Theme.of(context);
     final nbCompetencies = job.competenciesPerFamily(family).length;
     final locale = AppLocalizations.of(context);
+    final isMobile = DeviceHelper.isMobile(context);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -87,8 +88,8 @@ class CFCard extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             child: SvgPicture.asset(
               AppIcons.employeeSearchLoupePath,
-              height: 20,
-              width: 20,
+              height: isMobile ? mobileCTAHeight - 20 : tabletAndAboveCTAHeight - 20,
+              width: isMobile ? mobileCTAHeight - 20 : tabletAndAboveCTAHeight - 20,
               colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
             ),
           ),
@@ -104,15 +105,18 @@ class CFCard extends StatelessWidget {
                   family.name,
                   style: GoogleFonts.anton(
                     color: AppColors.textInverted,
-                    fontSize: theme.textTheme.displaySmall?.fontSize,
+                    fontSize:
+                        isMobile ? theme.textTheme.displayMedium!.fontSize : theme.textTheme.headlineSmall!.fontSize,
                     fontWeight: FontWeight.w400,
+                    // height: 1 / 3.8,
                   ),
                 ),
-                AppSpacing.tinyMarginBox,
+                AppSpacing.tinyTinyMarginBox,
                 Text(
                   locale.competencies_count(nbCompetencies),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: AppColors.textTertiary,
+                    // height: 1 / 2.4,
                   ),
                 ),
               ],
@@ -126,9 +130,9 @@ class CFCard extends StatelessWidget {
                   to: AppRoutes.competencyFamilyDetails.replaceAll(':jobId', job.id).replaceAll(':cfId', family.id));
             },
             child: SvgPicture.asset(
-              AppIcons.buttonsButtonPath,
-              height: 32,
-              width: 32,
+              AppIcons.dropdownArrowRightPath,
+              height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+              width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
             ),
           ),
         ],
@@ -271,7 +275,8 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
                       values: widget.values,
                       maxValue: widget.maxValue,
                       cornerRadius: widget.cornerRadius,
-                      highlightIndex: _activeIndex, // highlight active point
+                      highlightIndex: _activeIndex,
+                      // highlight active point
                       highlightColor: Theme.of(context).colorScheme.primary,
                     ),
                   ),
@@ -425,7 +430,8 @@ class _RoundedRadarPainter extends CustomPainter {
       fillColor: Colors.black,
       borderColor: Colors.white,
       highlightIndex: highlightIndex,
-      highlightScale: 1.6, // a bit larger
+      highlightScale: 1.6,
+      // a bit larger
       highlightColor: highlightColor,
     );
 
@@ -456,6 +462,7 @@ class _RoundedRadarPainter extends CustomPainter {
       old.cornerRadius != cornerRadius ||
       old.highlightIndex != highlightIndex ||
       old.highlightColor != highlightColor;
+
   // ---------------------------
   // Helpers
   // ---------------------------

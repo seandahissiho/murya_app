@@ -113,8 +113,8 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                   padding: const EdgeInsets.all(10),
                   child: SvgPicture.asset(
                     AppIcons.employeeSearchLoupePath,
-                    height: 28,
-                    width: 28,
+                    height: mobileCTAHeight - 20,
+                    width: mobileCTAHeight - 20,
                     colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
                   ),
                 ),

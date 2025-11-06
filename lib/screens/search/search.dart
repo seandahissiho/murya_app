@@ -107,8 +107,8 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                   },
                   child: SvgPicture.asset(
                     AppIcons.searchBarCloseIconPath,
-                    width: isMobile ? 32 : 40,
-                    height: isMobile ? 32 : 40,
+                    width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                    height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
                   ),
                 ),
               )
@@ -142,15 +142,15 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.blackSwatch),
-                            color: AppColors.blackSwatch,
+                            border: Border.all(color: AppColors.backgroundInverted),
+                            color: AppColors.backgroundInverted,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
                             child: Text(
                               job.title,
                               textAlign: TextAlign.center,
-                              style: theme.textTheme.titleSmall!.copyWith(
+                              style: (isMobile ? theme.textTheme.labelLarge! : theme.textTheme.displayMedium!).copyWith(
                                 fontWeight: FontWeight.w900,
                                 color: AppColors.whiteSwatch,
                               ),

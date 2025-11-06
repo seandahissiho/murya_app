@@ -14,18 +14,18 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
     return Column(
       children: [
         SizedBox(
-          height: 40,
+          height: tabletAndAboveCTAHeight,
           width: 100.w,
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                height: 30,
+                height: tabletAndAboveCTAHeight - 10,
                 child: SvgPicture.asset(
                   AppIcons.appIcon1Path,
                   width: 161,
-                  height: 40,
+                  height: tabletAndAboveCTAHeight,
                 ),
               ),
               MouseRegion(
@@ -37,15 +37,15 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
                   },
                   child: SvgPicture.asset(
                     AppIcons.homeSearchIconPath,
-                    width: 40,
-                    height: 40,
+                    width: tabletAndAboveCTAHeight,
+                    height: tabletAndAboveCTAHeight,
                   ),
                 ),
               ),
             ],
           ),
         ),
-        AppSpacing.pageMarginBox,
+        AppSpacing.sectionMarginBox,
       ],
     );
   }

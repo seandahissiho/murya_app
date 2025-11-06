@@ -51,8 +51,8 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                         },
                         child: SvgPicture.asset(
                           AppIcons.backButtonPath,
-                          width: 40,
-                          height: 40,
+                          width: tabletAndAboveCTAHeight,
+                          height: tabletAndAboveCTAHeight,
                         ),
                       ),
                       AppSpacing.elementMarginBox,
@@ -61,24 +61,29 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Flexible(
-                              child: Text(
-                                _job.title,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: AppColors.textTertiary,
+                              child: InkWell(
+                                onTap: () {
+                                  navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
+                                },
+                                child: Text(
+                                  _job.title,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.textTertiary,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             Text(
                               ' → ',
-                              style: theme.textTheme.bodySmall?.copyWith(
+                              style: theme.textTheme.bodyMedium?.copyWith(
                                 color: AppColors.primaryDefault,
                               ),
                             ),
                             Flexible(
                               child: Text(
                                 _cf.name,
-                                style: theme.textTheme.bodySmall?.copyWith(
+                                style: theme.textTheme.labelMedium?.copyWith(
                                   color: AppColors.primaryDefault,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -96,8 +101,8 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                   },
                   child: SvgPicture.asset(
                     AppIcons.searchBarCloseIconPath,
-                    width: 40,
-                    height: 40,
+                    width: tabletAndAboveCTAHeight,
+                    height: tabletAndAboveCTAHeight,
                   ),
                 ),
               ],
@@ -111,43 +116,61 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        RichText(
-                          text: TextSpan(
-                            text: _cf.name,
-                            style: GoogleFonts.anton(
-                              color: AppColors.textPrimary,
-                              fontSize: theme.textTheme.displayLarge?.fontSize,
-                              fontWeight: FontWeight.w700,
+                        Row(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: AppColors.borderLight,
+                                shape: BoxShape.circle,
+                              ),
+                              padding: const EdgeInsets.all(10),
+                              child: SvgPicture.asset(
+                                AppIcons.employeeSearchLoupePath,
+                                height: tabletAndAboveCTAHeight - 20,
+                                width: tabletAndAboveCTAHeight - 20,
+                                colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
+                              ),
                             ),
-                            children: [
-                              WidgetSpan(
-                                alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      await ShareUtils.shareContent(
-                                        text: locale.discover_cf_profile(_cf.name),
-                                        url: ShareUtils.generateJobDetailsLink(_cf.id),
-                                        subject: locale.job_profile_page_title(_cf.name),
-                                      );
-                                      if (kIsWeb && mounted && context.mounted) {
-                                        // On web, there's a good chance we just copied to clipboard
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text(locale.link_copied)),
-                                        );
-                                      }
-                                    },
-                                    child: Icon(
-                                      Icons.ios_share,
-                                      size: theme.textTheme.displayLarge!.fontSize! / 1.75,
-                                      color: AppColors.primaryDefault,
+                            AppSpacing.elementMarginBox,
+                            RichText(
+                              text: TextSpan(
+                                text: _cf.name,
+                                style: GoogleFonts.anton(
+                                  color: AppColors.textPrimary,
+                                  fontSize: theme.textTheme.headlineLarge?.fontSize,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                children: [
+                                  WidgetSpan(
+                                    alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          await ShareUtils.shareContent(
+                                            text: locale.discover_cf_profile(_cf.name),
+                                            url: ShareUtils.generateJobDetailsLink(_cf.id),
+                                            subject: locale.job_profile_page_title(_cf.name),
+                                          );
+                                          if (kIsWeb && mounted && context.mounted) {
+                                            // On web, there's a good chance we just copied to clipboard
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text(locale.link_copied)),
+                                            );
+                                          }
+                                        },
+                                        child: const Icon(
+                                          Icons.ios_share,
+                                          size: tabletAndAboveCTAHeight / 1.618,
+                                          color: AppColors.primaryDefault,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         AppSpacing.containerInsideMarginBox,
                         Flexible(

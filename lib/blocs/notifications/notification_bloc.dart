@@ -41,7 +41,7 @@ class WebSocketService {
   int _reconnectAttempt = 0;
 
   WebSocketService() {
-    _connectToWebSocket();
+    // _connectToWebSocket();
   }
 
   void _connectToWebSocket() {

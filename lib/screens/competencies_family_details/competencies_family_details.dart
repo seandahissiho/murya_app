@@ -82,7 +82,8 @@ class CompetencyCard extends StatelessWidget {
                 children: [
                   Text(
                     " ${competency.name}",
-                    style: theme.textTheme.labelLarge?.copyWith(color: AppColors.textPrimary),
+                    style: (isMobile ? theme.textTheme.labelLarge : theme.textTheme.displayMedium)
+                        ?.copyWith(color: AppColors.textPrimary),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),

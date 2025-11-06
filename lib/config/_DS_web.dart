@@ -1,5 +1,3 @@
-import 'DS.dart';
-
 class TextSize {
   /// Display Large
   late final double displayLarge;
@@ -27,46 +25,60 @@ class TextSize {
   late final double bodySmall;
 
   TextSize({double fontSizeIndex = 0}) {
-    bool isDesktop = AppBreakpoints.isDesktop || AppBreakpoints.isLargeDesktop;
+    // Display Large Bold
+    double displayLarge = 56.0;
+    // Display Small Bold
+    double displaySmall = 48.0;
 
-    double displayLarge = 38.0;
-    double displayMedium = 36.0;
-    double displaySmall = 32.0;
+    // Heading 1 Bold
+    double headingLarge = 48.0;
+    // Heading 2 Bold
+    double headingMedium = 40.0;
+    // Heading 3 Bold
+    double headingSmall = 32.0;
 
-    double headingLarge = 28.0;
-    double headingMedium = 24.0;
-    double headingSmall = 20.0;
+    // Heading 1
+    double titleLarge = 48.0;
+    // Heading 2
+    double titleMedium = 40.0;
+    // Heading 3
+    double titleSmall = 32.0;
 
-    double titleLarge = 28.0;
-    double titleMedium = 24.0;
-    double titleSmall = 20.0;
+    // Subheading
+    double displayMedium = 28.0;
 
+    // Body 1 Regular Bold
     double labelLarge = 16.0;
+    // Body 2 Regular Bold
     double labelMedium = 14.0;
+    // Caption Regular Bold
     double labelSmall = 12.0;
 
+    // Body 1 Regular
     double bodyLarge = 16.0;
+    // Body 2 Regular
     double bodyMedium = 14.0;
+    // Caption Regular
     double bodySmall = 12.0;
 
-    this.displayLarge = displayLarge + 2.5;
-    this.displayMedium = displayMedium + 2.5;
-    this.displaySmall = displaySmall + 2.5;
+    this.displayLarge = displayLarge;
+    this.displayMedium = displayMedium;
+    this.displaySmall = displaySmall;
 
-    this.headingLarge = headingLarge + 2.5;
-    this.headingMedium = headingMedium + 2.5;
-    this.headingSmall = headingSmall + 2.5;
+    this.headingLarge = headingLarge;
+    this.headingMedium = headingMedium;
+    this.headingSmall = headingSmall;
 
-    this.titleLarge = titleLarge + 2.5;
-    this.titleMedium = titleMedium + 2.5;
-    this.titleSmall = titleSmall + 2.5;
+    this.titleLarge = titleLarge;
+    this.titleMedium = titleMedium;
+    this.titleSmall = titleSmall;
 
-    this.labelLarge = labelLarge + 2.5;
-    this.labelMedium = labelMedium + 2.5;
-    this.labelSmall = labelSmall + 2.5;
+    this.labelLarge = labelLarge;
+    this.labelMedium = labelMedium;
+    this.labelSmall = labelSmall;
 
-    this.bodyLarge = bodyLarge + 2.5;
-    this.bodyMedium = bodyMedium + 2.5;
-    this.bodySmall = bodySmall + 2.5;
+    this.bodyLarge = bodyLarge;
+    this.bodyMedium = bodyMedium;
+    this.bodySmall = bodySmall;
   }
 }

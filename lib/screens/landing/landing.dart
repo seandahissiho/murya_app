@@ -80,7 +80,7 @@ class AddModuleButton extends StatelessWidget {
             : AppSpacing.pageMargin + AppSpacing.sectionMargin,
       ),
       child: Blob.animatedRandom(
-        size: 65,
+        size: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 27,
         edgesCount: 8,
         minGrowth: 3,
         duration: const Duration(milliseconds: 1000),
@@ -99,8 +99,8 @@ class AddModuleButton extends StatelessWidget {
           child: MouseRegion(
             cursor: SystemMouseCursors.click,
             child: Container(
-              width: 48,
-              height: 48,
+              width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
+              height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
               margin: const EdgeInsets.only(top: 10, left: 10),
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,

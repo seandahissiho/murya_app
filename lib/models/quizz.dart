@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart' show listEquals, mapEquals;
+import 'package:murya/config/custom_classes.dart';
 
 enum QuizzQuestionType {
   single_choice,
@@ -90,6 +93,15 @@ class QuestionResponses {
 
   @override
   int get hashCode => Object.hash(question, Object.hashAll(responses), index);
+
+  int get correctResponseIndex => responses.indexWhere((r) => r.isCorrect);
+
+  QuizzResponse? toQuizzResponse({required int selectedResponseIndex}) {
+    log('Finding response for selectedResponseIndex: $selectedResponseIndex');
+    final result = responses.firstWhereOrNull((r) => r.index == selectedResponseIndex);
+
+    return result;
+  }
 }
 
 /// -------------------- QuizzQuestion --------------------
@@ -205,6 +217,10 @@ class QuizzResponse {
 
   @override
   int get hashCode => Object.hash(id, text, _mapHash(metadata), isCorrect, points, index);
+
+  static empty() {
+    return QuizzResponse(id: '', text: '', index: -1);
+  }
 }
 
 /// -------- Helpers for stable hashing of nullable maps --------
@@ -223,7 +239,7 @@ final Map<String, dynamic> TEST_QUIZZ = {
       "question": {
         "id": "MURYA_PM_Q1",
         "text": "Pour Murya (marketplace B2B agroalimentaire), quelle North Star Metric est la plus pertinente ?",
-        "timeLimitInSeconds": 5,
+        "timeLimitInSeconds": 45,
         "points": 2,
         "type": "single_choice",
         "mediaUrl": "",
@@ -234,8 +250,9 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "id": "MURYA_PM_Q1_A",
           "text": "Nombre total de téléchargements de l'app",
           "isCorrect": false,
-          "points": 0,
-          "index": 0
+          "points": -1,
+          "index": 0,
+          "metadata": {"severity": "minor", "reason": "vanity metric"}
         },
         {
           "id": "MURYA_PM_Q1_B",
@@ -244,8 +261,22 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "points": 2,
           "index": 1
         },
-        {"id": "MURYA_PM_Q1_C", "text": "Budget marketing mensuel", "isCorrect": false, "points": -1, "index": 2},
-        {"id": "MURYA_PM_Q1_D", "text": "Taille de l'équipe produit", "isCorrect": false, "points": 0, "index": 3}
+        {
+          "id": "MURYA_PM_Q1_C",
+          "text": "Budget marketing mensuel",
+          "isCorrect": false,
+          "points": -3,
+          "index": 2,
+          "metadata": {"severity": "critical", "reason": "aucun lien direct avec la valeur client"}
+        },
+        {
+          "id": "MURYA_PM_Q1_D",
+          "text": "Taille de l'équipe produit",
+          "isCorrect": false,
+          "points": -2,
+          "index": 3,
+          "metadata": {"severity": "major", "reason": "input interne, pas un outcome"}
+        }
       ]
     },
     {
@@ -253,7 +284,7 @@ final Map<String, dynamic> TEST_QUIZZ = {
       "question": {
         "id": "MURYA_PM_Q2",
         "text": "Dans le funnel AARRR, laquelle relève de l’Activation pour Murya ?",
-        "timeLimitInSeconds": 4,
+        "timeLimitInSeconds": 40,
         "points": 2,
         "type": "single_choice",
         "mediaUrl": "",
@@ -264,8 +295,9 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "id": "MURYA_PM_Q2_A",
           "text": "Trafic organique sur la page d'inscription",
           "isCorrect": false,
-          "points": 0,
-          "index": 0
+          "points": -1,
+          "index": 0,
+          "metadata": {"severity": "minor", "reason": "Acquisition, pas Activation"}
         },
         {
           "id": "MURYA_PM_Q2_B",
@@ -278,10 +310,18 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "id": "MURYA_PM_Q2_C",
           "text": "Valeur moyenne de commande (AOV)",
           "isCorrect": false,
-          "points": -1,
-          "index": 2
+          "points": -2,
+          "index": 2,
+          "metadata": {"severity": "major", "reason": "Revenue, pas Activation"}
         },
-        {"id": "MURYA_PM_Q2_D", "text": "Taux de parrainage client→client", "isCorrect": false, "points": 0, "index": 3}
+        {
+          "id": "MURYA_PM_Q2_D",
+          "text": "Taux de parrainage client→client",
+          "isCorrect": false,
+          "points": -1,
+          "index": 3,
+          "metadata": {"severity": "minor", "reason": "Referral, pas Activation"}
+        }
       ]
     },
     {
@@ -289,7 +329,7 @@ final Map<String, dynamic> TEST_QUIZZ = {
       "question": {
         "id": "MURYA_PM_Q3",
         "text": "Tu suspectes des ruptures de stock fournisseurs. Quelle action de discovery initiale en 48h ?",
-        "timeLimitInSeconds": 4,
+        "timeLimitInSeconds": 40,
         "points": 2,
         "type": "single_choice",
         "mediaUrl": "",
@@ -300,8 +340,9 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "id": "MURYA_PM_Q3_A",
           "text": "Déployer un correctif à tous les utilisateurs",
           "isCorrect": false,
-          "points": 0,
-          "index": 0
+          "points": -2,
+          "index": 0,
+          "metadata": {"severity": "major", "reason": "solutionnisme sans compréhension du problème"}
         },
         {
           "id": "MURYA_PM_Q3_B",
@@ -310,13 +351,21 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "points": 2,
           "index": 1
         },
-        {"id": "MURYA_PM_Q3_C", "text": "Écrire un PRD complet d’emblée", "isCorrect": false, "points": 0, "index": 2},
+        {
+          "id": "MURYA_PM_Q3_C",
+          "text": "Écrire un PRD complet d’emblée",
+          "isCorrect": false,
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "documentation prématurée"}
+        },
         {
           "id": "MURYA_PM_Q3_D",
           "text": "Augmenter le budget publicitaire",
           "isCorrect": false,
-          "points": -1,
-          "index": 3
+          "points": -3,
+          "index": 3,
+          "metadata": {"severity": "critical", "reason": "aucun lien avec le stock"}
         }
       ]
     },
@@ -325,16 +374,37 @@ final Map<String, dynamic> TEST_QUIZZ = {
       "question": {
         "id": "MURYA_PM_Q4",
         "text": "Dans RICE, quel paramètre fait BAISSER le score quand il AUGMENTE ?",
-        "timeLimitInSeconds": 3,
+        "timeLimitInSeconds": 35,
         "points": 1,
         "type": "single_choice",
         "mediaUrl": "",
         "metadata": {"topic": "prioritization", "difficulty": "easy"}
       },
       "responses": [
-        {"id": "MURYA_PM_Q4_A", "text": "Reach", "isCorrect": false, "points": -1, "index": 0},
-        {"id": "MURYA_PM_Q4_B", "text": "Impact", "isCorrect": false, "points": 0, "index": 1},
-        {"id": "MURYA_PM_Q4_C", "text": "Confidence", "isCorrect": false, "points": 0, "index": 2},
+        {
+          "id": "MURYA_PM_Q4_A",
+          "text": "Reach",
+          "isCorrect": false,
+          "points": -2,
+          "index": 0,
+          "metadata": {"severity": "major", "reason": "effet inverse de la réalité"}
+        },
+        {
+          "id": "MURYA_PM_Q4_B",
+          "text": "Impact",
+          "isCorrect": false,
+          "points": -1,
+          "index": 1,
+          "metadata": {"severity": "minor", "reason": "impact ↑ -> score ↑"}
+        },
+        {
+          "id": "MURYA_PM_Q4_C",
+          "text": "Confidence",
+          "isCorrect": false,
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "confidence ↑ -> score ↑"}
+        },
         {"id": "MURYA_PM_Q4_D", "text": "Effort", "isCorrect": true, "points": 1, "index": 3}
       ]
     },
@@ -343,7 +413,7 @@ final Map<String, dynamic> TEST_QUIZZ = {
       "question": {
         "id": "MURYA_PM_Q5",
         "text": "Lequel est un bon KPI Ops pour Murya ?",
-        "timeLimitInSeconds": 5,
+        "timeLimitInSeconds": 45,
         "points": 2,
         "type": "single_choice",
         "mediaUrl": "",
@@ -357,9 +427,30 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "points": 2,
           "index": 0
         },
-        {"id": "MURYA_PM_Q5_B", "text": "Nombre d'abonnés Instagram", "isCorrect": false, "points": -1, "index": 1},
-        {"id": "MURYA_PM_Q5_C", "text": "Nombre total de SKUs listés", "isCorrect": false, "points": 0, "index": 2},
-        {"id": "MURYA_PM_Q5_D", "text": "Budget promotionnel mensuel", "isCorrect": false, "points": 0, "index": 3}
+        {
+          "id": "MURYA_PM_Q5_B",
+          "text": "Nombre d'abonnés Instagram",
+          "isCorrect": false,
+          "points": -3,
+          "index": 1,
+          "metadata": {"severity": "critical", "reason": "vanity metric, hors Ops"}
+        },
+        {
+          "id": "MURYA_PM_Q5_C",
+          "text": "Nombre total de SKUs listés",
+          "isCorrect": false,
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "volume catalogue ≠ qualité opérationnelle"}
+        },
+        {
+          "id": "MURYA_PM_Q5_D",
+          "text": "Budget promotionnel mensuel",
+          "isCorrect": false,
+          "points": -1,
+          "index": 3,
+          "metadata": {"severity": "minor", "reason": "dépenses marketing ≠ performance Ops"}
+        }
       ]
     },
     {
@@ -367,7 +458,7 @@ final Map<String, dynamic> TEST_QUIZZ = {
       "question": {
         "id": "MURYA_PM_Q6",
         "text": "Quel élément doit absolument figurer dans un PRD ?",
-        "timeLimitInSeconds": 3,
+        "timeLimitInSeconds": 30,
         "points": 1,
         "type": "single_choice",
         "mediaUrl": "",
@@ -375,15 +466,30 @@ final Map<String, dynamic> TEST_QUIZZ = {
       },
       "responses": [
         {"id": "MURYA_PM_Q6_A", "text": "Critères d’acceptation testables", "isCorrect": true, "points": 1, "index": 0},
-        {"id": "MURYA_PM_Q6_B", "text": "Roadmap annuelle complète", "isCorrect": false, "points": 0, "index": 1},
+        {
+          "id": "MURYA_PM_Q6_B",
+          "text": "Roadmap annuelle complète",
+          "isCorrect": false,
+          "points": -1,
+          "index": 1,
+          "metadata": {"severity": "minor", "reason": "hors périmètre PRD"}
+        },
         {
           "id": "MURYA_PM_Q6_C",
           "text": "Liste exhaustive des bugs historiques",
           "isCorrect": false,
-          "points": 0,
-          "index": 2
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "non essentiel au PRD"}
         },
-        {"id": "MURYA_PM_Q6_D", "text": "Captures d’écran marketing", "isCorrect": false, "points": -1, "index": 3}
+        {
+          "id": "MURYA_PM_Q6_D",
+          "text": "Captures d’écran marketing",
+          "isCorrect": false,
+          "points": -2,
+          "index": 3,
+          "metadata": {"severity": "major", "reason": "marketing ≠ exigences produit"}
+        }
       ]
     },
     {
@@ -391,15 +497,29 @@ final Map<String, dynamic> TEST_QUIZZ = {
       "question": {
         "id": "MURYA_PM_Q7",
         "text": "Tu imposes un minimum de commande pour réduire l’anti-marge. Quel KPI primaire choisir ?",
-        "timeLimitInSeconds": 4,
+        "timeLimitInSeconds": 40,
         "points": 2,
         "type": "single_choice",
         "mediaUrl": "",
         "metadata": {"topic": "experimentation", "difficulty": "medium"}
       },
       "responses": [
-        {"id": "MURYA_PM_Q7_A", "text": "Nombre de pages vues", "isCorrect": false, "points": -1, "index": 0},
-        {"id": "MURYA_PM_Q7_B", "text": "Taux de conversion global", "isCorrect": false, "points": 0, "index": 1},
+        {
+          "id": "MURYA_PM_Q7_A",
+          "text": "Nombre de pages vues",
+          "isCorrect": false,
+          "points": -2,
+          "index": 0,
+          "metadata": {"severity": "major", "reason": "ne mesure pas l’objectif financier"}
+        },
+        {
+          "id": "MURYA_PM_Q7_B",
+          "text": "Taux de conversion global",
+          "isCorrect": false,
+          "points": -1,
+          "index": 1,
+          "metadata": {"severity": "minor", "reason": "indirect, peut baisser alors que la marge ↑"}
+        },
         {
           "id": "MURYA_PM_Q7_C",
           "text": "Marge de contribution moyenne par commande",
@@ -407,7 +527,14 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "points": 2,
           "index": 2
         },
-        {"id": "MURYA_PM_Q7_D", "text": "Nombre de tickets support", "isCorrect": false, "points": 0, "index": 3}
+        {
+          "id": "MURYA_PM_Q7_D",
+          "text": "Nombre de tickets support",
+          "isCorrect": false,
+          "points": -1,
+          "index": 3,
+          "metadata": {"severity": "minor", "reason": "signal secondaire"}
+        }
       ]
     },
     {
@@ -415,7 +542,7 @@ final Map<String, dynamic> TEST_QUIZZ = {
       "question": {
         "id": "MURYA_PM_Q8",
         "text": "Quel énoncé est CORRECT ?",
-        "timeLimitInSeconds": 3,
+        "timeLimitInSeconds": 30,
         "points": 1,
         "type": "single_choice",
         "mediaUrl": "",
@@ -426,8 +553,9 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "id": "MURYA_PM_Q8_A",
           "text": "Le backlog = la roadmap avec des dates engagées",
           "isCorrect": false,
-          "points": 0,
-          "index": 0
+          "points": -2,
+          "index": 0,
+          "metadata": {"severity": "major", "reason": "confusion backlog/roadmap"}
         },
         {
           "id": "MURYA_PM_Q8_B",
@@ -440,10 +568,18 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "id": "MURYA_PM_Q8_C",
           "text": "La roadmap est une liste de tâches sans objectifs",
           "isCorrect": false,
-          "points": 0,
-          "index": 2
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "la roadmap est orientée outcomes"}
         },
-        {"id": "MURYA_PM_Q8_D", "text": "Le backlog ne change jamais", "isCorrect": false, "points": -1, "index": 3}
+        {
+          "id": "MURYA_PM_Q8_D",
+          "text": "Le backlog ne change jamais",
+          "isCorrect": false,
+          "points": -3,
+          "index": 3,
+          "metadata": {"severity": "critical", "reason": "contradit l’agilité"}
+        }
       ]
     },
     {
@@ -451,7 +587,7 @@ final Map<String, dynamic> TEST_QUIZZ = {
       "question": {
         "id": "MURYA_PM_Q9",
         "text": "Tu veux tester un nouveau flux de commande en 72h. Quel livrable privilégier ?",
-        "timeLimitInSeconds": 5,
+        "timeLimitInSeconds": 35,
         "points": 2,
         "type": "single_choice",
         "mediaUrl": "",
@@ -469,11 +605,26 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "id": "MURYA_PM_Q9_B",
           "text": "Spécifications techniques complètes",
           "isCorrect": false,
-          "points": 0,
-          "index": 1
+          "points": -1,
+          "index": 1,
+          "metadata": {"severity": "minor", "reason": "trop lent pour un test en 72h"}
         },
-        {"id": "MURYA_PM_Q9_C", "text": "Roadmap trimestrielle", "isCorrect": false, "points": 0, "index": 2},
-        {"id": "MURYA_PM_Q9_D", "text": "Business plan sur 5 ans", "isCorrect": false, "points": -1, "index": 3}
+        {
+          "id": "MURYA_PM_Q9_C",
+          "text": "Roadmap trimestrielle",
+          "isCorrect": false,
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "hors objectif de test utilisateur"}
+        },
+        {
+          "id": "MURYA_PM_Q9_D",
+          "text": "Business plan sur 5 ans",
+          "isCorrect": false,
+          "points": -2,
+          "index": 3,
+          "metadata": {"severity": "major", "reason": "hors sujet, horizon trop long"}
+        }
       ]
     },
     {
@@ -481,7 +632,7 @@ final Map<String, dynamic> TEST_QUIZZ = {
       "question": {
         "id": "MURYA_PM_Q10",
         "text": "Quel risque un PM doit-il adresser en PRIORITÉ pendant la discovery ?",
-        "timeLimitInSeconds": 4,
+        "timeLimitInSeconds": 45,
         "points": 2,
         "type": "single_choice",
         "mediaUrl": "",
@@ -499,22 +650,438 @@ final Map<String, dynamic> TEST_QUIZZ = {
           "id": "MURYA_PM_Q10_B",
           "text": "Utilisabilité : peuvent-ils l'utiliser ?",
           "isCorrect": false,
-          "points": 0,
-          "index": 1
+          "points": -1,
+          "index": 1,
+          "metadata": {"severity": "minor", "reason": "important mais après la valeur"}
         },
         {
           "id": "MURYA_PM_Q10_C",
           "text": "Faisabilité : l'équipe peut-elle le construire ?",
           "isCorrect": false,
-          "points": 0,
-          "index": 2
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "à traiter après la valeur"}
         },
         {
           "id": "MURYA_PM_Q10_D",
           "text": "Viabilité : est-ce rentable/légal/supportable ?",
           "isCorrect": false,
-          "points": 0,
-          "index": 3
+          "points": -1,
+          "index": 3,
+          "metadata": {"severity": "minor", "reason": "priorité secondaire en discovery initiale"}
+        }
+      ]
+    }
+  ]
+};
+
+final Map<String, dynamic> TEST_QUIZZ_2 = {
+  "questionResponses": [
+    {
+      "index": 1,
+      "question": {
+        "id": "MURYA_UI_Q1",
+        "text": "Quel est le minimum de contraste requis (WCAG 2.2 AA) pour du texte normal ?",
+        "timeLimitInSeconds": 40,
+        "points": 2,
+        "type": "single_choice",
+        "mediaUrl": "",
+        "metadata": {"topic": "accessibility", "difficulty": "medium"}
+      },
+      "responses": [
+        {
+          "id": "MURYA_UI_Q1_A",
+          "text": "3:1",
+          "isCorrect": false,
+          "points": -2,
+          "index": 0,
+          "metadata": {"severity": "major", "reason": "seulement AA pour grand texte"}
+        },
+        {"id": "MURYA_UI_Q1_B", "text": "4.5:1", "isCorrect": true, "points": 2, "index": 1},
+        {
+          "id": "MURYA_UI_Q1_C",
+          "text": "2:1",
+          "isCorrect": false,
+          "points": -3,
+          "index": 2,
+          "metadata": {"severity": "critical", "reason": "beaucoup trop faible"}
+        },
+        {
+          "id": "MURYA_UI_Q1_D",
+          "text": "7:1",
+          "isCorrect": false,
+          "points": -1,
+          "index": 3,
+          "metadata": {"severity": "minor", "reason": "AAA, pas le minimum AA"}
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "question": {
+        "id": "MURYA_UI_Q2",
+        "text": "Taille minimale recommandée d’une cible tactile en Android (Material) ?",
+        "timeLimitInSeconds": 35,
+        "points": 2,
+        "type": "single_choice",
+        "mediaUrl": "",
+        "metadata": {"topic": "touch", "difficulty": "easy"}
+      },
+      "responses": [
+        {
+          "id": "MURYA_UI_Q2_A",
+          "text": "24 × 24 dp",
+          "isCorrect": false,
+          "points": -3,
+          "index": 0,
+          "metadata": {"severity": "critical", "reason": "cible trop petite"}
+        },
+        {
+          "id": "MURYA_UI_Q2_B",
+          "text": "36 × 36 dp",
+          "isCorrect": false,
+          "points": -2,
+          "index": 1,
+          "metadata": {"severity": "major", "reason": "en dessous du guidage"}
+        },
+        {"id": "MURYA_UI_Q2_C", "text": "48 × 48 dp", "isCorrect": true, "points": 2, "index": 2},
+        {
+          "id": "MURYA_UI_Q2_D",
+          "text": "56 × 56 dp",
+          "isCorrect": false,
+          "points": -1,
+          "index": 3,
+          "metadata": {"severity": "minor", "reason": "pas le minimum recommandé"}
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "question": {
+        "id": "MURYA_UI_Q3",
+        "text": "Pour la navigation clavier, quel état doit être VISIBLE sur chaque élément focalisable ?",
+        "timeLimitInSeconds": 30,
+        "points": 1,
+        "type": "single_choice",
+        "mediaUrl": "",
+        "metadata": {"topic": "accessibility", "difficulty": "easy"}
+      },
+      "responses": [
+        {"id": "MURYA_UI_Q3_A", "text": "Focus", "isCorrect": true, "points": 1, "index": 0},
+        {
+          "id": "MURYA_UI_Q3_B",
+          "text": "Hover uniquement",
+          "isCorrect": false,
+          "points": -2,
+          "index": 1,
+          "metadata": {"severity": "major", "reason": "souris seulement"}
+        },
+        {
+          "id": "MURYA_UI_Q3_C",
+          "text": "Active uniquement",
+          "isCorrect": false,
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "momentané"}
+        },
+        {
+          "id": "MURYA_UI_Q3_D",
+          "text": "Aucun indicateur visible",
+          "isCorrect": false,
+          "points": -3,
+          "index": 3,
+          "metadata": {"severity": "critical", "reason": "bloquant pour l’accessibilité"}
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "question": {
+        "id": "MURYA_UI_Q4",
+        "text": "Quelle longueur de ligne améliore le plus la lisibilité des paragraphes ?",
+        "timeLimitInSeconds": 40,
+        "points": 2,
+        "type": "single_choice",
+        "mediaUrl": "",
+        "metadata": {"topic": "typography", "difficulty": "medium"}
+      },
+      "responses": [
+        {
+          "id": "MURYA_UI_Q4_A",
+          "text": "10–20 caractères par ligne",
+          "isCorrect": false,
+          "points": -3,
+          "index": 0,
+          "metadata": {"severity": "critical", "reason": "trop court"}
+        },
+        {"id": "MURYA_UI_Q4_B", "text": "50–75 caractères par ligne", "isCorrect": true, "points": 2, "index": 1},
+        {
+          "id": "MURYA_UI_Q4_C",
+          "text": "80–120 caractères par ligne",
+          "isCorrect": false,
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "trop long"}
+        },
+        {
+          "id": "MURYA_UI_Q4_D",
+          "text": "100–140 caractères par ligne",
+          "isCorrect": false,
+          "points": -2,
+          "index": 3,
+          "metadata": {"severity": "major", "reason": "très long"}
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "question": {
+        "id": "MURYA_UI_Q5",
+        "text": "Quel incrément de grille de base est le plus courant pour l’espacement (Material) ?",
+        "timeLimitInSeconds": 30,
+        "points": 1,
+        "type": "single_choice",
+        "mediaUrl": "",
+        "metadata": {"topic": "layout", "difficulty": "easy"}
+      },
+      "responses": [
+        {"id": "MURYA_UI_Q5_A", "text": "8 px/dp", "isCorrect": true, "points": 1, "index": 0},
+        {
+          "id": "MURYA_UI_Q5_B",
+          "text": "6 px",
+          "isCorrect": false,
+          "points": -1,
+          "index": 1,
+          "metadata": {"severity": "minor", "reason": "non standard"}
+        },
+        {
+          "id": "MURYA_UI_Q5_C",
+          "text": "12 px",
+          "isCorrect": false,
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "peu courant"}
+        },
+        {
+          "id": "MURYA_UI_Q5_D",
+          "text": "5 px",
+          "isCorrect": false,
+          "points": -2,
+          "index": 3,
+          "metadata": {"severity": "major", "reason": "irrégulier pour la grille"}
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "question": {
+        "id": "MURYA_UI_Q6",
+        "text": "Combien de boutons primaires faut-il afficher sur un écran ?",
+        "timeLimitInSeconds": 25,
+        "points": 1,
+        "type": "single_choice",
+        "mediaUrl": "",
+        "metadata": {"topic": "buttons", "difficulty": "easy"}
+      },
+      "responses": [
+        {"id": "MURYA_UI_Q6_A", "text": "Un seul", "isCorrect": true, "points": 1, "index": 0},
+        {
+          "id": "MURYA_UI_Q6_B",
+          "text": "Un par section",
+          "isCorrect": false,
+          "points": -1,
+          "index": 1,
+          "metadata": {"severity": "minor", "reason": "hiérarchie confuse"}
+        },
+        {
+          "id": "MURYA_UI_Q6_C",
+          "text": "Autant que nécessaire",
+          "isCorrect": false,
+          "points": -3,
+          "index": 2,
+          "metadata": {"severity": "critical", "reason": "dilution de l’action"}
+        },
+        {
+          "id": "MURYA_UI_Q6_D",
+          "text": "Un par action possible",
+          "isCorrect": false,
+          "points": -2,
+          "index": 3,
+          "metadata": {"severity": "major", "reason": "trop de primaires"}
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "question": {
+        "id": "MURYA_UI_Q7",
+        "text": "Quand préférer un skeleton à un spinner ?",
+        "timeLimitInSeconds": 35,
+        "points": 2,
+        "type": "single_choice",
+        "mediaUrl": "",
+        "metadata": {"topic": "feedback", "difficulty": "medium"}
+      },
+      "responses": [
+        {
+          "id": "MURYA_UI_Q7_A",
+          "text": "Quand la structure du contenu est connue et se remplit progressivement",
+          "isCorrect": true,
+          "points": 2,
+          "index": 0
+        },
+        {
+          "id": "MURYA_UI_Q7_B",
+          "text": "Quand la durée est très longue et inconnue (mieux vaut une barre de progression)",
+          "isCorrect": false,
+          "points": -1,
+          "index": 1,
+          "metadata": {"severity": "minor", "reason": "préférer une barre %"}
+        },
+        {
+          "id": "MURYA_UI_Q7_C",
+          "text": "Toujours utiliser un spinner, jamais de skeleton",
+          "isCorrect": false,
+          "points": -3,
+          "index": 2,
+          "metadata": {"severity": "critical", "reason": "mauvaise UX perçue"}
+        },
+        {
+          "id": "MURYA_UI_Q7_D",
+          "text": "Uniquement pour masquer des erreurs serveur",
+          "isCorrect": false,
+          "points": -2,
+          "index": 3,
+          "metadata": {"severity": "major", "reason": "mauvaise utilisation"}
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "question": {
+        "id": "MURYA_UI_Q8",
+        "text": "Où et comment afficher un message d’erreur de formulaire ?",
+        "timeLimitInSeconds": 35,
+        "points": 2,
+        "type": "single_choice",
+        "mediaUrl": "",
+        "metadata": {"topic": "forms", "difficulty": "medium"}
+      },
+      "responses": [
+        {
+          "id": "MURYA_UI_Q8_A",
+          "text": "Près du champ concerné, message clair et actionnable",
+          "isCorrect": true,
+          "points": 2,
+          "index": 0
+        },
+        {
+          "id": "MURYA_UI_Q8_B",
+          "text": "Bannière générique en haut de page, sans détail",
+          "isCorrect": false,
+          "points": -2,
+          "index": 1,
+          "metadata": {"severity": "major", "reason": "peu actionnable"}
+        },
+        {
+          "id": "MURYA_UI_Q8_C",
+          "text": "Code d’erreur cryptique uniquement",
+          "isCorrect": false,
+          "points": -3,
+          "index": 2,
+          "metadata": {"severity": "critical", "reason": "incompréhensible"}
+        },
+        {
+          "id": "MURYA_UI_Q8_D",
+          "text": "Pop-up bloquante sans indication de correction",
+          "isCorrect": false,
+          "points": -2,
+          "index": 3,
+          "metadata": {"severity": "major", "reason": "interruption inutile"}
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "question": {
+        "id": "MURYA_UI_Q9",
+        "text": "Format recommandé pour des icônes vectorielles scalables sur le web :",
+        "timeLimitInSeconds": 30,
+        "points": 1,
+        "type": "single_choice",
+        "mediaUrl": "",
+        "metadata": {"topic": "icons", "difficulty": "easy"}
+      },
+      "responses": [
+        {"id": "MURYA_UI_Q9_A", "text": "SVG", "isCorrect": true, "points": 1, "index": 0},
+        {
+          "id": "MURYA_UI_Q9_B",
+          "text": "JPG",
+          "isCorrect": false,
+          "points": -1,
+          "index": 1,
+          "metadata": {"severity": "minor", "reason": "bitmap, pas vectoriel"}
+        },
+        {
+          "id": "MURYA_UI_Q9_C",
+          "text": "PNG",
+          "isCorrect": false,
+          "points": -1,
+          "index": 2,
+          "metadata": {"severity": "minor", "reason": "bitmap, pas vectoriel"}
+        },
+        {
+          "id": "MURYA_UI_Q9_D",
+          "text": "BMP",
+          "isCorrect": false,
+          "points": -3,
+          "index": 3,
+          "metadata": {"severity": "critical", "reason": "format obsolète, lourd"}
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "question": {
+        "id": "MURYA_UI_Q10",
+        "text": "Boutons vs liens : quelle règle est correcte ?",
+        "timeLimitInSeconds": 30,
+        "points": 1,
+        "type": "single_choice",
+        "mediaUrl": "",
+        "metadata": {"topic": "buttons", "difficulty": "easy"}
+      },
+      "responses": [
+        {
+          "id": "MURYA_UI_Q10_A",
+          "text": "Utiliser des boutons pour des actions, des liens pour la navigation",
+          "isCorrect": true,
+          "points": 1,
+          "index": 0
+        },
+        {
+          "id": "MURYA_UI_Q10_B",
+          "text": "Toujours des boutons, même pour aller vers une autre page",
+          "isCorrect": false,
+          "points": -2,
+          "index": 1,
+          "metadata": {"severity": "major", "reason": "mauvaise sémantique"}
+        },
+        {
+          "id": "MURYA_UI_Q10_C",
+          "text": "Toujours des liens, même pour soumettre un formulaire",
+          "isCorrect": false,
+          "points": -2,
+          "index": 2,
+          "metadata": {"severity": "major", "reason": "mauvaise sémantique"}
+        },
+        {
+          "id": "MURYA_UI_Q10_D",
+          "text": "Peu importe : bouton ou lien, c’est la même chose",
+          "isCorrect": false,
+          "points": -3,
+          "index": 3,
+          "metadata": {"severity": "critical", "reason": "accessibilité & attentes rompues"}
         }
       ]
     }

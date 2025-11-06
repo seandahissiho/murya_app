@@ -37,6 +37,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
       builder: (context, state) {
         return LayoutBuilder(builder: (context, bigConstraints) {
           return SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -55,8 +56,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                             },
                             child: SvgPicture.asset(
                               AppIcons.backButtonPath,
-                              width: 40,
-                              height: 40,
+                              width: tabletAndAboveCTAHeight,
+                              height: tabletAndAboveCTAHeight,
                             ),
                           ),
                           const Spacer(),
@@ -66,8 +67,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                             },
                             child: SvgPicture.asset(
                               AppIcons.searchBarCloseIconPath,
-                              width: 40,
-                              height: 40,
+                              width: tabletAndAboveCTAHeight,
+                              height: tabletAndAboveCTAHeight,
                             ),
                           ),
                         ],
@@ -91,7 +92,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                       text: _job.title,
                                       style: GoogleFonts.anton(
                                         color: AppColors.textPrimary,
-                                        fontSize: theme.textTheme.displayLarge?.fontSize,
+                                        fontSize: theme.textTheme.headlineLarge?.fontSize,
                                         fontWeight: FontWeight.w700,
                                       ),
                                       children: [
@@ -166,10 +167,10 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                     borderRadius: AppRadius.large,
                                   ),
                                   padding: const EdgeInsets.only(
-                                    top: AppSpacing.sectionMargin,
+                                    // top: AppSpacing.containerInsideMargin,
                                     left: AppSpacing.elementMargin,
                                     right: AppSpacing.elementMargin,
-                                    bottom: AppSpacing.groupMargin,
+                                    bottom: AppSpacing.containerInsideMargin,
                                   ),
                                   child: LayoutBuilder(builder: (context, constraints) {
                                     return Column(
@@ -204,8 +205,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                             Flexible(
                                               child: Text(
                                                 locale.skillsDiagramTitle,
-                                                style: theme.textTheme.bodyMedium!.copyWith(
-                                                    color: AppColors.blackSwatch, fontWeight: FontWeight.w700),
+                                                style: theme.textTheme.bodyLarge!.copyWith(
+                                                    color: AppColors.primaryDefault, fontWeight: FontWeight.w700),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -224,7 +225,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                               },
                                               labelInside: null,
                                               autoResize: true,
-                                              foregroundColor: AppColors.blackSwatch,
+                                              foregroundColor: AppColors.primaryDefault,
                                             ),
                                           ],
                                         ),

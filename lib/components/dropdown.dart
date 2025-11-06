@@ -398,7 +398,7 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                                   : (widget.hintTextForced
                                       ? widget.hintText!
                                       : "Sélectionnez ${widget.hintText ?? "une option"}"),
-                              style: theme.textTheme.bodyMedium?.copyWith(
+                              style: theme.textTheme.labelMedium?.copyWith(
                                 color: widget.controller.text.isNotEmpty
                                     ? (widget.foregroundColor ?? AppColors.textPrimary)
                                     : AppColors.textSecondary,

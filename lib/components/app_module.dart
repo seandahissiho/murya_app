@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -129,39 +130,53 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       child: LayoutBuilder(builder: (context, constraints) {
         return Column(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(
-              width: constraints.maxWidth * 0.85,
-              child: Text(
-                widget.title,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.anton(
-                  color: Colors.white,
-                  fontSize: getTitleFontSizeBasedOnWidth(constraints.maxWidth) + 13,
-                  fontWeight: FontWeight.w700,
-                ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Flexible(
+                    child: SizedBox(
+                      width: constraints.maxWidth * 0.85,
+                      child: AutoSizeText(
+                        widget.title,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.anton(
+                          color: Colors.white,
+                          fontSize: isMobile
+                              ? theme.textTheme.headlineSmall!.fontSize!
+                              : theme.textTheme.displaySmall!.fontSize!,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        minFontSize: theme.textTheme.bodyLarge!.fontSize!,
+                      ),
+                    ),
+                  ),
+                  if (constraints.maxHeight >= 145) ...[
+                    AppSpacing.elementMarginBox,
+                    SizedBox(
+                      width: constraints.maxWidth,
+                      child: Text(
+                        widget.subtitle,
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontSize:
+                              isMobile ? theme.textTheme.bodyMedium!.fontSize : theme.textTheme.bodyLarge!.fontSize,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            if (constraints.maxHeight >= 145) ...[
-              AppSpacing.elementMarginBox,
-              SizedBox(
-                width: constraints.maxWidth,
-                child: Text(
-                  widget.subtitle,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.inter(
-                    color: Colors.white,
-                    fontSize: isMobile ? theme.textTheme.bodyMedium!.fontSize : theme.textTheme.bodyLarge!.fontSize,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ],
-            if (constraints.maxHeight >= 163) ...[
+            if (constraints.maxHeight >= 163 + (isMobile ? 0 : 36)) ...[
               const Spacer(),
               Row(
                 mainAxisSize: MainAxisSize.max,
@@ -218,7 +233,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       if (widget.boxType == AppModuleType.type1_2) {
         return 22.0;
       }
-      return 15.0;
+      return 12.25;
     }
   }
 }

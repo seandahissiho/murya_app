@@ -56,6 +56,9 @@ class AppStatusColors {
 /// Convenience – picks black text on light bg, white on dark bg.
 Color idealTextColor(Color bg) => bg.computeLuminance() > 0.35 ? Colors.grey.shade900 : Colors.white;
 
+const double mobileCTAHeight = 38;
+const double tabletAndAboveCTAHeight = 48;
+
 class AppBreakpoints {
   static const double mobile = 480; // smartphones « classiques » + grands smartphones
   static const double tablet = 900; // grands écrans (tablettes, petits laptops/tablettes hybrides)
@@ -362,7 +365,7 @@ class AppElevatedButtonStyle {
 
   // = WidgetStateProperty.all<Size>(const Size(0, 40));
   static WidgetStateProperty<Size>? fixedSize =
-      WidgetStateProperty.resolveWith<Size>((states) => const Size.fromHeight(38));
+      WidgetStateProperty.resolveWith<Size>((states) => const Size.fromHeight(mobileCTAHeight));
 
   static WidgetStateProperty<Size>? maximumSize;
 
@@ -390,7 +393,7 @@ class AppElevatedButtonStyle {
         fixedSize: isMobile
             ? null
             : WidgetStateProperty.all<Size>(
-                const Size.fromHeight(48),
+                const Size.fromHeight(tabletAndAboveCTAHeight),
               ),
         padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           const EdgeInsets.symmetric(
@@ -533,9 +536,9 @@ class AppTextButtonStyle {
         fixedSize: WidgetStateProperty.resolveWith<Size?>(
           (states) {
             if (100.w <= AppBreakpoints.mobile) {
-              return null;
+              return const Size.fromHeight(mobileCTAHeight);
             }
-            return const Size.fromHeight(40);
+            return const Size.fromHeight(AppBreakpoints.tablet);
           },
         ),
         padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
@@ -603,9 +606,9 @@ class AppDropdownMenuThemeData {
       bottom: 0,
     ),
     constraints: const BoxConstraints(
-      minHeight: 40,
+      minHeight: mobileCTAHeight,
       minWidth: 0,
-      maxHeight: 40,
+      maxHeight: mobileCTAHeight,
       maxWidth: 173 * 2,
     ),
   );
@@ -636,8 +639,15 @@ class AppDropdownMenuThemeData {
   );
 
   static DropdownMenuThemeData buildTheme(ThemeData themeData, BuildContext context) {
+    final isMobile = DeviceHelper.isMobile(context);
     return themeData.dropdownMenuTheme
       ..inputDecorationTheme!.copyWith(
+        constraints: BoxConstraints(
+          minHeight: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+          minWidth: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * 3,
+          maxHeight: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+          maxWidth: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * 6,
+        ),
         labelStyle: themeData.textTheme.bodyMedium?.copyWith(
           overflow: TextOverflow.ellipsis,
           fontWeight: FontWeight.w600,
@@ -814,78 +824,78 @@ class AppTextThemeData {
       TextTheme(
         displayLarge: TextStyle(
           fontSize: textSize.displayLarge,
-          fontWeight: FontWeight.w800,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w400,
+          color: AppColors.primaryDefault,
         ),
         displayMedium: TextStyle(
           fontSize: textSize.displayMedium,
-          fontWeight: FontWeight.w800,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primaryDefault,
         ),
         displaySmall: TextStyle(
           fontSize: textSize.displaySmall,
-          fontWeight: FontWeight.w800,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w400,
+          color: AppColors.primaryDefault,
         ),
         headlineLarge: TextStyle(
           fontSize: textSize.headingLarge,
-          fontWeight: FontWeight.bold,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primaryDefault,
         ),
         headlineMedium: TextStyle(
           fontSize: textSize.headingMedium,
-          fontWeight: FontWeight.bold,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primaryDefault,
         ),
         headlineSmall: TextStyle(
           fontSize: textSize.headingSmall,
-          fontWeight: FontWeight.bold,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primaryDefault,
         ),
         titleLarge: TextStyle(
           fontSize: textSize.titleLarge,
           fontWeight: FontWeight.w400,
-          color: AppColors.primary,
+          color: AppColors.primaryDefault,
         ),
         titleMedium: TextStyle(
           fontSize: textSize.titleMedium,
-          fontWeight: FontWeight.w600,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w400,
+          color: AppColors.primaryDefault,
         ),
         titleSmall: TextStyle(
           fontSize: textSize.titleSmall,
-          fontWeight: FontWeight.w600,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w400,
+          color: AppColors.primaryDefault,
         ),
         labelLarge: TextStyle(
           fontSize: textSize.labelLarge,
-          fontWeight: FontWeight.bold,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primaryDefault,
         ),
         labelMedium: TextStyle(
           fontSize: textSize.labelMedium,
-          fontWeight: FontWeight.bold,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primaryDefault,
         ),
         labelSmall: TextStyle(
           fontSize: textSize.labelSmall,
-          fontWeight: FontWeight.bold,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primaryDefault,
         ),
         bodyLarge: TextStyle(
           fontSize: textSize.bodyLarge,
-          fontWeight: FontWeight.w500,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w400,
+          color: AppColors.primaryDefault,
         ),
         bodyMedium: TextStyle(
           fontSize: textSize.bodyMedium,
-          fontWeight: FontWeight.w500,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w400,
+          color: AppColors.primaryDefault,
         ),
         bodySmall: TextStyle(
           fontSize: textSize.bodySmall,
-          fontWeight: FontWeight.w500,
-          color: AppColors.primary,
+          fontWeight: FontWeight.w400,
+          color: AppColors.primaryDefault,
         ),
       ),
     );
