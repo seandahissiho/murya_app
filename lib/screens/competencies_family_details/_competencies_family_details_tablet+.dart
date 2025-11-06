@@ -76,7 +76,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                             ),
                             Text(
                               ' → ',
-                              style: theme.textTheme.bodyMedium?.copyWith(
+                              style: theme.textTheme.labelMedium?.copyWith(
                                 color: AppColors.primaryDefault,
                               ),
                             ),
@@ -126,8 +126,8 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                               padding: const EdgeInsets.all(10),
                               child: SvgPicture.asset(
                                 AppIcons.employeeSearchLoupePath,
-                                height: tabletAndAboveCTAHeight - 20,
-                                width: tabletAndAboveCTAHeight - 20,
+                                height: tabletAndAboveCTAHeight - 15,
+                                width: tabletAndAboveCTAHeight - 15,
                                 colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
                               ),
                             ),

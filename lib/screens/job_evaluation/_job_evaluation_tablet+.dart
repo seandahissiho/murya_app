@@ -219,8 +219,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                                 AppSpacing.groupMarginBox,
                                 AutoSizeText(
                                   currentQuestion?.question.text ?? '',
-                                  style: isMobile ? theme.textTheme.labelLarge : theme.textTheme.displayMedium,
-                                  maxLines: 4,
+                                  style: theme.textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600),
+                                  maxLines: 3,
                                   textAlign: TextAlign.center,
                                 ),
                                 AppSpacing.sectionMarginBox,
@@ -361,7 +361,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     showVerificationState = -1;
     locked = false;
     setState(() {});
-    // restartTimer();
+    restartTimer();
   }
 
   void _listener(status) {
@@ -376,7 +376,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     pauseTimer();
     locked = true;
     setState(() {});
-    Future.delayed(const Duration(milliseconds: 25), () {
+    Future.delayed(const Duration(milliseconds: 2500), () {
       if (!mounted) return;
       answers
           .add(currentQuestion!.toQuizzResponse(selectedResponseIndex: showVerificationState) ?? QuizzResponse.empty());
@@ -451,7 +451,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
             child: Center(
               child: AutoSizeText(
                 (currentQuestion?.responses.elementAtOrNull(index)?.text ?? '\n\n\n'),
-                style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
+                style: (theme.textTheme.labelLarge)?.copyWith(
                   color: type == 'normal'
                       ? AppColors.textPrimary
                       : type == 'correct'
@@ -461,8 +461,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                 textAlign: TextAlign.center,
                 maxLines: 4,
                 minFontSize: theme.textTheme.bodySmall!.fontSize!.round().toDouble(),
-                maxFontSize:
-                    (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)!.fontSize!.round().toDouble(),
+                maxFontSize: (theme.textTheme.bodyLarge)!.fontSize!.round().toDouble(),
               ),
             ),
           ),

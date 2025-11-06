@@ -56,7 +56,7 @@ class AppStatusColors {
 /// Convenience – picks black text on light bg, white on dark bg.
 Color idealTextColor(Color bg) => bg.computeLuminance() > 0.35 ? Colors.grey.shade900 : Colors.white;
 
-const double mobileCTAHeight = 38;
+const double mobileCTAHeight = 36;
 const double tabletAndAboveCTAHeight = 48;
 
 class AppBreakpoints {
@@ -192,31 +192,37 @@ class AppColors {
   // Tags
   // rgba(111, 63, 245, 0.2)
   static const Color tagSoftSkill = Color.fromRGBO(111, 63, 245, 0.2);
+
   // rgba(91, 47, 219, 1)
   static const Color tagSoftSkillText = Color.fromRGBO(91, 47, 219, 1);
 
   // rgba(58, 176, 194, 0.15)
   static const Color tagHardSkill = Color.fromRGBO(58, 176, 194, 0.15);
+
   // rgba(35, 116, 128, 1)
   static const Color tagHardSkillText = Color.fromRGBO(35, 116, 128, 1);
 
   // rgba(0, 168, 112, 0.15)
   static const Color tagBeginnerLevel = Color.fromRGBO(0, 168, 112, 0.15);
+
   // rgba(0, 76, 51, 1)
   static const Color tagBeginnerLevelText = Color.fromRGBO(0, 76, 51, 1);
 
   // rgba(245, 163, 63, 0.2)
   static const Color tagIntermediateLevel = Color.fromRGBO(245, 163, 63, 0.2);
+
   // rgba(199, 128, 40, 1)
   static const Color tagIntermediateLevelText = Color.fromRGBO(199, 128, 40, 1);
 
   // rgba(255, 59, 48, 0.15)
   static const Color tagAdvancedLevel = Color.fromRGBO(255, 59, 48, 0.15);
+
   // rgba(92, 0, 0, 1)
   static const Color tagAdvancedLevelText = Color.fromRGBO(92, 0, 0, 1);
 
   // rgba(13, 13, 13, 0.15)
   static const Color tagExpertLevel = Color.fromRGBO(199, 40, 128, 0.2);
+
   // rgba(13, 13, 13, 1)
   static const Color tagExpertLevelText = Color.fromRGBO(13, 13, 13, 1);
 
@@ -391,7 +397,9 @@ class AppElevatedButtonStyle {
     return ElevatedButtonThemeData(
       style: themeData.elevatedButtonTheme.style?.copyWith(
         fixedSize: isMobile
-            ? null
+            ? WidgetStateProperty.all<Size>(
+                const Size.fromHeight(mobileCTAHeight),
+              )
             : WidgetStateProperty.all<Size>(
                 const Size.fromHeight(tabletAndAboveCTAHeight),
               ),
@@ -781,25 +789,22 @@ class AppInputDecorationTheme {
   static Color focusColor = AppColors.whiteSwatch;
   static Color hoverColor = Colors.transparent;
   static bool alignLabelWithHint = false;
-  static BoxConstraints? constraints = const BoxConstraints(
-    minHeight: 40,
-    minWidth: 344,
-    maxWidth: 526,
-  );
+  static BoxConstraints? constraints;
   static BorderSide? activeIndicatorBorder;
 
   static InputDecorationTheme buildTheme(ThemeData themeData, BuildContext context) {
     final AppSize size = AppSize(context);
+    final isMobile = DeviceHelper.isMobile(context);
 
     return themeData.inputDecorationTheme.copyWith(
-      constraints: !DeviceHelper.isMobile(context)
+      constraints: !isMobile
           ? const BoxConstraints(
-              minHeight: 40,
+              minHeight: tabletAndAboveCTAHeight,
               minWidth: 344,
               maxWidth: 426,
             )
           : BoxConstraints(
-              minHeight: 40,
+              minHeight: mobileCTAHeight,
               minWidth: 344,
               maxWidth: math.max(size.screenWidth * .8, 344),
             ),

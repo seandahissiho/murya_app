@@ -22,6 +22,7 @@ import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/screens/base.dart';
 import 'package:murya/utilities/share_utils.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 part '_job_details_mobile.dart';
 part '_job_details_tablet+.dart';
@@ -88,8 +89,8 @@ class CFCard extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             child: SvgPicture.asset(
               AppIcons.employeeSearchLoupePath,
-              height: isMobile ? mobileCTAHeight - 20 : tabletAndAboveCTAHeight - 20,
-              width: isMobile ? mobileCTAHeight - 20 : tabletAndAboveCTAHeight - 20,
+              height: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
+              width: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
               colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
             ),
           ),
@@ -114,7 +115,7 @@ class CFCard extends StatelessWidget {
                 AppSpacing.tinyTinyMarginBox,
                 Text(
                   locale.competencies_count(nbCompetencies),
-                  style: theme.textTheme.bodyMedium?.copyWith(
+                  style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
                     color: AppColors.textTertiary,
                     // height: 1 / 2.4,
                   ),

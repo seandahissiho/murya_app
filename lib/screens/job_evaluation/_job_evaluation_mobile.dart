@@ -174,8 +174,8 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                     const Spacer(),
                     AutoSizeText(
                       currentQuestion?.question.text ?? '',
-                      style: theme.textTheme.bodyMedium,
-                      maxLines: 4,
+                      style: theme.textTheme.labelLarge,
+                      maxLines: 3,
                       textAlign: TextAlign.center,
                     ),
                     AppSpacing.tinyMarginBox,
@@ -190,87 +190,7 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                           spacing: AppSpacing.elementMargin,
                           runSpacing: AppSpacing.elementMargin,
                           children: List.generate(4, (index) {
-                            return GestureDetector(
-                              onTap: () {
-                                if (locked) return;
-                                if (displayCorrectIndex != -1) {
-                                  // already showing correct answer, do nothing
-                                  return;
-                                }
-                                if (showVerificationState != index) {
-                                  showVerificationState = index;
-                                  setState(() {});
-                                } else {}
-                              },
-                              onDoubleTap: () {
-                                if (locked) return;
-                                showVerificationState = index;
-                                showCorrectAnswer();
-                              },
-                              child: Card(
-                                elevation: 2,
-                                shadowColor: AppColors.borderMedium,
-                                margin: EdgeInsetsGeometry.zero,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: AppRadius.borderRadius20,
-                                ),
-                                child: Stack(
-                                  children: [
-                                    _card(constraints, index, theme, type: "normal"),
-                                    if (showVerificationState == index && displayCorrectIndex == -1) ...[
-                                      Positioned.fill(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: AppColors.backgroundCard.withValues(alpha: .65),
-                                            borderRadius: AppRadius.borderRadius20,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned.fill(
-                                        child: LayoutBuilder(builder: (context, constraints) {
-                                          return Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColors.primaryFocus.withValues(alpha: .15),
-                                              borderRadius: AppRadius.borderRadius20,
-                                              border: Border.all(
-                                                color: AppColors.primaryFocus,
-                                                width: 2,
-                                              ),
-                                            ),
-                                            child: Center(
-                                              child: Padding(
-                                                padding: EdgeInsets.only(top: constraints.maxHeight / 3),
-                                                child: AppXButton(
-                                                  onPressed: () {
-                                                    showCorrectAnswer();
-                                                  },
-                                                  isLoading: false,
-                                                  text: "Vérifier",
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                      ),
-                                    ],
-                                    if (displayCorrectIndex != -1) ...[
-                                      Positioned.fill(
-                                        child: Container(
-                                          decoration: const BoxDecoration(
-                                            color: Colors.transparent,
-                                            borderRadius: AppRadius.borderRadius20,
-                                          ),
-                                        ),
-                                      ),
-                                      if (displayCorrectIndex == index)
-                                        _card(constraints, index, theme, type: "correct"),
-                                      if (displayCorrectIndex != index && showVerificationState == index)
-                                        _card(constraints, index, theme, type: "error"),
-                                    ]
-                                  ],
-                                ),
-                              ),
-                            );
+                            return answerCard(index, constraints, theme);
                           }),
                         );
                       }),
@@ -345,17 +265,17 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                 : AppColors.errorDefault.withValues(alpha: .15),
         border: Border.all(
           color: type == 'normal'
-              ? Colors.transparent
+              ? AppColors.borderMedium
               : type == 'correct'
                   ? AppColors.successDefault
                   : AppColors.errorDefault,
-          width: 2,
+          width: type == 'normal' ? 2 : 2,
         ),
         borderRadius: AppRadius.borderRadius20,
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.groupMargin,
-        vertical: AppSpacing.elementMargin,
+        vertical: AppSpacing.tinyTinyMargin,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -394,20 +314,103 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
               textAlign: TextAlign.center,
             ),
           ),
-          AppSpacing.tinyMarginBox,
+          AppSpacing.tinyTinyMarginBox,
           Expanded(
             child: Center(
               child: AutoSizeText(
                 (currentQuestion?.responses.elementAtOrNull(index)?.text ?? '\n\n\n'),
-                style: theme.textTheme.bodyMedium,
+                style: theme.textTheme.labelMedium,
                 textAlign: TextAlign.center,
                 maxLines: 4,
-                minFontSize: theme.textTheme.bodySmall!.fontSize!,
+                minFontSize: theme.textTheme.bodySmall!.fontSize! - 2,
                 maxFontSize: theme.textTheme.bodyMedium!.fontSize!,
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget answerCard(int index, dynamic constraints, dynamic theme) {
+    return GestureDetector(
+      onTap: () {
+        if (locked) return;
+        if (displayCorrectIndex != -1) {
+          // already showing correct answer, do nothing
+          return;
+        }
+        if (showVerificationState != index) {
+          showVerificationState = index;
+          setState(() {});
+        } else {}
+      },
+      onDoubleTap: () {
+        if (locked) return;
+        showVerificationState = index;
+        showCorrectAnswer();
+      },
+      child: Card(
+        elevation: 2,
+        shadowColor: AppColors.borderMedium,
+        margin: EdgeInsetsGeometry.zero,
+        shape: const RoundedRectangleBorder(
+          borderRadius: AppRadius.borderRadius20,
+        ),
+        child: Stack(
+          children: [
+            _card(constraints, index, theme, type: "normal"),
+            if (showVerificationState == index && displayCorrectIndex == -1) ...[
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundCard.withValues(alpha: .65),
+                    borderRadius: AppRadius.borderRadius20,
+                  ),
+                ),
+              ),
+              Positioned.fill(
+                child: LayoutBuilder(builder: (context, constraints) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryFocus.withValues(alpha: .15),
+                      borderRadius: AppRadius.borderRadius20,
+                      border: Border.all(
+                        color: AppColors.primaryFocus,
+                        width: 2,
+                      ),
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: constraints.maxHeight / 3),
+                        child: AppXButton(
+                          onPressed: () {
+                            showCorrectAnswer();
+                          },
+                          isLoading: false,
+                          text: "Vérifier",
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ],
+            if (displayCorrectIndex != -1) ...[
+              Positioned.fill(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: AppRadius.borderRadius20,
+                  ),
+                ),
+              ),
+              if (displayCorrectIndex == index) _card(constraints, index, theme, type: "correct"),
+              if (displayCorrectIndex != index && showVerificationState == index)
+                _card(constraints, index, theme, type: "error"),
+            ]
+          ],
+        ),
       ),
     );
   }

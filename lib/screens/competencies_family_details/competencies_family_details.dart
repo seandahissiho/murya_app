@@ -17,6 +17,7 @@ import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/screens/base.dart';
+import 'package:murya/screens/job_details/job_details.dart';
 import 'package:murya/utilities/share_utils.dart';
 
 part '_competencies_family_details_mobile.dart';
@@ -99,7 +100,7 @@ class CompetencyCard extends StatelessWidget {
                     ],
                   ),
                   if (isMobile) ...[
-                    AppSpacing.elementMarginBox,
+                    AppSpacing.groupMarginBox,
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -113,8 +114,8 @@ class CompetencyCard extends StatelessWidget {
                         AppSpacing.elementMarginBox,
                         SvgPicture.asset(
                           AppIcons.smilingIconPath,
-                          width: 38,
-                          height: 38,
+                          width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                          height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
                         ),
                       ],
                     ),

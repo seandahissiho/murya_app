@@ -118,7 +118,7 @@ class AppTextFormField extends StatefulWidget {
 
   // trailing
   final Widget? trailing;
-  final double height;
+  final double? height;
   final double? width;
 
   // contentPadding
@@ -153,7 +153,7 @@ class AppTextFormField extends StatefulWidget {
     this.inputFormatters,
     this.onTap,
     this.trailing,
-    this.height = 40,
+    this.height,
     this.width,
     this.contentPadding,
     this.onChanged,
@@ -185,6 +185,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final bool isMobile = DeviceHelper.isMobile(context);
     return FormField(
       // key: UniqueKey(),
       initialValue: widget.controller?.text ?? controller.text,
@@ -212,7 +213,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
                     child: Stack(
                       children: [
                         SizedBox(
-                          height: widget.height,
+                          height: widget.height ?? (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight),
                           width: widget.width,
                           child: TextFormField(
                             autocorrect: false,
@@ -235,7 +236,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
                                 color: AppColors.textTertiary,
                               ),
                               constraints: widget.autoResize
-                                  ? BoxConstraints(
+                                  ? theme.inputDecorationTheme.constraints?.copyWith(
                                       maxWidth: widget.width ?? 100.w,
                                     )
                                   : null,

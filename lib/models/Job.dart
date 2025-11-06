@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:murya/l10n/l10n.dart';
+import 'package:murya/main.dart';
 
 class Job {
   final String id;
@@ -74,10 +75,10 @@ class Job {
 
   static Job empty() {
     return Job(
-      id: '',
-      title: '',
-      description: '',
-    );
+        id: '',
+        title: FAKER.job.title(),
+        description: FAKER.lorem.sentences(50).join(' '),
+        competencies: List.generate(20, (_) => Competency.empty()));
   }
 
   competenciesPerFamily(CompetencyFamily family) {
@@ -141,6 +142,15 @@ class Competency {
       maxScore: compJson['maxScore'],
       type: CompetencyTypeExtension.fromString(compJson['type']),
       level: LevelExtension.fromString(compJson['level']),
+    );
+  }
+
+  static Competency empty() {
+    return Competency(
+      id: '',
+      name: FAKER.job.title(),
+      type: CompetencyType.hardSkill,
+      level: Level.beginner,
     );
   }
 }
@@ -248,7 +258,8 @@ class CompetencyFamily {
   static CompetencyFamily empty() {
     return CompetencyFamily(
       id: '',
-      name: '',
+      name: FAKER.company.name(),
+      description: FAKER.lorem.sentences(50).join(' '),
     );
   }
 }

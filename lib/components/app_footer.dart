@@ -52,6 +52,7 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
   Widget build(BuildContext context) {
     final localeProvider = Provider.of<LocaleProvider>(context);
     final local = AppLocalizations.of(context);
+    final theme = Theme.of(context);
     return BlocConsumer<AppBloc, AppState>(
       listener: (context, state) {
         setState(() {});
@@ -115,12 +116,12 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                 ],
                 textStyleText: GoogleFonts.inter(
                   color: AppColors.primary,
-                  fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                  fontSize: theme.textTheme.bodySmall!.fontSize,
                   fontWeight: FontWeight.w400,
                 ),
                 textStyleLink: GoogleFonts.inter(
                   color: AppColors.primary,
-                  fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                  fontSize: theme.textTheme.bodySmall!.fontSize,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -129,7 +130,7 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                 local.footer_copyright,
                 style: GoogleFonts.inter(
                   color: AppColors.primary,
-                  fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                  fontSize: theme.textTheme.bodySmall!.fontSize,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -153,6 +154,8 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
   Widget build(BuildContext context) {
     final localeProvider = Provider.of<LocaleProvider>(context);
     final local = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
     return BlocConsumer<AppBloc, AppState>(
       listener: (context, state) {
         setState(() {});
@@ -216,12 +219,12 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
                 ],
                 textStyleText: GoogleFonts.inter(
                   color: AppColors.primary,
-                  fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                  fontSize: theme.textTheme.bodySmall!.fontSize,
                   fontWeight: FontWeight.w400,
                 ),
                 textStyleLink: GoogleFonts.inter(
                   color: AppColors.primary,
-                  fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                  fontSize: theme.textTheme.bodySmall!.fontSize,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -230,7 +233,7 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
                 local.footer_copyright,
                 style: GoogleFonts.inter(
                   color: AppColors.primary,
-                  fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                  fontSize: theme.textTheme.bodySmall!.fontSize,
                   fontWeight: FontWeight.w400,
                 ),
               ),

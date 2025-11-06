@@ -13,16 +13,19 @@ class _MobileCustomAppBarState extends State<MobileCustomAppBar> {
     return Column(
       children: [
         SizedBox(
-          height: 32,
+          height: mobileCTAHeight,
           width: 100.w,
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SvgPicture.asset(
-                AppIcons.appIcon1Path,
-                width: 107,
-                height: 27,
+              SizedBox(
+                height: mobileCTAHeight - 5,
+                child: SvgPicture.asset(
+                  AppIcons.appIcon1Path,
+                  width: 107,
+                  height: mobileCTAHeight,
+                ),
               ),
               GestureDetector(
                 onTap: () {
@@ -31,14 +34,14 @@ class _MobileCustomAppBarState extends State<MobileCustomAppBar> {
                 },
                 child: SvgPicture.asset(
                   AppIcons.homeSearchIconPath,
-                  width: 32,
-                  height: 32,
+                  width: mobileCTAHeight,
+                  height: mobileCTAHeight,
                 ),
               )
             ],
           ),
         ),
-        AppSpacing.sectionMarginBox,
+        AppSpacing.groupMarginBox,
       ],
     );
   }
