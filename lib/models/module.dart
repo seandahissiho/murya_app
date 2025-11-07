@@ -180,6 +180,7 @@ class ModuleBuilder {
 
   Widget accountModule() {
     return AppModuleWidget(
+      key: const ValueKey('module-account'),
       boxType: AppModuleType.type2_2,
       imagePath: AppImages.homeBox3Path,
       title: local.landing_first_title,
@@ -197,6 +198,7 @@ class ModuleBuilder {
 
   Widget searchModule() {
     return AppModuleWidget(
+      key: const ValueKey('module-search'),
       boxType: AppModuleType.type2_1,
       imagePath: AppImages.homeBox6Path,
       title: local.landing_second_title,
@@ -210,6 +212,7 @@ class ModuleBuilder {
 
   Widget statsModule() {
     return AppModuleWidget(
+      key: const ValueKey('module-stats'),
       boxType: AppModuleType.type2_1,
       imagePath: AppImages.homeBox4Path,
       title: local.user_stats_module_title,
