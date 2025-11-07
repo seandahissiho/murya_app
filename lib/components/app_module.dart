@@ -51,7 +51,8 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 2) / 2;
       return calculatedSize;
     } else {
-      final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 2 - AppSpacing.groupMargin * 2) / 4;
+      final double calculatedSize =
+          (appSize.screenWidth - AppSpacing.pageMargin * 4) / 3 - AppSpacing.groupMargin / 1.5;
       return calculatedSize;
     }
   }
@@ -66,7 +67,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         (AppSpacing.pageMargin * 2) -
         27 -
         AppSpacing.sectionMargin;
-    return ((availableHeight - AppSpacing.groupMargin) / 4) / 1.618;
+    return ((availableHeight - AppSpacing.groupMargin) / 2) / 1.618;
     if (DeviceHelper.isMobile(context)) {
       return (availableHeight - AppSpacing.groupMargin) / 8;
     } else {
@@ -83,7 +84,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       case AppModuleType.type1_2:
       case AppModuleType.type2_2:
         // case AppModuleType.type3_2:
-        return size_1W * 2;
+        return size_1W * 2 + AppSpacing.groupMargin;
         // case AppModuleType.type1_3:
         // case AppModuleType.type2_3:
         // case AppModuleType.type3_3:
@@ -113,9 +114,14 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     final ThemeData theme = Theme.of(context);
     final appSize = AppSize(context);
     final bool isMobile = DeviceHelper.isMobile(context);
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
       width: width,
       height: height,
+      onEnd: () {
+        setState(() {});
+      },
       decoration: BoxDecoration(
         color: AppColors.primaryDefault,
         // image: DecorationImage(
@@ -139,8 +145,12 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Flexible(
-                    child: SizedBox(
+                    flex: 10,
+                    child: Container(
                       width: constraints.maxWidth * 0.85,
+                      constraints: const BoxConstraints(
+                        minHeight: 50,
+                      ),
                       child: AutoSizeText(
                         widget.title,
                         maxLines: 3,
