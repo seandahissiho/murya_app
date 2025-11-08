@@ -35,7 +35,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
       },
       builder: (context, state) {
         return AppSkeletonizer(
-          enabled: _job.id.isEmpty,
+          enabled: _job.id.isEmptyOrNull,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -82,7 +82,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                           onTap: () async {
                             await ShareUtils.shareContent(
                               text: locale.discover_job_profile(_job.title),
-                              url: ShareUtils.generateJobDetailsLink(_job.id),
+                              url: ShareUtils.generateJobDetailsLink(_job.id!),
                               subject: locale.job_profile_page_title(_job.title),
                             );
                             if (kIsWeb && mounted && context.mounted) {
@@ -106,7 +106,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
               AppSpacing.containerInsideMarginBox,
               AppXButton(
                 onPressed: () {
-                  navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id));
+                  navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!));
                 },
                 isLoading: false,
                 text: locale.evaluateSkills,

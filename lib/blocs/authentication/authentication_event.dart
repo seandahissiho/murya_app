@@ -20,6 +20,23 @@ final class TryAutoLogin extends AuthenticationEvent {
   TryAutoLogin({this.justLoggedIn = false});
 }
 
+final class RegisterEvent extends AuthenticationEvent {
+  final String email;
+  final String password;
+
+  RegisterEvent({
+    required this.email,
+    required this.password,
+  });
+
+  toJson() {
+    return {
+      'email': email,
+      'password': password,
+    };
+  }
+}
+
 final class SignInEvent extends AuthenticationEvent {
   final String email;
   final String password;
@@ -36,4 +53,21 @@ final class SignInEvent extends AuthenticationEvent {
 
 final class SignOutEvent extends AuthenticationEvent {
   SignOutEvent();
+}
+
+final class TempRegisterEvent extends AuthenticationEvent {
+  late final String deviceId;
+
+  TempRegisterEvent() {
+    final deviceIdService = DeviceIdService();
+    deviceIdService.getUniqueDeviceId().then((id) {
+      deviceId = id;
+    });
+  }
+
+  toJson() {
+    return {
+      'deviceId': deviceId,
+    };
+  }
 }

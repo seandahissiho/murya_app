@@ -5,10 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/models/app_user.dart';
+import 'package:murya/models/device_id_service.dart';
+import 'package:murya/repositories/app.repository.dart';
 import 'package:murya/repositories/authentication.repository.dart';
 import 'package:murya/repositories/jobs.repository.dart';
 import 'package:murya/repositories/notifications.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
+import 'package:murya/repositories/quiz.repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -21,10 +24,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   String _token = "";
 
-  // User _user = User.empty();
+  User _user = User.empty();
   bool _initialized = false;
 
-  // User get user => _user;
+  User get user => _user;
   bool get initialized => _initialized;
 
   AuthenticationBloc({required this.context}) : super(AuthenticationInitial()) {
@@ -56,8 +59,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       // // Handle initialization logic_onTryAutoLogint(Authenticated(justLoggedIn: true, user: _user));
     });
     on<TryAutoLogin>(_onTryAutoLogin);
+    on<RegisterEvent>(_onRegisterEvent);
     on<SignInEvent>(_onSignInEvent);
     on<SignOutEvent>(_onSignOutEvent);
+    on<TempRegisterEvent>(_onTempRegisterEvent);
 
     notificationBloc = BlocProvider.of<NotificationBloc>(context);
     authenticationRepository = RepositoryProvider.of<AuthenticationRepository>(context);
@@ -138,11 +143,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     if (token.isEmpty && !dontOverride) {
       token = _token;
     }
+
+    RepositoryProvider.of<AppRepository>(context).updateDio(token, context);
     RepositoryProvider.of<AuthenticationRepository>(context).updateDio(token, context);
     RepositoryProvider.of<NotificationRepository>(context).updateDio(token, context);
     RepositoryProvider.of<ProfileRepository>(context).updateDio(token, context);
-    // jobs repository
     RepositoryProvider.of<JobRepository>(context).updateDio(token, context);
+    RepositoryProvider.of<QuizRepository>(context).updateDio(token, context);
   }
 
   void updateRepositoriesContext(BuildContext context) {
@@ -203,5 +210,40 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
     notificationBloc.add(SuccessNotificationEvent(message: 'Déconnexion réussie.'));
     unAuthenticate(emit);
+  }
+
+  FutureOr<void> _onTempRegisterEvent(TempRegisterEvent event, Emitter<AuthenticationState> emit) async {
+    final result = await authenticationRepository.registerTemp(
+      data: event.toJson(),
+    );
+    if (result.isError) {
+      notificationBloc.add(ErrorNotificationEvent(
+        message: result.error,
+      ));
+      return;
+    }
+    _token = result.data!.$1;
+    // _user = result.data!.$3;
+    updateRepositories(_token);
+    // notificationBloc.add(SuccessNotificationEvent(message: 'Connexion réussie.'));
+    emit(const Authenticated(justLoggedIn: false));
+  }
+
+  FutureOr<void> _onRegisterEvent(RegisterEvent event, Emitter<AuthenticationState> emit) async {
+    final result = await authenticationRepository.register(
+      data: event.toJson(),
+    );
+    if (result.isError) {
+      notificationBloc.add(ErrorNotificationEvent(
+        message: result.error,
+      ));
+      unAuthenticate(emit);
+      return;
+    }
+    _token = result.data!.$1;
+    // _user = result.data!.$3;
+    updateRepositories(_token);
+    notificationBloc.add(SuccessNotificationEvent(message: 'Inscription réussie.'));
+    emit(const Authenticated(justLoggedIn: true));
   }
 }

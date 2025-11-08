@@ -104,7 +104,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                               onTap: () async {
                                                 await ShareUtils.shareContent(
                                                   text: locale.discover_job_profile(_job.title),
-                                                  url: ShareUtils.generateJobDetailsLink(_job.id),
+                                                  url: ShareUtils.generateJobDetailsLink(_job.id!),
                                                   subject: locale.job_profile_page_title(_job.title),
                                                 );
                                                 if (kIsWeb && mounted && context.mounted) {
@@ -128,7 +128,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                   AppSpacing.containerInsideMarginBox,
                                   AppXButton(
                                     onPressed: () {
-                                      navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id));
+                                      navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!));
                                     },
                                     isLoading: false,
                                     text: locale.evaluateSkills,

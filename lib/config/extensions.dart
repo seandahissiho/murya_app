@@ -450,6 +450,25 @@ extension ClassExtension on Object? {
     return this != null;
   }
 
+  bool get isEmptyOrNull {
+    if (this is Iterable?) {
+      return (this as Iterable?)?.isEmpty ?? true;
+    }
+    if (this is List?) {
+      return (this as List?)?.isEmpty ?? true;
+    }
+    if (this is String?) {
+      return (this as String?)?.isEmpty ?? true;
+    }
+    if (this is Map?) {
+      return (this as Map?)?.isEmpty ?? true;
+    }
+    if (this is Set?) {
+      return (this as Set?)?.isEmpty ?? true;
+    }
+    return this == null;
+  }
+
   bool get isNotEmptyOrNull {
     if (this is Iterable?) {
       return (this as Iterable?)?.isNotEmpty ?? false;

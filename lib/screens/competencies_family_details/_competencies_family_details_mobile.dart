@@ -38,7 +38,7 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
       },
       builder: (context, state) {
         return AppSkeletonizer(
-          enabled: _cf.id.isEmpty,
+          enabled: _cf.id.isEmptyOrNull,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -144,7 +144,7 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                                 onTap: () async {
                                   await ShareUtils.shareContent(
                                     text: locale.discover_cf_profile(_cf.name),
-                                    url: ShareUtils.generateJobDetailsLink(_cf.id),
+                                    url: ShareUtils.generateJobDetailsLink(_cf.id!),
                                     subject: locale.job_profile_page_title(_cf.name),
                                   );
                                   if (kIsWeb && mounted && context.mounted) {

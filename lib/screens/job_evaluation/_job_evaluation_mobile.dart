@@ -9,11 +9,11 @@ class MobileJobEvaluationScreen extends StatefulWidget {
 
 class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> with TickerProviderStateMixin {
   late final String jobId;
-  late final Quizz quizz;
+  late final Quiz quiz;
   QuestionResponses? currentQuestion;
   int currentQuestionIndex = -1;
   bool initialized = false;
-  final List<QuizzResponse> answers = [];
+  final List<QuizResponse> answers = [];
 
   // Adjust to whatever per-question time you need.
   static const _total = Duration(seconds: 30);
@@ -36,7 +36,7 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dynamic beamState = Beamer.of(context).currentBeamLocation.state;
       jobId = beamState.pathParameters['id'];
-      quizz = Quizz.fromJson(TEST_QUIZZ);
+      quiz = Quiz.fromJson(TEST_QUIZ);
       initialized = true;
       setState(() {});
       Future.delayed(const Duration(seconds: 1), () {
@@ -150,7 +150,7 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
-                      "Question ${currentQuestionIndex + 1}/${quizz.questionResponses.length}",
+                      "Question ${currentQuestionIndex + 1}/${quiz.questionResponses.length}",
                       style: theme.textTheme.labelMedium,
                     ),
                     AppSpacing.tinyMarginBox,
@@ -215,13 +215,17 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
 
   void moveToNextQuestion() {
     currentQuestionIndex++;
-    if (currentQuestionIndex >= quizz.questionResponses.length) {
-      // Quizz is over
-      navigateToPath(context, to: AppRoutes.landing);
+    if (currentQuestionIndex >= quiz.questionResponses.length) {
+      // Quiz is over
+      context.read<QuizBloc>().add(SaveQuizResults(
+            quizId: quiz.id!,
+            responses: answers,
+          ));
+      // navigateToPath(context, to: AppRoutes.landing);
       // navigateToPath(context, to: AppRoutes.jobEvaluationResults.replaceFirst(':id', jobId));
       return;
     }
-    currentQuestion = quizz.questionResponses[currentQuestionIndex];
+    currentQuestion = quiz.questionResponses[currentQuestionIndex];
     _countdown?.removeStatusListener(_listener);
     // _countdown?.dispose();
     _countdown = AnimationController(vsync: this, duration: currentQuestion?.question.timeLimit ?? _total);
@@ -245,10 +249,10 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
     pauseTimer();
     locked = true;
     setState(() {});
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    Future.delayed(const Duration(milliseconds: 25), () {
       if (!mounted) return;
       answers
-          .add(currentQuestion!.toQuizzResponse(selectedResponseIndex: showVerificationState) ?? QuizzResponse.empty());
+          .add(currentQuestion!.toQuizResponse(selectedResponseIndex: showVerificationState) ?? QuizResponse.empty());
       moveToNextQuestion();
     });
   }
