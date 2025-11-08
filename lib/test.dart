@@ -2,7 +2,7 @@
 // import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 //
 // class GridTileItem {
-//   final String id;
+//   final String? id;
 //   int spanX;
 //   int spanY;
 //   int orderIndex;

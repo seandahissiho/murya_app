@@ -106,4 +106,44 @@ class AuthenticationRepository extends BaseRepository {
       parentFunctionName: "AuthenticationRepository.signOut",
     );
   }
+
+  Future<Result<(String, String)>> register({required Map<String, dynamic> data}) async {
+    return AppResponse.execute(
+      action: () async {
+        final Response response = await api.dio.post(
+          '/auth/register',
+          data: data,
+        );
+        final String accessToken = response.data["data"]["access_token"];
+        final String refreshToken = response.data["data"]["refresh_token"];
+        // final User user = User.fromJson(response.data["data"]["user"]);
+
+        // save refresh token to shared preferences
+        prefs.setString("refresh_token", refreshToken);
+
+        return (accessToken, refreshToken);
+      },
+      parentFunctionName: "AuthenticationRepository.register",
+    );
+  }
+
+  Future<Result<(String, String)>> registerTemp({required Map<String, dynamic> data}) async {
+    return AppResponse.execute(
+      action: () async {
+        final Response response = await api.dio.post(
+          '/auth/register',
+          data: data,
+        );
+        final String accessToken = response.data["data"]["access_token"];
+        final String refreshToken = response.data["data"]["refresh_token"];
+        // final User user = User.fromJson(response.data["data"]["user"]);
+
+        // save refresh token to shared preferences
+        prefs.setString("refresh_token", refreshToken);
+
+        return (accessToken, refreshToken);
+      },
+      parentFunctionName: "AuthenticationRepository.registerTemp",
+    );
+  }
 }

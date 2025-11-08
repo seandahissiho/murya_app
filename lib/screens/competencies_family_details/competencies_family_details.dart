@@ -12,6 +12,7 @@ import 'package:murya/components/app_button.dart';
 import 'package:murya/components/app_footer.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
+import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
@@ -81,45 +82,56 @@ class CompetencyCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    " ${competency.name}",
-                    style: (isMobile ? theme.textTheme.labelLarge : theme.textTheme.displayMedium)
-                        ?.copyWith(color: AppColors.textPrimary),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  SizedBox(
+                    width: constraints.maxWidth * 0.8,
+                    child: Text(
+                      " ${competency.name}",
+                      style: (isMobile ? theme.textTheme.labelLarge : theme.textTheme.displayMedium)
+                          ?.copyWith(color: AppColors.textPrimary),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   AppSpacing.elementMarginBox,
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       TagWidget(type: competency.type),
                       AppSpacing.elementMarginBox,
                       TagWidget(type: competency.level),
-                    ],
-                  ),
-                  if (isMobile) ...[
-                    AppSpacing.groupMarginBox,
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        AppXButton(
-                          onPressed: () {},
-                          isLoading: false,
-                          text: locale.consult,
-                        ),
-                        AppSpacing.elementMarginBox,
+                      if (isMobile) ...[
+                        const Spacer(),
                         SvgPicture.asset(
                           AppIcons.smilingIconPath,
                           width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
                           height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
                         ),
-                      ],
-                    ),
-                  ]
+                      ]
+                    ],
+                  ),
+                  // if (isMobile) ...[
+                  //   AppSpacing.groupMarginBox,
+                  //   Row(
+                  //     mainAxisSize: MainAxisSize.max,
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     crossAxisAlignment: CrossAxisAlignment.end,
+                  //     children: [
+                  //       AppXButton(
+                  //         onPressed: () {},
+                  //         isLoading: false,
+                  //         text: locale.consult,
+                  //       ),
+                  //       AppSpacing.elementMarginBox,
+                  //       SvgPicture.asset(
+                  //         AppIcons.smilingIconPath,
+                  //         width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                  //         height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ]
                 ],
               ),
             ),

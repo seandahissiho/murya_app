@@ -128,7 +128,7 @@ class CFCard extends StatelessWidget {
             onTap: () {
               // rightModalOpen(context, screen: const MainSearchScreen());
               navigateToPath(context,
-                  to: AppRoutes.competencyFamilyDetails.replaceAll(':jobId', job.id).replaceAll(':cfId', family.id));
+                  to: AppRoutes.competencyFamilyDetails.replaceAll(':jobId', job.id!).replaceAll(':cfId', family.id!));
             },
             child: SvgPicture.asset(
               AppIcons.dropdownArrowRightPath,

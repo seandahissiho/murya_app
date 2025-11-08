@@ -117,7 +117,7 @@ extension AppModuleTypeExtension on AppModuleType {
 }
 
 class Module {
-  final String id;
+  final String? id;
   final AppModuleType boxType;
 
   // final Pair<int, int> topLeftPosition;

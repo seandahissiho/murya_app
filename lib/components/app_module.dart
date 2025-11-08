@@ -120,18 +120,21 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     final appSize = AppSize(context);
     final bool isMobile = DeviceHelper.isMobile(context);
     return InkWell(
-      onTap: () {
-        // hide = true;
-        // setState(() {});
-        // widget.onSizeChanged!();
-        // context.read<ModulesBloc>().add(UpdateModule(
-        //       module: Module(
-        //         id: widget.module.id,
-        //         index: widget.module.index,
-        //         boxType: widget.module.nextBoxType(),
-        //       ),
-        //     ));
-      },
+      onTap: widget.module.button1OnPressed(context) ?? () {},
+      // onTap: () {
+      //   log("Module ${widget.module.id} tapped");
+      //   widget.module.button1OnPressed(context);
+      //   // hide = true;
+      //   // setState(() {});
+      //   // widget.onSizeChanged!();
+      //   // context.read<ModulesBloc>().add(UpdateModule(
+      //   //       module: Module(
+      //   //         id: widget.module.id,
+      //   //         index: widget.module.index,
+      //   //         boxType: widget.module.nextBoxType(),
+      //   //       ),
+      //   //     ));
+      // },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 800),
         curve: Curves.easeInOut,

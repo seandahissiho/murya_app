@@ -3,7 +3,7 @@ import 'package:murya/l10n/l10n.dart';
 import 'package:murya/main.dart';
 
 class Job {
-  final String id;
+  final String? id;
   final String title;
   final String description;
   final int popularity;
@@ -104,7 +104,7 @@ class Job {
 }
 
 class Competency {
-  final String id;
+  final String? id;
   final String name;
   final List<CompetencyFamily>? families;
   final int? beginnerScore;
@@ -156,7 +156,7 @@ class Competency {
 }
 
 class CompetencyFamily {
-  final String id;
+  final String? id;
   final String name;
   final String? description;
   final List<Competency> competencies;

@@ -1,27 +1,25 @@
-class User {
-  final String id;
-  final String email;
-  final String? photoURL;
-  final String firstName;
-  final String lastName;
-  final String phoneNumber;
+import 'package:murya/config/custom_classes.dart';
 
-  static const User zero = User(
-    id: '',
-    email: '',
-    photoURL: null,
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-  );
+class User {
+  final String? id;
+  final String? email;
+  final String? phone;
+  final String? deviceId;
+
+  final String? photoURL;
+  final String? firstName;
+  final String? lastName;
+
+  static const User zero = User(id: '', email: '', phone: '', deviceId: '', firstName: '', lastName: '');
 
   const User({
-    required this.id,
-    required this.email,
+    this.id,
+    this.email,
+    this.phone,
+    this.deviceId,
     this.photoURL,
-    required this.firstName,
-    required this.lastName,
-    required this.phoneNumber,
+    this.firstName,
+    this.lastName,
   });
 
   String get fullName {
@@ -29,23 +27,23 @@ class User {
   }
 
   String get name {
-    return fullName.isNotEmpty ? fullName : email.split('@').first;
+    return fullName.isNotEmpty ? fullName : email?.split('@').first ?? 'N/A';
   }
 
   String get initials {
-    return '${firstName.isNotEmpty ? firstName[0].toUpperCase() : ''}${lastName.isNotEmpty ? lastName[0].toUpperCase() : ''}';
+    return '${firstName.isNotEmptyOrNull ? firstName![0].toUpperCase() : ''}${lastName.isNotEmptyOrNull ? lastName![0].toUpperCase() : ''}';
   }
 
   String get displayName {
-    return fullName.isNotEmpty ? fullName : email.split('@').first;
+    return fullName.isNotEmpty ? fullName : email?.split('@').first ?? 'N/A';
   }
 
   String get displayPhoneNumber {
-    return phoneNumber.isNotEmpty ? phoneNumber : 'N/A';
+    return phone.isNotEmptyOrNull ? phone! : 'N/A';
   }
 
   String get displayEmail {
-    return email.isNotEmpty ? email : 'N/A';
+    return email.isNotEmptyOrNull ? email! : 'N/A';
   }
 
   String get displayPhotoURL {
@@ -54,7 +52,7 @@ class User {
 
   @override
   String toString() {
-    return 'AppUser{id: $id, email: $email, photoURL: $photoURL, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber}';
+    return 'AppUser{id: $id, email: $email, photoURL: $photoURL, firstName: $firstName, lastName: $lastName, phone: $phone}';
   }
 
   @override
@@ -67,7 +65,7 @@ class User {
         photoURL == otherUser.photoURL &&
         firstName == otherUser.firstName &&
         lastName == otherUser.lastName &&
-        phoneNumber == otherUser.phoneNumber;
+        phone == otherUser.phone;
   }
 
   @override
@@ -77,7 +75,7 @@ class User {
         (photoURL?.hashCode ?? 0) ^
         firstName.hashCode ^
         lastName.hashCode ^
-        phoneNumber.hashCode;
+        phone.hashCode;
   }
 
   static User empty() {
@@ -87,25 +85,27 @@ class User {
       photoURL: null,
       firstName: '',
       lastName: '',
-      phoneNumber: '',
+      phone: '',
     );
   }
 
   factory User.fromJson(Map<String, dynamic> json) {
-    final String id = json['id'] as String;
-    final String email = json['email'] as String;
-    final String? photoURL = json['avatarURL'] as String?;
-    final String firstName = json['firstname'] as String;
-    final String lastName = json['lastname'] as String;
-    final String phoneNumber = json['phone'] as String;
+    final String? id = json['id'];
+    final String? email = json['email'];
+    final String? phone = json['phone'];
+    final String? deviceId = json['deviceId'];
+    final String? photoURL = json['avatarURL'];
+    final String? firstName = json['firstname'];
+    final String? lastName = json['lastname'];
 
     return User(
       id: id,
       email: email,
+      phone: phone,
+      deviceId: deviceId,
       photoURL: photoURL,
       firstName: firstName,
       lastName: lastName,
-      phoneNumber: phoneNumber,
     );
   }
 
@@ -116,7 +116,7 @@ class User {
       'photoURL': photoURL,
       'firstName': firstName,
       'lastName': lastName,
-      'phoneNumber': phoneNumber,
+      'phone': phone,
     };
   }
 }
