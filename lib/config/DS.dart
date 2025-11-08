@@ -729,42 +729,42 @@ class AppInputDecorationTheme {
       color: Color(0xFFC6C1BB),
       width: 2,
     ),
-    borderRadius: AppRadius.borderRadius20,
+    borderRadius: AppRadius.extraLarge,
   );
   static OutlineInputBorder enabledBorder = const OutlineInputBorder(
     borderSide: BorderSide(
       color: Color(0xFFC6C1BB),
       width: 2,
     ),
-    borderRadius: AppRadius.borderRadius20,
+    borderRadius: AppRadius.extraLarge,
   );
   static OutlineInputBorder disabledBorder = const OutlineInputBorder(
     borderSide: BorderSide(
       color: Color(0xFFC6C1BB),
       width: 2,
     ),
-    borderRadius: AppRadius.borderRadius20,
+    borderRadius: AppRadius.extraLarge,
   );
   static OutlineInputBorder errorBorder = const OutlineInputBorder(
     borderSide: BorderSide(
       color: AppColors.errorDefault,
       width: 2,
     ),
-    borderRadius: AppRadius.borderRadius20,
+    borderRadius: AppRadius.extraLarge,
   );
   static OutlineInputBorder focusedBorder = const OutlineInputBorder(
     borderSide: BorderSide(
       color: AppColors.primaryFocus,
       width: 2,
     ),
-    borderRadius: AppRadius.borderRadius20,
+    borderRadius: AppRadius.extraLarge,
   );
   static InputBorder? focusedErrorBorder = const OutlineInputBorder(
     borderSide: BorderSide(
       color: AppColors.errorHover,
       width: 1,
     ),
-    borderRadius: AppRadius.borderRadius20,
+    borderRadius: AppRadius.extraLarge,
   );
   static EdgeInsetsGeometry? contentPadding = const EdgeInsets.only(
     left: 35,

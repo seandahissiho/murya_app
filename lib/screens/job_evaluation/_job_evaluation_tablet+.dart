@@ -77,12 +77,13 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                 },
                 child: SvgPicture.asset(
                   AppIcons.exitIconPath,
-                  width: 40,
-                  height: 40,
+                  width: tabletAndAboveCTAHeight,
+                  height: tabletAndAboveCTAHeight,
                 ),
               ),
-              AppSpacing.elementMarginBox,
+              const Spacer(),
               Expanded(
+                flex: 8,
                 child: SizedBox(
                   height: 24,
                   child: ClipRRect(
@@ -139,24 +140,24 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                   ),
                 ),
               ),
-              AppSpacing.elementMarginBox,
+              const Spacer(),
               Container(
-                height: 21,
+                height: tabletAndAboveCTAHeight / 1.5,
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.tinyMargin,
                 ),
                 child: Center(
                   child: Text(
                     "${answers.fold(0, (int previousValue, element) => previousValue + element.points < 0 ? 0 : previousValue + element.points)}",
-                    style: theme.textTheme.labelLarge?.copyWith(height: 0),
+                    style: theme.textTheme.displayMedium?.copyWith(height: 1),
                   ),
                 ),
               ),
               AppSpacing.elementMarginBox,
               SvgPicture.asset(
                 AppIcons.diamondIconPath,
-                width: 18,
-                height: 18,
+                width: tabletAndAboveCTAHeight / 2,
+                height: tabletAndAboveCTAHeight / 2,
                 colorFilter: const ColorFilter.mode(
                   AppColors.primaryFocus,
                   BlendMode.srcIn,
@@ -397,7 +398,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                 : AppColors.errorDefault.withValues(alpha: .15),
         border: Border.all(
           color: type == 'normal'
-              ? Colors.transparent
+              ? AppColors.borderMedium
               : type == 'correct'
                   ? AppColors.successDefault
                   : AppColors.errorDefault,
