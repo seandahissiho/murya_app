@@ -1,17 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:murya/components/app_module.dart';
-import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
-import 'package:murya/main.dart';
 
 enum AppModuleType {
+  // One cell
   type1,
+  // Two cells
   type1_2,
   // type1_3,
+  // Two cells vertical
   type2_1,
+  // Four cells
   type2_2,
   // type2_3,
   // type3_1,
@@ -139,6 +141,100 @@ class Module {
     );
   }
 
+  String title(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+
+    switch (id) {
+      case 'account':
+        return locale.landing_first_title;
+      case 'search':
+        return locale.landing_second_title;
+      case 'stats':
+        return locale.user_stats_module_title;
+      default:
+        return "";
+    }
+  }
+
+  String subtitle(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+
+    switch (id) {
+      case 'account':
+        return locale.landing_first_subtitle;
+      case 'search':
+        return locale.landing_second_subtitle;
+      case 'stats':
+        return locale.user_stats_module_subtitle;
+      default:
+        return "";
+    }
+  }
+
+  String? button1Text(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+
+    switch (id) {
+      case 'account':
+        return locale.landing_first_button1;
+      case 'search':
+        return locale.landing_second_button;
+      case 'stats':
+        return locale.user_stats_module_button;
+      default:
+        return null;
+    }
+  }
+
+  String? button2Text(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+
+    switch (id) {
+      case 'account':
+        return locale.landing_first_button2;
+      case 'search':
+        return null;
+      case 'stats':
+        return null;
+      default:
+        return null;
+    }
+  }
+
+  VoidCallback? button1OnPressed(BuildContext context) {
+    switch (id) {
+      case 'account':
+        return () {
+          navigateToPath(context, to: AppRoutes.register);
+        };
+      case 'search':
+        return () {
+          navigateToPath(context, to: AppRoutes.searchModule);
+        };
+      case 'stats':
+        return () {
+          navigateToPath(context, to: AppRoutes.userStatsModule);
+        };
+      default:
+        return null;
+    }
+  }
+
+  VoidCallback? button2OnPressed(BuildContext context) {
+    switch (id) {
+      case 'account':
+        return () {
+          navigateToPath(context, to: AppRoutes.login);
+        };
+      case 'search':
+        return null;
+      case 'stats':
+        return null;
+      default:
+        return null;
+    }
+  }
+
   // toJson
   Map<String, dynamic> toJson() {
     return {
@@ -178,112 +274,108 @@ class ModuleBuilder {
     local = AppLocalizations.of(context);
   }
 
-  Widget accountModule() {
-    return AppModuleWidget(
-      key: const ValueKey('module-account'),
-      boxType: AppModuleType.type2_2,
-      imagePath: AppImages.homeBox3Path,
-      title: local.landing_first_title,
-      subtitle: local.landing_first_subtitle,
-      button1Text: local.landing_first_button1,
-      button2Text: local.landing_first_button2,
-      button1OnPressed: () {
-        navigateToPath(context, to: AppRoutes.register);
-      },
-      button2OnPressed: () {
-        navigateToPath(context, to: AppRoutes.login);
-      },
-    );
-  }
-
-  Widget searchModule() {
-    return AppModuleWidget(
-      key: const ValueKey('module-search'),
-      boxType: AppModuleType.type2_1,
-      imagePath: AppImages.homeBox6Path,
-      title: local.landing_second_title,
-      subtitle: local.landing_second_subtitle,
-      button1Text: local.landing_second_button,
-      button1OnPressed: () {
-        navigateToPath(context, to: AppRoutes.searchModule);
-      },
-    );
-  }
-
-  Widget statsModule() {
-    return AppModuleWidget(
-      key: const ValueKey('module-stats'),
-      boxType: AppModuleType.type2_1,
-      imagePath: AppImages.homeBox4Path,
-      title: local.user_stats_module_title,
-      subtitle: local.user_stats_module_subtitle,
-      button1Text: local.user_stats_module_button,
-      button1OnPressed: () {
-        navigateToPath(context, to: AppRoutes.userStatsModule);
-      },
-    );
-  }
-
-  Widget getById(String id) {
-    switch (id) {
-      case 'account':
-        return accountModule();
-      case 'search':
-        return searchModule();
-      case 'stats':
-        return statsModule();
-      default:
-        return AppModuleWidget(
-          key: ValueKey('module-$id'),
-          title: '${FAKER.lorem.words(3).join(' ')} ${FAKER.lorem.words(2).join(' ')}',
-          subtitle: '${FAKER.lorem.sentence()} ${FAKER.lorem.sentence()}',
-          boxType: AppModuleType.type2_2,
-          imagePath: [
-            AppImages.homeBox1Path,
-            AppImages.homeBox2Path,
-            AppImages.homeBox3Path,
-            AppImages.homeBox4Path,
-            AppImages.homeBox5Path,
-            AppImages.homeBox6Path
-          ].getRandomElement()!,
-          button1Text: '${FAKER.lorem.word()} ${FAKER.lorem.word()} ${FAKER.lorem.word()}',
-          button1OnPressed: () {
-            navigateToPath(context, to: AppRoutes.profile);
-          },
-          // can be null
-          button2Text: FAKER.randomGenerator.boolean()
-              ? '${FAKER.lorem.word()} ${FAKER.lorem.word()} ${FAKER.lorem.word()}'
-              : null,
-          button2OnPressed: FAKER.randomGenerator.boolean()
-              ? () {
-                  navigateToPath(context, to: AppRoutes.landing);
-                }
-              : null,
-        );
-    }
-  }
+  // Widget accountModule() {
+  //   return AppModuleWidget(
+  //     key: const ValueKey('module-account'),
+  //     boxType: AppModuleType.type2_2,
+  //     imagePath: AppImages.homeBox3Path,
+  //     title: local.landing_first_title,
+  //     subtitle: local.landing_first_subtitle,
+  //     button1Text: local.landing_first_button1,
+  //     button2Text: local.landing_first_button2,
+  //     button1OnPressed: () {
+  //       navigateToPath(context, to: AppRoutes.register);
+  //     },
+  //     button2OnPressed: () {
+  //       navigateToPath(context, to: AppRoutes.login);
+  //     },
+  //   );
+  // }
+  //
+  // Widget searchModule() {
+  //   return AppModuleWidget(
+  //     key: const ValueKey('module-search'),
+  //     boxType: AppModuleType.type2_1,
+  //     imagePath: AppImages.homeBox6Path,
+  //     title: local.landing_second_title,
+  //     subtitle: local.landing_second_subtitle,
+  //     button1Text: local.landing_second_button,
+  //     button1OnPressed: () {
+  //       navigateToPath(context, to: AppRoutes.searchModule);
+  //     },
+  //   );
+  // }
+  //
+  // Widget statsModule() {
+  //   return AppModuleWidget(
+  //     key: const ValueKey('module-stats'),
+  //     boxType: AppModuleType.type2_1,
+  //     imagePath: AppImages.homeBox4Path,
+  //     title: local.user_stats_module_title,
+  //     subtitle: local.user_stats_module_subtitle,
+  //     button1Text: local.user_stats_module_button,
+  //     button1OnPressed: () {
+  //       navigateToPath(context, to: AppRoutes.userStatsModule);
+  //     },
+  //   );
+  // }
+  //
+  // Widget getById(String id) {
+  //   switch (id) {
+  //     case 'account':
+  //       return accountModule();
+  //     case 'search':
+  //       return searchModule();
+  //     case 'stats':
+  //       return statsModule();
+  //     default:
+  //       return AppModuleWidget(
+  //         key: ValueKey('module-$id'),
+  //         title: '${FAKER.lorem.words(3).join(' ')} ${FAKER.lorem.words(2).join(' ')}',
+  //         subtitle: '${FAKER.lorem.sentence()} ${FAKER.lorem.sentence()}',
+  //         boxType: AppModuleType.type2_2,
+  //         imagePath: [
+  //           AppImages.homeBox1Path,
+  //           AppImages.homeBox2Path,
+  //           AppImages.homeBox3Path,
+  //           AppImages.homeBox4Path,
+  //           AppImages.homeBox5Path,
+  //           AppImages.homeBox6Path
+  //         ].getRandomElement()!,
+  //         button1Text: '${FAKER.lorem.word()} ${FAKER.lorem.word()} ${FAKER.lorem.word()}',
+  //         button1OnPressed: () {
+  //           navigateToPath(context, to: AppRoutes.profile);
+  //         },
+  //         // can be null
+  //         button2Text: FAKER.randomGenerator.boolean()
+  //             ? '${FAKER.lorem.word()} ${FAKER.lorem.word()} ${FAKER.lorem.word()}'
+  //             : null,
+  //         button2OnPressed: FAKER.randomGenerator.boolean()
+  //             ? () {
+  //                 navigateToPath(context, to: AppRoutes.landing);
+  //               }
+  //             : null,
+  //       );
+  //   }
+  // }
 
   Widget getBy(Module module) {
-    final AppModuleWidget widget = getById(module.id) as AppModuleWidget;
+    // final AppModuleWidget widget = getById(module.id) as AppModuleWidget;
 
     return AppModuleWidget(
-      key: widget.key,
-      title: widget.title,
-      subtitle: widget.subtitle,
-      boxType: module.boxType,
-      imagePath: widget.imagePath,
-      // imagePath: [
-      //   AppImages.homeBox1Path,
-      //   AppImages.homeBox2Path,
-      //   AppImages.homeBox3Path,
-      //   AppImages.homeBox4Path,
-      //   AppImages.homeBox5Path,
-      //   AppImages.homeBox6Path
-      // ].elementAt(module.index % 6),
-      button1Text: widget.button1Text,
-      button2Text: widget.button2Text,
-      button1OnPressed: widget.button1OnPressed,
-      button2OnPressed: widget.button2OnPressed,
+      module: module,
+      // key: widget.key,
+      // title: widget.title,
+      // subtitle: widget.subtitle,
+      // boxType: module.boxType,
+      // imagePath: widget.imagePath,
+      // button1Text: widget.button1Text,
+      // button2Text: widget.button2Text,
+      // button1OnPressed: widget.button1OnPressed,
+      // button2OnPressed: widget.button2OnPressed,
+      onSizeChanged: () {
+        // print('Module ${module.id} size changed to $newSize');
+      },
     );
   }
 }

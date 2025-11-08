@@ -74,7 +74,7 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
     _modules.addAll([
       accountModule,
       searchModule,
-      statsModule,
+      // statsModule,
       // statsModule,
       // statsModule,
       // statsModule,

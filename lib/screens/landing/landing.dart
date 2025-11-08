@@ -8,6 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/components/app_footer.dart';
+import 'package:murya/components/app_module.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/l10n/l10n.dart';
