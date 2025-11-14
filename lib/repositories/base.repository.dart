@@ -1,10 +1,6 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:murya/blocs/authentication/authentication_bloc.dart';
 
 class BaseRepository {
   final Api api;
@@ -76,11 +72,11 @@ class BaseInterceptor extends Interceptor {
     // final responseData = err.response?.data;
 
     if (err.response?.statusCode == 401) {
-      try {
-        context?.read<AuthenticationBloc>().add(TryAutoLogin());
-      } catch (e) {
-        log("Error while trying to auto-login: $e", name: "BaseInterceptor.onError");
-      }
+      // try {
+      //   context?.read<AuthenticationBloc>().add(TryAutoLogin());
+      // } catch (e) {
+      //   log("Error while trying to auto-login: $e", name: "BaseInterceptor.onError");
+      // }
       super.onError(err, handler);
     } else {
       super.onError(err, handler);
@@ -103,6 +99,11 @@ class AppResponse {
         return Result.success(result, null);
       }
     } on DioException catch (error, stacktrace) {
+      debugPrintStack(
+        stackTrace: stacktrace,
+        label: "$error [$parentFunctionName]",
+        maxFrames: 10,
+      );
       String? errorToDisplay = error.response?.statusCode == 404
           ? "Ressource non trouvée"
           : error.response?.statusCode == 500
@@ -116,11 +117,11 @@ class AppResponse {
 
       return Result(errorResult, errorToDisplay ?? "Une erreur est survenue", null);
     } catch (error, stacktrace) {
-      // debugPrintStack(
-      //   stackTrace: stacktrace,
-      //   label: "$error [$parentFunctionName]",
-      //   maxFrames: 10,
-      // );
+      debugPrintStack(
+        stackTrace: stacktrace,
+        label: "$error [$parentFunctionName]",
+        maxFrames: 10,
+      );
 
       return Result(errorResult, error is String ? error : "Une erreur est survenue", null);
     }

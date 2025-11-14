@@ -17,6 +17,13 @@ final class LoadJobDetails extends JobEvent {
   LoadJobDetails({required this.jobId, required this.context});
 }
 
+final class LoadUserJobDetails extends JobEvent {
+  final String jobId;
+  final BuildContext context;
+
+  LoadUserJobDetails({required this.jobId, required this.context});
+}
+
 final class LoadCFDetails extends JobEvent {
   final String jobId;
   final String cfId;

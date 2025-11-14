@@ -10,6 +10,7 @@ class MobileJobDetailsScreen extends StatefulWidget {
 class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
   Job _job = Job.empty();
   int _detailsLevel = 0;
+  Duration? nextQuizAvailableIn;
 
   @override
   void initState() {
@@ -18,6 +19,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
       final dynamic beamState = Beamer.of(context).currentBeamLocation.state;
       final jobId = beamState.pathParameters['id'];
       context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: jobId));
+      context.read<JobBloc>().add(LoadUserJobDetails(context: context, jobId: jobId));
     });
   }
 
@@ -109,6 +111,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                   navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!));
                 },
                 isLoading: false,
+                disabled: nextQuizAvailableIn != null,
                 text: locale.evaluateSkills,
                 autoResize: false,
               ),

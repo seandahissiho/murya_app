@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
+import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/quiz.dart';
 import 'package:murya/repositories/quiz.repository.dart';
 
@@ -22,6 +23,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     on<QuizEvent>((event, emit) {
       emit(QuizLoading());
     });
+    on<LoadQuizForJob>(_loadQuizForJob);
     on<SaveQuizResults>(_onSaveQuizResults);
 
     notificationBloc = BlocProvider.of<NotificationBloc>(context);
@@ -56,10 +58,37 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         await Future.delayed(const Duration(milliseconds: 100));
       }
       final result = await quizRepository.saveQuizResult(event);
-      notificationBloc.add(ErrorNotificationEvent(
-        message: "You were not logged in. A temporary account was created to save your quiz results.",
+      notificationBloc.add(SuccessNotificationEvent(
+        message: "Quiz results saved successfully!",
       ));
     }
     emit(QuizSaved());
+  }
+
+  FutureOr<void> _loadQuizForJob(LoadQuizForJob event, Emitter<QuizState> emit) async {
+    var result;
+    if (authBloc.state.isAuthenticated) {
+      result = await quizRepository.getQuizForJob(event.jobId);
+    } else {
+      final newEvent = TempRegisterEvent();
+      await Future.delayed(const Duration(milliseconds: 100));
+      authBloc.add(newEvent);
+      while (!authBloc.state.isAuthenticated) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+      result = await quizRepository.getQuizForJob(event.jobId);
+      notificationBloc.add(ErrorNotificationEvent(
+        message: "You were not logged in. A temporary account was created to load the quiz.",
+      ));
+    }
+    if (result.isError) {
+      notificationBloc.add(ErrorNotificationEvent(
+        message: result.error,
+      ));
+      emit(QuizError(message: result.error!));
+      return;
+    }
+
+    emit(QuizLoaded(quiz: result.data!));
   }
 }

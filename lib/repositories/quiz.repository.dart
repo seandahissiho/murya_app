@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:murya/blocs/modules/quizz/quiz_bloc.dart';
+import 'package:murya/models/quiz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'base.repository.dart';
@@ -25,15 +26,30 @@ class QuizRepository extends BaseRepository {
           await Future.delayed(const Duration(milliseconds: 100));
         }
         final Response response = await api.dio.post(
-          '/quiz/save',
+          '/userJobs/${event.jobId}/quiz/${event.quizId}',
           data: {
-            "quiz_id": event.quizId,
-            "answers": event.responses,
+            "answers": event.dbResponses,
           },
         );
-        return true;
+        return response.statusCode == 200;
       },
       parentFunctionName: "QuizRepository.saveQuizResult",
+    );
+  }
+
+  Future<Result<Quiz?>> getQuizForJob(String jobId) async {
+    return AppResponse.execute(
+      action: () async {
+        while (!initialized) {
+          await Future.delayed(const Duration(milliseconds: 100));
+        }
+        final Response response = await api.dio.get('/userJobs/$jobId/quiz');
+        if (response.data["data"] == null) {
+          return null;
+        }
+        return Quiz.fromJson(response.data["data"]);
+      },
+      parentFunctionName: "QuizRepository.getQuizForJob",
     );
   }
 }
