@@ -7,7 +7,11 @@ final class QuizInitial extends QuizState {}
 
 final class QuizLoading extends QuizState {}
 
-final class QuizLoaded extends QuizState {}
+final class QuizLoaded extends QuizState {
+  final Quiz quiz;
+
+  QuizLoaded({required this.quiz});
+}
 
 final class QuizError extends QuizState {
   final String message;

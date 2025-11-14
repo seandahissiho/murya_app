@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/main.dart';
+import 'package:murya/models/app_user.dart';
+import 'package:murya/models/quiz.dart';
 
 class Job {
   final String? id;
@@ -76,8 +78,8 @@ class Job {
   static Job empty() {
     return Job(
         id: '',
-        title: FAKER.job.title(),
-        description: FAKER.lorem.sentences(50).join(' '),
+        title: FAKER.lorem.word(),
+        description: FAKER.lorem.sentences(2).join(' '),
         competencies: List.generate(20, (_) => Competency.empty()));
   }
 
@@ -103,15 +105,104 @@ class Job {
   }
 }
 
+// model UserJob {
+// id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+// userId           String        @db.Uuid
+// jobId            String        @db.Uuid
+// status           UserJobStatus @default(TARGET)
+// // Optional: manual level or seniority (1–5 for example)
+// level            Level         @default(EASY)
+// note             String?       @db.Text
+// // Aggregated stats for fast dashboards (optional but useful)
+// totalScore       Int           @default(0) // sum of all quiz totalScore
+// maxScoreSum      Int           @default(0) // sum of all quiz maxScore
+// completedQuizzes Int           @default(0)
+// lastQuizAt       DateTime?     @db.Timestamp(0)
+// createdAt        DateTime      @default(now()) @db.Timestamp(0)
+// updatedAt        DateTime      @default(now()) @updatedAt @db.Timestamp(0)
+// user             User          @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+// job              Job           @relation(fields: [jobId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+// quizzes          UserQuiz[]
+//
+// @@unique([userId, jobId], map: "unique_user_job")
+// @@index([userId], map: "idx_user_job_user")
+// @@index([jobId], map: "idx_user_job_job")
+// }
+
+enum UserJobStatus { target, current, past }
+
+class UserJob {
+  final String? id;
+  final String? userId;
+  final String? jobId;
+  final UserJobStatus? status;
+  final Level level;
+  final String? note;
+  final int totalScore;
+  final int maxScoreSum;
+  final int completedQuizzes;
+  final DateTime? lastQuizAt;
+
+  final User? user;
+  final Job? job;
+  final List<Quiz>? quizzes; // Placeholder for UserQuiz list
+
+  UserJob({
+    this.id,
+    this.userId,
+    this.jobId,
+    this.status,
+    this.level = Level.beginner,
+    this.note,
+    this.totalScore = 0,
+    this.maxScoreSum = 0,
+    this.completedQuizzes = 0,
+    this.lastQuizAt,
+    this.user,
+    this.job,
+    this.quizzes,
+  });
+
+  factory UserJob.fromJson(userJobJson) {
+    return UserJob(
+      id: userJobJson['id'],
+      userId: userJobJson['userId'],
+      jobId: userJobJson['jobId'],
+      status: userJobJson['status'] != null
+          ? UserJobStatus.values.firstWhere(
+              (e) => e.toString().split('.').last.toLowerCase() == userJobJson['status'].toLowerCase(),
+              orElse: () => UserJobStatus.target,
+            )
+          : null,
+      level: userJobJson['level'] != null ? LevelExtension.fromString(userJobJson['level']) : Level.beginner,
+      note: userJobJson['note'],
+      totalScore: userJobJson['totalScore'] ?? 0,
+      maxScoreSum: userJobJson['maxScoreSum'] ?? 0,
+      completedQuizzes: userJobJson['completedQuizzes'] ?? 0,
+      lastQuizAt: userJobJson['lastQuizAt'] != null ? DateTime.parse(userJobJson['lastQuizAt']) : null,
+      // user and job parsing can be added here if needed
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'jobId': jobId,
+      'note': note,
+    };
+  }
+}
+
 class Competency {
   final String? id;
   final String name;
   final List<CompetencyFamily>? families;
-  final int? beginnerScore;
-  final int? intermediateScore;
-  final int? advancedScore;
-  final int? expertScore;
-  final int? maxScore;
+  final double? beginnerScore;
+  final double? intermediateScore;
+  final double? advancedScore;
+  final double? expertScore;
+  final double? maxScore;
   final CompetencyType type;
   final Level level;
 
@@ -135,11 +226,11 @@ class Competency {
       families: compJson['families'] != null
           ? (compJson['families'] as List).map((familyJson) => CompetencyFamily.fromJson(familyJson)).toList()
           : null,
-      beginnerScore: compJson['beginnerScore'],
-      intermediateScore: compJson['intermediateScore'],
-      advancedScore: compJson['advancedScore'],
-      expertScore: compJson['expertScore'],
-      maxScore: compJson['maxScore'],
+      beginnerScore: compJson['beginnerScore'] * 1.0,
+      intermediateScore: compJson['intermediateScore'] * 1.0,
+      advancedScore: compJson['advancedScore'] * 1.0,
+      expertScore: compJson['expertScore'] * 1.0,
+      maxScore: compJson['maxScore'] * 1.0,
       type: CompetencyTypeExtension.fromString(compJson['type']),
       level: LevelExtension.fromString(compJson['level']),
     );

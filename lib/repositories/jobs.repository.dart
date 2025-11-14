@@ -37,6 +37,19 @@ class JobRepository extends BaseRepository {
     );
   }
 
+  // getUserJobDetails
+  Future<Result<Job>> getUserJobDetails(String jobId) async {
+    return AppResponse.execute(
+      action: () async {
+        final response = await api.dio.get('/userJobs/$jobId/');
+
+        final UserJob job = UserJob.fromJson(response.data['data']);
+        return job;
+      },
+      parentFunctionName: 'JobRepository -> getUserJobDetails',
+    );
+  }
+
   Future<Result<(CompetencyFamily, Job)>> getCFDetails(String jobId, String cfId) async {
     return AppResponse.execute(
       action: () async {

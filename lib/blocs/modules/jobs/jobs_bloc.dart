@@ -22,6 +22,7 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     // search
     on<SearchJobs>(_onSearchJobs);
     on<LoadJobDetails>(_onLoadJobDetails);
+    on<LoadUserJobDetails>(_onLoadUserJobDetails);
     on<LoadCFDetails>(_onLoadCFDetails);
 
     jobRepository = RepositoryProvider.of<JobRepository>(context);
@@ -53,6 +54,19 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     final jobDetails = result.data!;
 
     emit(JobDetailsLoaded(job: jobDetails));
+  }
+
+  FutureOr<void> _onLoadUserJobDetails(LoadUserJobDetails event, Emitter<JobState> emit) async {
+    final local = AppLocalizations.of(event.context);
+    final result = await jobRepository.getUserJobDetails(event.jobId);
+
+    if (result.isError) {
+      notificationBloc.add(ErrorNotificationEvent(message: result.error ?? local.user_stats_module_title));
+      return;
+    }
+    final userJobDetails = result.data!;
+
+    emit(UserJobDetailsLoaded(userJob: userJobDetails));
   }
 
   FutureOr<void> _onLoadCFDetails(LoadCFDetails event, Emitter<JobState> emit) async {

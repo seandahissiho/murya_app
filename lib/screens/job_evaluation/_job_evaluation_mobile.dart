@@ -36,12 +36,10 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dynamic beamState = Beamer.of(context).currentBeamLocation.state;
       jobId = beamState.pathParameters['id'];
-      quiz = Quiz.fromJson(TEST_QUIZ);
-      initialized = true;
+      context.read<QuizBloc>().add(LoadQuizForJob(jobId: jobId));
+      // quiz = Quiz.fromJson(TEST_QUIZ);
+      // initialized = true;
       setState(() {});
-      Future.delayed(const Duration(seconds: 1), () {
-        moveToNextQuestion();
-      });
     });
     // pauseTimer();
   }
@@ -61,168 +59,185 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    if (!initialized) {
-      return const SizedBox.shrink();
-    }
-    return Column(
-      children: [
-        Container(
-          color: AppColors.backgroundDefault,
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
-                },
-                child: SvgPicture.asset(
-                  AppIcons.exitIconPath,
-                  width: 32,
-                  height: 32,
-                ),
+    return BlocConsumer<QuizBloc, QuizState>(
+      listener: (context, state) {
+        if (state is QuizLoaded) {
+          quiz = state.quiz;
+          initialized = true;
+          currentQuestionIndex = -1;
+          Future.delayed(const Duration(seconds: 1), () {
+            moveToNextQuestion();
+          });
+        }
+        setState(() {});
+      },
+      builder: (context, state) {
+        if (!initialized) {
+          return const SizedBox.shrink();
+        }
+        return Column(
+          children: [
+            Container(
+              color: AppColors.backgroundDefault,
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
+                    },
+                    child: SvgPicture.asset(
+                      AppIcons.exitIconPath,
+                      width: 32,
+                      height: 32,
+                    ),
+                  ),
+                  AppSpacing.elementMarginBox,
+                  Expanded(
+                    child: SizedBox(
+                      height: 8,
+                      child: ClipRRect(
+                        borderRadius: AppRadius.large,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            // Track (background)
+                            Container(color: AppColors.borderLight),
+                            // Animated fill (shrinks left -> right)
+                            if (_countdown != null)
+                              AnimatedBuilder(
+                                animation: _countdown!,
+                                builder: (context, _) {
+                                  return Align(
+                                    alignment: Alignment.centerRight,
+                                    child: FractionallySizedBox(
+                                      alignment: Alignment.centerRight,
+                                      widthFactor: _countdown?.value, // 1.0..0.0
+                                      child: Container(
+                                        color: AppColors.primaryFocus,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  AppSpacing.elementMarginBox,
+                  Container(
+                    height: 21,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.tinyMargin,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "${answers.fold(0, (int previousValue, element) => previousValue + element.points < 0 ? 0 : previousValue + element.points)}",
+                        style: theme.textTheme.labelLarge?.copyWith(height: 0),
+                      ),
+                    ),
+                  ),
+                  AppSpacing.elementMarginBox,
+                  SvgPicture.asset(
+                    AppIcons.diamondIconPath,
+                    width: 18,
+                    height: 18,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.primaryFocus,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ],
               ),
-              AppSpacing.elementMarginBox,
-              Expanded(
-                child: SizedBox(
-                  height: 8,
-                  child: ClipRRect(
-                    borderRadius: AppRadius.large,
-                    child: Stack(
-                      fit: StackFit.expand,
+            ),
+            AppSpacing.groupMarginBox,
+            Expanded(
+              child: Stack(
+                children: [
+                  LayoutBuilder(builder: (context, bigConstraints) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
-                        // Track (background)
-                        Container(color: AppColors.borderLight),
-                        // Animated fill (shrinks left -> right)
-                        if (_countdown != null)
-                          AnimatedBuilder(
-                            animation: _countdown!,
-                            builder: (context, _) {
-                              return Align(
-                                alignment: Alignment.centerRight,
-                                child: FractionallySizedBox(
-                                  alignment: Alignment.centerRight,
-                                  widthFactor: _countdown?.value, // 1.0..0.0
-                                  child: Container(
-                                    color: AppColors.primaryFocus,
-                                  ),
-                                ),
-                              );
-                            },
+                        Text(
+                          "Question ${currentQuestionIndex + 1 > quiz.questionResponses.length ? quiz.questionResponses.length : currentQuestionIndex + 1}/${quiz.questionResponses.length}",
+                          style: theme.textTheme.labelMedium,
+                        ),
+                        AppSpacing.tinyMarginBox,
+                        const Spacer(),
+                        Expanded(
+                          flex: 15,
+                          child: Container(
+                            constraints: BoxConstraints(
+                              minWidth: bigConstraints.maxWidth,
+                              minHeight: bigConstraints.maxWidth / 1.618,
+                              maxWidth: bigConstraints.maxWidth,
+                              maxHeight: bigConstraints.maxWidth,
+                            ),
+                            decoration: const BoxDecoration(
+                              color: AppColors.primaryDefault,
+                              borderRadius: AppRadius.borderRadius20,
+                            ),
                           ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              AppSpacing.elementMarginBox,
-              Container(
-                height: 21,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.tinyMargin,
-                ),
-                child: Center(
-                  child: Text(
-                    "${answers.fold(0, (int previousValue, element) => previousValue + element.points < 0 ? 0 : previousValue + element.points)}",
-                    style: theme.textTheme.labelLarge?.copyWith(height: 0),
-                  ),
-                ),
-              ),
-              AppSpacing.elementMarginBox,
-              SvgPicture.asset(
-                AppIcons.diamondIconPath,
-                width: 18,
-                height: 18,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.primaryFocus,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ],
-          ),
-        ),
-        AppSpacing.groupMarginBox,
-        Expanded(
-          child: Stack(
-            children: [
-              LayoutBuilder(builder: (context, bigConstraints) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(
-                      "Question ${currentQuestionIndex + 1}/${quiz.questionResponses.length}",
-                      style: theme.textTheme.labelMedium,
-                    ),
-                    AppSpacing.tinyMarginBox,
-                    const Spacer(),
-                    Expanded(
-                      flex: 15,
-                      child: Container(
-                        constraints: BoxConstraints(
-                          minWidth: bigConstraints.maxWidth,
-                          minHeight: bigConstraints.maxWidth / 1.618,
-                          maxWidth: bigConstraints.maxWidth,
-                          maxHeight: bigConstraints.maxWidth,
                         ),
-                        decoration: const BoxDecoration(
-                          color: AppColors.primaryDefault,
-                          borderRadius: AppRadius.borderRadius20,
+                        AppSpacing.tinyMarginBox,
+                        const Spacer(),
+                        AutoSizeText(
+                          currentQuestion?.question.text ?? '',
+                          style: theme.textTheme.labelLarge,
+                          maxLines: 3,
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ),
-                    AppSpacing.tinyMarginBox,
-                    const Spacer(),
-                    AutoSizeText(
-                      currentQuestion?.question.text ?? '',
-                      style: theme.textTheme.labelLarge,
-                      maxLines: 3,
-                      textAlign: TextAlign.center,
-                    ),
-                    AppSpacing.tinyMarginBox,
-                    const Spacer(),
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: bigConstraints.maxWidth,
-                        maxHeight: bigConstraints.maxWidth / 1.325,
-                      ),
-                      child: LayoutBuilder(builder: (context, constraints) {
-                        return Wrap(
-                          spacing: AppSpacing.elementMargin,
-                          runSpacing: AppSpacing.elementMargin,
-                          children: List.generate(4, (index) {
-                            return answerCard(index, constraints, theme);
+                        AppSpacing.tinyMarginBox,
+                        const Spacer(),
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: bigConstraints.maxWidth,
+                            maxHeight: bigConstraints.maxWidth / 1.325,
+                          ),
+                          child: LayoutBuilder(builder: (context, constraints) {
+                            return Wrap(
+                              spacing: AppSpacing.elementMargin,
+                              runSpacing: AppSpacing.elementMargin,
+                              children: List.generate(4, (index) {
+                                return answerCard(index, constraints, theme);
+                              }),
+                            );
                           }),
-                        );
-                      }),
-                    )
-                  ],
-                );
-              }),
-              if (currentQuestion == null)
-                Positioned.fill(
-                  child: Container(
-                    color: Colors.transparent,
-                  ),
-                ),
-            ],
-          ),
-        ),
-        AppSpacing.pageMarginBox,
-        SizedBox(height: MediaQuery.of(context).padding.bottom),
-      ],
+                        )
+                      ],
+                    );
+                  }),
+                  if (currentQuestion == null)
+                    Positioned.fill(
+                      child: Container(
+                        color: Colors.transparent,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            AppSpacing.pageMarginBox,
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
+          ],
+        );
+      },
     );
   }
 
   void moveToNextQuestion() {
     currentQuestionIndex++;
     if (currentQuestionIndex >= quiz.questionResponses.length) {
+      currentQuestionIndex;
       // Quiz is over
       context.read<QuizBloc>().add(SaveQuizResults(
+            jobId: jobId,
             quizId: quiz.id!,
             responses: answers,
           ));
       // navigateToPath(context, to: AppRoutes.landing);
-      // navigateToPath(context, to: AppRoutes.jobEvaluationResults.replaceFirst(':id', jobId));
+      navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
       return;
     }
     currentQuestion = quiz.questionResponses[currentQuestionIndex];
