@@ -137,6 +137,7 @@ class AppXButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final bool isMobile = DeviceHelper.isMobile(context);
 
     var children = <Widget>[];
     bool onlyOneIcon = leftIcon != null && (rightIcon == null && rightIconPath == null) ||
@@ -197,6 +198,7 @@ class AppXButton extends StatelessWidget {
           text!,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          style: isMobile ? null : theme.textTheme.bodyLarge?.copyWith(color: fgColor ?? Colors.white),
           // style: textStyle?.copyWith(color: AppColors.primary.shade900),
         ),
       ));

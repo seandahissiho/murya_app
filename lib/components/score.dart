@@ -5,8 +5,13 @@ import 'package:murya/config/app_icons.dart';
 
 class ScoreWidget extends StatelessWidget {
   final int value;
+  final bool compact;
 
-  const ScoreWidget({super.key, required this.value});
+  const ScoreWidget({
+    super.key,
+    required this.value,
+    this.compact = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +28,20 @@ class ScoreWidget extends StatelessWidget {
             child: Text(
               "$value",
               style: isMobile
-                  ? theme.textTheme.labelLarge?.copyWith(height: 0)
-                  : theme.textTheme.displayMedium?.copyWith(height: 1),
+                  ? (!compact
+                      ? theme.textTheme.labelLarge?.copyWith(height: 0)
+                      : theme.textTheme.labelLarge?.copyWith(height: 0))
+                  : (!compact
+                      ? theme.textTheme.displayMedium?.copyWith(height: 1)
+                      : theme.textTheme.labelLarge?.copyWith(height: 0)),
             ),
           ),
         ),
         AppSpacing.tinyMarginBox,
         SvgPicture.asset(
           AppIcons.diamondIconPath,
-          width: isMobile ? mobileCTAHeight / 2 : tabletAndAboveCTAHeight / 2,
-          height: isMobile ? mobileCTAHeight / 2 : tabletAndAboveCTAHeight / 2,
+          width: isMobile ? mobileCTAHeight / (compact ? 2.5 : 2) : tabletAndAboveCTAHeight / (compact ? 2.5 : 2),
+          height: isMobile ? mobileCTAHeight / (compact ? 2.5 : 2) : tabletAndAboveCTAHeight / (compact ? 2.5 : 2),
           colorFilter: const ColorFilter.mode(
             AppColors.primaryFocus,
             BlendMode.srcIn,

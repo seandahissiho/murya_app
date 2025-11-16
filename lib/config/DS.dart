@@ -56,7 +56,7 @@ class AppStatusColors {
 /// Convenience – picks black text on light bg, white on dark bg.
 Color idealTextColor(Color bg) => bg.computeLuminance() > 0.35 ? Colors.grey.shade900 : Colors.white;
 
-const double mobileCTAHeight = 36;
+const double mobileCTAHeight = 42;
 const double tabletAndAboveCTAHeight = 48;
 
 class AppBreakpoints {
@@ -109,6 +109,7 @@ class AppSpacing {
   static const SizedBox elementMarginBox = SizedBox.square(dimension: elementMargin);
   static const SizedBox groupMarginBox = SizedBox.square(dimension: groupMargin);
   static const SizedBox textFieldMarginBox = SizedBox.square(dimension: textFieldMargin);
+  static const SizedBox containerInsideMarginSmallBox = SizedBox.square(dimension: containerInsideMarginSmall);
   static const SizedBox containerInsideMarginBox = SizedBox.square(dimension: containerInsideMargin);
   static const SizedBox sectionMarginBox = SizedBox.square(dimension: sectionMargin);
   static const SizedBox pageMarginBox = SizedBox.square(dimension: pageMargin);
@@ -1163,4 +1164,17 @@ class DeviceHelper {
   static bool isDesktop(BuildContext context) => getDeviceType(context) == DeviceType.desktop;
 
   static bool isLargeDesktop(BuildContext context) => getDeviceType(context) == DeviceType.largeDesktop;
+
+  static double kMainBodyWidth(BuildContext context) {
+    final deviceType = getDeviceType(context);
+    final appSize = AppSize(context);
+    switch (deviceType) {
+      case DeviceType.mobile:
+        return (appSize.screenWidth - AppSpacing.pageMargin * 2);
+      case DeviceType.tablet:
+      case DeviceType.desktop:
+      case DeviceType.largeDesktop:
+        return 436;
+    }
+  }
 }

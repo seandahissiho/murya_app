@@ -12,97 +12,141 @@ const double kNavBarWidth = 255.0; // Width of the side navigation bar
 
 Future<T?> displayPopUp<T>({
   required BuildContext context,
-  required String title,
-  required String description,
+  List<Widget>? contents,
+  String? title,
+  String? description,
+  bool noActions = false,
   String okText = "Confirmer",
+  bool okEnabled = true,
+  bool cancelEnabled = true,
   String? cancelText,
   String? iconPath,
+  bool barrierDismissible = true,
 }) async {
   return await showDialog<T?>(
     context: context,
-    barrierDismissible: false,
+    barrierDismissible: barrierDismissible,
     builder: (BuildContext context) {
-      final ThemeData theme = Theme.of(context);
-      return Dialog(
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
-          constraints: BoxConstraints(
-            maxWidth: kMainBodyWidth,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.whiteSwatch,
-            borderRadius: AppRadius.medium,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (iconPath != null) ...[
-                SvgPicture.asset(
-                  iconPath,
-                  height: 40,
-                  width: 40,
-                  colorFilter: ColorFilter.mode(
-                    AppColors.primary,
-                    BlendMode.srcATop,
-                  ),
-                ),
-              ],
-              AppSpacing.sectionMarginBox,
-              Text(
-                title,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: AppColors.primary.shade900,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              AppSpacing.groupMarginBox,
-              Text(
-                description,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: AppColors.primary.shade900,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              AppSpacing.sectionMarginBox,
-              AppSpacing.sectionMarginBox,
-              LayoutBuilder(builder: (context, constraints) {
-                return Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (cancelText != null) ...[
-                      AppXButton(
-                        autoResize: false,
-                        maxWidth: constraints.maxWidth / 2 - AppSpacing.elementMargin * 2,
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                        isLoading: false,
-                        text: cancelText,
-                        bgColor: AppColors.whiteSwatch,
-                        borderColor: AppColors.primary.shade200,
-                        fgColor: AppColors.primary.shade700,
+      return StatefulBuilder(builder: (context, setState) {
+        final ThemeData theme = Theme.of(context);
+        return Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+            constraints: BoxConstraints(
+              maxWidth: DeviceHelper.kMainBodyWidth(context),
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.whiteSwatch,
+              borderRadius: AppRadius.medium,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: contents != null
+                  ? [
+                      ...contents,
+                      if (!noActions)
+                        Row(
+                          children: [
+                            Flexible(
+                              child: AppXButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                                isLoading: false,
+                                disabled: !okEnabled,
+                                autoResize: false,
+                                text: okText,
+                              ),
+                            ),
+                            if (cancelText != null) ...[
+                              AppSpacing.elementMarginBox,
+                              Flexible(
+                                child: AppXButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                  },
+                                  isLoading: false,
+                                  disabled: !cancelEnabled,
+                                  autoResize: false,
+                                  text: cancelText,
+                                  bgColor: AppColors.whiteSwatch,
+                                  borderColor: AppColors.primary.shade200,
+                                  fgColor: AppColors.primary.shade700,
+                                ),
+                              ),
+                            ],
+                          ],
+                        )
+                    ]
+                  : [
+                      if (iconPath != null) ...[
+                        SvgPicture.asset(
+                          iconPath,
+                          height: 40,
+                          width: 40,
+                          colorFilter: ColorFilter.mode(
+                            AppColors.primary,
+                            BlendMode.srcATop,
+                          ),
+                        ),
+                      ],
+                      AppSpacing.sectionMarginBox,
+                      Text(
+                        title ?? '',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: AppColors.primary.shade900,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      AppSpacing.elementMarginBox,
+                      AppSpacing.groupMarginBox,
+                      Text(
+                        description ?? '',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: AppColors.primary.shade900,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      AppSpacing.sectionMarginBox,
+                      AppSpacing.sectionMarginBox,
+                      LayoutBuilder(builder: (context, constraints) {
+                        return Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (cancelText != null) ...[
+                              AppXButton(
+                                autoResize: false,
+                                maxWidth: constraints.maxWidth / 2 - AppSpacing.elementMargin * 2,
+                                onPressed: () {
+                                  Navigator.of(context).pop(false);
+                                },
+                                isLoading: false,
+                                text: cancelText,
+                                bgColor: AppColors.whiteSwatch,
+                                borderColor: AppColors.primary.shade200,
+                                fgColor: AppColors.primary.shade700,
+                              ),
+                              AppSpacing.elementMarginBox,
+                            ],
+                            AppXButton(
+                              autoResize: false,
+                              maxWidth: constraints.maxWidth / 2 - AppSpacing.elementMargin * 2,
+                              onPressed: () {
+                                Navigator.of(context).pop(true);
+                              },
+                              isLoading: false,
+                              text: okText,
+                            ),
+                          ],
+                        );
+                      }),
                     ],
-                    AppXButton(
-                      autoResize: false,
-                      maxWidth: constraints.maxWidth / 2 - AppSpacing.elementMargin * 2,
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
-                      isLoading: false,
-                      text: okText,
-                    ),
-                  ],
-                );
-              }),
-            ],
+            ),
           ),
-        ),
-      );
+        );
+      });
     },
   );
 }
