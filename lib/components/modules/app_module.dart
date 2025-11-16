@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
+import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/custom_classes.dart';
@@ -144,108 +146,150 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         // ),
         borderRadius: BorderRadius.circular(24),
       ),
-      padding: EdgeInsets.all(
-        appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
-      ),
-      child: widget.content ??
-          LayoutBuilder(builder: (context, constraints) {
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: cardTapAction,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (hide == false) ...[
-                          Flexible(
-                            child: SizedBox(
-                              width: constraints.maxWidth * 0.85,
-                              child: AutoSizeText(
-                                widget.module.title(context),
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.anton(
-                                  color: Colors.white,
-                                  fontSize: isMobile
-                                      ? theme.textTheme.headlineSmall!.fontSize!
-                                      : theme.textTheme.displaySmall!.fontSize!,
-                                  fontWeight: FontWeight.w700,
+      // padding: EdgeInsets.all(
+      //   appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
+      // ),
+      child: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(
+              appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
+            ),
+            child: widget.content ??
+                LayoutBuilder(builder: (context, constraints) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: cardTapAction,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (hide == false) ...[
+                                Flexible(
+                                  child: SizedBox(
+                                    width: constraints.maxWidth * 0.85,
+                                    child: AutoSizeText(
+                                      widget.module.title(context),
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.anton(
+                                        color: Colors.white,
+                                        fontSize: isMobile
+                                            ? theme.textTheme.headlineSmall!.fontSize!
+                                            : theme.textTheme.displaySmall!.fontSize!,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                      minFontSize: theme.textTheme.bodyLarge!.fontSize!,
+                                    ),
+                                  ),
                                 ),
-                                minFontSize: theme.textTheme.bodyLarge!.fontSize!,
-                              ),
-                            ),
+                              ],
+                              if (hide == false && constraints.maxHeight >= 145) ...[
+                                AppSpacing.elementMarginBox,
+                                SizedBox(
+                                  width: constraints.maxWidth,
+                                  child: Text(
+                                    widget.module.subtitle(context),
+                                    maxLines: 4,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.inter(
+                                      color: Colors.white,
+                                      fontSize: isMobile
+                                          ? theme.textTheme.bodyMedium!.fontSize
+                                          : theme.textTheme.bodyLarge!.fontSize,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
-                        ],
-                        if (hide == false && constraints.maxHeight >= 145) ...[
-                          AppSpacing.elementMarginBox,
-                          SizedBox(
-                            width: constraints.maxWidth,
-                            child: Text(
-                              widget.module.subtitle(context),
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.inter(
-                                color: Colors.white,
-                                fontSize: isMobile
-                                    ? theme.textTheme.bodyMedium!.fontSize
-                                    : theme.textTheme.bodyLarge!.fontSize,
-                                fontWeight: FontWeight.w400,
-                              ),
+                        ),
+                      ),
+                      if (hide == false && constraints.maxHeight >= 163 + (isMobile ? 0 : 36)) ...[
+                        Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            AppSpacing.groupMarginBox,
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              // runSpacing: AppSpacing.elementMargin,
+                              // spacing: AppSpacing.elementMargin,
+                              children: [
+                                if (widget.module.button1Text(context) != null) ...[
+                                  Flexible(
+                                    child: AppXButton(
+                                      onPressed: primaryAction,
+                                      isLoading: false,
+                                      text: widget.module.button1Text(context) ?? '',
+                                      borderColor: AppColors.whiteSwatch,
+                                      bgColor: AppColors.whiteSwatch,
+                                      fgColor: AppColors.primaryDefault,
+                                    ),
+                                  ),
+                                  AppSpacing.elementMarginBox,
+                                ],
+                                if (widget.module.button2Text(context) != null) ...[
+                                  Flexible(
+                                    child: AppXButton(
+                                      onPressed: secondaryAction,
+                                      isLoading: false,
+                                      text: widget.module.button2Text(context) ?? '',
+                                      bgColor: Colors.transparent,
+                                      borderColor: AppColors.whiteSwatch,
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ],
-                    ),
+                    ],
+                  );
+                }),
+          ),
+          Positioned(
+            top: AppSpacing.containerInsideMargin / 1.25,
+            right: AppSpacing.containerInsideMarginSmall / 2,
+            child: InkWell(
+              onTap: () {
+                log("Module ${widget.module.id} tapped");
+                // widget.module.button1OnPressed(context);
+                hide = true;
+                setState(() {});
+                widget.onSizeChanged!();
+                context.read<ModulesBloc>().add(UpdateModule(
+                      module: Module(
+                        id: widget.module.id,
+                        index: widget.module.index,
+                        boxType: widget.module.nextBoxType(),
+                      ),
+                    ));
+              },
+              child: SizedBox(
+                height: 50,
+                child: Center(
+                  child: Icon(
+                    Icons.more_vert,
+                    color: AppColors.whiteSwatch,
+                    size: 24,
+                    opticalSize: 48,
+                    applyTextScaling: true,
+                    fill: 1.0,
                   ),
                 ),
-                if (hide == false && constraints.maxHeight >= 163 + (isMobile ? 0 : 36)) ...[
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      AppSpacing.groupMarginBox,
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        // runSpacing: AppSpacing.elementMargin,
-                        // spacing: AppSpacing.elementMargin,
-                        children: [
-                          if (widget.module.button1Text(context) != null) ...[
-                            Flexible(
-                              child: AppXButton(
-                                onPressed: primaryAction,
-                                isLoading: false,
-                                text: widget.module.button1Text(context) ?? '',
-                                borderColor: AppColors.whiteSwatch,
-                                bgColor: AppColors.whiteSwatch,
-                                fgColor: AppColors.primaryDefault,
-                              ),
-                            ),
-                            AppSpacing.elementMarginBox,
-                          ],
-                          if (widget.module.button2Text(context) != null) ...[
-                            Flexible(
-                              child: AppXButton(
-                                onPressed: secondaryAction,
-                                isLoading: false,
-                                text: widget.module.button2Text(context) ?? '',
-                                bgColor: Colors.transparent,
-                                borderColor: AppColors.whiteSwatch,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ],
-            );
-          }),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

@@ -5,7 +5,7 @@ class AppIcons {
   static double iconSize = 1;
 
   static const String appIcon1Path = '$basePath/logo_murya.svg';
-  static const String appIcon2Path = '$basePath/logo_murya.svg';
+  static const String appIcon2Path = '$basePath/Logo_V1.svg';
   static const String homeSearchIconPath = '$basePath/search-big-3.svg';
   static const String homeSearchIcon2Path = '$basePath/search_bar_icon.svg';
   static const String searchBarCloseIconPath = '$basePath/search_bar_close_icon.svg';
@@ -33,6 +33,12 @@ class AppIcons {
   static const String exitIconPath = '$basePath/exit_icon.svg';
   // diamond.svg
   static const String diamondIconPath = '$basePath/diamond.svg';
+
+  //addResourceIconPath
+  static const String addResourceIconPath = '$basePath/add_ressources.svg';
+
+  //popupIconPath
+  static const String popupIconPath = '$basePath/Frame155.svg';
 }
 
 class AppImages {

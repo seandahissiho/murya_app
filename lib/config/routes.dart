@@ -7,7 +7,7 @@ import 'package:murya/screens/competencies_family_details/competencies_family_de
 import 'package:murya/screens/job_details/job_details.dart';
 import 'package:murya/screens/job_evaluation/job_evaluation.dart';
 import 'package:murya/screens/landing/landing.dart';
-import 'package:murya/screens/ressources/ressources.dart';
+import 'package:murya/screens/ressources/resources.dart';
 import 'package:murya/screens/search/search.dart';
 
 class AppRoutes {
@@ -24,6 +24,7 @@ class AppRoutes {
   static const String accountModule = '/account';
   static const String jobModule = '/job';
   static const String userRessourcesModule = '/user-ressources';
+  static const String userResourceViewerModule = '/user-ressources/viewer/:id';
 
   // Jobs
   static const String jobDetails = '/job/:id/details';
