@@ -181,6 +181,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   void unAuthenticate(Emitter<AuthenticationState> emit) {
+    authenticationRepository.clearTokens();
     if (context.mounted) {
       // pop until first context
       while (Navigator.canPop(context)) {

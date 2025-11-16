@@ -5,6 +5,10 @@ sealed class ModulesState {
   final List<Module> modules;
 
   const ModulesState({this.modules = const []});
+
+  getModuleById(String s) {
+    return modules.firstWhereOrNull((module) => module.id == s);
+  }
 }
 
 final class ModulesInitial extends ModulesState {}

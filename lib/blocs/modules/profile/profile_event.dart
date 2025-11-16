@@ -5,8 +5,9 @@ sealed class ProfileEvent {}
 
 final class ProfileLoadEvent extends ProfileEvent {
   final String? userId;
+  final bool notifyIfNotFound;
 
-  ProfileLoadEvent({this.userId});
+  ProfileLoadEvent({this.userId, this.notifyIfNotFound = true});
 }
 
 final class ProfileUpdateEvent extends ProfileEvent {

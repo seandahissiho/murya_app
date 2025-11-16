@@ -66,13 +66,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_placeholder => 'Search for skills and professions';
 
   @override
-  String get user_stats_module_title => 'User Statistics';
+  String get user_ressources_module_title => 'Customize your resources';
 
   @override
-  String get user_stats_module_subtitle => 'Overview of your activity';
+  String get user_ressources_module_subtitle =>
+      'Murya content generation is instant';
 
   @override
-  String get user_stats_module_button => 'View Details';
+  String get user_ressources_module_button => 'Create';
 
   @override
   String searchNoResults(String query) {
@@ -81,6 +82,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get evaluateSkills => 'Evaluate Skills';
+
+  @override
+  String evaluateSkillsAvailableIn(String time) {
+    return 'Next evaluation available in $time';
+  }
 
   @override
   String get skillsDiagramTitle => 'Skills Diagram';
@@ -153,4 +159,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get consult => 'Consult';
+
+  @override
+  String get ranking_per_day => 'Today';
+
+  @override
+  String get ranking_per_week => 'This Week';
+
+  @override
+  String get ranking_per_month => 'This Month';
+
+  @override
+  String get ranking => 'Ranking';
 }

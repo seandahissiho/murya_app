@@ -10,6 +10,8 @@ class User {
   final String? firstName;
   final String? lastName;
 
+  final int diamonds;
+
   static const User zero = User(id: '', email: '', phone: '', deviceId: '', firstName: '', lastName: '');
 
   const User({
@@ -20,6 +22,7 @@ class User {
     this.photoURL,
     this.firstName,
     this.lastName,
+    this.diamonds = 0,
   });
 
   String get fullName {
@@ -65,7 +68,8 @@ class User {
         photoURL == otherUser.photoURL &&
         firstName == otherUser.firstName &&
         lastName == otherUser.lastName &&
-        phone == otherUser.phone;
+        phone == otherUser.phone &&
+        diamonds == otherUser.diamonds;
   }
 
   @override
@@ -75,7 +79,8 @@ class User {
         (photoURL?.hashCode ?? 0) ^
         firstName.hashCode ^
         lastName.hashCode ^
-        phone.hashCode;
+        phone.hashCode ^
+        diamonds.hashCode;
   }
 
   static User empty() {
@@ -86,6 +91,8 @@ class User {
       firstName: '',
       lastName: '',
       phone: '',
+      deviceId: '',
+      diamonds: 0,
     );
   }
 
@@ -97,6 +104,7 @@ class User {
     final String? photoURL = json['avatarURL'];
     final String? firstName = json['firstname'];
     final String? lastName = json['lastname'];
+    final int diamonds = json['diamonds'] ?? 0;
 
     return User(
       id: id,
@@ -106,8 +114,13 @@ class User {
       photoURL: photoURL,
       firstName: firstName,
       lastName: lastName,
+      diamonds: diamonds,
     );
   }
+
+  get isNotEmpty => id.isNotEmptyOrNull;
+
+  get isRegistered => (email.isNotEmptyOrNull || phone.isNotEmptyOrNull) && id.isNotEmptyOrNull;
 
   Map<String, dynamic> toJson() {
     return {
@@ -117,6 +130,8 @@ class User {
       'firstName': firstName,
       'lastName': lastName,
       'phone': phone,
+      'deviceId': deviceId,
+      'diamonds': diamonds,
     };
   }
 }

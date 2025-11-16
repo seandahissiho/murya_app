@@ -72,6 +72,9 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
             moveToNextQuestion();
           });
         }
+        if (state is QuizSaved) {
+          navigateToPath(context, to: AppRoutes.landing);
+        }
         setState(() {});
       },
       builder: (context, state) {
@@ -154,27 +157,11 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                     ),
                   ),
                   const Spacer(),
-                  Container(
-                    height: tabletAndAboveCTAHeight / 1.5,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.tinyMargin,
-                    ),
-                    child: Center(
-                      child: Text(
-                        "${answers.fold(0, (int previousValue, element) => previousValue + element.points < 0 ? 0 : previousValue + element.points)}",
-                        style: theme.textTheme.displayMedium?.copyWith(height: 1),
-                      ),
-                    ),
-                  ),
-                  AppSpacing.elementMarginBox,
-                  SvgPicture.asset(
-                    AppIcons.diamondIconPath,
-                    width: tabletAndAboveCTAHeight / 2,
-                    height: tabletAndAboveCTAHeight / 2,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.primaryFocus,
-                      BlendMode.srcIn,
-                    ),
+                  ScoreWidget(
+                    value: answers.fold(
+                        0,
+                        (int previousValue, element) =>
+                            previousValue + element.points < 0 ? 0 : previousValue + element.points),
                   ),
                 ],
               ),
@@ -644,14 +631,17 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   void moveToNextQuestion() {
     currentQuestionIndex++;
     if (currentQuestionIndex >= quiz.questionResponses.length) {
+      currentQuestionIndex;
       // Quiz is over
       context.read<QuizBloc>().add(SaveQuizResults(
             jobId: jobId,
             quizId: quiz.id!,
+            questions: quiz.questionResponses.map((e) => e.question).toList(),
             responses: answers,
+            context: context,
           ));
       // navigateToPath(context, to: AppRoutes.landing);
-      // navigateToPath(context, to: AppRoutes.jobEvaluationResults.replaceFirst(':id', jobId));
+      // navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
       return;
     }
     currentQuestion = quiz.questionResponses[currentQuestionIndex];
@@ -678,10 +668,13 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     pauseTimer();
     locked = true;
     setState(() {});
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    Future.delayed(const Duration(milliseconds: 25), () {
       if (!mounted) return;
-      answers
-          .add(currentQuestion!.toQuizResponse(selectedResponseIndex: showVerificationState) ?? QuizResponse.empty());
+      answers.add(currentQuestion!.toQuizResponse(
+            selectedResponseIndex: 0, // showVerificationState,
+            timeLeftInSeconds: 30, // timeLeftInSeconds,
+          ) ??
+          QuizResponse.empty());
       moveToNextQuestion();
     });
   }

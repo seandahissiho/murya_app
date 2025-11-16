@@ -45,4 +45,5 @@ class AppImages {
   static const String homeBox5Path = '$basePath/eb362b1a86c460cd29621ebc37598a4e1cb92097.jpg';
   static const String homeBox6Path = '$basePath/5b12f577eaa24b657dbf6cb53583bf66f18eef4d.jpg';
   static const String homeBox7Path = '$basePath/b20766b828020a92530a96c36caa89c6672a469d.jpg';
+  static const String starsPath = '$basePath/vecteezy_stars_3.png';
 }

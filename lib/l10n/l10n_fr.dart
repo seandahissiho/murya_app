@@ -67,14 +67,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get search_placeholder => 'Rechercher des compétences et des métiers';
 
   @override
-  String get user_stats_module_title => 'Statistiques de l\'utilisateur';
+  String get user_ressources_module_title => 'Personnalisez vos ressources';
 
   @override
-  String get user_stats_module_subtitle =>
-      'Aperçu des performances et de la progression';
+  String get user_ressources_module_subtitle =>
+      'La génération des contenus de Murya est instantanée';
 
   @override
-  String get user_stats_module_button => 'Voir les détails';
+  String get user_ressources_module_button => 'Créer';
 
   @override
   String searchNoResults(String query) {
@@ -83,6 +83,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get evaluateSkills => 'Évaluer les compétences';
+
+  @override
+  String evaluateSkillsAvailableIn(String time) {
+    return 'Prochaine évaluation - $time';
+  }
 
   @override
   String get skillsDiagramTitle => 'Diagramme des compétences';
@@ -155,4 +160,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get consult => 'Consulter';
+
+  @override
+  String get ranking_per_day => 'Aujourd\'hui';
+
+  @override
+  String get ranking_per_week => 'Cette semaine';
+
+  @override
+  String get ranking_per_month => 'Ce mois-ci';
+
+  @override
+  String get ranking => 'Classement';
 }

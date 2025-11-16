@@ -74,17 +74,17 @@
   "@search_placeholder": {
     "description": "Texte d'espace réservé pour la barre de recherche"
   },
-  "user_stats_module_title": "Statistiques de l''utilisateur",
-  "@user_stats_module_title": {
-    "description": "Titre du module des statistiques de l'utilisateur"
+  "user_ressources_module_title": "Personnalisez vos ressources",
+  "@user_ressources_module_title": {
+    "description": "Titre du module des ressources de l'utilisateur"
   },
-  "user_stats_module_subtitle": "Aperçu des performances et de la progression",
-  "@user_stats_module_subtitle": {
-    "description": "Sous-titre du module des statistiques de l'utilisateur"
+  "user_ressources_module_subtitle": "La génération des contenus de Murya est instantanée",
+  "@user_ressources_module_subtitle": {
+    "description": "Sous-titre du module des ressources de l'utilisateur"
   },
-  "user_stats_module_button": "Voir les détails",
-  "@user_stats_module_button": {
-    "description": "Texte du bouton dans le module des statistiques de l'utilisateur"
+  "user_ressources_module_button": "Créer",
+  "@user_ressources_module_button": {
+    "description": "Texte du bouton dans le module des ressources de l'utilisateur"
   },
   "searchNoResults": "Aucun résultat trouvé pour \"{query}\".",
   "@searchNoResults": {
@@ -98,6 +98,16 @@
   "evaluateSkills": "Évaluer les compétences",
   "@evaluateSkills": {
     "description": "Bouton pour évaluer les compétences"
+  },
+  "evaluateSkillsAvailableIn": "Prochaine évaluation - {time}",
+  "@evaluateSkillsAvailableIn": {
+    "description": "Indique le temps restant avant la prochaine évaluation des compétences",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "00:15:30"
+      }
+    }
   },
   "skillsDiagramTitle": "Diagramme des compétences",
   "@skillsDiagramTitle": {
@@ -177,7 +187,14 @@
   "hard": "Difficile",
   "expert": "Expert",
   "consult": "Consulter",
-    "@consult": {
-        "description": "Texte pour le bouton 'Consulter'"
-    }
+  "@consult": {
+    "description": "Texte pour le bouton 'Consulter'"
+  },
+  "ranking_per_day": "Aujourd''hui",
+  "ranking_per_week": "Cette semaine",
+  "ranking_per_month": "Ce mois-ci",
+  "ranking": "Classement",
+  "@ranking": {
+    "description": "Titre pour la section de classement"
+  }
 }

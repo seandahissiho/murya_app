@@ -7,6 +7,7 @@ import 'package:murya/screens/competencies_family_details/competencies_family_de
 import 'package:murya/screens/job_details/job_details.dart';
 import 'package:murya/screens/job_evaluation/job_evaluation.dart';
 import 'package:murya/screens/landing/landing.dart';
+import 'package:murya/screens/ressources/ressources.dart';
 import 'package:murya/screens/search/search.dart';
 
 class AppRoutes {
@@ -21,8 +22,8 @@ class AppRoutes {
   // allModules
   static const String allModules = '/all-modules';
   static const String accountModule = '/account';
-  static const String searchModule = '/search';
-  static const String userStatsModule = '/user-stats';
+  static const String jobModule = '/job';
+  static const String userRessourcesModule = '/user-ressources';
 
   // Jobs
   static const String jobDetails = '/job/:id/details';
@@ -65,6 +66,8 @@ List<BeamLocation<RouteInformationSerializable<dynamic>>> beamLocations = [
   JobDetailsLocation(),
   CfDetailsLocation(),
   JobEvaluationLocation(),
+  // userRessourcesModule
+  RessourcesLocation(),
   // BaseLocation(),
   OtherLocation(), // Add other locations as needed
 ];

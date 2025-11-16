@@ -206,23 +206,23 @@ abstract class AppLocalizations {
   /// **'Rechercher des compétences et des métiers'**
   String get search_placeholder;
 
-  /// Titre du module des statistiques de l'utilisateur
+  /// Titre du module des ressources de l'utilisateur
   ///
   /// In fr, this message translates to:
-  /// **'Statistiques de l\'\'utilisateur'**
-  String get user_stats_module_title;
+  /// **'Personnalisez vos ressources'**
+  String get user_ressources_module_title;
 
-  /// Sous-titre du module des statistiques de l'utilisateur
+  /// Sous-titre du module des ressources de l'utilisateur
   ///
   /// In fr, this message translates to:
-  /// **'Aperçu des performances et de la progression'**
-  String get user_stats_module_subtitle;
+  /// **'La génération des contenus de Murya est instantanée'**
+  String get user_ressources_module_subtitle;
 
-  /// Texte du bouton dans le module des statistiques de l'utilisateur
+  /// Texte du bouton dans le module des ressources de l'utilisateur
   ///
   /// In fr, this message translates to:
-  /// **'Voir les détails'**
-  String get user_stats_module_button;
+  /// **'Créer'**
+  String get user_ressources_module_button;
 
   /// Message affiché lorsque la recherche ne retourne aucun résultat
   ///
@@ -235,6 +235,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Évaluer les compétences'**
   String get evaluateSkills;
+
+  /// Indique le temps restant avant la prochaine évaluation des compétences
+  ///
+  /// In fr, this message translates to:
+  /// **'Prochaine évaluation - {time}'**
+  String evaluateSkillsAvailableIn(String time);
 
   /// Titre du diagramme des compétences
   ///
@@ -349,6 +355,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Consulter'**
   String get consult;
+
+  /// No description provided for @ranking_per_day.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aujourd\'\'hui'**
+  String get ranking_per_day;
+
+  /// No description provided for @ranking_per_week.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette semaine'**
+  String get ranking_per_week;
+
+  /// No description provided for @ranking_per_month.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ce mois-ci'**
+  String get ranking_per_month;
+
+  /// Titre pour la section de classement
+  ///
+  /// In fr, this message translates to:
+  /// **'Classement'**
+  String get ranking;
 }
 
 class _AppLocalizationsDelegate

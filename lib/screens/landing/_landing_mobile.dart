@@ -198,13 +198,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
   }
 
   Widget _test(Module module, int i) {
-    final tile = AppModuleWidget(
-      key: ValueKey('module-${module.id}'),
-      module: module,
-      onSizeChanged: () {
-        concats.clear();
-      },
-    );
+    final tile = _getTileForModule(module);
     return DragTarget<int>(
       // We drag by passing the source index as "data"
       onWillAcceptWithDetails: (_) => true,
@@ -250,5 +244,39 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
         );
       },
     );
+  }
+
+  _getTileForModule(Module module) {
+    switch (module.id) {
+      case 'account':
+        return AccountModuleWidget(
+          // key: ValueKey('module-${module.id}'),
+          module: module,
+          onSizeChanged: onSizeChanged,
+        );
+      case 'job':
+        return JobModuleWidget(
+          key: UniqueKey(),
+          // key: ValueKey('module-${module.id}'),
+          module: module,
+          onSizeChanged: onSizeChanged,
+        );
+      case 'ressources':
+        return RessourcesModuleWidget(
+          // key: ValueKey('module-${module.id}'),
+          module: module,
+          onSizeChanged: onSizeChanged,
+        );
+      default:
+        return AppModuleWidget(
+          key: ValueKey('module-${module.id}'),
+          module: module,
+          onSizeChanged: onSizeChanged,
+        );
+    }
+  }
+
+  void onSizeChanged() {
+    concats.clear();
   }
 }

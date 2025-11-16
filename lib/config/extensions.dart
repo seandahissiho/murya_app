@@ -107,6 +107,15 @@ extension ExtensionDateTime on DateTime {
     return add(const Duration(days: 1));
   }
 
+  DateTime get firstDayOfTheWeek {
+    // Calculate how many days to subtract to get to the previous Monday (first day of the week)
+    // Dart's DateTime days are 1-based and Monday is 1, so we calculate the difference accordingly.
+    int daysToSubtract = weekday - DateTime.monday;
+    DateTime firstDayOfTheWeek = subtract(Duration(days: daysToSubtract));
+
+    return firstDayOfTheWeek;
+  }
+
   DateTime get lastDayOfTheWeek {
     // Calculate how many days to add to get to the next Sunday (last day of the week)
     // Dart's DateTime days are 1-based and Sunday is 7, so we calculate the difference accordingly.
@@ -138,7 +147,7 @@ extension ExtensionDateTime on DateTime {
   }
 
   DateTime get dateEnd {
-    return DateTime(year, month, day, 23, 59);
+    return DateTime(year, month, day, 23, 59, 59);
   }
 
   DateTime get roundTime {
@@ -253,6 +262,36 @@ extension ExtensionDateTime on DateTime {
     // In French locale, the month names are abbreviated.
     final months = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
     return "${day.toString().padLeft(2, '0')} ${months[month - 1]} ${year.toString().substring(2)}";
+  }
+
+  String toDbString() {
+    // Format the date as "YYYY-MM-DDTHH:mm:ss"
+    return "$year"
+        "-${month.toString().padLeft(2, '0')}"
+        "-${day.toString().padLeft(2, '0')}"
+        "T${hour.toString().padLeft(2, '0')}"
+        ":${minute.toString().padLeft(2, '0')}"
+        ":${second.toString().padLeft(2, '0')}"
+        ".000Z";
+  }
+}
+
+extension ExtensionDuration on Duration {
+  String get formatted {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(inHours);
+    final minutes = twoDigits(inMinutes.remainder(60));
+    final seconds = twoDigits(inSeconds.remainder(60));
+    return "$hours:$minutes:$seconds";
+  }
+
+  String get formattedHMS {
+    // 00:00:00
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(inHours);
+    final minutes = twoDigits(inMinutes.remainder(60));
+    final seconds = twoDigits(inSeconds.remainder(60));
+    return "$hours:$minutes:$seconds";
   }
 }
 

@@ -30,7 +30,7 @@ class _MobileCustomAppBarState extends State<MobileCustomAppBar> {
               GestureDetector(
                 onTap: () {
                   // rightModalOpen(context, screen: const MainSearchScreen());
-                  navigateToPath(context, to: AppRoutes.searchModule);
+                  navigateToPath(context, to: AppRoutes.jobModule);
                 },
                 child: SvgPicture.asset(
                   AppIcons.homeSearchIconPath,

@@ -47,11 +47,6 @@ List<BlocProvider> getBlocProviders(BuildContext context) {
         context: context,
       )..add(AuthInitialize()),
     ),
-    // ModulesBloc
-    BlocProvider<ModulesBloc>(
-      lazy: false,
-      create: (BuildContext context) => ModulesBloc(context: context)..add(InitializeModules(context: context)),
-    ),
     // Profile Bloc
     BlocProvider<ProfileBloc>(
       lazy: false,
@@ -66,6 +61,11 @@ List<BlocProvider> getBlocProviders(BuildContext context) {
     BlocProvider<QuizBloc>(
       lazy: false,
       create: (BuildContext context) => QuizBloc(context: context),
+    ),
+    // ModulesBloc
+    BlocProvider<ModulesBloc>(
+      lazy: false,
+      create: (BuildContext context) => ModulesBloc(context: context)..add(InitializeModules(context: context)),
     ),
   ];
   return sharedBlocProviders;

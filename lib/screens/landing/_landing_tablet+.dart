@@ -54,8 +54,6 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                   if (mainBodyHey > constraints.maxHeight / 2) {
                     mainBodyHeight = constraints.maxHeight;
                   }
-                  log('MaxHeight: ${constraints.maxHeight}, mainBodyHey: $mainBodyHey, footerHey: $footerHey');
-                  log('Max Width: ${constraints.maxWidth}');
                   return Stack(
                     children: [
                       CustomScrollView(
@@ -198,13 +196,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
   }
 
   Widget _test(Module module, int i) {
-    final tile = AppModuleWidget(
-      key: ValueKey('module-${module.id}'),
-      module: module,
-      onSizeChanged: () {
-        concats.clear();
-      },
-    );
+    final tile = _getTileForModule(module);
     return DragTarget<int>(
       // We drag by passing the source index as "data"
       onWillAcceptWithDetails: (_) => true,
@@ -250,6 +242,36 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
         );
       },
     );
+  }
+
+  _getTileForModule(Module module) {
+    switch (module.id) {
+      case 'account':
+        return AccountModuleWidget(
+          module: module,
+          onSizeChanged: onSizeChanged,
+        );
+      case 'job':
+        return JobModuleWidget(
+          module: module,
+          onSizeChanged: onSizeChanged,
+        );
+      case 'ressources':
+        return RessourcesModuleWidget(
+          module: module,
+          onSizeChanged: onSizeChanged,
+        );
+      default:
+        return AppModuleWidget(
+          key: ValueKey('module-${module.id}'),
+          module: module,
+          onSizeChanged: onSizeChanged,
+        );
+    }
+  }
+
+  void onSizeChanged() {
+    concats.clear();
   }
 }
 

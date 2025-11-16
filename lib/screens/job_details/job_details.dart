@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
@@ -10,9 +11,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
+import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/app_footer.dart';
 import 'package:murya/components/dropdown.dart';
+import 'package:murya/components/ranking.dart';
+import 'package:murya/components/score.dart';
+import 'package:murya/components/skeletonizer.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
@@ -20,9 +25,10 @@ import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
+import 'package:murya/models/app_user.dart';
+import 'package:murya/models/user_job_competency_profile.dart';
 import 'package:murya/screens/base.dart';
 import 'package:murya/utilities/share_utils.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 part '_job_details_mobile.dart';
 part '_job_details_tablet+.dart';
@@ -142,48 +148,57 @@ class CFCard extends StatelessWidget {
   }
 }
 
-class RoundedRadarChart extends StatelessWidget {
-  final List<String> labels;
-  final List<double> values;
-  final double maxValue;
-  final double cornerRadius;
-
-  const RoundedRadarChart({
-    Key? key,
-    required this.labels,
-    required this.values,
-    this.maxValue = 5.0,
-    this.cornerRadius = 3.0,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return CustomPaint(
-        size: Size(constraints.maxWidth, constraints.maxHeight),
-        painter: _RoundedRadarPainter(
-          labels: labels,
-          values: values,
-          maxValue: maxValue,
-          cornerRadius: cornerRadius,
-        ),
-      );
-    });
-  }
-}
+// class RoundedRadarChart extends StatelessWidget {
+//   final List<String> labels;
+//   final List<double> values;
+//   final double maxValue;
+//   final double cornerRadius;
+//
+//   const RoundedRadarChart({
+//     Key? key,
+//     required this.labels,
+//     required this.values,
+//     this.maxValue = 5.0,
+//     this.cornerRadius = 3.0,
+//   }) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return LayoutBuilder(builder: (context, constraints) {
+//       return CustomPaint(
+//         size: Size(constraints.maxWidth, constraints.maxHeight),
+//         painter: _RoundedRadarPainter(
+//           labels: labels,
+//           defaultValues: values,
+//           userValues: [],
+//           maxValue: maxValue,
+//           cornerRadius: cornerRadius,
+//         ),
+//       );
+//     });
+//   }
+// }
 
 class InteractiveRoundedRadarChart extends StatefulWidget {
   final List<String> labels;
-  final List<double> values;
+  final List<double> defaultValues;
+  final List<double> userValues;
   final double maxValue;
   final double cornerRadius;
+  // labelBoxColor
+  final Color labelBgColor;
+  // labelTextColor
+  final Color labelTextColor;
 
   const InteractiveRoundedRadarChart({
     Key? key,
     required this.labels,
-    required this.values,
+    this.defaultValues = const [],
+    this.userValues = const [],
     this.maxValue = 5.0,
     this.cornerRadius = 3.0,
+    this.labelBgColor = AppColors.primaryDefault,
+    this.labelTextColor = Colors.white,
   }) : super(key: key);
 
   @override
@@ -195,14 +210,14 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
   Offset? _tooltipPos; // in local coordinates
 
   // Computes the data-points exactly like the painter
-  List<Offset> _computePoints(Size size) {
-    final int n = widget.values.length;
+  List<Offset> _computePoints(Size size, List<double> values) {
+    final int n = values.length;
     final Offset center = Offset(size.width / 2, size.height / 2);
     final double radius = (size.width / 2) - 8.0; // small padding
     final double step = 2 * math.pi / n;
 
     return List.generate(n, (i) {
-      final double v = (widget.values[i] / widget.maxValue).clamp(0.0, 1.0);
+      final double v = (values[i] / widget.maxValue).clamp(0.0, 1.0);
       final double r = radius * v;
       final double a = -math.pi / 2 + i * step;
       return Offset(center.dx + r * math.cos(a), center.dy + r * math.sin(a));
@@ -224,7 +239,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
   }
 
   void _updateHover(Size size, Offset localPos) {
-    final pts = _computePoints(size);
+    final pts = _computePoints(size, widget.defaultValues);
     // threshold scales with chart size
     final double threshold = math.max(10.0, size.width * 0.05);
     final i = _hitTest(pts, localPos, threshold);
@@ -273,10 +288,13 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
                     size: Size.square(side),
                     painter: _RoundedRadarPainter(
                       labels: widget.labels,
-                      values: widget.values,
+                      defaultValues: widget.defaultValues,
+                      userValues: widget.userValues,
                       maxValue: widget.maxValue,
                       cornerRadius: widget.cornerRadius,
                       highlightIndex: _activeIndex,
+                      labelBgColor: widget.labelBgColor,
+                      labelTextColor: widget.labelTextColor,
                       // highlight active point
                       highlightColor: Theme.of(context).colorScheme.primary,
                     ),
@@ -291,7 +309,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
                 left: _tooltipPos!.dx,
                 top: _tooltipPos!.dy,
                 child: _ValueTooltip(
-                  value: widget.values[_activeIndex!],
+                  value: widget.defaultValues[_activeIndex!],
                   // nudge the tooltip so it doesn’t cover the dot
                   offset: const Offset(10, -10),
                 ),
@@ -337,24 +355,30 @@ class _ValueTooltip extends StatelessWidget {
 
 class _RoundedRadarPainter extends CustomPainter {
   final List<String> labels;
-  final List<double> values;
+  final List<double> defaultValues;
+  final List<double> userValues;
   final double maxValue;
   final double cornerRadius; // base corner radius; scaled internally
   final int? highlightIndex; // NEW (optional)
   final Color highlightColor; // NEW (optional)
+  final Color labelBgColor; // NEW (optional)
+  final Color labelTextColor; // NEW (optional)
 
   _RoundedRadarPainter({
     required this.labels,
-    required this.values,
+    required this.defaultValues,
+    required this.userValues,
     required this.maxValue,
     required this.cornerRadius,
     this.highlightIndex,
     this.highlightColor = Colors.red,
+    this.labelBgColor = AppColors.primaryDefault,
+    this.labelTextColor = Colors.white,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final int n = values.length;
+    final int n = defaultValues.length;
     if (n < 3) return; // need 3+ axes
 
     // Parent is square ⇒ width == height. Use (width / 2) minus padding.
@@ -372,8 +396,8 @@ class _RoundedRadarPainter extends CustomPainter {
     final double ringStroke = 1.0 * s;
     final double dataStroke = 3.0 * s;
     final double dotRadius = 3.0 * s;
-    final double dotBorderW = 1.0 * s;
-    final double labelPad = 16.0 * s;
+    final double dotBorderW = 1.50 * s;
+    final double labelPad = 30.0 * s;
     final double leaderLen = 0.0 * s;
     final double textPadX = 12.0 * s;
     final double textPadY = 8.0 * s;
@@ -402,8 +426,17 @@ class _RoundedRadarPainter extends CustomPainter {
     );
 
     // 2) Compute data polygon points (scaled by values/maxValue)
-    final List<Offset> pts = List.generate(n, (i) {
-      final double val = (values[i] / maxValue).clamp(0.0, 1.0);
+    final List<Offset> defaultPts = List.generate(n, (i) {
+      final double val = (defaultValues[i] / maxValue).clamp(0.0, 1.0);
+      final double r = radius * val;
+      final double angle = -math.pi / 2 + (i * angleStep);
+      return Offset(
+        center.dx + r * math.cos(angle),
+        center.dy + r * math.sin(angle),
+      );
+    });
+    final List<Offset> userPts = List.generate(n, (i) {
+      final double val = (userValues.isNotEmpty ? (userValues[i] / maxValue).clamp(0.0, 1.0) : 0.0);
       final double r = radius * val;
       final double angle = -math.pi / 2 + (i * angleStep);
       return Offset(
@@ -415,17 +448,27 @@ class _RoundedRadarPainter extends CustomPainter {
     // 3) Data shape (rounded)
     _drawData(
       canvas: canvas,
-      pts: pts,
+      pts: defaultPts,
       cornerRadius: cornerR,
       fillColor: Colors.black.withOpacity(0.1),
       strokeColor: Colors.black,
       strokeWidth: dataStroke,
     );
+    if (userValues.isNotEmpty) {
+      _drawData(
+        canvas: canvas,
+        pts: userPts,
+        cornerRadius: cornerR,
+        fillColor: AppColors.primaryFocus.withOpacity(0.25),
+        strokeColor: AppColors.primaryFocus,
+        strokeWidth: dataStroke,
+      );
+    }
 
     // 4) Data points (dot + white ring)
     _drawPoints(
       canvas: canvas,
-      pts: pts,
+      pts: defaultPts,
       baseDotRadius: dotRadius,
       borderWidth: dotBorderW,
       fillColor: Colors.black,
@@ -435,19 +478,33 @@ class _RoundedRadarPainter extends CustomPainter {
       // a bit larger
       highlightColor: highlightColor,
     );
+    if (userValues.isNotEmpty) {
+      _drawPoints(
+        canvas: canvas,
+        pts: userPts,
+        baseDotRadius: dotRadius,
+        borderWidth: dotBorderW,
+        fillColor: AppColors.primaryFocus,
+        borderColor: Colors.white,
+        highlightIndex: null,
+        highlightScale: 1.0,
+        // no highlight for user points
+        highlightColor: highlightColor,
+      );
+    }
 
     // 5) Labels near data points with background and a short leader
     _drawLabelsNearData(
       canvas: canvas,
       labels: labels,
-      values: values,
+      values: defaultValues,
       maxValue: maxValue,
       center: center,
       maxRadius: radius,
       angleStep: angleStep,
       axisPaint: gridPaint,
       dotRadius: dotRadius,
-      labelPadding: labelPad,
+      labelPadding: labelPad + 0,
       leaderLen: leaderLen,
       textPadX: textPadX,
       textPadY: textPadY,
@@ -458,7 +515,8 @@ class _RoundedRadarPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _RoundedRadarPainter old) =>
       old.labels != labels ||
-      old.values != values ||
+      old.defaultValues != defaultValues ||
+      old.userValues != userValues ||
       old.maxValue != maxValue ||
       old.cornerRadius != cornerRadius ||
       old.highlightIndex != highlightIndex ||
@@ -579,8 +637,8 @@ class _RoundedRadarPainter extends CustomPainter {
       // Text layout
       tp.text = TextSpan(
         text: labels[i],
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: labelTextColor,
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
@@ -622,7 +680,7 @@ class _RoundedRadarPainter extends CustomPainter {
         tp.height + textPadY * 2,
       );
 
-      final Paint bgPaint = Paint()..color = AppColors.primaryDefault;
+      final Paint bgPaint = Paint()..color = labelBgColor;
       final RRect roundedRect = RRect.fromRectAndRadius(bgRect, Radius.circular(bgRadius));
       canvas.drawRRect(roundedRect, bgPaint);
 
