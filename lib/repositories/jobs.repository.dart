@@ -1,4 +1,7 @@
+import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/Job.dart';
+import 'package:murya/models/job_ranking.dart';
+import 'package:murya/models/user_job_competency_profile.dart';
 import 'package:murya/repositories/base.repository.dart';
 
 class JobRepository extends BaseRepository {
@@ -37,8 +40,21 @@ class JobRepository extends BaseRepository {
     );
   }
 
+  // getUserCurrentJob
+  Future<Result<UserJob>> getUserCurrentJob() async {
+    return AppResponse.execute(
+      action: () async {
+        final response = await api.dio.get('/userJobs/current/');
+
+        final UserJob job = UserJob.fromJson(response.data['data']);
+        return job;
+      },
+      parentFunctionName: 'JobRepository -> getUserCurrentJob',
+    );
+  }
+
   // getUserJobDetails
-  Future<Result<Job>> getUserJobDetails(String jobId) async {
+  Future<Result<UserJob>> getUserJobDetails(String jobId) async {
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/userJobs/$jobId/');
@@ -62,6 +78,36 @@ class JobRepository extends BaseRepository {
         return (cfamily, job);
       },
       parentFunctionName: 'JobRepository -> getCFDetails',
+    );
+  }
+
+  // /leaderboard/job/:jobId
+  Future<Result<JobRankings>> getRankingForJob(String jobId, DateTime? from, DateTime? to) async {
+    return AppResponse.execute(
+      action: () async {
+        final response = await api.dio.get('/userJobs/leaderboard/job/$jobId/', queryParameters: {
+          if (from != null) 'from': from.toDbString(),
+          if (to != null) 'to': to.toDbString(),
+        });
+
+        final JobRankings ranking = JobRankings.fromJson(response.data['data']);
+        return ranking;
+      },
+      parentFunctionName: 'JobRepository -> getRankingForJob',
+      errorResult: JobRankings.empty(),
+    );
+  }
+
+  // Future<Result<UserJobCompetencyProfile>> fetchUserJobCompetencyProfile
+  Future<Result<UserJobCompetencyProfile>> fetchUserJobCompetencyProfile(String userJobId) async {
+    return AppResponse.execute(
+      action: () async {
+        final response = await api.dio.get('/userJobs/$userJobId/competenciesProfile/');
+
+        final UserJobCompetencyProfile profile = UserJobCompetencyProfile.fromJson(response.data['data']);
+        return profile;
+      },
+      parentFunctionName: 'JobRepository -> fetchUserJobCompetencyProfile',
     );
   }
 }

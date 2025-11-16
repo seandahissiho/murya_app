@@ -10,6 +10,12 @@ final class SearchJobs extends JobEvent {
   SearchJobs({required this.query, required this.context});
 }
 
+final class LoadUserCurrentJob extends JobEvent {
+  final BuildContext context;
+
+  LoadUserCurrentJob({required this.context});
+}
+
 final class LoadJobDetails extends JobEvent {
   final String jobId;
   final BuildContext context;
@@ -22,6 +28,27 @@ final class LoadUserJobDetails extends JobEvent {
   final BuildContext context;
 
   LoadUserJobDetails({required this.jobId, required this.context});
+}
+
+final class LoadRankingForJob extends JobEvent {
+  final String jobId;
+  final DateTime? from;
+  final DateTime? to;
+  final BuildContext context;
+
+  LoadRankingForJob({
+    required this.jobId,
+    required this.context,
+    this.from,
+    this.to,
+  });
+}
+
+final class LoadUserJobCompetencyProfile extends JobEvent {
+  final String jobId;
+  final BuildContext context;
+
+  LoadUserJobCompetencyProfile({required this.jobId, required this.context});
 }
 
 final class LoadCFDetails extends JobEvent {

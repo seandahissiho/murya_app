@@ -74,17 +74,17 @@
   "@search_placeholder": {
     "description": "Placeholder text for the search bar on the landing page"
   },
-  "user_stats_module_title": "User Statistics",
-  "@user_stats_module_title": {
-    "description": "Title of the user statistics module"
+  "user_ressources_module_title": "Customize your resources",
+  "@user_ressources_module_title": {
+    "description": "Title of the user resources module"
   },
-  "user_stats_module_subtitle": "Overview of your activity",
-  "@user_stats_module_subtitle": {
-    "description": "Subtitle of the user statistics module"
+  "user_ressources_module_subtitle": "Murya content generation is instant",
+  "@user_ressources_module_subtitle": {
+    "description": "Subtitle of the user resources module"
   },
-  "user_stats_module_button": "View Details",
-  "@user_stats_module_button": {
-    "description": "Text of the button in the user statistics module"
+  "user_ressources_module_button": "Create",
+  "@user_ressources_module_button": {
+    "description": "Text of the button in the user resources module"
   },
   "searchNoResults": "No results found for \"{query}\".",
   "@searchNoResults": {
@@ -98,6 +98,16 @@
   "evaluateSkills": "Evaluate Skills",
   "@evaluateSkills": {
     "description": "Button to evaluate skills"
+  },
+  "evaluateSkillsAvailableIn": "Next evaluation available in {time}",
+  "@evaluateSkillsAvailableIn": {
+    "description": "Indicates the time remaining until the next skills evaluation",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "00:15:30"
+      }
+    }
   },
   "skillsDiagramTitle": "Skills Diagram",
   "@skillsDiagramTitle": {
@@ -179,5 +189,12 @@
   "consult": "Consult",
   "@consult": {
     "description": "Button to consult or view more details"
+  },
+  "ranking_per_day": "Today",
+  "ranking_per_week": "This Week",
+  "ranking_per_month": "This Month",
+  "ranking": "Ranking",
+  "@ranking": {
+    "description": "Label for ranking"
   }
 }

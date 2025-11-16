@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:murya/components/app_module.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
@@ -147,10 +146,10 @@ class Module {
     switch (id) {
       case 'account':
         return locale.landing_first_title;
-      case 'search':
+      case 'job':
         return locale.landing_second_title;
-      case 'stats':
-        return locale.user_stats_module_title;
+      case 'ressources':
+        return locale.user_ressources_module_title;
       default:
         return "";
     }
@@ -162,10 +161,10 @@ class Module {
     switch (id) {
       case 'account':
         return locale.landing_first_subtitle;
-      case 'search':
+      case 'job':
         return locale.landing_second_subtitle;
-      case 'stats':
-        return locale.user_stats_module_subtitle;
+      case 'ressources':
+        return locale.user_ressources_module_subtitle;
       default:
         return "";
     }
@@ -177,10 +176,10 @@ class Module {
     switch (id) {
       case 'account':
         return locale.landing_first_button1;
-      case 'search':
+      case 'job':
         return locale.landing_second_button;
-      case 'stats':
-        return locale.user_stats_module_button;
+      case 'ressources':
+        return locale.user_ressources_module_button;
       default:
         return null;
     }
@@ -192,9 +191,9 @@ class Module {
     switch (id) {
       case 'account':
         return locale.landing_first_button2;
-      case 'search':
+      case 'job':
         return null;
-      case 'stats':
+      case 'ressources':
         return null;
       default:
         return null;
@@ -205,15 +204,15 @@ class Module {
     switch (id) {
       case 'account':
         return () {
-          navigateToPath(context, to: AppRoutes.register);
+          navigateToPath(context, to: AppRoutes.accountModule);
         };
-      case 'search':
+      case 'job':
         return () {
-          navigateToPath(context, to: AppRoutes.searchModule);
+          navigateToPath(context, to: AppRoutes.jobModule);
         };
-      case 'stats':
+      case 'ressources':
         return () {
-          navigateToPath(context, to: AppRoutes.userStatsModule);
+          navigateToPath(context, to: AppRoutes.userRessourcesModule);
         };
       default:
         return null;
@@ -226,9 +225,9 @@ class Module {
         return () {
           navigateToPath(context, to: AppRoutes.login);
         };
-      case 'search':
+      case 'job':
         return null;
-      case 'stats':
+      case 'ressources':
         return null;
       default:
         return null;
@@ -292,30 +291,30 @@ class ModuleBuilder {
   //   );
   // }
   //
-  // Widget searchModule() {
+  // Widget jobModule() {
   //   return AppModuleWidget(
-  //     key: const ValueKey('module-search'),
+  //     key: const ValueKey('module-job'),
   //     boxType: AppModuleType.type2_1,
   //     imagePath: AppImages.homeBox6Path,
   //     title: local.landing_second_title,
   //     subtitle: local.landing_second_subtitle,
   //     button1Text: local.landing_second_button,
   //     button1OnPressed: () {
-  //       navigateToPath(context, to: AppRoutes.searchModule);
+  //       navigateToPath(context, to: AppRoutes.jobModule);
   //     },
   //   );
   // }
   //
-  // Widget statsModule() {
+  // Widget ressourcesModule() {
   //   return AppModuleWidget(
-  //     key: const ValueKey('module-stats'),
+  //     key: const ValueKey('module-ressources'),
   //     boxType: AppModuleType.type2_1,
   //     imagePath: AppImages.homeBox4Path,
-  //     title: local.user_stats_module_title,
-  //     subtitle: local.user_stats_module_subtitle,
-  //     button1Text: local.user_stats_module_button,
+  //     title: local.user_ressources_module_title,
+  //     subtitle: local.user_ressources_module_subtitle,
+  //     button1Text: local.user_ressources_module_button,
   //     button1OnPressed: () {
-  //       navigateToPath(context, to: AppRoutes.userStatsModule);
+  //       navigateToPath(context, to: AppRoutes.userRessourcesModule);
   //     },
   //   );
   // }
@@ -324,10 +323,10 @@ class ModuleBuilder {
   //   switch (id) {
   //     case 'account':
   //       return accountModule();
-  //     case 'search':
-  //       return searchModule();
-  //     case 'stats':
-  //       return statsModule();
+  //     case 'job':
+  //       return jobModule();
+  //     case 'ressources':
+  //       return ressourcesModule();
   //     default:
   //       return AppModuleWidget(
   //         key: ValueKey('module-$id'),
@@ -359,23 +358,23 @@ class ModuleBuilder {
   //   }
   // }
 
-  Widget getBy(Module module) {
-    // final AppModuleWidget widget = getById(module.id) as AppModuleWidget;
-
-    return AppModuleWidget(
-      module: module,
-      // key: widget.key,
-      // title: widget.title,
-      // subtitle: widget.subtitle,
-      // boxType: module.boxType,
-      // imagePath: widget.imagePath,
-      // button1Text: widget.button1Text,
-      // button2Text: widget.button2Text,
-      // button1OnPressed: widget.button1OnPressed,
-      // button2OnPressed: widget.button2OnPressed,
-      onSizeChanged: () {
-        // print('Module ${module.id} size changed to $newSize');
-      },
-    );
-  }
+  // Widget getBy(Module module) {
+  //   // final AppModuleWidget widget = getById(module.id) as AppModuleWidget;
+  //
+  //   return AppModuleWidget(
+  //     module: module,
+  //     // key: widget.key,
+  //     // title: widget.title,
+  //     // subtitle: widget.subtitle,
+  //     // boxType: module.boxType,
+  //     // imagePath: widget.imagePath,
+  //     // button1Text: widget.button1Text,
+  //     // button2Text: widget.button2Text,
+  //     // button1OnPressed: widget.button1OnPressed,
+  //     // button2OnPressed: widget.button2OnPressed,
+  //     onSizeChanged: () {
+  //       // print('Module ${module.id} size changed to $newSize');
+  //     },
+  //   );
+  // }
 }

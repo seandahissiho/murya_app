@@ -92,6 +92,7 @@ class QuestionResponses {
         points: responses[i].points,
         index: i,
         realIndex: responses[i].realIndex,
+        timeLeftAfterAnswer: 0,
       );
     }
     return QuestionResponses(
@@ -121,11 +122,23 @@ class QuestionResponses {
 
   int get correctResponseIndex => responses.indexWhere((r) => r.isCorrect);
 
-  QuizResponse? toQuizResponse({required int selectedResponseIndex}) {
+  QuizResponse? toQuizResponse({required int selectedResponseIndex, required int timeLeftInSeconds}) {
     log('Finding response for selectedResponseIndex: $selectedResponseIndex');
     final result = responses.firstWhereOrNull((r) => r.index == selectedResponseIndex);
 
-    return result;
+    return result == null
+        ? null
+        : QuizResponse(
+            id: result.id,
+            questionId: result.questionId,
+            text: result.text,
+            metadata: result.metadata,
+            isCorrect: result.isCorrect,
+            points: result.points,
+            index: result.index,
+            realIndex: result.realIndex,
+            timeLeftAfterAnswer: timeLeftInSeconds,
+          );
   }
 }
 
@@ -200,6 +213,7 @@ class QuizResponse {
   final int points;
   final int index;
   final int realIndex;
+  final int timeLeftAfterAnswer;
 
   QuizResponse({
     required this.id,
@@ -210,6 +224,7 @@ class QuizResponse {
     this.points = 0,
     required this.index,
     required this.realIndex,
+    required this.timeLeftAfterAnswer,
   });
 
   factory QuizResponse.fromJson(Map<String, dynamic> json) {
@@ -222,6 +237,7 @@ class QuizResponse {
       points: (json['points'] as num?)?.toInt() ?? 0,
       index: (json['index'] as num).toInt(),
       realIndex: (json['index'] as num).toInt(),
+      timeLeftAfterAnswer: 0,
     );
   }
 
@@ -246,16 +262,18 @@ class QuizResponse {
         other.isCorrect == isCorrect &&
         other.points == points &&
         other.index == index &&
-        other.realIndex == realIndex;
+        other.realIndex == realIndex &&
+        other.timeLeftAfterAnswer == timeLeftAfterAnswer;
   }
 
   @override
-  int get hashCode => Object.hash(id, questionId, text, _mapHash(metadata), isCorrect, points, index, realIndex);
+  int get hashCode =>
+      Object.hash(id, questionId, text, _mapHash(metadata), isCorrect, points, index, realIndex, timeLeftAfterAnswer);
 
   String? get freeTextAnswer => null;
 
   static empty() {
-    return QuizResponse(id: '', questionId: '', text: '', index: -1, realIndex: -1);
+    return QuizResponse(id: '', questionId: '', text: '', index: -1, realIndex: -1, timeLeftAfterAnswer: 0);
   }
 }
 

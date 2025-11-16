@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/quizz/quiz_bloc.dart';
 import 'package:murya/components/app_button.dart';
+import 'package:murya/components/score.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/routes.dart';

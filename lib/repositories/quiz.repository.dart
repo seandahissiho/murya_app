@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:murya/blocs/modules/quizz/quiz_bloc.dart';
+import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/quiz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,6 +30,7 @@ class QuizRepository extends BaseRepository {
           '/userJobs/${event.jobId}/quiz/${event.quizId}',
           data: {
             "answers": event.dbResponses,
+            "doneAt": DateTime.now().toDbString(),
           },
         );
         return response.statusCode == 200;

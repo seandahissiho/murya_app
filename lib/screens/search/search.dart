@@ -16,7 +16,7 @@ import 'package:murya/screens/base.dart';
 
 class MainSearchLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
-  List<String> get pathPatterns => [AppRoutes.searchModule];
+  List<String> get pathPatterns => [AppRoutes.jobModule];
 
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {

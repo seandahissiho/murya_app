@@ -69,6 +69,9 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
             moveToNextQuestion();
           });
         }
+        if (state is QuizSaved) {
+          navigateToPath(context, to: AppRoutes.landing);
+        }
         setState(() {});
       },
       builder: (context, state) {
@@ -125,27 +128,11 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                     ),
                   ),
                   AppSpacing.elementMarginBox,
-                  Container(
-                    height: 21,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.tinyMargin,
-                    ),
-                    child: Center(
-                      child: Text(
-                        "${answers.fold(0, (int previousValue, element) => previousValue + element.points < 0 ? 0 : previousValue + element.points)}",
-                        style: theme.textTheme.labelLarge?.copyWith(height: 0),
-                      ),
-                    ),
-                  ),
-                  AppSpacing.elementMarginBox,
-                  SvgPicture.asset(
-                    AppIcons.diamondIconPath,
-                    width: 18,
-                    height: 18,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.primaryFocus,
-                      BlendMode.srcIn,
-                    ),
+                  ScoreWidget(
+                    value: answers.fold(
+                        0,
+                        (int previousValue, element) =>
+                            previousValue + element.points < 0 ? 0 : previousValue + element.points),
                   ),
                 ],
               ),
@@ -234,10 +221,12 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
       context.read<QuizBloc>().add(SaveQuizResults(
             jobId: jobId,
             quizId: quiz.id!,
+            questions: quiz.questionResponses.map((e) => e.question).toList(),
             responses: answers,
+            context: context,
           ));
       // navigateToPath(context, to: AppRoutes.landing);
-      navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
+      // navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
       return;
     }
     currentQuestion = quiz.questionResponses[currentQuestionIndex];
@@ -266,8 +255,11 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
     setState(() {});
     Future.delayed(const Duration(milliseconds: 25), () {
       if (!mounted) return;
-      answers
-          .add(currentQuestion!.toQuizResponse(selectedResponseIndex: showVerificationState) ?? QuizResponse.empty());
+      answers.add(currentQuestion!.toQuizResponse(
+            selectedResponseIndex: 0, // showVerificationState,
+            timeLeftInSeconds: 30, // timeLeftInSeconds,
+          ) ??
+          QuizResponse.empty());
       moveToNextQuestion();
     });
   }

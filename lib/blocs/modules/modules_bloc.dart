@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
+import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/config/DS.dart';
+import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/module.dart';
 
 part 'modules_event.dart';
@@ -12,6 +16,11 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
   final BuildContext context;
   final List<Module> _modules = [];
 
+  late final ProfileBloc profileBloc;
+  late final StreamSubscription<ProfileState> _profileSubscription;
+  late final JobBloc jobBloc;
+  late final StreamSubscription<JobState> _jobSubscription;
+
   ModulesBloc({required this.context}) : super(ModulesInitial()) {
     on<ModulesEvent>((event, emit) {
       emit(ModulesLoading(modules: state.modules));
@@ -20,6 +29,35 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
     on<LoadModules>(_onLoadModules);
     on<UpdateModule>(_onUpdateModule);
     on<ReorderModules>(_onReorderModules);
+
+    profileBloc = BlocProvider.of<ProfileBloc>(context);
+    jobBloc = BlocProvider.of<JobBloc>(context);
+
+    _profileSubscription = profileBloc.stream.listen((state) {
+      if (state is ProfileLoaded) {}
+    });
+    _jobSubscription = jobBloc.stream.listen((state) {
+      if (state is UserJobDetailsLoaded && state.userCurrentJob != null) {
+        log("ModulesBloc: User has a current job, ensuring job module is present.");
+        bool exists = _modules.map((e) => e.id).contains("ressources");
+        bool isMobile = DeviceHelper.isMobile(context);
+        if (exists == false) {
+          for (int i = 0; i < _modules.length; i++) {
+            _modules[i] = _modules[i].copyWith(
+              index: i,
+              boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
+            );
+          }
+          final ressourcesModule = Module(
+            id: "ressources",
+            index: _modules.length,
+            boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
+          );
+          _modules.add(ressourcesModule);
+          add(LoadModules());
+        }
+      }
+    });
   }
 
   FutureOr<void> _onInitializeModules(InitializeModules event, Emitter<ModulesState> emit) {
@@ -31,12 +69,12 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
       boxType: AppModuleType.type2_2,
     );
     final Module searchModule = Module(
-      id: "search",
+      id: "job",
       index: 1,
       boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
     );
-    final Module statsModule = Module(
-      id: "stats",
+    final Module ressourcesModule = Module(
+      id: "ressources",
       index: 2,
       boxType: AppModuleType.type1,
     );
@@ -50,8 +88,8 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
       index: 4,
       boxType: AppModuleType.type2_1,
     );
-    final Module statsModule2 = Module(
-      id: "stats-2",
+    final Module ressourcesModule2 = Module(
+      id: "ressources-2",
       index: 5,
       boxType: AppModuleType.type2_2,
     );
@@ -65,8 +103,8 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
       index: 7,
       boxType: AppModuleType.type2_1,
     );
-    final Module statsModule3 = Module(
-      id: "stats-3",
+    final Module ressourcesModule3 = Module(
+      id: "ressources-3",
       index: 8,
       boxType: AppModuleType.type2_2,
     );
@@ -74,16 +112,16 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
     _modules.addAll([
       accountModule,
       searchModule,
-      // statsModule,
-      // statsModule,
-      // statsModule,
-      // statsModule,
+      // ressourcesModule,
+      // ressourcesModule,
+      // ressourcesModule,
+      // ressourcesModule,
       // accountModule2,
       // searchModule2,
-      // statsModule2,
+      // ressourcesModule2,
       // accountModule3,
       // searchModule3,
-      // statsModule3,
+      // ressourcesModule3,
     ]);
     if (_modules.isNotEmpty) {
       _modules.sort((a, b) => a.index.compareTo(b.index));
@@ -102,6 +140,13 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
     final index = _modules.indexWhere((module) => module.id == event.module.id);
     if (index != -1) {
       _modules[index] = event.module;
+      // sort by index
+      if (_modules.isNotEmpty) {
+        _modules.sort((a, b) => a.index.compareTo(b.index));
+      }
+      emit(ModulesLoaded(modules: _modules));
+    } else {
+      _modules.add(event.module);
       // sort by index
       if (_modules.isNotEmpty) {
         _modules.sort((a, b) => a.index.compareTo(b.index));

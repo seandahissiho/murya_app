@@ -146,4 +146,9 @@ class AuthenticationRepository extends BaseRepository {
       parentFunctionName: "AuthenticationRepository.registerTemp",
     );
   }
+
+  void clearTokens() {
+    prefs.remove("refresh_token");
+    prefs.remove("access_token");
+  }
 }

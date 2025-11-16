@@ -40,7 +40,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   FutureOr<void> _onProfileLoadEvent(ProfileLoadEvent event, Emitter<ProfileState> emit) async {
     final result = await profileRepository.getMe();
-    if (result.isError) {
+    if (result.isError && event.notifyIfNotFound) {
       notificationBloc.add(ErrorNotificationEvent(
         message: result.error,
       ));

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
+import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/config/custom_classes.dart';
@@ -47,9 +48,9 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
       // Here you would typically save the quiz results to a repository or database
       // For this example, we'll just simulate a successful save operation
       final result = await quizRepository.saveQuizResult(event);
-      notificationBloc.add(SuccessNotificationEvent(
-        message: "Quiz results saved successfully!",
-      ));
+      // notificationBloc.add(SuccessNotificationEvent(
+      //   message: "Quiz results saved successfully!",
+      // ));
     } else {
       final newEvent = TempRegisterEvent();
       await Future.delayed(const Duration(milliseconds: 100));
@@ -58,9 +59,13 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         await Future.delayed(const Duration(milliseconds: 100));
       }
       final result = await quizRepository.saveQuizResult(event);
-      notificationBloc.add(SuccessNotificationEvent(
-        message: "Quiz results saved successfully!",
-      ));
+      // notificationBloc.add(SuccessNotificationEvent(
+      //   message: "Quiz results saved successfully!",
+      // ));
+    }
+    await Future.delayed(const Duration(milliseconds: 150));
+    if (event.context.mounted) {
+      event.context.read<JobBloc>().add(LoadUserCurrentJob(context: event.context));
     }
     emit(QuizSaved());
   }
@@ -77,9 +82,6 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         await Future.delayed(const Duration(milliseconds: 100));
       }
       result = await quizRepository.getQuizForJob(event.jobId);
-      notificationBloc.add(ErrorNotificationEvent(
-        message: "You were not logged in. A temporary account was created to load the quiz.",
-      ));
     }
     if (result.isError) {
       notificationBloc.add(ErrorNotificationEvent(

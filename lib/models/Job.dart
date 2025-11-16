@@ -113,7 +113,7 @@ class Job {
 // // Optional: manual level or seniority (1–5 for example)
 // level            Level         @default(EASY)
 // note             String?       @db.Text
-// // Aggregated stats for fast dashboards (optional but useful)
+// // Aggregated ressources for fast dashboards (optional but useful)
 // totalScore       Int           @default(0) // sum of all quiz totalScore
 // maxScoreSum      Int           @default(0) // sum of all quiz maxScore
 // completedQuizzes Int           @default(0)
@@ -168,6 +168,7 @@ class UserJob {
       id: userJobJson['id'],
       userId: userJobJson['userId'],
       jobId: userJobJson['jobId'],
+      job: userJobJson['job'] != null ? Job.fromJson(userJobJson['job']) : null,
       status: userJobJson['status'] != null
           ? UserJobStatus.values.firstWhere(
               (e) => e.toString().split('.').last.toLowerCase() == userJobJson['status'].toLowerCase(),
@@ -184,6 +185,8 @@ class UserJob {
     );
   }
 
+  get isNotEmpty => id != null && id!.isNotEmpty;
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -191,6 +194,15 @@ class UserJob {
       'jobId': jobId,
       'note': note,
     };
+  }
+
+  static UserJob empty() {
+    return UserJob(
+      id: '',
+      userId: '',
+      jobId: '',
+      level: Level.beginner,
+    );
   }
 }
 

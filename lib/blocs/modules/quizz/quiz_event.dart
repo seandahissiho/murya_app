@@ -25,12 +25,16 @@ final class SubmitAnswer extends QuizEvent {
 final class SaveQuizResults extends QuizEvent {
   final String jobId;
   final String quizId;
+  final List<QuizQuestion> questions;
   final List<QuizResponse> responses;
+  final BuildContext context;
 
   SaveQuizResults({
     required this.jobId,
     required this.quizId,
+    required this.questions,
     required this.responses,
+    required this.context,
   });
 
   //type AnswerInput = {
@@ -42,10 +46,17 @@ final class SaveQuizResults extends QuizEvent {
     return responses
         .whereOrEmpty((response) => response.id.isNotEmptyOrNull && response.questionId.isNotEmptyOrNull)
         .map((response) {
+      final int availableTime = questions
+              .whereOrEmpty((question) => question.id.isNotEmptyOrNull)
+              .firstWhereOrNull((question) => question.id == response.questionId)
+              ?.timeLimitInSeconds ??
+          0;
+      final int timeToAnswer = availableTime - response.timeLeftAfterAnswer;
       return {
         'questionId': response.questionId,
         // if (response.freeTextAnswer != null) 'freeTextAnswer': response.freeTextAnswer,
-        'responseIds': [response.id],
+        'responseIds': response.id.isNotEmptyOrNull ? [response.id] : [],
+        'timeToAnswer': timeToAnswer,
       };
     }).toList();
   }

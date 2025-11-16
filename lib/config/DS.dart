@@ -153,7 +153,7 @@ class AppColors {
   static const Color primaryHover = Color(0xFF6F3FF5);
   static const Color primaryFocus = Color(0xFF6F3FF5);
   static const Color primaryPressed = Color(0xFF5B2FDB);
-  static const Color primaryDisabled = Color(0xFFA1A8C8); // from spec tile
+  static const Color primaryDisabled = Color(0xFFB8B8B8); // from spec tile
 
   // Secondary / Neutral surfaces
   static const Color secondaryDisabled = Color(0xFFF9F8F7);

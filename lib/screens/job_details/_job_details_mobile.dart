@@ -9,8 +9,13 @@ class MobileJobDetailsScreen extends StatefulWidget {
 
 class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
   Job _job = Job.empty();
+  UserJob _userJob = UserJob.empty();
+  UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
+  User _user = User.empty();
+
   int _detailsLevel = 0;
   Duration? nextQuizAvailableIn;
+  Timer? _countdownTimer;
 
   @override
   void initState() {
@@ -18,8 +23,10 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dynamic beamState = Beamer.of(context).currentBeamLocation.state;
       final jobId = beamState.pathParameters['id'];
+      context.read<ProfileBloc>().add(ProfileLoadEvent(notifyIfNotFound: false));
       context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: jobId));
       context.read<JobBloc>().add(LoadUserJobDetails(context: context, jobId: jobId));
+      context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: jobId));
     });
   }
 
@@ -28,226 +35,308 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
     final theme = Theme.of(context);
     final locale = AppLocalizations.of(context);
     var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
-    return BlocConsumer<JobBloc, JobState>(
+    bool hideBackButton = false;
+    final history = Beamer.of(context).beamingHistory;
+
+    if (history.length > 1) {
+      final lastBeamState = history[history.length - 2];
+      final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
+      hideBackButton = lastPath == AppRoutes.landing;
+    }
+    return BlocListener<ProfileBloc, ProfileState>(
       listener: (context, state) {
-        if (state is JobDetailsLoaded) {
-          _job = state.job;
+        if (state is ProfileLoaded) {
+          _user = state.user;
         }
         setState(() {});
       },
-      builder: (context, state) {
-        return AppSkeletonizer(
-          enabled: _job.id.isEmptyOrNull,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      navigateToPath(context, to: AppRoutes.searchModule);
-                    },
-                    child: SvgPicture.asset(
-                      AppIcons.backButtonPath,
-                      width: mobileCTAHeight,
-                      height: mobileCTAHeight,
-                    ),
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      navigateToPath(context, to: AppRoutes.landing);
-                    },
-                    child: SvgPicture.asset(
-                      AppIcons.searchBarCloseIconPath,
-                      width: mobileCTAHeight,
-                      height: mobileCTAHeight,
-                    ),
-                  ),
-                ],
-              ),
-              AppSpacing.groupMarginBox,
-              RichText(
-                text: TextSpan(
-                  text: _job.title,
-                  style: GoogleFonts.anton(
-                    color: AppColors.textPrimary,
-                    fontSize: theme.textTheme.headlineMedium?.fontSize,
-                    fontWeight: FontWeight.w700,
-                  ),
+      child: BlocConsumer<JobBloc, JobState>(
+        listener: (context, state) {
+          if (state is JobDetailsLoaded) {
+            _job = state.job;
+          }
+          if (state is UserJobCompetencyProfileLoaded) {
+            _userJobCompetencyProfile = state.profile;
+          }
+          if (state is UserJobDetailsLoaded) {
+            _userJob = state.userJob;
+            final DateTime now = DateTime.now();
+            final DateTime? lastQuizAt = _userJob.lastQuizAt;
+            if (lastQuizAt == null) {
+              nextQuizAvailableIn = null;
+              return;
+            }
+            if (now.date.isAfter(lastQuizAt.date)) {
+              nextQuizAvailableIn = null;
+              return;
+            }
+            final DateTime lastQuizAt2 = DateTime(
+              lastQuizAt.year,
+              lastQuizAt.month,
+              lastQuizAt.day,
+              lastQuizAt.hour,
+            );
+            nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+            _countdownTimer?.cancel();
+            _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+              if (!mounted) {
+                timer.cancel();
+                return;
+              }
+              setState(() {
+                final DateTime now = DateTime.now();
+                final DateTime lastQuizAt = _userJob.lastQuizAt!;
+                final DateTime lastQuizAt2 = DateTime(
+                  lastQuizAt.year,
+                  lastQuizAt.month,
+                  lastQuizAt.day,
+                  lastQuizAt.hour,
+                );
+                if (now.date.isAfter(lastQuizAt.date)) {
+                  nextQuizAvailableIn = null;
+                  timer.cancel();
+                  return;
+                }
+                nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+              });
+            });
+          }
+          setState(() {});
+        },
+        builder: (context, state) {
+          return AppSkeletonizer(
+            enabled: _job.id.isEmptyOrNull,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    WidgetSpan(
-                      alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
-                        child: GestureDetector(
-                          onTap: () async {
-                            await ShareUtils.shareContent(
-                              text: locale.discover_job_profile(_job.title),
-                              url: ShareUtils.generateJobDetailsLink(_job.id!),
-                              subject: locale.job_profile_page_title(_job.title),
-                            );
-                            if (kIsWeb && mounted && context.mounted) {
-                              // On web, there's a good chance we just copied to clipboard
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(locale.link_copied)),
-                              );
-                            }
-                          },
-                          child: const Icon(
-                            Icons.ios_share,
-                            size: mobileCTAHeight / 1.618,
-                            color: AppColors.primaryDefault,
-                          ),
+                    if (!hideBackButton)
+                      GestureDetector(
+                        onTap: () {
+                          navigateToPath(context, to: AppRoutes.jobModule);
+                        },
+                        child: SvgPicture.asset(
+                          AppIcons.backButtonPath,
+                          width: mobileCTAHeight,
+                          height: mobileCTAHeight,
                         ),
+                      ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        navigateToPath(context, to: AppRoutes.landing);
+                      },
+                      child: SvgPicture.asset(
+                        AppIcons.searchBarCloseIconPath,
+                        width: mobileCTAHeight,
+                        height: mobileCTAHeight,
                       ),
                     ),
                   ],
                 ),
-              ),
-              AppSpacing.containerInsideMarginBox,
-              AppXButton(
-                onPressed: () {
-                  navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!));
-                },
-                isLoading: false,
-                disabled: nextQuizAvailableIn != null,
-                text: locale.evaluateSkills,
-                autoResize: false,
-              ),
-              AppSpacing.containerInsideMarginBox,
-              Expanded(
-                child: SingleChildScrollView(
-                  child: LayoutBuilder(builder: (context, constraints) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ExpandableText(
-                          _job.description,
-                          // FAKER.lorem.sentences(10).join(' '),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: AppColors.primaryDefault,
-                            overflow: TextOverflow.ellipsis,
+                AppSpacing.groupMarginBox,
+                Row(
+                  children: [
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          text: _job.title,
+                          style: GoogleFonts.anton(
+                            color: AppColors.textPrimary,
+                            fontSize: theme.textTheme.headlineMedium?.fontSize,
+                            fontWeight: FontWeight.w700,
                           ),
-                          linkStyle: theme.textTheme.labelMedium?.copyWith(
-                            color: AppColors.primaryDefault,
-                            decoration: TextDecoration.underline,
-                          ),
-                          maxLines: 4,
-                          expandText: '\n\n${locale.show_more}',
-                          collapseText: '\n\n${locale.show_less}',
-                          linkEllipsis: false,
+                          children: [
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    await ShareUtils.shareContent(
+                                      text: locale.discover_job_profile(_job.title),
+                                      url: ShareUtils.generateJobDetailsLink(_job.id!),
+                                      subject: locale.job_profile_page_title(_job.title),
+                                    );
+                                    if (kIsWeb && mounted && context.mounted) {
+                                      // On web, there's a good chance we just copied to clipboard
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text(locale.link_copied)),
+                                      );
+                                    }
+                                  },
+                                  child: const Icon(
+                                    Icons.ios_share,
+                                    size: mobileCTAHeight / 1.618,
+                                    color: AppColors.primaryDefault,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        AppSpacing.containerInsideMarginBox,
-                        Card(
-                          elevation: 0,
-                          color: AppColors.backgroundCard,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: AppRadius.large,
+                      ),
+                    ),
+                    if (_user.isNotEmpty) ...[
+                      AppSpacing.groupMarginBox,
+                      ScoreWidget(value: _user.diamonds),
+                    ],
+                  ],
+                ),
+                AppSpacing.containerInsideMarginBox,
+                AppXButton(
+                  onPressed: () {
+                    navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!));
+                  },
+                  isLoading: false,
+                  disabled: nextQuizAvailableIn != null,
+                  text: nextQuizAvailableIn == null
+                      ? locale.evaluateSkills
+                      : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
+                  autoResize: false,
+                ),
+                AppSpacing.containerInsideMarginBox,
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ExpandableText(
+                            _job.description,
+                            // FAKER.lorem.sentences(10).join(' '),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: AppColors.primaryDefault,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            linkStyle: theme.textTheme.labelMedium?.copyWith(
+                              color: AppColors.primaryDefault,
+                              decoration: TextDecoration.underline,
+                            ),
+                            maxLines: 4,
+                            expandText: '\n\n${locale.show_more}',
+                            collapseText: '\n\n${locale.show_less}',
+                            linkEllipsis: false,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          AppSpacing.containerInsideMarginBox,
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                height: constraints.maxWidth,
-                                width: constraints.maxWidth,
-                                child: InteractiveRoundedRadarChart(
-                                  labels: _job.competenciesFamilies
-                                      .whereOrEmpty((cf) => cf.parent == null)
-                                      .map((cf) => cf.name)
-                                      .toList(),
-                                  values: _job.competenciesFamilies
-                                      .whereOrEmpty((cf) => cf.parent == null)
-                                      .map((cf) => cf.averageScoreByLevel(level: _detailsLevel))
-                                      .toList(),
-                                ),
-                              ),
-                              AppSpacing.groupMarginBox,
-                              Padding(
-                                padding: const EdgeInsets.only(left: AppSpacing.containerInsideMargin),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      locale.skillsDiagramTitle,
-                                      style: theme.textTheme.labelLarge!.copyWith(
-                                        color: AppColors.primaryDefault,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    AppSpacing.groupMarginBox,
-                                    AppXDropdown<int>(
-                                      controller: TextEditingController(text: options[_detailsLevel]),
-                                      items: options.map((level) => DropdownMenuEntry(
-                                            value: options.indexOf(level),
-                                            label: level,
-                                          )),
-                                      onSelected: (level) {
-                                        setState(() {
-                                          _detailsLevel = level!;
-                                        });
-                                      },
-                                      labelInside: null,
-                                      autoResize: true,
-                                      foregroundColor: AppColors.primaryDefault,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              AppSpacing.containerInsideMarginBox,
+                              if (_userJob.isNotEmpty && _job.id.isNotEmptyOrNull) ...[
+                                _rankingBuilder(constraints, locale, theme),
+                                AppSpacing.groupMarginBox,
+                              ],
+                              _diagramBuilder(constraints, locale, theme, options),
                             ],
                           ),
-                        ),
-                        AppSpacing.containerInsideMarginBox,
-                        ...familiesBuilder(),
-                        AppSpacing.sectionMarginBox,
-                        const AppFooter(),
-                      ],
-                    );
-                  }),
+                          AppSpacing.containerInsideMarginBox,
+                          ...familiesBuilder(),
+                          AppSpacing.sectionMarginBox,
+                          const AppFooter(),
+                        ],
+                      );
+                    }),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
   List<Widget> familiesBuilder() {
     final List<Widget> widgets = [];
-    for (final family in _job.competenciesFamilies.whereOrEmpty((cf) => cf.parent == null)) {
+    for (final family in _job.competenciesFamilies) {
       widgets.add(CFCard(job: _job, family: family));
       widgets.add(AppSpacing.groupMarginBox);
     }
     return widgets;
   }
-}
 
-class AppSkeletonizer extends StatefulWidget {
-  final bool enabled;
-  final Widget child;
-  const AppSkeletonizer({super.key, required this.enabled, required this.child});
-
-  @override
-  State<AppSkeletonizer> createState() => _AppSkeletonizerState();
-}
-
-class _AppSkeletonizerState extends State<AppSkeletonizer> {
-  @override
-  Widget build(BuildContext context) {
-    return Skeletonizer(
-      enableSwitchAnimation: true,
-      enabled: widget.enabled,
-      ignorePointers: false,
-      ignoreContainers: false,
-      containersColor: AppColors.secondaryPressed,
-      effect: const ShimmerEffect(
-        baseColor: AppColors.secondaryPressed,
-        highlightColor: AppColors.secondaryFocus,
+  _diagramBuilder(BoxConstraints constraints, AppLocalizations locale, ThemeData theme, List<String> options) {
+    return Card(
+      elevation: 0,
+      color: AppColors.backgroundCard,
+      shape: const RoundedRectangleBorder(
+        borderRadius: AppRadius.large,
       ),
-      child: widget.child,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: constraints.maxWidth,
+            width: constraints.maxWidth,
+            child: InteractiveRoundedRadarChart(
+              labels: _job.competenciesFamilies.map((cf) => cf.name).toList(),
+              defaultValues:
+                  _job.competenciesFamilies.map((cf) => cf.averageScoreByLevel(level: _detailsLevel)).toList(),
+              userValues: _userJobCompetencyProfile.competencyFamiliesValues,
+            ),
+          ),
+          AppSpacing.groupMarginBox,
+          Padding(
+            padding: const EdgeInsets.only(left: AppSpacing.containerInsideMargin),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  locale.skillsDiagramTitle,
+                  style: theme.textTheme.labelLarge!.copyWith(
+                    color: AppColors.primaryDefault,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                AppSpacing.groupMarginBox,
+                AppXDropdown<int>(
+                  controller: TextEditingController(text: options[_detailsLevel]),
+                  items: options.map((level) => DropdownMenuEntry(
+                        value: options.indexOf(level),
+                        label: level,
+                      )),
+                  onSelected: (level) {
+                    setState(() {
+                      _detailsLevel = level!;
+                    });
+                  },
+                  labelInside: null,
+                  autoResize: true,
+                  foregroundColor: AppColors.primaryDefault,
+                ),
+              ],
+            ),
+          ),
+          AppSpacing.containerInsideMarginBox,
+        ],
+      ),
+    );
+  }
+
+  _rankingBuilder(BoxConstraints constraints, AppLocalizations locale, ThemeData theme) {
+    return Card(
+      elevation: 0,
+      color: AppColors.backgroundCard,
+      shape: const RoundedRectangleBorder(
+        borderRadius: AppRadius.large,
+      ),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: constraints.maxWidth,
+              height: constraints.maxWidth / 1.618,
+              child: RankingChart(jobId: _job.id!),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

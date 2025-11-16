@@ -27,11 +27,12 @@ class AppXButton extends StatelessWidget {
     this.size = AppXButtonSize.SMALL,
     this.disabled = false,
     this.type = AppXButtonType.PRIMARY,
-    this.background,
-    this.foregroundColor,
+    this.bgColor,
+    this.fgColor,
     this.borderColor,
     this.hoverColor,
     this.onPressedColor,
+    this.disabledColor = AppColors.primaryDisabled,
     this.autoResize = true,
     this.borderLineWidth = 1,
     this.removePaddings = false,
@@ -57,11 +58,12 @@ class AppXButton extends StatelessWidget {
   final AppXButtonSize size;
   final bool disabled;
   final AppXButtonType type;
-  final Color? background;
-  final Color? foregroundColor;
+  final Color? bgColor;
+  final Color? fgColor;
   final Color? borderColor;
   final Color? hoverColor;
   final Color? onPressedColor;
+  final Color? disabledColor;
   final bool autoResize;
   final double borderLineWidth;
   final bool removePaddings;
@@ -179,9 +181,7 @@ class AppXButton extends StatelessWidget {
                     height: iconSize,
                     width: iconSize,
                     colorFilter: ColorFilter.mode(
-                      foregroundColor ??
-                          theme.elevatedButtonTheme.style?.iconColor?.resolve({}) ??
-                          AppColors.whiteSwatch,
+                      fgColor ?? theme.elevatedButtonTheme.style?.iconColor?.resolve({}) ?? AppColors.whiteSwatch,
                       BlendMode.srcATop,
                     ),
                   ),
@@ -230,9 +230,7 @@ class AppXButton extends StatelessWidget {
                     height: iconSize,
                     width: iconSize,
                     colorFilter: ColorFilter.mode(
-                      foregroundColor ??
-                          theme.elevatedButtonTheme.style?.iconColor?.resolve({}) ??
-                          AppColors.whiteSwatch,
+                      fgColor ?? theme.elevatedButtonTheme.style?.iconColor?.resolve({}) ?? AppColors.whiteSwatch,
                       BlendMode.srcATop,
                     ),
                   ),
@@ -271,10 +269,14 @@ class AppXButton extends StatelessWidget {
                       return hoverColor ??
                           theme.elevatedButtonTheme.style?.backgroundColor?.resolve({WidgetState.hovered});
                     }
-                    return background ?? theme.elevatedButtonTheme.style?.backgroundColor?.resolve(states);
+                    if (states.contains(WidgetState.disabled)) {
+                      return disabledColor ??
+                          theme.elevatedButtonTheme.style?.backgroundColor?.resolve({WidgetState.disabled});
+                    }
+                    return bgColor ?? theme.elevatedButtonTheme.style?.backgroundColor?.resolve(states);
                   },
                 ),
-                foregroundColor: foregroundColor != null ? WidgetStatePropertyAll(foregroundColor) : null,
+                foregroundColor: fgColor != null ? WidgetStatePropertyAll(fgColor) : null,
                 side: WidgetStateProperty.resolveWith<BorderSide?>(
                   (states) {
                     return borderColor != null
@@ -294,6 +296,10 @@ class AppXButton extends StatelessWidget {
                     if (states.contains(WidgetState.hovered)) {
                       return hoverColor ??
                           theme.elevatedButtonTheme.style?.overlayColor?.resolve({WidgetState.hovered});
+                    }
+                    if (states.contains(WidgetState.disabled)) {
+                      return disabledColor ??
+                          theme.elevatedButtonTheme.style?.overlayColor?.resolve({WidgetState.disabled});
                     }
                     return theme.elevatedButtonTheme.style?.overlayColor?.resolve(states);
                   },
@@ -347,11 +353,27 @@ class AppXButton extends StatelessWidget {
                       ResponsiveBreakpoints.of(context).breakpoints.elementAtOrNull(1)?.start ??
                       AppBreakpoints.mobile,
                 ),
-                child: Row(
-                  mainAxisSize: autoResize ? MainAxisSize.min : MainAxisSize.max,
-                  mainAxisAlignment: horizontalAlignment,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: children,
+                child: Stack(
+                  children: [
+                    Row(
+                      mainAxisSize: autoResize ? MainAxisSize.min : MainAxisSize.max,
+                      mainAxisAlignment: horizontalAlignment,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: children,
+                    ),
+                    if (disabled) ...[
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: shape?.resolve({}) is RoundedRectangleBorder
+                                ? (shape!.resolve({}) as RoundedRectangleBorder).borderRadius
+                                : null,
+                            color: disabledColor?.withAlpha(150),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ),
@@ -368,7 +390,7 @@ class AppXButton extends StatelessWidget {
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: CupertinoActivityIndicator(
-                    color: background ?? AppColors.primary,
+                    color: bgColor ?? AppColors.primary,
                   ),
                 ),
               ),
