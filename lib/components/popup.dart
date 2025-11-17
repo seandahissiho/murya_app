@@ -22,6 +22,7 @@ Future<T?> displayPopUp<T>({
   String? cancelText,
   String? iconPath,
   bool barrierDismissible = true,
+  Alignment contentAlignment = Alignment.centerLeft,
 }) async {
   return await showDialog<T?>(
     context: context,
@@ -42,7 +43,11 @@ Future<T?> displayPopUp<T>({
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: contentAlignment == Alignment.centerLeft
+                  ? CrossAxisAlignment.start
+                  : contentAlignment == Alignment.centerRight
+                      ? CrossAxisAlignment.end
+                      : CrossAxisAlignment.center,
               children: contents != null
                   ? [
                       ...contents,
