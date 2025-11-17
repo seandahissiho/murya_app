@@ -160,6 +160,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                   return Column(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: InkWell(
@@ -214,39 +215,47 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                       if (hide == false && constraints.maxHeight >= 163 + (isMobile ? 0 : 36)) ...[
                         Column(
                           mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppSpacing.groupMarginBox,
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              // runSpacing: AppSpacing.elementMargin,
-                              // spacing: AppSpacing.elementMargin,
-                              children: [
-                                if (widget.module.button1Text(context) != null) ...[
-                                  Flexible(
-                                    child: AppXButton(
-                                      onPressed: primaryAction,
-                                      isLoading: false,
-                                      text: widget.module.button1Text(context) ?? '',
-                                      borderColor: AppColors.whiteSwatch,
-                                      bgColor: AppColors.whiteSwatch,
-                                      fgColor: AppColors.primaryDefault,
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: size_1W,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                // runSpacing: AppSpacing.elementMargin,
+                                // spacing: AppSpacing.elementMargin,
+                                children: [
+                                  if (widget.module.button1Text(context) != null) ...[
+                                    Flexible(
+                                      child: AppXButton(
+                                        autoResize: false,
+                                        onPressed: primaryAction,
+                                        isLoading: false,
+                                        text: widget.module.button1Text(context) ?? '',
+                                        borderColor: AppColors.whiteSwatch,
+                                        bgColor: AppColors.whiteSwatch,
+                                        fgColor: AppColors.primaryDefault,
+                                      ),
                                     ),
-                                  ),
-                                  AppSpacing.elementMarginBox,
-                                ],
-                                if (widget.module.button2Text(context) != null) ...[
-                                  Flexible(
-                                    child: AppXButton(
-                                      onPressed: secondaryAction,
-                                      isLoading: false,
-                                      text: widget.module.button2Text(context) ?? '',
-                                      bgColor: Colors.transparent,
-                                      borderColor: AppColors.whiteSwatch,
+                                  ],
+                                  if (widget.module.button2Text(context) != null) ...[
+                                    AppSpacing.groupMarginBox,
+                                    Flexible(
+                                      child: AppXButton(
+                                        autoResize: false,
+                                        onPressed: secondaryAction,
+                                        isLoading: false,
+                                        text: widget.module.button2Text(context) ?? '',
+                                        bgColor: Colors.transparent,
+                                        borderColor: AppColors.whiteSwatch,
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ],
-                              ],
+                              ),
                             ),
                           ],
                         ),

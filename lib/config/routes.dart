@@ -8,6 +8,7 @@ import 'package:murya/screens/job_details/job_details.dart';
 import 'package:murya/screens/job_evaluation/job_evaluation.dart';
 import 'package:murya/screens/landing/landing.dart';
 import 'package:murya/screens/ressources/resources.dart';
+import 'package:murya/screens/ressources/viewers/viewer_handler.dart';
 import 'package:murya/screens/search/search.dart';
 
 class AppRoutes {
@@ -69,6 +70,7 @@ List<BeamLocation<RouteInformationSerializable<dynamic>>> beamLocations = [
   JobEvaluationLocation(),
   // userRessourcesModule
   RessourcesLocation(),
+  ResourceViewerLocation(),
   // BaseLocation(),
   OtherLocation(), // Add other locations as needed
 ];

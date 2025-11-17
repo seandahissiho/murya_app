@@ -43,7 +43,7 @@ Future<void> openUrl(String? url) async {
   }
 }
 
-void navigateToPath(BuildContext context, {String? from, required String to}) {
+void navigateToPath(BuildContext context, {String? from, required String to, Object? data}) {
   context.read<AppBloc>().add(
         AppChangeRoute(
           currentRoute: from ?? to,
@@ -55,7 +55,9 @@ void navigateToPath(BuildContext context, {String? from, required String to}) {
   // Beamer.of(context).updateRouteInformation(RouteInformation(
   //   uri: uri,
   // ));
-  Beamer.of(context).beamToNamed(to);
+  Beamer.of(context).beamToNamed(to, data: {
+    'data': data,
+  });
 }
 
 /// Route that slides in from the right, full screen.

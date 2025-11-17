@@ -361,7 +361,7 @@ class CompetencyFamily {
   static CompetencyFamily empty() {
     return CompetencyFamily(
       id: '',
-      name: FAKER.company.name(),
+      name: FAKER.lorem.words(1).join(' '),
       description: FAKER.lorem.sentences(50).join(' '),
     );
   }
