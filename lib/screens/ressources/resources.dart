@@ -264,35 +264,49 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
             );
           }
           final resource = widget.resources[index - 1];
-          return Container(
-            margin: const EdgeInsets.only(right: AppSpacing.groupMargin),
-            decoration: const BoxDecoration(
-              color: AppColors.primaryDefault,
-              borderRadius: AppRadius.borderRadius28,
-            ),
-            padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  resource.title ?? '',
-                  style: theme.textTheme.labelLarge
-                      ?.copyWith(color: Colors.white, fontSize: theme.textTheme.displayMedium?.fontSize, height: 0),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
-                ),
-                AppSpacing.containerInsideMarginSmallBox,
-                Text(
-                  resource.createdAt?.formattedDate ?? '',
-                  style: theme.textTheme.labelLarge?.copyWith(color: Colors.white),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
-                ),
-              ],
+          return InkWell(
+            onTap: () {
+              if (resource.id.isNotEmptyOrNull) {
+                navigateToPath(
+                  context,
+                  to: AppRoutes.userResourceViewerModule.replaceFirst(
+                    ':id',
+                    resource.id!,
+                  ),
+                  data: resource,
+                );
+              }
+            },
+            child: Container(
+              margin: const EdgeInsets.only(right: AppSpacing.groupMargin),
+              decoration: const BoxDecoration(
+                color: AppColors.primaryDefault,
+                borderRadius: AppRadius.borderRadius28,
+              ),
+              padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    resource.title ?? '',
+                    style: theme.textTheme.labelLarge
+                        ?.copyWith(color: Colors.white, fontSize: theme.textTheme.displayMedium?.fontSize, height: 0),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                  ),
+                  AppSpacing.containerInsideMarginSmallBox,
+                  Text(
+                    resource.createdAt?.formattedDate ?? '',
+                    style: theme.textTheme.labelLarge?.copyWith(color: Colors.white),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                  ),
+                ],
+              ),
             ),
           );
         },
