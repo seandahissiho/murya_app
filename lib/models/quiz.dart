@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart' show listEquals, mapEquals;
 import 'package:murya/config/custom_classes.dart';
+import 'package:murya/models/Job.dart';
 
 enum QuizQuestionType {
   single_choice,
@@ -89,7 +90,6 @@ class QuestionResponses {
         text: responses[i].text,
         metadata: responses[i].metadata,
         isCorrect: responses[i].isCorrect,
-        points: responses[i].points,
         index: i,
         realIndex: responses[i].realIndex,
         timeLeftAfterAnswer: 0,
@@ -134,7 +134,6 @@ class QuestionResponses {
             text: result.text,
             metadata: result.metadata,
             isCorrect: result.isCorrect,
-            points: result.points,
             index: result.index,
             realIndex: result.realIndex,
             timeLeftAfterAnswer: timeLeftInSeconds,
@@ -148,6 +147,7 @@ class QuizQuestion {
   final String text;
   final int timeLimitInSeconds;
   final int points;
+  final Level difficulty;
   final QuizQuestionType type;
   final String mediaUrl;
   final Map<String, dynamic>? metadata;
@@ -156,7 +156,8 @@ class QuizQuestion {
     required this.id,
     required this.text,
     this.timeLimitInSeconds = 30,
-    this.points = 1,
+    required this.points,
+    required this.difficulty,
     this.type = QuizQuestionType.single_choice,
     this.mediaUrl = '',
     this.metadata,
@@ -168,6 +169,7 @@ class QuizQuestion {
       text: json['text'] as String,
       timeLimitInSeconds: (json['timeLimitInSeconds'] as num?)?.toInt() ?? 30,
       points: (json['points'] as num?)?.toInt() ?? 1,
+      difficulty: LevelExtension.fromJsonValue(json['level'] as String?),
       type: QuizQuestionTypeJson.fromJsonValue(json['type'] as String?),
       mediaUrl: (json['mediaUrl'] as String?) ?? '',
       metadata: (json['metadata'] as Map?) == null ? null : Map<String, dynamic>.from(json['metadata'] as Map),
@@ -201,6 +203,10 @@ class QuizQuestion {
   int get hashCode => Object.hash(id, text, timeLimitInSeconds, points, type, mediaUrl, _mapHash(metadata));
 
   Duration get timeLimit => Duration(seconds: timeLimitInSeconds);
+
+  static empty() {
+    return QuizQuestion(id: '', text: '', points: 0, difficulty: Level.beginner);
+  }
 }
 
 /// -------------------- QuizResponse --------------------
@@ -210,7 +216,6 @@ class QuizResponse {
   final String text;
   final Map<String, dynamic>? metadata;
   final bool isCorrect;
-  final int points;
   final int index;
   final int realIndex;
   final int timeLeftAfterAnswer;
@@ -221,7 +226,6 @@ class QuizResponse {
     required this.text,
     this.metadata,
     this.isCorrect = false,
-    this.points = 0,
     required this.index,
     required this.realIndex,
     required this.timeLeftAfterAnswer,
@@ -234,7 +238,6 @@ class QuizResponse {
       text: json['text'] as String,
       metadata: (json['metadata'] as Map?) == null ? null : Map<String, dynamic>.from(json['metadata'] as Map),
       isCorrect: (json['isCorrect'] as bool?) ?? false,
-      points: (json['points'] as num?)?.toInt() ?? 0,
       index: (json['index'] as num).toInt(),
       realIndex: (json['index'] as num).toInt(),
       timeLeftAfterAnswer: 0,
@@ -247,7 +250,6 @@ class QuizResponse {
         'text': text,
         'metadata': metadata,
         'isCorrect': isCorrect,
-        'points': points,
         'index': realIndex,
       };
 
@@ -260,7 +262,6 @@ class QuizResponse {
         other.text == text &&
         mapEquals(other.metadata, metadata) &&
         other.isCorrect == isCorrect &&
-        other.points == points &&
         other.index == index &&
         other.realIndex == realIndex &&
         other.timeLeftAfterAnswer == timeLeftAfterAnswer;
@@ -268,7 +269,7 @@ class QuizResponse {
 
   @override
   int get hashCode =>
-      Object.hash(id, questionId, text, _mapHash(metadata), isCorrect, points, index, realIndex, timeLeftAfterAnswer);
+      Object.hash(id, questionId, text, _mapHash(metadata), isCorrect, index, realIndex, timeLeftAfterAnswer);
 
   String? get freeTextAnswer => null;
 

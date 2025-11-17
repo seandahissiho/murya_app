@@ -124,42 +124,45 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                       Row(
                                         children: [
                                           Expanded(
-                                            child: RichText(
-                                              text: TextSpan(
-                                                text: _job.title,
-                                                style: GoogleFonts.anton(
-                                                  color: AppColors.textPrimary,
-                                                  fontSize: theme.textTheme.headlineLarge?.fontSize,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                                children: [
-                                                  WidgetSpan(
-                                                    alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
-                                                      child: GestureDetector(
-                                                        onTap: () async {
-                                                          await ShareUtils.shareContent(
-                                                            text: locale.discover_job_profile(_job.title),
-                                                            url: ShareUtils.generateJobDetailsLink(_job.id!),
-                                                            subject: locale.job_profile_page_title(_job.title),
-                                                          );
-                                                          if (kIsWeb && mounted && context.mounted) {
-                                                            // On web, there's a good chance we just copied to clipboard
-                                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                              SnackBar(content: Text(locale.link_copied)),
+                                            child: FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              child: RichText(
+                                                text: TextSpan(
+                                                  text: _job.title,
+                                                  style: GoogleFonts.anton(
+                                                    color: AppColors.textPrimary,
+                                                    fontSize: theme.textTheme.headlineLarge?.fontSize,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                  children: [
+                                                    WidgetSpan(
+                                                      alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
+                                                        child: GestureDetector(
+                                                          onTap: () async {
+                                                            await ShareUtils.shareContent(
+                                                              text: locale.discover_job_profile(_job.title),
+                                                              url: ShareUtils.generateJobDetailsLink(_job.id!),
+                                                              subject: locale.job_profile_page_title(_job.title),
                                                             );
-                                                          }
-                                                        },
-                                                        child: Icon(
-                                                          Icons.ios_share,
-                                                          size: theme.textTheme.displayLarge!.fontSize! / 1.75,
-                                                          color: AppColors.primaryDefault,
+                                                            if (kIsWeb && mounted && context.mounted) {
+                                                              // On web, there's a good chance we just copied to clipboard
+                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                SnackBar(content: Text(locale.link_copied)),
+                                                              );
+                                                            }
+                                                          },
+                                                          child: Icon(
+                                                            Icons.ios_share,
+                                                            size: theme.textTheme.displayLarge!.fontSize! / 1.75,
+                                                            color: AppColors.primaryDefault,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),

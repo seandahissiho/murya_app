@@ -129,10 +129,7 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                   ),
                   AppSpacing.elementMarginBox,
                   ScoreWidget(
-                    value: answers.fold(
-                        0,
-                        (int previousValue, element) =>
-                            previousValue + element.points < 0 ? 0 : previousValue + element.points),
+                    value: answers.fold(0, (int previousValue, element) => 0),
                   ),
                 ],
               ),

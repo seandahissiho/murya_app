@@ -155,6 +155,7 @@ class AuthenticationRepository extends BaseRepository {
 
         // save refresh token to shared preferences
         prefs.setString("refresh_token", refreshToken);
+        WE_ARE_BEFORE_FIRST_USER_FETCH = false;
 
         return (accessToken, refreshToken);
       },
