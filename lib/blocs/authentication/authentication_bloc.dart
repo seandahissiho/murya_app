@@ -218,9 +218,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       data: event.toJson(),
     );
     if (result.isError) {
-      notificationBloc.add(ErrorNotificationEvent(
-        message: result.error,
-      ));
+      // notificationBloc.add(ErrorNotificationEvent(
+      //   message: result.error,
+      // ));
       return;
     }
     _token = result.data!.$1;

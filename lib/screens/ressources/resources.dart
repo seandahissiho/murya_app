@@ -107,41 +107,40 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                 final int cost = Costs.byType(widget.type);
                 final canCreate = diamonds >= cost;
                 final int remaining = diamonds - cost;
-                final result = true ||
-                    await displayPopUp(
-                      context: this.context,
-                      okText: "Valider",
-                      okEnabled: canCreate,
-                      contents: [
-                        SvgPicture.asset(
-                          AppIcons.popupIconPath,
+                final result = await displayPopUp(
+                  context: this.context,
+                  okText: "Valider",
+                  okEnabled: canCreate,
+                  contents: [
+                    SvgPicture.asset(
+                      AppIcons.popupIconPath,
+                    ),
+                    AppSpacing.containerInsideMarginBox,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Débloquer votre ressource ?",
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          fontSize: theme.textTheme.displayMedium?.fontSize,
                         ),
-                        AppSpacing.containerInsideMarginBox,
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            "Débloquer votre ressource ?",
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              fontSize: theme.textTheme.displayMedium?.fontSize,
-                            ),
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                        AppSpacing.groupMarginBox,
-                        Text(
-                          "Utilisez vos points pour générer votre article personnalisé. L'IA de Murya l'adaptera instantanément à vos réponses du jour.",
-                          style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-                          textAlign: TextAlign.start,
-                        ),
-                        AppSpacing.containerInsideMarginBox,
-                        _costRow(label: "Coût de la création", cost: cost),
-                        AppSpacing.groupMarginBox,
-                        _costRow(label: "Votre solde actuel", cost: diamonds),
-                        AppSpacing.groupMarginBox,
-                        _costRow(label: "Votre solde restant (après création)", cost: remaining),
-                        AppSpacing.sectionMarginBox,
-                      ],
-                    );
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    AppSpacing.groupMarginBox,
+                    Text(
+                      "Utilisez vos points pour générer votre article personnalisé. L'IA de Murya l'adaptera instantanément à vos réponses du jour.",
+                      style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                      textAlign: TextAlign.start,
+                    ),
+                    AppSpacing.containerInsideMarginBox,
+                    _costRow(label: "Coût de la création", cost: cost),
+                    AppSpacing.groupMarginBox,
+                    _costRow(label: "Votre solde actuel", cost: diamonds),
+                    AppSpacing.groupMarginBox,
+                    _costRow(label: "Votre solde restant (après création)", cost: remaining),
+                    AppSpacing.sectionMarginBox,
+                  ],
+                );
                 if (result == true && mounted && context.mounted) {
                   displayPopUp(
                     context: context,
@@ -214,18 +213,12 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                   );
                   final userJobId = context.read<JobBloc>().state.userCurrentJob?.id;
                   if (mounted && context.mounted && userJobId.isNotEmptyOrNull) {
-                    context.read<ResourcesBloc>().add(GenerateResource(type: widget.type, userJobId: userJobId!));
+                    Future.delayed(const Duration(seconds: 5), () {
+                      if (mounted && context.mounted) {
+                        context.read<ResourcesBloc>().add(GenerateResource(type: widget.type, userJobId: userJobId!));
+                      }
+                    });
                   }
-                  // Future.delayed(const Duration(seconds: 10), () {
-                  //   if (mounted && context.mounted) {
-                  //     Navigator.of(context, rootNavigator: true).pop();
-                  //     navigateToPath(context,
-                  //         to: AppRoutes.userResourceViewerModule.replaceFirst(
-                  //           ':id',
-                  //           '7e1931aa-baa5-4898-85bd-13a8a86c3a9a',
-                  //         ));
-                  //   }
-                  // });
                 }
               },
               child: Container(

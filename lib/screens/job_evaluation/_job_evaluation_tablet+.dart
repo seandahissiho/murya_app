@@ -14,6 +14,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   int currentQuestionIndex = -1;
   bool initialized = false;
   final List<QuizResponse> answers = [];
+  List<int> pointsPerQuestion = [];
 
   // Adjust to whatever per-question time you need.
   static const _total = Duration(seconds: 30);
@@ -158,10 +159,9 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                   ),
                   const Spacer(),
                   ScoreWidget(
-                    value: answers.fold(
-                        0,
-                        (int previousValue, element) =>
-                            previousValue + element.points < 0 ? 0 : previousValue + element.points),
+                    // key: UniqueKey(),
+                    value: pointsPerQuestion.fold(
+                        0, (int previousValue, element) => previousValue + element < 0 ? 0 : previousValue + element),
                   ),
                 ],
               ),
@@ -348,284 +348,284 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         );
       },
     );
-    return Column(
-      children: [
-        Container(
-          color: AppColors.backgroundDefault,
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
-                },
-                child: SvgPicture.asset(
-                  AppIcons.exitIconPath,
-                  width: tabletAndAboveCTAHeight,
-                  height: tabletAndAboveCTAHeight,
-                ),
-              ),
-              const Spacer(),
-              Expanded(
-                flex: 8,
-                child: SizedBox(
-                  height: 24,
-                  child: ClipRRect(
-                    borderRadius: AppRadius.large,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        // Track (background)
-                        Container(color: AppColors.borderLight),
-                        // Animated fill (shrinks left -> right)
-                        if (_countdown != null)
-                          AnimatedBuilder(
-                            animation: _countdown!,
-                            builder: (context, _) {
-                              return Align(
-                                alignment: Alignment.centerRight,
-                                child: FractionallySizedBox(
-                                  alignment: Alignment.centerRight,
-                                  widthFactor: _countdown?.value, // 1.0..0.0
-                                  child: Container(
-                                    color: AppColors.primaryFocus,
-                                    child: Stack(
-                                      children: [
-                                        Positioned(
-                                          left: 8,
-                                          bottom: 0,
-                                          top: 0,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Flexible(
-                                                child: FittedBox(
-                                                  fit: BoxFit.scaleDown,
-                                                  child: Text(
-                                                    '$timeLeftInSeconds',
-                                                    style: theme.textTheme.labelLarge
-                                                        ?.copyWith(color: AppColors.whiteSwatch),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const Spacer(),
-              Container(
-                height: tabletAndAboveCTAHeight / 1.5,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.tinyMargin,
-                ),
-                child: Center(
-                  child: Text(
-                    "${answers.fold(0, (int previousValue, element) => previousValue + element.points < 0 ? 0 : previousValue + element.points)}",
-                    style: theme.textTheme.displayMedium?.copyWith(height: 1),
-                  ),
-                ),
-              ),
-              AppSpacing.elementMarginBox,
-              SvgPicture.asset(
-                AppIcons.diamondIconPath,
-                width: tabletAndAboveCTAHeight / 2,
-                height: tabletAndAboveCTAHeight / 2,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.primaryFocus,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ],
-          ),
-        ),
-        AppSpacing.sectionMarginBox,
-        Expanded(
-          flex: 4,
-          child: Center(
-            child: Container(
-              constraints: const BoxConstraints(
-                maxWidth: 534 + 795 - 111,
-                minHeight: 400,
-                maxHeight: 534,
-              ),
-              child: Stack(
-                children: [
-                  LayoutBuilder(builder: (context, bigConstraints) {
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                "Question ${currentQuestionIndex + 1}/${quiz.questionResponses.length}",
-                                style: theme.textTheme.labelLarge,
-                              ),
-                              AppSpacing.groupMarginBox,
-                              Expanded(
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                    minWidth: bigConstraints.maxWidth,
-                                    minHeight: bigConstraints.maxWidth / 1.618,
-                                    maxWidth: bigConstraints.maxWidth,
-                                    maxHeight: bigConstraints.maxWidth,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.primaryDefault,
-                                    borderRadius: AppRadius.borderRadius20,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        AppSpacing.sectionMarginBox,
-                        Expanded(
-                          child: LayoutBuilder(builder: (context, constraints) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                AppSpacing.groupMarginBox,
-                                AutoSizeText(
-                                  currentQuestion?.question.text ?? '',
-                                  style: theme.textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600),
-                                  maxLines: 3,
-                                  textAlign: TextAlign.center,
-                                ),
-                                AppSpacing.sectionMarginBox,
-                                Container(
-                                  constraints: BoxConstraints(
-                                    maxWidth: constraints.maxWidth,
-                                    maxHeight: constraints.maxWidth / (1.618 * 1.25),
-                                  ),
-                                  child: LayoutBuilder(builder: (context, constraints) {
-                                    return Wrap(
-                                      spacing: AppSpacing.elementMargin,
-                                      runSpacing: AppSpacing.elementMargin,
-                                      children: List.generate(4, (index) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            if (locked) return;
-                                            if (displayCorrectIndex != -1) {
-                                              // already showing correct answer, do nothing
-                                              return;
-                                            }
-                                            if (showVerificationState != index) {
-                                              showVerificationState = index;
-                                              setState(() {});
-                                            } else {}
-                                          },
-                                          onDoubleTap: () {
-                                            if (locked) return;
-                                            showVerificationState = index;
-                                            showCorrectAnswer();
-                                          },
-                                          child: Card(
-                                            elevation: 2,
-                                            shadowColor: AppColors.borderMedium,
-                                            margin: EdgeInsetsGeometry.zero,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: AppRadius.borderRadius20,
-                                            ),
-                                            child: Stack(
-                                              children: [
-                                                _card(constraints, index, theme, type: "normal"),
-                                                if (showVerificationState == index && displayCorrectIndex == -1) ...[
-                                                  Positioned.fill(
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        color: AppColors.backgroundCard.withValues(alpha: .65),
-                                                        borderRadius: AppRadius.borderRadius20,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned.fill(
-                                                    child: LayoutBuilder(builder: (context, constraints) {
-                                                      return Container(
-                                                        decoration: BoxDecoration(
-                                                          color: AppColors.primaryFocus.withValues(alpha: .15),
-                                                          borderRadius: AppRadius.borderRadius20,
-                                                          border: Border.all(
-                                                            color: AppColors.primaryFocus,
-                                                            width: 2,
-                                                          ),
-                                                        ),
-                                                        child: Center(
-                                                          child: Padding(
-                                                            padding: EdgeInsets.only(top: constraints.maxHeight / 3),
-                                                            child: AppXButton(
-                                                              onPressed: () {
-                                                                showCorrectAnswer();
-                                                              },
-                                                              isLoading: false,
-                                                              text: "Vérifier",
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }),
-                                                  ),
-                                                ],
-                                                if (displayCorrectIndex != -1) ...[
-                                                  Positioned.fill(
-                                                    child: Container(
-                                                      decoration: const BoxDecoration(
-                                                        color: Colors.transparent,
-                                                        borderRadius: AppRadius.borderRadius20,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  if (displayCorrectIndex == index)
-                                                    _card(constraints, index, theme, type: "correct"),
-                                                  if (displayCorrectIndex != index && showVerificationState == index)
-                                                    _card(constraints, index, theme, type: "error"),
-                                                ]
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                    );
-                                  }),
-                                )
-                              ],
-                            );
-                          }),
-                        )
-                      ],
-                    );
-                  }),
-                  if (currentQuestion == null)
-                    Positioned.fill(
-                      child: Container(
-                        color: Colors.transparent,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        const Spacer(),
-        AppSpacing.pageMarginBox,
-        SizedBox(height: MediaQuery.of(context).padding.bottom),
-      ],
-    );
+    // return Column(
+    //   children: [
+    //     Container(
+    //       color: AppColors.backgroundDefault,
+    //       child: Row(
+    //         children: [
+    //           GestureDetector(
+    //             onTap: () {
+    //               navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
+    //             },
+    //             child: SvgPicture.asset(
+    //               AppIcons.exitIconPath,
+    //               width: tabletAndAboveCTAHeight,
+    //               height: tabletAndAboveCTAHeight,
+    //             ),
+    //           ),
+    //           const Spacer(),
+    //           Expanded(
+    //             flex: 8,
+    //             child: SizedBox(
+    //               height: 24,
+    //               child: ClipRRect(
+    //                 borderRadius: AppRadius.large,
+    //                 child: Stack(
+    //                   fit: StackFit.expand,
+    //                   children: [
+    //                     // Track (background)
+    //                     Container(color: AppColors.borderLight),
+    //                     // Animated fill (shrinks left -> right)
+    //                     if (_countdown != null)
+    //                       AnimatedBuilder(
+    //                         animation: _countdown!,
+    //                         builder: (context, _) {
+    //                           return Align(
+    //                             alignment: Alignment.centerRight,
+    //                             child: FractionallySizedBox(
+    //                               alignment: Alignment.centerRight,
+    //                               widthFactor: _countdown?.value, // 1.0..0.0
+    //                               child: Container(
+    //                                 color: AppColors.primaryFocus,
+    //                                 child: Stack(
+    //                                   children: [
+    //                                     Positioned(
+    //                                       left: 8,
+    //                                       bottom: 0,
+    //                                       top: 0,
+    //                                       child: Column(
+    //                                         mainAxisSize: MainAxisSize.max,
+    //                                         mainAxisAlignment: MainAxisAlignment.center,
+    //                                         children: [
+    //                                           Flexible(
+    //                                             child: FittedBox(
+    //                                               fit: BoxFit.scaleDown,
+    //                                               child: Text(
+    //                                                 '$timeLeftInSeconds',
+    //                                                 style: theme.textTheme.labelLarge
+    //                                                     ?.copyWith(color: AppColors.whiteSwatch),
+    //                                               ),
+    //                                             ),
+    //                                           ),
+    //                                         ],
+    //                                       ),
+    //                                     )
+    //                                   ],
+    //                                 ),
+    //                               ),
+    //                             ),
+    //                           );
+    //                         },
+    //                       ),
+    //                   ],
+    //                 ),
+    //               ),
+    //             ),
+    //           ),
+    //           const Spacer(),
+    //           Container(
+    //             height: tabletAndAboveCTAHeight / 1.5,
+    //             padding: const EdgeInsets.symmetric(
+    //               horizontal: AppSpacing.tinyMargin,
+    //             ),
+    //             child: Center(
+    //               child: Text(
+    //                 "${answers.fold(0, (int previousValue, element) => previousValue + element.points < 0 ? 0 : previousValue + element.points)}",
+    //                 style: theme.textTheme.displayMedium?.copyWith(height: 1),
+    //               ),
+    //             ),
+    //           ),
+    //           AppSpacing.elementMarginBox,
+    //           SvgPicture.asset(
+    //             AppIcons.diamondIconPath,
+    //             width: tabletAndAboveCTAHeight / 2,
+    //             height: tabletAndAboveCTAHeight / 2,
+    //             colorFilter: const ColorFilter.mode(
+    //               AppColors.primaryFocus,
+    //               BlendMode.srcIn,
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //     AppSpacing.sectionMarginBox,
+    //     Expanded(
+    //       flex: 4,
+    //       child: Center(
+    //         child: Container(
+    //           constraints: const BoxConstraints(
+    //             maxWidth: 534 + 795 - 111,
+    //             minHeight: 400,
+    //             maxHeight: 534,
+    //           ),
+    //           child: Stack(
+    //             children: [
+    //               LayoutBuilder(builder: (context, bigConstraints) {
+    //                 return Row(
+    //                   children: [
+    //                     Expanded(
+    //                       child: Column(
+    //                         crossAxisAlignment: CrossAxisAlignment.start,
+    //                         mainAxisAlignment: MainAxisAlignment.start,
+    //                         mainAxisSize: MainAxisSize.max,
+    //                         children: [
+    //                           Text(
+    //                             "Question ${currentQuestionIndex + 1}/${quiz.questionResponses.length}",
+    //                             style: theme.textTheme.labelLarge,
+    //                           ),
+    //                           AppSpacing.groupMarginBox,
+    //                           Expanded(
+    //                             child: Container(
+    //                               constraints: BoxConstraints(
+    //                                 minWidth: bigConstraints.maxWidth,
+    //                                 minHeight: bigConstraints.maxWidth / 1.618,
+    //                                 maxWidth: bigConstraints.maxWidth,
+    //                                 maxHeight: bigConstraints.maxWidth,
+    //                               ),
+    //                               decoration: const BoxDecoration(
+    //                                 color: AppColors.primaryDefault,
+    //                                 borderRadius: AppRadius.borderRadius20,
+    //                               ),
+    //                             ),
+    //                           ),
+    //                         ],
+    //                       ),
+    //                     ),
+    //                     AppSpacing.sectionMarginBox,
+    //                     Expanded(
+    //                       child: LayoutBuilder(builder: (context, constraints) {
+    //                         return Column(
+    //                           crossAxisAlignment: CrossAxisAlignment.start,
+    //                           mainAxisAlignment: MainAxisAlignment.center,
+    //                           mainAxisSize: MainAxisSize.max,
+    //                           children: [
+    //                             AppSpacing.groupMarginBox,
+    //                             AutoSizeText(
+    //                               currentQuestion?.question.text ?? '',
+    //                               style: theme.textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600),
+    //                               maxLines: 3,
+    //                               textAlign: TextAlign.center,
+    //                             ),
+    //                             AppSpacing.sectionMarginBox,
+    //                             Container(
+    //                               constraints: BoxConstraints(
+    //                                 maxWidth: constraints.maxWidth,
+    //                                 maxHeight: constraints.maxWidth / (1.618 * 1.25),
+    //                               ),
+    //                               child: LayoutBuilder(builder: (context, constraints) {
+    //                                 return Wrap(
+    //                                   spacing: AppSpacing.elementMargin,
+    //                                   runSpacing: AppSpacing.elementMargin,
+    //                                   children: List.generate(4, (index) {
+    //                                     return GestureDetector(
+    //                                       onTap: () {
+    //                                         if (locked) return;
+    //                                         if (displayCorrectIndex != -1) {
+    //                                           // already showing correct answer, do nothing
+    //                                           return;
+    //                                         }
+    //                                         if (showVerificationState != index) {
+    //                                           showVerificationState = index;
+    //                                           setState(() {});
+    //                                         } else {}
+    //                                       },
+    //                                       onDoubleTap: () {
+    //                                         if (locked) return;
+    //                                         showVerificationState = index;
+    //                                         showCorrectAnswer();
+    //                                       },
+    //                                       child: Card(
+    //                                         elevation: 2,
+    //                                         shadowColor: AppColors.borderMedium,
+    //                                         margin: EdgeInsetsGeometry.zero,
+    //                                         shape: const RoundedRectangleBorder(
+    //                                           borderRadius: AppRadius.borderRadius20,
+    //                                         ),
+    //                                         child: Stack(
+    //                                           children: [
+    //                                             _card(constraints, index, theme, type: "normal"),
+    //                                             if (showVerificationState == index && displayCorrectIndex == -1) ...[
+    //                                               Positioned.fill(
+    //                                                 child: Container(
+    //                                                   decoration: BoxDecoration(
+    //                                                     color: AppColors.backgroundCard.withValues(alpha: .65),
+    //                                                     borderRadius: AppRadius.borderRadius20,
+    //                                                   ),
+    //                                                 ),
+    //                                               ),
+    //                                               Positioned.fill(
+    //                                                 child: LayoutBuilder(builder: (context, constraints) {
+    //                                                   return Container(
+    //                                                     decoration: BoxDecoration(
+    //                                                       color: AppColors.primaryFocus.withValues(alpha: .15),
+    //                                                       borderRadius: AppRadius.borderRadius20,
+    //                                                       border: Border.all(
+    //                                                         color: AppColors.primaryFocus,
+    //                                                         width: 2,
+    //                                                       ),
+    //                                                     ),
+    //                                                     child: Center(
+    //                                                       child: Padding(
+    //                                                         padding: EdgeInsets.only(top: constraints.maxHeight / 3),
+    //                                                         child: AppXButton(
+    //                                                           onPressed: () {
+    //                                                             showCorrectAnswer();
+    //                                                           },
+    //                                                           isLoading: false,
+    //                                                           text: "Vérifier",
+    //                                                         ),
+    //                                                       ),
+    //                                                     ),
+    //                                                   );
+    //                                                 }),
+    //                                               ),
+    //                                             ],
+    //                                             if (displayCorrectIndex != -1) ...[
+    //                                               Positioned.fill(
+    //                                                 child: Container(
+    //                                                   decoration: const BoxDecoration(
+    //                                                     color: Colors.transparent,
+    //                                                     borderRadius: AppRadius.borderRadius20,
+    //                                                   ),
+    //                                                 ),
+    //                                               ),
+    //                                               if (displayCorrectIndex == index)
+    //                                                 _card(constraints, index, theme, type: "correct"),
+    //                                               if (displayCorrectIndex != index && showVerificationState == index)
+    //                                                 _card(constraints, index, theme, type: "error"),
+    //                                             ]
+    //                                           ],
+    //                                         ),
+    //                                       ),
+    //                                     );
+    //                                   }),
+    //                                 );
+    //                               }),
+    //                             )
+    //                           ],
+    //                         );
+    //                       }),
+    //                     )
+    //                   ],
+    //                 );
+    //               }),
+    //               if (currentQuestion == null)
+    //                 Positioned.fill(
+    //                   child: Container(
+    //                     color: Colors.transparent,
+    //                   ),
+    //                 ),
+    //             ],
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //     const Spacer(),
+    //     AppSpacing.pageMarginBox,
+    //     SizedBox(height: MediaQuery.of(context).padding.bottom),
+    //   ],
+    // );
   }
 
   void moveToNextQuestion() {
@@ -671,10 +671,16 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     Future.delayed(const Duration(milliseconds: 2500), () {
       if (!mounted) return;
       answers.add(currentQuestion!.toQuizResponse(
-            selectedResponseIndex: 0, // showVerificationState,
-            timeLeftInSeconds: 30, // timeLeftInSeconds,
+            selectedResponseIndex: showVerificationState,
+            timeLeftInSeconds: timeLeftInSeconds,
           ) ??
           QuizResponse.empty());
+      if (answers.last.isCorrect) {
+        pointsPerQuestion.add((currentQuestion?.question.points ?? 0) + timeLeftInSeconds);
+      } else {
+        pointsPerQuestion.add(0);
+      }
+      setState(() {});
       moveToNextQuestion();
     });
   }

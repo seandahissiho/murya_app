@@ -423,4 +423,19 @@ extension LevelExtension on Level {
         return locale.expert;
     }
   }
+
+  static fromJsonValue(String? json) {
+    switch (json) {
+      case 'EASY':
+        return Level.beginner;
+      case 'MEDIUM':
+        return Level.intermediate;
+      case 'HARD':
+        return Level.advanced;
+      case 'EXPERT':
+        return Level.expert;
+      default:
+        return Level.beginner;
+    }
+  }
 }
