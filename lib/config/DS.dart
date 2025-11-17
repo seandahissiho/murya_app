@@ -1174,7 +1174,7 @@ class DeviceHelper {
       case DeviceType.tablet:
       case DeviceType.desktop:
       case DeviceType.largeDesktop:
-        return 436;
+        return 536;
     }
   }
 }

@@ -9,10 +9,11 @@ class TabletJobEvaluationScreen extends StatefulWidget {
 
 class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> with TickerProviderStateMixin {
   late final String jobId;
-  late final Quiz quiz;
+  Quiz quiz = Quiz(questionResponses: []);
   QuestionResponses? currentQuestion;
   int currentQuestionIndex = -1;
-  bool initialized = false;
+  bool quizLoaded = false;
+  bool started = false;
   final List<QuizResponse> answers = [];
   List<int> pointsPerQuestion = [];
 
@@ -38,6 +39,66 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       final dynamic beamState = Beamer.of(context).currentBeamLocation.state;
       jobId = beamState.pathParameters['id'];
       context.read<QuizBloc>().add(LoadQuizForJob(jobId: jobId));
+      final theme = Theme.of(context);
+      displayPopUp(
+        context: context,
+        okText: "C'est parti !",
+        // okEnabled: quizLoaded,
+        contents: [
+          SvgPicture.asset(
+            AppIcons.popupIconPath,
+          ),
+          AppSpacing.containerInsideMarginBox,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              "Prêt(e) à vous évaluer ?",
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontSize: theme.textTheme.displayMedium?.fontSize,
+              ),
+              textAlign: TextAlign.start,
+            ),
+          ),
+          AppSpacing.groupMarginBox,
+          Text(
+            "Vous allez démarrer le questionnaire du métier de Product Manager.",
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+            textAlign: TextAlign.start,
+          ),
+          AppSpacing.groupMarginBox,
+          Text(
+            "Il se compose de 10 questions à choix multiple.",
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+            textAlign: TextAlign.start,
+          ),
+          AppSpacing.groupMarginBox,
+          Text(
+            "Vos réponses permettront de créer votre ressource personnalisée.",
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+            textAlign: TextAlign.start,
+          ),
+          AppSpacing.containerInsideMarginBox,
+          Text(
+            "Conseil : Répondez instinctivement pour une analyse plus juste. Cela prend moins de 5 minutes !",
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic, fontWeight: FontWeight.w100),
+            textAlign: TextAlign.start,
+          ),
+          AppSpacing.sectionMarginBox,
+        ],
+      ).then((value) {
+        if (value == true) {
+          started = true;
+          setState(() {});
+          Future.delayed(const Duration(milliseconds: 250), () {
+            moveToNextQuestion();
+          });
+        } else {
+          if (!mounted) return;
+          navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
+        }
+      });
+
       // quiz = Quiz.fromJson(TEST_QUIZ);
       // initialized = true;
       setState(() {});
@@ -67,11 +128,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       listener: (context, state) {
         if (state is QuizLoaded) {
           quiz = state.quiz;
-          initialized = true;
+          quizLoaded = true;
           currentQuestionIndex = -1;
-          Future.delayed(const Duration(seconds: 1), () {
-            moveToNextQuestion();
-          });
         }
         if (state is QuizSaved) {
           navigateToPath(context, to: AppRoutes.landing);
@@ -79,9 +137,9 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         setState(() {});
       },
       builder: (context, state) {
-        if (!initialized) {
-          return const SizedBox.shrink();
-        }
+        // if (!quizLoaded || !started) {
+        //   return const SizedBox.shrink();
+        // }
         return Column(
           children: [
             Container(
@@ -633,15 +691,59 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     if (currentQuestionIndex >= quiz.questionResponses.length) {
       currentQuestionIndex;
       // Quiz is over
-      DIAMONDS += pointsPerQuestion.fold(
+      final theme = Theme.of(context);
+      final earnedDIAMONDS = pointsPerQuestion.fold(
           0, (int previousValue, element) => previousValue + element < 0 ? 0 : previousValue + element);
-      context.read<QuizBloc>().add(SaveQuizResults(
-            jobId: jobId,
-            quizId: quiz.id!,
-            questions: quiz.questionResponses.map((e) => e.question).toList(),
-            responses: answers,
-            context: context,
-          ));
+      DIAMONDS += earnedDIAMONDS;
+      displayPopUp(
+        context: context,
+        okText: "Voir mon espace",
+        // okEnabled: quizLoaded,
+        contentAlignment: Alignment.center,
+        contents: [
+          SvgPicture.asset(
+            AppIcons.popupIconPath,
+          ),
+          AppSpacing.containerInsideMarginBox,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              "Évaluation terminée !",
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontSize: theme.textTheme.displayMedium?.fontSize,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          AppSpacing.groupMarginBox,
+          Text(
+            "Bravo, vos 10 réponses ont été analysées !",
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+            textAlign: TextAlign.center,
+          ),
+          AppSpacing.containerInsideMarginBox,
+          Text(
+            "Le diagramme de compétences est actualisé et vous pouvez créer la ressource parfaite pour continuer à progresser.",
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+            textAlign: TextAlign.center,
+          ),
+          AppSpacing.containerInsideMarginBox,
+          _todayPerformanceWidget(),
+          AppSpacing.containerInsideMarginBox,
+          _todayRewardsWidget(),
+          AppSpacing.sectionMarginBox,
+        ],
+      ).then((value) {
+        if (!mounted) return;
+        context.read<QuizBloc>().add(SaveQuizResults(
+              jobId: jobId,
+              quizId: quiz.id!,
+              questions: quiz.questionResponses.map((e) => e.question).toList(),
+              responses: answers,
+              context: context,
+            ));
+      });
+
       // navigateToPath(context, to: AppRoutes.landing);
       // navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
       return;
@@ -846,6 +948,75 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
           ],
         ),
       ),
+    );
+  }
+
+  Widget _todayPerformanceWidget() {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text("Votre performance du jour", style: theme.textTheme.bodyLarge),
+        AppSpacing.groupMarginBox,
+        Row(
+          children: [
+            const Spacer(flex: 4),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("${answers.whereOrEmpty((a) => a.isCorrect).length}",
+                    style: theme.textTheme.displaySmall
+                        ?.copyWith(color: AppColors.successDefault, fontWeight: FontWeight.bold)),
+                AppSpacing.elementMarginBox,
+                Text("Bonnes réponses", style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textTertiary)),
+              ],
+            ),
+            const Spacer(flex: 5),
+            Container(
+              color: AppColors.primaryDisabled,
+              height: 50,
+              width: 1,
+            ),
+            const Spacer(flex: 5),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("${answers.whereOrEmpty((a) => a.isCorrect).length}",
+                    style: theme.textTheme.displaySmall
+                        ?.copyWith(color: AppColors.errorDefault, fontWeight: FontWeight.bold)),
+                AppSpacing.elementMarginBox,
+                Text("Réponses à revoir", style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textTertiary)),
+              ],
+            ),
+            const Spacer(flex: 4),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _todayRewardsWidget() {
+    final theme = Theme.of(context);
+    final earnedDIAMONDS = pointsPerQuestion.fold(
+        0, (int previousValue, element) => previousValue + element < 0 ? 0 : previousValue + element);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          "Récompense",
+          style: theme.textTheme.labelLarge,
+        ),
+        AppSpacing.groupMarginBox,
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ScoreWidget(value: earnedDIAMONDS, isReward: true),
+          ],
+        ),
+      ],
     );
   }
 }
