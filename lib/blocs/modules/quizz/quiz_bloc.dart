@@ -68,6 +68,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
       event.context.read<JobBloc>().add(LoadUserCurrentJob(context: event.context));
     }
     emit(QuizSaved());
+    profileBloc.add(ProfileLoadEvent());
   }
 
   FutureOr<void> _loadQuizForJob(LoadQuizForJob event, Emitter<QuizState> emit) async {
