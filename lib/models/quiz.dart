@@ -79,6 +79,11 @@ class QuestionResponses {
   factory QuestionResponses.fromJson(Map<String, dynamic> json) {
     final resp = (json['responses'] as List?) ?? const [];
     final responses = resp.map((e) => QuizResponse.fromJson(Map<String, dynamic>.from(e))).toList();
+    // sort the responses by their realIndex to have a stable order before shuffling
+    if (responses.isNotEmpty) {
+      responses.sort((a, b) => a.index.compareTo(b.index));
+    }
+
     // shuffle responses to avoid always having the correct answer at the same index
     // if (responses.length > 1) {
     //   responses.shuffle();
