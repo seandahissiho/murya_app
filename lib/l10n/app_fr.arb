@@ -113,15 +113,15 @@
   "@skillsDiagramTitle": {
     "description": "Titre du diagramme des compétences"
   },
-  "skillLevel_easy": "Facile",
+  "skillLevel_easy": "Débutant",
   "@skillLevel_easy": {
     "description": "Niveau de compétence facile"
   },
-  "skillLevel_medium": "Moyen",
+  "skillLevel_medium": "Intermédiaire",
   "@skillLevel_medium": {
     "description": "Niveau de compétence moyen"
   },
-  "skillLevel_hard": "Difficile",
+  "skillLevel_hard": "Senior",
   "@skillLevel_hard": {
     "description": "Niveau de compétence difficile"
   },

@@ -30602,234 +30602,57 @@ class JobRepository extends BaseRepository {
         Map<String, dynamic> dataBeforeQuizz = {};
         Map<String, dynamic> dataAfterQuizz = {
           "data": {
-            "userJobId": "c33bffbc-0fe0-49df-a228-654c957a8b67",
-            "job": {
-              "id": "f3cb535f-abbc-4dc6-a2f3-2ffa8353ab73",
-              "title": "Product Manager",
-              "normalizedName": "product_manager",
-              "description":
-                  "Responsable de la vision, de la stratégie et de la livraison du produit, en coordonnant équipes et parties prenantes pour maximiser la valeur client et business.",
-              "competencyFamilies": [
-                {"id": "56209552-c1c7-454b-9471-189162fa5eb5", "name": "Vision"},
-                {"id": "d24ccc17-99b2-46c5-ac6a-2535bc3afcb4", "name": "Execution"},
-                {"id": "710feee6-9bea-4a06-a296-a9056b154854", "name": "Analyse"},
-                {"id": "8e8419d1-438c-48c4-a8ab-059f95931b13", "name": "Relation"},
-                {"id": "503f93a3-5ebf-45cd-a2e3-2c191c642a9f", "name": "Leadership"}
-              ]
-            },
-            "user": {"id": "8c471692-0dfe-454d-81e2-8c0695aa0468", "firstname": null, "lastname": null, "email": null},
-            "summary": {
-              "totalCompetencies": 10,
-              "avgPercentage": 100,
-              "strongCount": 10,
-              "weakCount": 0,
-              "lastQuizAt": "2025-11-17T08:00:19.000Z"
-            },
-            "competencies": [
+            "jobId": "f3cb535f-abbc-4dc6-a2f3-2ffa8353ab73",
+            "from": "2025-11-17T00:00:00.000Z",
+            "to": "2025-11-17T23:59:59.000Z",
+            "count": 3,
+            "results": [
               {
-                "competencyId": "54284041-1964-41a0-a906-5c22c9b82bdb",
-                "competencyFamiliesIds": [
-                  "741ba6b6-518f-4c81-9958-3c552c2aa133",
-                  "710feee6-9bea-4a06-a296-a9056b154854"
-                ],
-                "name": "Conduire des interviews",
-                "normalizedName": "conduire_des_interviews",
-                "type": "HARD_SKILL",
-                "level": "MEDIUM",
+                "userJobId": "237373d8-db97-4c39-bb53-e2c179ca590e",
+                "userId": "6af14fff-dd37-4b18-9500-6775157fc66f",
+                "firstname": null,
+                "lastname": null,
+                "jobId": "f3cb535f-abbc-4dc6-a2f3-2ffa8353ab73",
+                "jobTitle": "Product Manager",
+                "totalScore": 1150,
+                "maxScoreSum": 1150,
                 "percentage": 100,
-                "currentScore": 100,
-                "maxScore": 100,
-                "attemptsCount": 1,
-                "bestScore": 100,
-                "lastQuizAt": "2025-11-17T08:00:19.000Z",
-                "history": [
-                  {"date": "2025-11-17T08:00:19.000Z", "score": 100, "maxScore": 100, "percentage": 100}
-                ]
+                "completedQuizzes": 1,
+                "lastQuizAt": "2025-11-17T12:44:14.000Z",
+                "rank": 1
               },
               {
-                "competencyId": "4c2555d5-631e-4f5d-9b39-08113938e7d8",
-                "competencyFamiliesIds": [
-                  "6793418e-5a0f-4add-9258-cee297ac7395",
-                  "56209552-c1c7-454b-9471-189162fa5eb5"
-                ],
-                "name": "Évaluer la concurrence",
-                "normalizedName": "evaluer_la_concurrence",
-                "type": "HARD_SKILL",
-                "level": "HARD",
-                "percentage": 100,
-                "currentScore": 100,
-                "maxScore": 100,
-                "attemptsCount": 1,
-                "bestScore": 100,
-                "lastQuizAt": "2025-11-17T08:00:19.000Z",
-                "history": [
-                  {"date": "2025-11-17T08:00:19.000Z", "score": 100, "maxScore": 100, "percentage": 100}
-                ]
+                "userJobId": "8f7215cd-86ec-4c40-8a11-7e4f3fde0fa1",
+                "userId": "481d226b-b7df-4e11-935c-0401b7d752cd",
+                "firstname": null,
+                "lastname": null,
+                "jobId": "f3cb535f-abbc-4dc6-a2f3-2ffa8353ab73",
+                "jobTitle": "Product Manager",
+                "totalScore": 820,
+                "maxScoreSum": 1150,
+                "percentage": 71.3,
+                "completedQuizzes": 1,
+                "lastQuizAt": "2025-11-17T12:48:16.000Z",
+                "rank": 2
               },
               {
-                "competencyId": "b2e56af8-a8cb-4d9f-bb86-5464eee5153f",
-                "competencyFamiliesIds": [
-                  "0b9eb528-98b5-4532-a120-0ff31650a50a",
-                  "d24ccc17-99b2-46c5-ac6a-2535bc3afcb4"
-                ],
-                "name": "Prioriser le backlog",
-                "normalizedName": "prioriser_le_backlog",
-                "type": "HARD_SKILL",
-                "level": "HARD",
-                "percentage": 100,
-                "currentScore": 110,
-                "maxScore": 110,
-                "attemptsCount": 1,
-                "bestScore": 110,
-                "lastQuizAt": "2025-11-17T08:00:19.000Z",
-                "history": [
-                  {"date": "2025-11-17T08:00:19.000Z", "score": 110, "maxScore": 110, "percentage": 100}
-                ]
-              },
-              {
-                "competencyId": "c9d3fddc-da46-42a3-a017-14742fac3b1f",
-                "competencyFamiliesIds": [
-                  "0be0de36-fcb7-41c6-8997-6c5789902a7a",
-                  "d24ccc17-99b2-46c5-ac6a-2535bc3afcb4"
-                ],
-                "name": "Planifier les releases",
-                "normalizedName": "planifier_les_releases",
-                "type": "HARD_SKILL",
-                "level": "MEDIUM",
-                "percentage": 100,
-                "currentScore": 110,
-                "maxScore": 110,
-                "attemptsCount": 1,
-                "bestScore": 110,
-                "lastQuizAt": "2025-11-17T08:00:19.000Z",
-                "history": [
-                  {"date": "2025-11-17T08:00:19.000Z", "score": 110, "maxScore": 110, "percentage": 100}
-                ]
-              },
-              {
-                "competencyId": "c77226b0-b51e-4c93-b972-4b2a9141228a",
-                "competencyFamiliesIds": [
-                  "c0cd271b-0450-424c-9786-717728aad71d",
-                  "710feee6-9bea-4a06-a296-a9056b154854"
-                ],
-                "name": "Interpréter les données",
-                "normalizedName": "interpreter_les_donnees",
-                "type": "HARD_SKILL",
-                "level": "HARD",
-                "percentage": 100,
-                "currentScore": 110,
-                "maxScore": 110,
-                "attemptsCount": 1,
-                "bestScore": 110,
-                "lastQuizAt": "2025-11-17T08:00:19.000Z",
-                "history": [
-                  {"date": "2025-11-17T08:00:19.000Z", "score": 110, "maxScore": 110, "percentage": 100}
-                ]
-              },
-              {
-                "competencyId": "2d8dcd7c-9765-482c-9a2f-f734a749de7f",
-                "competencyFamiliesIds": [
-                  "c0cd271b-0450-424c-9786-717728aad71d",
-                  "710feee6-9bea-4a06-a296-a9056b154854"
-                ],
-                "name": "Définir les métriques",
-                "normalizedName": "definir_les_metriques",
-                "type": "HARD_SKILL",
-                "level": "MEDIUM",
-                "percentage": 100,
-                "currentScore": 110,
-                "maxScore": 110,
-                "attemptsCount": 1,
-                "bestScore": 110,
-                "lastQuizAt": "2025-11-17T08:00:19.000Z",
-                "history": [
-                  {"date": "2025-11-17T08:00:19.000Z", "score": 110, "maxScore": 110, "percentage": 100}
-                ]
-              },
-              {
-                "competencyId": "ebd1f61e-d034-425e-b445-fbc251111106",
-                "competencyFamiliesIds": [
-                  "0be0de36-fcb7-41c6-8997-6c5789902a7a",
-                  "d24ccc17-99b2-46c5-ac6a-2535bc3afcb4"
-                ],
-                "name": "Suivre l'avancement",
-                "normalizedName": "suivre_l_avancement",
-                "type": "HARD_SKILL",
-                "level": "EASY",
-                "percentage": 100,
-                "currentScore": 120,
-                "maxScore": 120,
-                "attemptsCount": 1,
-                "bestScore": 120,
-                "lastQuizAt": "2025-11-17T08:00:19.000Z",
-                "history": [
-                  {"date": "2025-11-17T08:00:19.000Z", "score": 120, "maxScore": 120, "percentage": 100}
-                ]
-              },
-              {
-                "competencyId": "0b278f8c-fe13-41d5-8688-84a2e8de34ee",
-                "competencyFamiliesIds": [
-                  "48884407-d059-40ad-a0f9-00e365eed9da",
-                  "503f93a3-5ebf-45cd-a2e3-2c191c642a9f"
-                ],
-                "name": "Améliorer les processus",
-                "normalizedName": "ameliorer_les_processus",
-                "type": "HARD_SKILL",
-                "level": "HARD",
-                "percentage": 100,
-                "currentScore": 130,
-                "maxScore": 130,
-                "attemptsCount": 1,
-                "bestScore": 130,
-                "lastQuizAt": "2025-11-17T08:00:19.000Z",
-                "history": [
-                  {"date": "2025-11-17T08:00:19.000Z", "score": 130, "maxScore": 130, "percentage": 100}
-                ]
-              },
-              {
-                "competencyId": "a61c2395-8474-4979-b249-0fd165bdf710",
-                "competencyFamiliesIds": [
-                  "6ac51519-33a6-47a1-9913-59eeb0a358b0",
-                  "503f93a3-5ebf-45cd-a2e3-2c191c642a9f"
-                ],
-                "name": "Porter la vision produit",
-                "normalizedName": "porter_la_vision_produit",
-                "type": "SOFT_SKILL",
-                "level": "EXPERT",
-                "percentage": 100,
-                "currentScore": 130,
-                "maxScore": 130,
-                "attemptsCount": 1,
-                "bestScore": 130,
-                "lastQuizAt": "2025-11-17T08:00:19.000Z",
-                "history": [
-                  {"date": "2025-11-17T08:00:19.000Z", "score": 130, "maxScore": 130, "percentage": 100}
-                ]
-              },
-              {
-                "competencyId": "44fa51f1-c2db-40f4-9d2a-2feeceb99700",
-                "competencyFamiliesIds": [
-                  "48884407-d059-40ad-a0f9-00e365eed9da",
-                  "503f93a3-5ebf-45cd-a2e3-2c191c642a9f"
-                ],
-                "name": "Développer les talents",
-                "normalizedName": "developper_les_talents",
-                "type": "SOFT_SKILL",
-                "level": "MEDIUM",
-                "percentage": 100,
-                "currentScore": 130,
-                "maxScore": 130,
-                "attemptsCount": 1,
-                "bestScore": 130,
-                "lastQuizAt": "2025-11-17T08:00:19.000Z",
-                "history": [
-                  {"date": "2025-11-17T08:00:19.000Z", "score": 130, "maxScore": 130, "percentage": 100}
-                ]
+                "userJobId": "c33bffbc-0fe0-49df-a228-654c957a8b67",
+                "userId": "8c471692-0dfe-454d-81e2-8c0695aa0468",
+                "firstname": null,
+                "lastname": null,
+                "jobId": "f3cb535f-abbc-4dc6-a2f3-2ffa8353ab73",
+                "jobTitle": "Product Manager",
+                "totalScore": 210,
+                "maxScoreSum": 1150,
+                "percentage": 18.26,
+                "completedQuizzes": 1,
+                "lastQuizAt": "2025-11-17T12:53:33.000Z",
+                "rank": 3
               }
             ]
           }
         };
-        // dataBeforeQuizz = response.data;
+        // dataAfterQuizz = response.data;
 
         final JobRankings ranking =
             JobRankings.fromJson((WE_ARE_BEFORE_QUIZZ ? dataBeforeQuizz : dataAfterQuizz)["data"]);

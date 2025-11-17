@@ -251,19 +251,19 @@ abstract class AppLocalizations {
   /// Niveau de compétence facile
   ///
   /// In fr, this message translates to:
-  /// **'Facile'**
+  /// **'Débutant'**
   String get skillLevel_easy;
 
   /// Niveau de compétence moyen
   ///
   /// In fr, this message translates to:
-  /// **'Moyen'**
+  /// **'Intermédiaire'**
   String get skillLevel_medium;
 
   /// Niveau de compétence difficile
   ///
   /// In fr, this message translates to:
-  /// **'Difficile'**
+  /// **'Senior'**
   String get skillLevel_hard;
 
   /// Niveau de compétence expert
