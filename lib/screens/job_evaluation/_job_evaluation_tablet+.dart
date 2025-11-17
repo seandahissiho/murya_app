@@ -981,7 +981,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("${answers.whereOrEmpty((a) => a.isCorrect).length}",
+                Text("${answers.whereOrEmpty((a) => !a.isCorrect).length}",
                     style: theme.textTheme.displaySmall
                         ?.copyWith(color: AppColors.errorDefault, fontWeight: FontWeight.bold)),
                 AppSpacing.elementMarginBox,

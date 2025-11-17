@@ -101,7 +101,7 @@ class QuizRepository extends BaseRepository {
                     "text": "Interviewer directement des utilisateurs sur leurs besoins",
                     "metadata": null,
                     "isCorrect": true,
-                    "index": 0,
+                    "index": 3,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -134,7 +134,7 @@ class QuizRepository extends BaseRepository {
                     "text": "Observer un seul utilisateur et généraliser ses besoins",
                     "metadata": null,
                     "isCorrect": false,
-                    "index": 3,
+                    "index": 0,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -252,7 +252,7 @@ class QuizRepository extends BaseRepository {
                     "text": "L'impact potentiel de la fonctionnalité sur la valeur apportée aux utilisateurs",
                     "metadata": null,
                     "isCorrect": true,
-                    "index": 0,
+                    "index": 2,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -274,7 +274,7 @@ class QuizRepository extends BaseRepository {
                     "text": "Le prestige de la technologie ou de la solution employée",
                     "metadata": null,
                     "isCorrect": false,
-                    "index": 2,
+                    "index": 0,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -327,7 +327,7 @@ class QuizRepository extends BaseRepository {
                     "text": "Alignée sur la stratégie globale et régulièrement ajustée selon les retours",
                     "metadata": null,
                     "isCorrect": true,
-                    "index": 0,
+                    "index": 1,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -338,7 +338,7 @@ class QuizRepository extends BaseRepository {
                     "text": "Strictement figée dès sa validation initiale",
                     "metadata": null,
                     "isCorrect": false,
-                    "index": 1,
+                    "index": 0,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -402,7 +402,7 @@ class QuizRepository extends BaseRepository {
                     "text": "Identifier des tendances d'usage afin d'orienter les décisions produit",
                     "metadata": null,
                     "isCorrect": true,
-                    "index": 0,
+                    "index": 3,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -435,7 +435,7 @@ class QuizRepository extends BaseRepository {
                     "text": "Mesurer uniquement des indicateurs techniques comme la vitesse ou la stabilité",
                     "metadata": null,
                     "isCorrect": false,
-                    "index": 3,
+                    "index": 0,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -478,7 +478,7 @@ class QuizRepository extends BaseRepository {
                     "text": "Le taux de conversion des utilisateurs gratuits en clients payants",
                     "metadata": null,
                     "isCorrect": true,
-                    "index": 0,
+                    "index": 1,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -489,7 +489,7 @@ class QuizRepository extends BaseRepository {
                     "text": "Le nombre de réunions tenues par l'équipe produit chaque mois",
                     "metadata": null,
                     "isCorrect": false,
-                    "index": 1,
+                    "index": 0,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -630,7 +630,7 @@ class QuizRepository extends BaseRepository {
                     "text": "Mettre en place des processus unifiés et des outils communs pour toutes les équipes",
                     "metadata": null,
                     "isCorrect": true,
-                    "index": 0,
+                    "index": 2,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -653,7 +653,7 @@ class QuizRepository extends BaseRepository {
                         "Doubler la durée des sprints de chaque équipe pour compenser les difficultés de coordination",
                     "metadata": null,
                     "isCorrect": false,
-                    "index": 2,
+                    "index": 0,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -707,7 +707,7 @@ class QuizRepository extends BaseRepository {
                     "text": "En partageant une vision claire du produit et en instaurant un climat de confiance",
                     "metadata": null,
                     "isCorrect": true,
-                    "index": 0,
+                    "index": 3,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
@@ -740,7 +740,7 @@ class QuizRepository extends BaseRepository {
                     "text": "En écartant les avis de l'équipe pour prendre les décisions de manière autonome",
                     "metadata": null,
                     "isCorrect": false,
-                    "index": 3,
+                    "index": 0,
                     "createdAt": "2025-11-17T06:48:36.000Z",
                     "updatedAt": "2025-11-17T06:48:36.000Z",
                     "answerOptions": []
