@@ -30,22 +30,26 @@ class AuthenticationRepository extends BaseRepository {
         }
 
         // retrieve new access token from the server
-        final Response response = await Dio(BaseOptions(
-            baseUrl: ApiEndPoint.baseUrl,
-            receiveTimeout: const Duration(seconds: 120),
-            connectTimeout: const Duration(seconds: 120),
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'Charset': 'utf-8',
-            })).post(
-          '/auth/refresh',
-          data: {
-            "refresh_token": refreshToken,
-          },
-        );
-        final String accessToken = response.data["data"]["access_token"];
-        refreshToken = response.data["data"]?["refresh_token"] ?? refreshToken;
+        // final Response response = await Dio(BaseOptions(
+        //     baseUrl: ApiEndPoint.baseUrl,
+        //     receiveTimeout: const Duration(seconds: 120),
+        //     connectTimeout: const Duration(seconds: 120),
+        //     headers: {
+        //       'Accept': 'application/json',
+        //       'Content-Type': 'application/json',
+        //       'Charset': 'utf-8',
+        //     })).post(
+        //   '/auth/refresh',
+        //   data: {
+        //     "refresh_token": refreshToken,
+        //   },
+        // );
+
+        Map<String, dynamic> dataBeforeQuizz = {};
+        Map<String, dynamic> dataAfterQuizz = {};
+
+        final String accessToken = dataBeforeQuizz["data"]["access_token"];
+        refreshToken = dataBeforeQuizz["data"]?["refresh_token"] ?? refreshToken;
         // final User user = User.fromJson(response.data["data"]["user"]);
         return (accessToken, refreshToken);
       },
@@ -138,13 +142,15 @@ class AuthenticationRepository extends BaseRepository {
           "message": "Utilisateur enregistré avec succès",
           "data": {
             "access_token":
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5ZmRiZDJkOC1iMTM3LTQ0ZDQtODJkNS04ZWYzY2YxNzkyNzEiLCJ1c2VyUm9sZSI6IjkzM2YzOWM5LTFmOGMtNDYwOS04ZDhiLTZlMzc1NTgzYzZlZiIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NjMzNTcwNTgsImV4cCI6MTc2MzM4NTg1OH0.QF8paw2lWMOZlkBgd0p2onZBTeRavowGN8C75OI_dOI",
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4YzQ3MTY5Mi0wZGZlLTQ1NGQtODFlMi04YzA2OTVhYTA0NjgiLCJ1c2VyUm9sZSI6IjZmMDBhMTMyLWY1NTUtNDYwMC1iMWJjLTg5ZWE1OGM3OThlYSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NjMzNjI2MTIsImV4cCI6MTc2MzM5MTQxMn0.Ka4fVHSMmMFgLbHq6YlP-Iu8Pi8YYVnNqXdUFuw4Br8",
             "refresh_token":
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5ZmRiZDJkOC1iMTM3LTQ0ZDQtODJkNS04ZWYzY2YxNzkyNzEiLCJ1c2VyUm9sZSI6IjkzM2YzOWM5LTFmOGMtNDYwOS04ZDhiLTZlMzc1NTgzYzZlZiIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NjMzNTcwNTgsImV4cCI6MTc2NDU2NjY1OH0.J0RTi4QO7ZlyEq0QXjHE5hqSRIba43_uzYX5g1m3KCg"
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4YzQ3MTY5Mi0wZGZlLTQ1NGQtODFlMi04YzA2OTVhYTA0NjgiLCJ1c2VyUm9sZSI6IjZmMDBhMTMyLWY1NTUtNDYwMC1iMWJjLTg5ZWE1OGM3OThlYSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NjMzNjI2MTIsImV4cCI6MTc2NDU3MjIxMn0.3hsD112hXSvlRVu4K315wxUJjFL7Rf64r9nF07FMr5c"
           }
         };
-        final String accessToken = dataBeforeQuizz["data"]["access_token"];
-        final String refreshToken = dataBeforeQuizz["data"]["refresh_token"];
+        Map<String, dynamic> dataAfterQuizz = {};
+        // dataBeforeQuizz = response.data;
+        final String accessToken = (WE_ARE_BEFORE_QUIZZ ? dataBeforeQuizz : dataAfterQuizz)["data"]["access_token"];
+        final String refreshToken = (WE_ARE_BEFORE_QUIZZ ? dataBeforeQuizz : dataAfterQuizz)["data"]["refresh_token"];
         // final User user = User.fromJson(response.data["data"]["user"]);
 
         // save refresh token to shared preferences
