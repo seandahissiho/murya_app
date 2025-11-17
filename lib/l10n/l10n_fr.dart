@@ -9,7 +9,7 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appTitle => 'NAVY';
+  String get appTitle => 'MURYA';
 
   @override
   String greeting(String name) {
@@ -20,11 +20,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get landing_page_title => 'Page d’accueil';
 
   @override
-  String get landing_first_title => 'Augmentez vos compétences';
+  String get landing_first_title => 'Développez votre carrière';
 
   @override
   String get landing_first_subtitle =>
-      'L’inscription et la connexion à Murya sont gratuites';
+      'Créez votre compte, explorez et progressez. C\'est gratuit et sans frais cachés.';
 
   @override
   String get landing_first_button1 => 'Inscription';
@@ -33,14 +33,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get landing_first_button2 => 'Connexion';
 
   @override
-  String get landing_second_title => 'Progressez dans votre métier';
+  String get landing_second_title => 'Mesurez vos compétences';
 
   @override
   String get landing_second_subtitle =>
-      'La consultation du catalogue de Murya est libre';
+      'Choisissez votre métier et lancez-vous. Des questions courtes, des progrès concrets.';
 
   @override
-  String get landing_second_button => 'Rechercher';
+  String get landing_second_button => 'Découvrir';
 
   @override
   String get footer_language_english => '🇬🇧 English';

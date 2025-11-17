@@ -13,18 +13,10 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
     final theme = Theme.of(context);
     return BlocConsumer<ResourcesBloc, ResourcesState>(
       listener: (context, state) {
-        setState(() {});
         if (state is ResourceDetailsLoaded) {
           Navigator.of(context, rootNavigator: true).pop();
-          navigateToPath(
-            context,
-            to: AppRoutes.userResourceViewerModule.replaceFirst(
-              ':id',
-              state.resource.id!,
-            ),
-            data: state.resource,
-          );
         }
+        setState(() {});
       },
       builder: (context, state) {
         return Column(
@@ -84,12 +76,7 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(resources: [
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                      ], type: ResourceType.article),
+                      ResourcesCarousel(resources: context.read<ResourcesBloc>().articles, type: ResourceType.article),
                       AppSpacing.containerInsideMarginBox,
                       Row(
                         children: [
@@ -106,12 +93,7 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(resources: [
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                      ], type: ResourceType.podcast),
+                      ResourcesCarousel(resources: context.read<ResourcesBloc>().podcasts, type: ResourceType.podcast),
                       AppSpacing.containerInsideMarginBox,
                       // Videos Section
                       Row(
@@ -129,12 +111,7 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(resources: [
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                      ], type: ResourceType.video),
+                      ResourcesCarousel(resources: context.read<ResourcesBloc>().videos, type: ResourceType.video),
                     ],
                   ),
                 ),

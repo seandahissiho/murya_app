@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "NAVY",
+  "appTitle": "MURYA",
   "greeting": "Hello {name}!",
   "@greeting": {
     "description": "Greets the user by name",
