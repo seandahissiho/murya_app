@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 bool WE_ARE_BEFORE_QUIZZ = true;
 bool WE_ARE_BEFORE_FIRST_USER_FETCH = true;
+int DIAMONDS = 0;
 
 class BaseRepository {
   final Api api;

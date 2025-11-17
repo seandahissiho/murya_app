@@ -10,10 +10,10 @@ import 'package:murya/components/app_button.dart';
 import 'package:murya/components/score.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
-import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/models/quiz.dart';
+import 'package:murya/repositories/base.repository.dart';
 import 'package:murya/screens/base.dart';
 
 part '_job_evaluation_mobile.dart';

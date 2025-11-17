@@ -45,7 +45,7 @@ class QuizRepository extends BaseRepository {
             "totalScore": 1150,
             "bonusPoints": 300,
             "maxScore": 1150,
-            "maxScoreWithBonus": 1450,
+            "maxScoreWithBonus": DIAMONDS,
             "percentage": 100,
             "createdAt": "2025-11-17T06:57:39.000Z",
             "updatedAt": "2025-11-17T07:00:19.000Z"
