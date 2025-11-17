@@ -633,6 +633,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     if (currentQuestionIndex >= quiz.questionResponses.length) {
       currentQuestionIndex;
       // Quiz is over
+      DIAMONDS += pointsPerQuestion.fold(
+          0, (int previousValue, element) => previousValue + element < 0 ? 0 : previousValue + element);
       context.read<QuizBloc>().add(SaveQuizResults(
             jobId: jobId,
             quizId: quiz.id!,

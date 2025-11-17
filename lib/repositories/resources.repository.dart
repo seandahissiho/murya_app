@@ -23,6 +23,7 @@ class ResourcesRepository extends BaseRepository {
         while (!initialized) {
           await Future.delayed(const Duration(milliseconds: 100));
         }
+        DIAMONDS -= 1000;
         // final Response response = await api.dio.post(
         //   '/userJobs/generateArticle/$userJobId',
         // );
@@ -58,7 +59,7 @@ class ResourcesRepository extends BaseRepository {
               "phone": null,
               "deviceId": "CF0249B2-DF6C-4B15-B25E-26995FD2BFD7",
               "password": null,
-              "diamonds": 1450,
+              "diamonds": DIAMONDS,
               "isActive": true,
               "isAdmin": false,
               "createdAt": "2025-11-17T06:56:52.000Z",
