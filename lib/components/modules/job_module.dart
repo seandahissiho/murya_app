@@ -9,6 +9,7 @@ import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/modules/app_module.dart';
+import 'package:murya/components/score.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
@@ -17,6 +18,7 @@ import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/module.dart';
 import 'package:murya/models/user_job_competency_profile.dart';
+import 'package:murya/repositories/base.repository.dart';
 import 'package:murya/screens/job_details/job_details.dart';
 
 class JobModuleWidget extends StatefulWidget {
@@ -156,23 +158,37 @@ class _JobModuleContentState extends State<JobModuleContent> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Flexible(
-                        child: SizedBox(
-                          width: constraints.maxWidth * 0.85,
-                          child: AutoSizeText(
-                            _userJob.job?.title ?? '',
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.anton(
-                              color: Colors.white,
-                              fontSize: isMobile
-                                  ? theme.textTheme.headlineSmall!.fontSize!
-                                  : theme.textTheme.displaySmall!.fontSize!,
-                              fontWeight: FontWeight.w700,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              width: constraints.maxWidth * 0.95,
+                              child: AutoSizeText(
+                                _userJob.job?.title ?? '',
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.anton(
+                                  color: Colors.white,
+                                  fontSize: isMobile
+                                      ? theme.textTheme.headlineSmall!.fontSize!
+                                      : theme.textTheme.displaySmall!.fontSize!,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                minFontSize: theme.textTheme.bodyLarge!.fontSize!,
+                              ),
                             ),
-                            minFontSize: theme.textTheme.bodyLarge!.fontSize!,
                           ),
-                        ),
+                          AppSpacing.groupMarginBox,
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: AppSpacing.elementMargin,
+                              top: AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
+                            ),
+                            child: ScoreWidget(value: DIAMONDS, textColor: Colors.white),
+                          ),
+                        ],
                       ),
                       AppSpacing.groupMarginBox,
                       Expanded(flex: 2, child: _diagramBuilder(locale, theme, options)),

@@ -1,6 +1,6 @@
 {
   "@@locale": "fr",
-  "appTitle": "NAVY",
+  "appTitle": "MURYA",
   "greeting": "Bonjour {name}!",
   "@greeting": {
     "description": "Salue l'utilisateur par son nom",
@@ -14,11 +14,11 @@
   "@landing_page_title": {
     "description": "Titre de la page d'atterrissage"
   },
-  "landing_first_title": "Augmentez vos compétences",
+  "landing_first_title": "Développez votre carrière",
   "@landing_first_title": {
     "description": "Titre de la première boîte sur la page d'atterrissage"
   },
-  "landing_first_subtitle": "L’inscription et la connexion à Murya sont gratuites",
+  "landing_first_subtitle": "Créez votre compte, explorez et progressez. C''est gratuit et sans frais cachés.",
   "@landing_first_subtitle": {
     "description": "Sous-titre de la première boîte sur la page d'atterrissage"
   },
@@ -30,15 +30,15 @@
   "@landing_first_button2": {
     "description": "Texte du second bouton de la première boîte"
   },
-  "landing_second_title": "Progressez dans votre métier",
+  "landing_second_title": "Mesurez vos compétences",
   "@landing_second_title": {
     "description": "Titre de la deuxième boîte sur la page d'atterrissage"
   },
-  "landing_second_subtitle": "La consultation du catalogue de Murya est libre",
+  "landing_second_subtitle": "Choisissez votre métier et lancez-vous. Des questions courtes, des progrès concrets.",
   "@landing_second_subtitle": {
     "description": "Sous-titre de la deuxième boîte sur la page d'atterrissage"
   },
-  "landing_second_button": "Rechercher",
+  "landing_second_button": "Découvrir",
   "@landing_second_button": {
     "description": "Texte du bouton de la deuxième boîte"
   },

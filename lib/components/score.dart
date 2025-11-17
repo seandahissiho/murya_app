@@ -6,11 +6,12 @@ import 'package:murya/config/app_icons.dart';
 class ScoreWidget extends StatelessWidget {
   final int value;
   final bool compact;
-
+  final Color textColor;
   const ScoreWidget({
     super.key,
     required this.value,
     this.compact = false,
+    this.textColor = AppColors.primaryDefault,
   });
 
   @override
@@ -29,11 +30,11 @@ class ScoreWidget extends StatelessWidget {
               "$value",
               style: isMobile
                   ? (!compact
-                      ? theme.textTheme.labelLarge?.copyWith(height: 0)
-                      : theme.textTheme.labelLarge?.copyWith(height: 0))
+                      ? theme.textTheme.labelLarge?.copyWith(height: 0, color: textColor)
+                      : theme.textTheme.labelLarge?.copyWith(height: 0, color: textColor))
                   : (!compact
-                      ? theme.textTheme.displayMedium?.copyWith(height: 1)
-                      : theme.textTheme.labelLarge?.copyWith(height: 0)),
+                      ? theme.textTheme.displayMedium?.copyWith(height: 1, color: textColor)
+                      : theme.textTheme.labelLarge?.copyWith(height: 0, color: textColor)),
             ),
           ),
         ),

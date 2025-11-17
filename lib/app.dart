@@ -158,7 +158,7 @@ class _MyAppState extends State<MyApp> {
     return ResponsiveSizer(
       builder: (context, orientation, deviceType) {
         return MaterialApp.router(
-          title: 'NAVY',
+          title: 'MURYA',
           // scrollBehavior: MyCustomScrollBehavior(),
           routerDelegate: beamerDelegate,
           routeInformationParser: BeamerParser(),

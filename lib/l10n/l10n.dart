@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In fr, this message translates to:
-  /// **'NAVY'**
+  /// **'MURYA'**
   String get appTitle;
 
   /// Salue l'utilisateur par son nom
@@ -119,13 +119,13 @@ abstract class AppLocalizations {
   /// Titre de la première boîte sur la page d'atterrissage
   ///
   /// In fr, this message translates to:
-  /// **'Augmentez vos compétences'**
+  /// **'Développez votre carrière'**
   String get landing_first_title;
 
   /// Sous-titre de la première boîte sur la page d'atterrissage
   ///
   /// In fr, this message translates to:
-  /// **'L’inscription et la connexion à Murya sont gratuites'**
+  /// **'Créez votre compte, explorez et progressez. C\'\'est gratuit et sans frais cachés.'**
   String get landing_first_subtitle;
 
   /// Texte du premier bouton de la première boîte
@@ -143,19 +143,19 @@ abstract class AppLocalizations {
   /// Titre de la deuxième boîte sur la page d'atterrissage
   ///
   /// In fr, this message translates to:
-  /// **'Progressez dans votre métier'**
+  /// **'Mesurez vos compétences'**
   String get landing_second_title;
 
   /// Sous-titre de la deuxième boîte sur la page d'atterrissage
   ///
   /// In fr, this message translates to:
-  /// **'La consultation du catalogue de Murya est libre'**
+  /// **'Choisissez votre métier et lancez-vous. Des questions courtes, des progrès concrets.'**
   String get landing_second_subtitle;
 
   /// Texte du bouton de la deuxième boîte
   ///
   /// In fr, this message translates to:
-  /// **'Rechercher'**
+  /// **'Découvrir'**
   String get landing_second_button;
 
   /// Libellé du changement de langue vers l'anglais
