@@ -843,9 +843,6 @@ class QuizRepository extends BaseRepository {
         Map<String, dynamic> dataAfterQuizz = {};
         // dataBeforeQuizz = response.data;
 
-        // if (response.data["data"] == null) {
-        //   return null;
-        // }
         return Quiz.fromJson((WE_ARE_BEFORE_QUIZZ ? dataBeforeQuizz : dataAfterQuizz)["data"]);
       },
       parentFunctionName: "QuizRepository.getQuizForJob",
