@@ -203,7 +203,6 @@ class _JobModuleContentState extends State<JobModuleContent> {
                       fgColor: AppColors.primaryDefault,
                       // disabledColor: AppColors.primaryDisabled,
                     ),
-                    AppSpacing.elementMarginBox,
                   ],
                 ),
               ],

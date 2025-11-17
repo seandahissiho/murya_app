@@ -130,12 +130,21 @@ class AuthenticationRepository extends BaseRepository {
   Future<Result<(String, String)>> registerTemp({required Map<String, dynamic> data}) async {
     return AppResponse.execute(
       action: () async {
-        final Response response = await api.dio.post(
-          '/auth/register',
-          data: data,
-        );
-        final String accessToken = response.data["data"]["access_token"];
-        final String refreshToken = response.data["data"]["refresh_token"];
+        // final Response response = await api.dio.post(
+        //   '/auth/register',
+        //   data: data,
+        // );
+        Map<String, dynamic> dataBeforeQuizz = {
+          "message": "Utilisateur enregistré avec succès",
+          "data": {
+            "access_token":
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5ZmRiZDJkOC1iMTM3LTQ0ZDQtODJkNS04ZWYzY2YxNzkyNzEiLCJ1c2VyUm9sZSI6IjkzM2YzOWM5LTFmOGMtNDYwOS04ZDhiLTZlMzc1NTgzYzZlZiIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NjMzNTcwNTgsImV4cCI6MTc2MzM4NTg1OH0.QF8paw2lWMOZlkBgd0p2onZBTeRavowGN8C75OI_dOI",
+            "refresh_token":
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5ZmRiZDJkOC1iMTM3LTQ0ZDQtODJkNS04ZWYzY2YxNzkyNzEiLCJ1c2VyUm9sZSI6IjkzM2YzOWM5LTFmOGMtNDYwOS04ZDhiLTZlMzc1NTgzYzZlZiIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NjMzNTcwNTgsImV4cCI6MTc2NDU2NjY1OH0.J0RTi4QO7ZlyEq0QXjHE5hqSRIba43_uzYX5g1m3KCg"
+          }
+        };
+        final String accessToken = dataBeforeQuizz["data"]["access_token"];
+        final String refreshToken = dataBeforeQuizz["data"]["refresh_token"];
         // final User user = User.fromJson(response.data["data"]["user"]);
 
         // save refresh token to shared preferences

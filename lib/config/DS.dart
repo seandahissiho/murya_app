@@ -56,8 +56,8 @@ class AppStatusColors {
 /// Convenience – picks black text on light bg, white on dark bg.
 Color idealTextColor(Color bg) => bg.computeLuminance() > 0.35 ? Colors.grey.shade900 : Colors.white;
 
-const double mobileCTAHeight = 42;
-const double tabletAndAboveCTAHeight = 48;
+const double mobileCTAHeight = 38;
+const double tabletAndAboveCTAHeight = 42;
 
 class AppBreakpoints {
   static const double mobile = 480; // smartphones « classiques » + grands smartphones

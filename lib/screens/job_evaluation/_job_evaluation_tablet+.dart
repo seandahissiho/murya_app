@@ -668,7 +668,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     pauseTimer();
     locked = true;
     setState(() {});
-    Future.delayed(const Duration(milliseconds: 25), () {
+    Future.delayed(const Duration(milliseconds: 2500), () {
       if (!mounted) return;
       answers.add(currentQuestion!.toQuizResponse(
             selectedResponseIndex: 0, // showVerificationState,

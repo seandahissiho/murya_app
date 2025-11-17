@@ -10,6 +10,7 @@ import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
+import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/config/theme.dart';
@@ -21,6 +22,7 @@ import 'package:murya/repositories/jobs.repository.dart';
 import 'package:murya/repositories/notifications.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
 import 'package:murya/repositories/quiz.repository.dart';
+import 'package:murya/repositories/resources.repository.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sizer/sizer.dart';
@@ -67,6 +69,11 @@ List<BlocProvider> getBlocProviders(BuildContext context) {
       lazy: false,
       create: (BuildContext context) => ModulesBloc(context: context)..add(InitializeModules(context: context)),
     ),
+    // ResourcesBloc
+    BlocProvider<ResourcesBloc>(
+      lazy: false,
+      create: (BuildContext context) => ResourcesBloc(context: context),
+    ),
   ];
   return sharedBlocProviders;
 }
@@ -90,6 +97,9 @@ List<RepositoryProvider> getRepositoryProviders(BuildContext context) {
     ),
     RepositoryProvider<QuizRepository>(
       create: (BuildContext context) => QuizRepository(),
+    ),
+    RepositoryProvider<ResourcesRepository>(
+      create: (BuildContext context) => ResourcesRepository(),
     ),
   ];
   return sharedRepositoryProviders;

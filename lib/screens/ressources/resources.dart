@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
+import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
+import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/components/popup.dart';
 import 'package:murya/components/score.dart';
 import 'package:murya/components/skeletonizer.dart';
@@ -210,16 +212,20 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                       ),
                     ],
                   );
-                  Future.delayed(const Duration(seconds: 10), () {
-                    if (mounted && context.mounted) {
-                      Navigator.of(context, rootNavigator: true).pop();
-                      navigateToPath(context,
-                          to: AppRoutes.userResourceViewerModule.replaceFirst(
-                            ':id',
-                            'newly_created_resource_id',
-                          ));
-                    }
-                  });
+                  final userJobId = context.read<JobBloc>().state.userCurrentJob?.id;
+                  if (mounted && context.mounted && userJobId.isNotEmptyOrNull) {
+                    context.read<ResourcesBloc>().add(GenerateResource(type: widget.type, userJobId: userJobId!));
+                  }
+                  // Future.delayed(const Duration(seconds: 10), () {
+                  //   if (mounted && context.mounted) {
+                  //     Navigator.of(context, rootNavigator: true).pop();
+                  //     navigateToPath(context,
+                  //         to: AppRoutes.userResourceViewerModule.replaceFirst(
+                  //           ':id',
+                  //           '7e1931aa-baa5-4898-85bd-13a8a86c3a9a',
+                  //         ));
+                  //   }
+                  // });
                 }
               },
               child: Container(

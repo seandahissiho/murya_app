@@ -79,9 +79,9 @@ class QuestionResponses {
     final resp = (json['responses'] as List?) ?? const [];
     final responses = resp.map((e) => QuizResponse.fromJson(Map<String, dynamic>.from(e))).toList();
     // shuffle responses to avoid always having the correct answer at the same index
-    if (responses.length > 1) {
-      responses.shuffle();
-    }
+    // if (responses.length > 1) {
+    //   responses.shuffle();
+    // }
     for (int i = 0; i < responses.length; i++) {
       responses[i] = QuizResponse(
         id: responses[i].id,
@@ -200,7 +200,7 @@ class QuizQuestion {
   @override
   int get hashCode => Object.hash(id, text, timeLimitInSeconds, points, type, mediaUrl, _mapHash(metadata));
 
-  Duration get timeLimit => Duration(seconds: timeLimitInSeconds ~/ 200);
+  Duration get timeLimit => Duration(seconds: timeLimitInSeconds);
 }
 
 /// -------------------- QuizResponse --------------------

@@ -5,8 +5,9 @@ sealed class ResourcesEvent {}
 
 final class GenerateResource extends ResourcesEvent {
   final ResourceType type;
+  final String userJobId;
 
-  GenerateResource({required this.type});
+  GenerateResource({required this.type, required this.userJobId});
 }
 
 final class LoadResources extends ResourcesEvent {}
