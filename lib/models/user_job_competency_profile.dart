@@ -1,6 +1,6 @@
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/Job.dart';
-import 'package:murya/repositories/base.repository.dart';
+import 'package:murya/models/job_kiviat.dart';
 
 class UserJobCompetencyProfile {
   final String userJobId;
@@ -29,61 +29,6 @@ class UserJobCompetencyProfile {
     );
   }
 
-  List<double> get competencyFamiliesValues {
-    if (WE_ARE_BEFORE_QUIZZ) return [];
-    return [1, 2, 2, 1, 2];
-
-    // group competencies by family
-    Map<String, Set<CompetencyProfile>?> familyMap = {};
-    for (var competenciesFamily in job.competencyFamilies) {
-      familyMap[competenciesFamily.id!] = {};
-    }
-    for (var competency in competencies) {
-      for (var familyId in competency.competencyFamiliesIds) {
-        if (familyMap.containsKey(familyId)) {
-          familyMap[familyId]!.add(competency);
-        }
-      }
-    }
-
-    // calculate average percentage for each family
-    List<double> familyAverages = [];
-    familyMap.forEach((familyId, competenciesSet) {
-      if (competenciesSet != null && competenciesSet.isNotEmpty) {
-        // aggregate nb of competencies validated per family
-        final nbCompetenciesValidated = competenciesSet.where((c) => c.percentage >= 100).length;
-        final nbCompetencies = competenciesSet.length;
-        final int base10Result = ((nbCompetenciesValidated / nbCompetencies) * 10).round();
-        // Nombre de réussite par famille	0	1	2 à 5	6 ou 7	8 ou 9	10
-        // Diagramme du positionnement	0	1	2	3	4	5
-        if (base10Result == 0) {
-          familyAverages.add(0.0);
-        } else if (base10Result == 1) {
-          familyAverages.add(1.0);
-        } else if (base10Result >= 2 && base10Result <= 5) {
-          familyAverages.add(2.0);
-        } else if (base10Result == 6 || base10Result == 7) {
-          familyAverages.add(3.0);
-        } else if (base10Result == 8 || base10Result == 9) {
-          familyAverages.add(4.0);
-        } else if (base10Result == 10) {
-          familyAverages.add(5.0);
-        }
-
-        // double total = 0.0;
-        // for (var competency in competenciesSet) {
-        //   total += competency.percentage;
-        // }
-        // double average = (total / competenciesSet.length) / 20;
-        // average = average <= 0.5 ? 0.5 : average;
-        // familyAverages.add(average); // convert to base 5
-      } else {
-        familyAverages.add(0);
-      }
-    });
-    return familyAverages;
-  }
-
   List<CompetencyFamily> get competencyFamilies {
     return job.competencyFamilies;
     // group competencies by family
@@ -110,6 +55,10 @@ class UserJobCompetencyProfile {
     return families;
   }
 
+  List<double> get kiviatValues {
+    return job.kiviatValues;
+  }
+
   static UserJobCompetencyProfile empty() {
     return UserJobCompetencyProfile(
       userJobId: '',
@@ -132,6 +81,7 @@ class JobInfo {
   final String normalizedName;
   final String? description;
   final List<CompetencyFamily> competencyFamilies;
+  final List<JobKiviat>? kiviat;
 
   JobInfo({
     required this.id,
@@ -139,6 +89,7 @@ class JobInfo {
     required this.normalizedName,
     this.description,
     this.competencyFamilies = const [],
+    this.kiviat,
   });
 
   factory JobInfo.fromJson(Map<String, dynamic> json) {
@@ -151,7 +102,13 @@ class JobInfo {
               ?.map((cf) => CompetencyFamily.fromJson(cf as Map<String, dynamic>))
               .toList() ??
           [],
+      kiviat: (json['kiviat'] as List<dynamic>?)?.map((k) => JobKiviat.fromJson(k as Map<String, dynamic>)).toList(),
     );
+  }
+
+  List<double> get kiviatValues {
+    if (kiviat == null) return [];
+    return kiviat!.map((k) => k.value.toDouble()).toList();
   }
 }
 

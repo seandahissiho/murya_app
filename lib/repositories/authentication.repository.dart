@@ -30,26 +30,23 @@ class AuthenticationRepository extends BaseRepository {
         }
 
         // retrieve new access token from the server
-        // final Response response = await Dio(BaseOptions(
-        //     baseUrl: ApiEndPoint.baseUrl,
-        //     receiveTimeout: const Duration(seconds: 120),
-        //     connectTimeout: const Duration(seconds: 120),
-        //     headers: {
-        //       'Accept': 'application/json',
-        //       'Content-Type': 'application/json',
-        //       'Charset': 'utf-8',
-        //     })).post(
-        //   '/auth/refresh',
-        //   data: {
-        //     "refresh_token": refreshToken,
-        //   },
-        // );
+        final Response response = await Dio(BaseOptions(
+            baseUrl: ApiEndPoint.baseUrl,
+            receiveTimeout: const Duration(seconds: 120),
+            connectTimeout: const Duration(seconds: 120),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Charset': 'utf-8',
+            })).post(
+          '/auth/refresh',
+          data: {
+            "refresh_token": refreshToken,
+          },
+        );
 
-        Map<String, dynamic> dataBeforeQuizz = {};
-        Map<String, dynamic> dataAfterQuizz = {};
-
-        final String accessToken = dataBeforeQuizz["data"]["access_token"];
-        refreshToken = dataBeforeQuizz["data"]?["refresh_token"] ?? refreshToken;
+        final String accessToken = response.data["data"]["access_token"];
+        refreshToken = response.data["data"]?["refresh_token"] ?? refreshToken;
         // final User user = User.fromJson(response.data["data"]["user"]);
         return (accessToken, refreshToken);
       },
@@ -134,28 +131,16 @@ class AuthenticationRepository extends BaseRepository {
   Future<Result<(String, String)>> registerTemp({required Map<String, dynamic> data}) async {
     return AppResponse.execute(
       action: () async {
-        // final Response response = await api.dio.post(
-        //   '/auth/register',
-        //   data: data,
-        // );
-        Map<String, dynamic> dataBeforeQuizz = {
-          "message": "Utilisateur enregistré avec succès",
-          "data": {
-            "access_token":
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4YzQ3MTY5Mi0wZGZlLTQ1NGQtODFlMi04YzA2OTVhYTA0NjgiLCJ1c2VyUm9sZSI6IjZmMDBhMTMyLWY1NTUtNDYwMC1iMWJjLTg5ZWE1OGM3OThlYSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NjMzNjI2MTIsImV4cCI6MTc2MzM5MTQxMn0.Ka4fVHSMmMFgLbHq6YlP-Iu8Pi8YYVnNqXdUFuw4Br8",
-            "refresh_token":
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4YzQ3MTY5Mi0wZGZlLTQ1NGQtODFlMi04YzA2OTVhYTA0NjgiLCJ1c2VyUm9sZSI6IjZmMDBhMTMyLWY1NTUtNDYwMC1iMWJjLTg5ZWE1OGM3OThlYSIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NjMzNjI2MTIsImV4cCI6MTc2NDU3MjIxMn0.3hsD112hXSvlRVu4K315wxUJjFL7Rf64r9nF07FMr5c"
-          }
-        };
-        Map<String, dynamic> dataAfterQuizz = {};
-        // dataBeforeQuizz = response.data;
-        final String accessToken = (WE_ARE_BEFORE_QUIZZ ? dataBeforeQuizz : dataAfterQuizz)["data"]["access_token"];
-        final String refreshToken = (WE_ARE_BEFORE_QUIZZ ? dataBeforeQuizz : dataAfterQuizz)["data"]["refresh_token"];
+        final Response response = await api.dio.post(
+          '/auth/register',
+          data: data,
+        );
+        final String accessToken = response.data["data"]["access_token"];
+        final String refreshToken = response.data["data"]["refresh_token"];
         // final User user = User.fromJson(response.data["data"]["user"]);
 
         // save refresh token to shared preferences
         prefs.setString("refresh_token", refreshToken);
-        WE_ARE_BEFORE_FIRST_USER_FETCH = false;
 
         return (accessToken, refreshToken);
       },

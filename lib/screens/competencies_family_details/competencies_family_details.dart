@@ -138,14 +138,17 @@ class CompetencyCard extends StatelessWidget {
             if (!isMobile) ...[
               AppSpacing.groupMarginBox,
               Row(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  AppXButton(
-                    onPressed: () {},
-                    isLoading: false,
-                    text: locale.consult,
+                  Flexible(
+                    child: AppXButton(
+                      autoResize: true,
+                      onPressed: () {},
+                      isLoading: false,
+                      text: locale.consult,
+                    ),
                   ),
                   AppSpacing.elementMarginBox,
                   SvgPicture.asset(

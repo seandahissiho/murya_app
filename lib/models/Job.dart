@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:murya/config/custom_classes.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/main.dart';
 import 'package:murya/models/app_user.dart';
+import 'package:murya/models/job_kiviat.dart';
 import 'package:murya/models/quiz.dart';
 
 class Job {
@@ -16,6 +20,8 @@ class Job {
   final String imagePath;
   final List<Competency> competencies;
   final List<CompetencyFamily> competenciesFamilies;
+  final List<CompetencyFamily> competenciesSubFamilies;
+  final List<JobKiviat> kiviats;
 
   Job({
     required this.id,
@@ -29,6 +35,8 @@ class Job {
     this.imagePath = '',
     this.competencies = const [],
     this.competenciesFamilies = const [],
+    this.competenciesSubFamilies = const [],
+    this.kiviats = const [],
   });
 
   factory Job.fromJson(jobJson) {
@@ -52,9 +60,22 @@ class Job {
               .map((familyJson) => CompetencyFamily.fromJson(familyJson))
               .toList()
           : [],
+      competenciesSubFamilies: jobJson['competenciesSubfamilies'] != null
+          ? (jobJson['competenciesSubfamilies'] as List)
+              .map((familyJson) => CompetencyFamily.fromJson(familyJson))
+              .toList()
+          : [],
+      kiviats: jobJson['kiviats'] != null
+          ? (jobJson['kiviats'] as List).map((kiviatJson) => JobKiviat.fromJson(kiviatJson)).toList()
+          : [],
     );
 
     return job;
+  }
+
+  List<double> kiviatValues(JobProgressionLevel level) {
+    log('Getting kiviat values for level: ${level.name}');
+    return kiviats.whereOrEmpty((k) => k.level == level.name).map((k) => k.value.toDouble()).toList();
   }
 
   // List<CompetencyFamily> get competenciesFamilies {
@@ -210,11 +231,6 @@ class Competency {
   final String? id;
   final String name;
   final List<CompetencyFamily>? families;
-  final double? beginnerScore;
-  final double? intermediateScore;
-  final double? advancedScore;
-  final double? expertScore;
-  final double? maxScore;
   final CompetencyType type;
   final Level level;
 
@@ -222,11 +238,6 @@ class Competency {
     required this.id,
     required this.name,
     this.families,
-    this.beginnerScore,
-    this.intermediateScore,
-    this.advancedScore,
-    this.expertScore,
-    this.maxScore,
     required this.type,
     required this.level,
   });
@@ -238,11 +249,6 @@ class Competency {
       families: compJson['families'] != null
           ? (compJson['families'] as List).map((familyJson) => CompetencyFamily.fromJson(familyJson)).toList()
           : null,
-      beginnerScore: compJson['beginnerScore'] * 1.0,
-      intermediateScore: compJson['intermediateScore'] * 1.0,
-      advancedScore: compJson['advancedScore'] * 1.0,
-      expertScore: compJson['expertScore'] * 1.0,
-      maxScore: compJson['maxScore'] * 1.0,
       type: CompetencyTypeExtension.fromString(compJson['type']),
       level: LevelExtension.fromString(compJson['level']),
     );
@@ -299,64 +305,6 @@ class CompetencyFamily {
   int get hashCode => id.hashCode;
 
   // tous les scores doivent etre converti sur une echelle de 5
-  double beginnerAverageScore() {
-    if (competencies.isEmpty) return 0.0;
-    double total = 0.0;
-    for (final comp in competencies) {
-      if (comp.beginnerScore != null && comp.maxScore != null && comp.maxScore! > 0) {
-        total += (comp.beginnerScore! / comp.maxScore!) * 5.0;
-      }
-    }
-    return total / competencies.length;
-  }
-
-  double intermediateAverageScore() {
-    if (competencies.isEmpty) return 0.0;
-    double total = 0.0;
-    for (final comp in competencies) {
-      if (comp.intermediateScore != null && comp.maxScore != null && comp.maxScore! > 0) {
-        total += (comp.intermediateScore! / comp.maxScore!) * 5.0;
-      }
-    }
-    return total / competencies.length;
-  }
-
-  double advancedAverageScore() {
-    if (competencies.isEmpty) return 0.0;
-    double total = 0.0;
-    for (final comp in competencies) {
-      if (comp.advancedScore != null && comp.maxScore != null && comp.maxScore! > 0) {
-        total += (comp.advancedScore! / comp.maxScore!) * 5.0;
-      }
-    }
-    return total / competencies.length;
-  }
-
-  double expertAverageScore() {
-    if (competencies.isEmpty) return 0.0;
-    double total = 0.0;
-    for (final comp in competencies) {
-      if (comp.expertScore != null && comp.maxScore != null && comp.maxScore! > 0) {
-        total += (comp.expertScore! / comp.maxScore!) * 5.0;
-      }
-    }
-    return total / competencies.length;
-  }
-
-  double averageScoreByLevel({required int level}) {
-    switch (level) {
-      case 0:
-        return beginnerAverageScore();
-      case 1:
-        return intermediateAverageScore();
-      case 2:
-        return advancedAverageScore();
-      case 3:
-        return expertAverageScore();
-      default:
-        return 0.0;
-    }
-  }
 
   static CompetencyFamily empty() {
     return CompetencyFamily(

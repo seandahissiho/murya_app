@@ -90,7 +90,10 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         if (value == true) {
           started = true;
           setState(() {});
-          Future.delayed(const Duration(milliseconds: 250), () {
+          Future.delayed(const Duration(milliseconds: 250), () async {
+            while (mounted && !quizLoaded) {
+              await Future.delayed(const Duration(milliseconds: 100));
+            }
             moveToNextQuestion();
           });
         } else {
@@ -692,9 +695,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       currentQuestionIndex;
       // Quiz is over
       final theme = Theme.of(context);
-      final earnedDIAMONDS = pointsPerQuestion.fold(
-          0, (int previousValue, element) => previousValue + element < 0 ? 0 : previousValue + element);
-      DIAMONDS += earnedDIAMONDS;
+
       displayPopUp(
         context: context,
         okText: "Voir mon espace",

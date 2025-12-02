@@ -13,7 +13,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
   UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
   User _user = User.empty();
 
-  int _detailsLevel = 0;
+  JobProgressionLevel _detailsLevel = JobProgressionLevel.JUNIOR;
   Duration? nextQuizAvailableIn;
   Timer? _countdownTimer;
 
@@ -272,9 +272,8 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
             width: constraints.maxWidth,
             child: InteractiveRoundedRadarChart(
               labels: _job.competenciesFamilies.map((cf) => cf.name).toList(),
-              defaultValues:
-                  _job.competenciesFamilies.map((cf) => cf.averageScoreByLevel(level: _detailsLevel)).toList(),
-              userValues: _userJobCompetencyProfile.competencyFamiliesValues,
+              defaultValues: _job.kiviatValues(_detailsLevel),
+              userValues: _userJobCompetencyProfile.kiviatValues,
             ),
           ),
           AppSpacing.groupMarginBox,
@@ -293,14 +292,14 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                 ),
                 AppSpacing.groupMarginBox,
                 AppXDropdown<int>(
-                  controller: TextEditingController(text: options[_detailsLevel]),
+                  controller: TextEditingController(text: options[_detailsLevel.index]),
                   items: options.map((level) => DropdownMenuEntry(
                         value: options.indexOf(level),
                         label: level,
                       )),
                   onSelected: (level) {
                     setState(() {
-                      _detailsLevel = level!;
+                      _detailsLevel = JobProgressionLevel.values[level!];
                     });
                   },
                   labelInside: null,
