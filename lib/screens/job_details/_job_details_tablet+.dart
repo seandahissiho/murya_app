@@ -9,7 +9,7 @@ class TabletJobDetailsScreen extends StatefulWidget {
 
 class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
   Job _job = Job.empty();
-  int _detailsLevel = 0;
+  JobProgressionLevel _detailsLevel = JobProgressionLevel.JUNIOR;
   UserJob _userJob = UserJob.empty();
   UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
   User _user = User.empty();
@@ -23,8 +23,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dynamic beamState = Beamer.of(context).currentBeamLocation.state;
       final jobId = beamState.pathParameters['id'];
-      context.read<ProfileBloc>().add(ProfileLoadEvent(notifyIfNotFound: false));
       context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: jobId));
+      context.read<ProfileBloc>().add(ProfileLoadEvent(notifyIfNotFound: false));
       context.read<JobBloc>().add(LoadUserJobDetails(context: context, jobId: jobId));
       context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: jobId));
       _checkQuizAvailability();
@@ -122,8 +122,10 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
-                                          Expanded(
+                                          Flexible(
                                             child: FittedBox(
                                               fit: BoxFit.scaleDown,
                                               child: RichText(
@@ -163,6 +165,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                                     ),
                                                   ],
                                                 ),
+                                                textAlign: TextAlign.start,
                                               ),
                                             ),
                                           ),
@@ -286,15 +289,9 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
               height: constraints.maxWidth,
               width: constraints.maxWidth,
               child: InteractiveRoundedRadarChart(
-                labels: _job.competenciesFamilies
-                    //
-                    .map((cf) => cf.name)
-                    .toList(),
-                defaultValues: _job.competenciesFamilies
-                    //
-                    .map((cf) => cf.averageScoreByLevel(level: _detailsLevel))
-                    .toList(),
-                userValues: _userJobCompetencyProfile.competencyFamiliesValues,
+                labels: _job.competenciesFamilies.map((cf) => cf.name).toList(),
+                defaultValues: _job.kiviatValues(_detailsLevel),
+                userValues: _userJobCompetencyProfile.kiviatValues,
               ),
             ),
             AppSpacing.groupMarginBox,
@@ -315,14 +312,14 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                 ),
                 AppSpacing.groupMarginBox,
                 AppXDropdown<int>(
-                  controller: TextEditingController(text: options[_detailsLevel]),
+                  controller: TextEditingController(text: options[_detailsLevel.index]),
                   items: options.map((level) => DropdownMenuEntry(
                         value: options.indexOf(level),
                         label: level,
                       )),
                   onSelected: (level) {
                     setState(() {
-                      _detailsLevel = level!;
+                      _detailsLevel = JobProgressionLevel.values[level!];
                     });
                   },
                   labelInside: null,

@@ -39,13 +39,25 @@ class Quiz {
     final id = json['id'] as String?;
     final list = json['questions'];
     log("Quiz.fromJson: id=$id, questions count=${(list as List?)?.length ?? 0}");
+    List<QuestionResponses> questionResponses = (list ?? [])
+        .map((e) => QuestionResponses.fromJson(
+              Map<String, dynamic>.from(e as Map),
+            ))
+        .toList();
+
+    // sort the questions by their index to have a stable order
+    if (questionResponses.isNotEmpty) {
+      questionResponses.sort((a, b) => a.index.compareTo(b.index));
+    }
+
+    // shuffle questions to avoid always having the same order
+    if (questionResponses.length > 1) {
+      questionResponses.shuffle();
+    }
+
     return Quiz(
       id: id,
-      questionResponses: (list ?? [])
-          .map((e) => QuestionResponses.fromJson(
-                Map<String, dynamic>.from(e as Map),
-              ))
-          .toList(),
+      questionResponses: questionResponses,
     );
   }
 
@@ -85,9 +97,9 @@ class QuestionResponses {
     }
 
     // shuffle responses to avoid always having the correct answer at the same index
-    // if (responses.length > 1) {
-    //   responses.shuffle();
-    // }
+    if (responses.length > 1) {
+      responses.shuffle();
+    }
     for (int i = 0; i < responses.length; i++) {
       responses[i] = QuizResponse(
         id: responses[i].id,

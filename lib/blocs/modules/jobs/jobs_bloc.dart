@@ -61,11 +61,14 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   }
 
   Future<void> _onLoadUserCurrentJob(LoadUserCurrentJob event, Emitter<JobState> emit) async {
+    if (!authenticationBloc.state.isAuthenticated) {
+      return;
+    }
     final local = AppLocalizations.of(event.context);
 
     final result = await jobRepository.getUserCurrentJob();
 
-    if (result.isError) {
+    if (result.isError || result.data == null) {
       // notificationBloc.add(ErrorNotificationEvent(message: result.error ?? local.user_ressources_module_title));
       return;
     }
@@ -88,6 +91,9 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   }
 
   FutureOr<void> _onLoadUserJobDetails(LoadUserJobDetails event, Emitter<JobState> emit) async {
+    if (!authenticationBloc.state.isAuthenticated) {
+      return;
+    }
     final local = AppLocalizations.of(event.context);
     final result = await jobRepository.getUserJobDetails(event.jobId);
 
@@ -101,6 +107,9 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   }
 
   FutureOr<void> _onLoadRankingForJob(LoadRankingForJob event, Emitter<JobState> emit) async {
+    if (!authenticationBloc.state.isAuthenticated) {
+      return;
+    }
     if (event.jobId.isEmptyOrNull) return;
     final local = AppLocalizations.of(event.context);
     final result = await jobRepository.getRankingForJob(event.jobId, event.from, event.to);
@@ -129,6 +138,9 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   }
 
   FutureOr<void> _onLoadUserJobCompetencyProfile(LoadUserJobCompetencyProfile event, Emitter<JobState> emit) async {
+    if (!authenticationBloc.state.isAuthenticated) {
+      return;
+    }
     final local = AppLocalizations.of(event.context);
     final result = await jobRepository.fetchUserJobCompetencyProfile(event.jobId);
     if (result.isError) {

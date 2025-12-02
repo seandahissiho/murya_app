@@ -226,6 +226,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     _token = result.data!.$1;
     // _user = result.data!.$3;
     updateRepositories(_token);
+    await Future.delayed(const Duration(milliseconds: 500));
     // notificationBloc.add(SuccessNotificationEvent(message: 'Connexion réussie.'));
     emit(const Authenticated(justLoggedIn: false));
   }

@@ -39,6 +39,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   FutureOr<void> _onProfileLoadEvent(ProfileLoadEvent event, Emitter<ProfileState> emit) async {
+    if (!authBloc.state.isAuthenticated) {
+      return;
+    }
     final result = await profileRepository.getMe();
     if (result.isError && event.notifyIfNotFound) {
       notificationBloc.add(ErrorNotificationEvent(

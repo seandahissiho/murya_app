@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-bool WE_ARE_BEFORE_QUIZZ = true;
-bool WE_ARE_BEFORE_FIRST_USER_FETCH = true;
-int DIAMONDS = 0;
+// bool WE_ARE_BEFORE_QUIZZ = true;
+// bool WE_ARE_BEFORE_FIRST_USER_FETCH = true;
+// int DIAMONDS = 0;
 
 class BaseRepository {
   final Api api;
@@ -103,11 +103,12 @@ class AppResponse {
         return Result.success(result, null);
       }
     } on DioException catch (error, stacktrace) {
-      // debugPrintStack(
-      //   stackTrace: stacktrace,
-      //   label: "$error [$parentFunctionName]",
-      //   maxFrames: 10,
-      // );
+      debugPrintStack(
+        stackTrace: stacktrace,
+        label: "$error [$parentFunctionName]",
+        maxFrames: 20,
+      );
+      debugPrint("\n\n\n");
       String? errorToDisplay = error.response?.statusCode == 404
           ? "Ressource non trouvée"
           : error.response?.statusCode == 500
@@ -121,11 +122,12 @@ class AppResponse {
 
       return Result(errorResult, errorToDisplay ?? "Une erreur est survenue", null);
     } catch (error, stacktrace) {
-      // debugPrintStack(
-      //   stackTrace: stacktrace,
-      //   label: "$error [$parentFunctionName]",
-      //   maxFrames: 10,
-      // );
+      debugPrintStack(
+        stackTrace: stacktrace,
+        label: "$error [$parentFunctionName]",
+        maxFrames: 20,
+      );
+      debugPrint("\n\n\n");
 
       return Result(errorResult, error is String ? error : "Une erreur est survenue", null);
     }

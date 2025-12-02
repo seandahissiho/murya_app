@@ -26,6 +26,7 @@ import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/app_user.dart';
+import 'package:murya/models/job_kiviat.dart';
 import 'package:murya/models/user_job_competency_profile.dart';
 import 'package:murya/screens/base.dart';
 import 'package:murya/utilities/share_utils.dart';

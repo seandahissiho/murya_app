@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
+import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/modules/app_module.dart';
 import 'package:murya/components/score.dart';
@@ -18,7 +19,6 @@ import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/module.dart';
 import 'package:murya/models/user_job_competency_profile.dart';
-import 'package:murya/repositories/base.repository.dart';
 import 'package:murya/screens/job_details/job_details.dart';
 
 class JobModuleWidget extends StatefulWidget {
@@ -186,7 +186,8 @@ class _JobModuleContentState extends State<JobModuleContent> {
                               right: AppSpacing.elementMargin,
                               top: AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
                             ),
-                            child: ScoreWidget(value: DIAMONDS, textColor: Colors.white),
+                            child:
+                                ScoreWidget(value: context.read<ProfileBloc>().user.diamonds, textColor: Colors.white),
                           ),
                         ],
                       ),
@@ -280,16 +281,9 @@ class _JobModuleContentState extends State<JobModuleContent> {
           width: constraints.maxWidth,
           child: Center(
             child: InteractiveRoundedRadarChart(
-              labels: _userJobCompetencyProfile.competencyFamilies
-                  //
-                  .map((cf) => cf.name)
-                  .toList(),
-              // defaultValues: _userJobCompetencyProfile.competencyFamilies
-              //     //
-              //     .map((cf) => cf.averageScoreByLevel(level: _detailsLevel))
-              //     .toList(),
-              defaultValues: _userJobCompetencyProfile.competencyFamiliesValues,
-              userValues: _userJobCompetencyProfile.competencyFamiliesValues,
+              labels: _userJobCompetencyProfile.competencyFamilies.map((cf) => cf.name).toList(),
+              defaultValues: _userJobCompetencyProfile.job.kiviatValues,
+              userValues: _userJobCompetencyProfile.kiviatValues,
               labelBgColor: AppColors.whiteSwatch,
               labelTextColor: AppColors.primaryDefault,
             ),
