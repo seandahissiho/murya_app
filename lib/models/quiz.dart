@@ -98,7 +98,7 @@ class QuestionResponses {
 
     // shuffle responses to avoid always having the correct answer at the same index
     if (responses.length > 1) {
-      responses.shuffle();
+      // responses.shuffle();
     }
     for (int i = 0; i < responses.length; i++) {
       responses[i] = QuizResponse(

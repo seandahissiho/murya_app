@@ -44,8 +44,8 @@ class AppIcons {
 class AppImages {
   static const String basePath = kIsWeb ? '${(kDebugMode) ? '/' : 'assets/'}images' : 'assets/images';
 
-  static const String homeBox1Path = '$basePath/bece375cb35d32f1be438e4af27f137e94ebe71b.jpg';
-  static const String homeBox2Path = '$basePath/242ae53cb4929983abac8125a1c84fa33c210f3c.jpg';
+  static const String homeBox1Path = '$basePath/ff03516545db6da0da9726739ce405d776d67f79.jpg';
+  static const String homeBox2Path = '$basePath/05c34ea24d63f53e8a18fe211b162e9e44963f98.jpg';
   static const String homeBox3Path = '$basePath/5f525550d9f69079083a9843efb7d1db40701358.jpg';
   static const String homeBox4Path = '$basePath/dfbcc7d3e7e543965cffcd51e56d787c8868cd6c.jpg';
   static const String homeBox5Path = '$basePath/eb362b1a86c460cd29621ebc37598a4e1cb92097.jpg';

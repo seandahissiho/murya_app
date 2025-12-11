@@ -113,7 +113,7 @@
   "@skillsDiagramTitle": {
     "description": "Titre du diagramme des compétences"
   },
-  "skillLevel_easy": "Débutant",
+  "skillLevel_easy": "Junior",
   "@skillLevel_easy": {
     "description": "Niveau de compétence facile"
   },

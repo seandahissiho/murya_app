@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
 import 'package:blobs/blobs.dart';
@@ -12,6 +13,7 @@ import 'package:murya/components/modules/app_module.dart';
 import 'package:murya/components/modules/job_module.dart';
 import 'package:murya/components/modules/ressources_module.dart';
 import 'package:murya/config/DS.dart';
+import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/module.dart';

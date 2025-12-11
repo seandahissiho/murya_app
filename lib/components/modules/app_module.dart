@@ -16,6 +16,7 @@ class AppModuleWidget extends StatefulWidget {
   final Module module;
   final VoidCallback? onCardTap;
   final Widget? content;
+  final String? backgroundImage;
 
   // final String title;
   // final String subtitle;
@@ -41,6 +42,7 @@ class AppModuleWidget extends StatefulWidget {
     // this.button1OnPressed,
     // this.button2OnPressed,
     this.onSizeChanged,
+    this.backgroundImage,
   });
 
   @override
@@ -140,10 +142,12 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       },
       decoration: BoxDecoration(
         color: AppColors.primaryDefault,
-        // image: DecorationImage(
-        //   image: AssetImage(widget.imagePath),
-        //   fit: BoxFit.cover,
-        // ),
+        image: widget.backgroundImage != null
+            ? DecorationImage(
+                image: AssetImage(widget.backgroundImage!),
+                fit: BoxFit.cover,
+              )
+            : null,
         borderRadius: BorderRadius.circular(24),
       ),
       // padding: EdgeInsets.all(
