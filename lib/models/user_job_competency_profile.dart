@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/job_kiviat.dart';
@@ -8,6 +10,7 @@ class UserJobCompetencyProfile {
   final UserInfo user;
   final ProfileSummary summary;
   final List<CompetencyProfile> competencies;
+  final List<List<JobKiviat>>? kiviats;
 
   UserJobCompetencyProfile({
     required this.userJobId,
@@ -15,17 +18,37 @@ class UserJobCompetencyProfile {
     required this.user,
     required this.summary,
     required this.competencies,
+    this.kiviats,
   });
 
   factory UserJobCompetencyProfile.fromJson(Map<String, dynamic> json) {
+    final String userJobId = json['userJobId'];
+    final JobInfo job = JobInfo.fromJson(json['job']);
+    final UserInfo user = UserInfo.fromJson(json['user']);
+    final ProfileSummary summary = ProfileSummary.fromJson(json['summary']);
+    final List<CompetencyProfile> competencies = (json['competencies'] as List<dynamic>)
+        .map((c) => CompetencyProfile.fromJson(c as Map<String, dynamic>))
+        .toList();
+
+    final kiviatsJson = json['kiviats'] as Map<String, dynamic>?;
+    final List<List<JobKiviat>>? kiviats = kiviatsJson?.entries.map((entry) {
+      final kiviatList = entry.value as List<dynamic>;
+      return kiviatList.map((k) => JobKiviat.fromJson(k as Map<String, dynamic>)).toList();
+    }).toList();
+    // final List<List<JobKiviat>>? kiviats = json['kiviats'] != null
+    //     ? (json['kiviats'] as List<dynamic>)
+    //         .map((kiviatList) =>
+    //             (kiviatList as List<dynamic>).map((k) => JobKiviat.fromJson(k as Map<String, dynamic>)).toList())
+    //         .toList()
+    //     : null;
+    log('kiviats parsed: ${kiviats != null ? kiviats.length : 'null'}');
     return UserJobCompetencyProfile(
-      userJobId: json['userJobId'] as String,
-      job: JobInfo.fromJson(json['job'] as Map<String, dynamic>),
-      user: UserInfo.fromJson(json['user'] as Map<String, dynamic>),
-      summary: ProfileSummary.fromJson(json['summary'] as Map<String, dynamic>),
-      competencies: (json['competencies'] as List<dynamic>)
-          .map((c) => CompetencyProfile.fromJson(c as Map<String, dynamic>))
-          .toList(),
+      userJobId: userJobId,
+      job: job,
+      user: user,
+      summary: summary,
+      competencies: competencies,
+      kiviats: kiviats,
     );
   }
 
@@ -56,13 +79,31 @@ class UserJobCompetencyProfile {
   }
 
   List<double> get kiviatValues {
-    return job.kiviatValues;
+    if (kiviats == null) return [];
+    Map<String, double> valuePerFamily = {};
+    for (var kiviat in (kiviats ?? [])) {
+      for (var k in kiviat) {
+        if (valuePerFamily.containsKey(k.competenciesFamilyId)) {
+          valuePerFamily[k.competenciesFamilyId] = k.value + valuePerFamily[k.competenciesFamilyId]!;
+        } else {
+          valuePerFamily[k.competenciesFamilyId] = k.value;
+        }
+      }
+    }
+    valuePerFamily.forEach((key, value) {
+      valuePerFamily[key] = value / (kiviats?.length ?? 1);
+    });
+    return valuePerFamily.values.map((v) {
+      if (v < 0.5) return 1.0;
+      if (v > 5.0) return 5.0;
+      return v;
+    }).toList();
   }
 
   static UserJobCompetencyProfile empty() {
     return UserJobCompetencyProfile(
       userJobId: '',
-      job: JobInfo(id: '', title: '', normalizedName: ''),
+      job: JobInfo(id: '', title: '', slug: ''),
       user: UserInfo(id: ''),
       summary: ProfileSummary(
         totalCompetencies: 0,
@@ -78,37 +119,29 @@ class UserJobCompetencyProfile {
 class JobInfo {
   final String id;
   final String title;
-  final String normalizedName;
+  final String slug;
   final String? description;
   final List<CompetencyFamily> competencyFamilies;
-  final List<JobKiviat>? kiviat;
 
   JobInfo({
     required this.id,
     required this.title,
-    required this.normalizedName,
+    required this.slug,
     this.description,
     this.competencyFamilies = const [],
-    this.kiviat,
   });
 
   factory JobInfo.fromJson(Map<String, dynamic> json) {
     return JobInfo(
       id: json['id'] as String,
       title: json['title'] as String,
-      normalizedName: json['normalizedName'] as String,
+      slug: json['slug'] as String,
       description: json['description'] as String?,
       competencyFamilies: (json['competencyFamilies'] as List<dynamic>?)
               ?.map((cf) => CompetencyFamily.fromJson(cf as Map<String, dynamic>))
               .toList() ??
           [],
-      kiviat: (json['kiviat'] as List<dynamic>?)?.map((k) => JobKiviat.fromJson(k as Map<String, dynamic>)).toList(),
     );
-  }
-
-  List<double> get kiviatValues {
-    if (kiviat == null) return [];
-    return kiviat!.map((k) => k.value.toDouble()).toList();
   }
 }
 
@@ -174,7 +207,7 @@ class CompetencyProfile {
   final String competencyId;
   final List<String> competencyFamiliesIds;
   final String name;
-  final String normalizedName;
+  final String slug;
   final String type; // "HARD_SKILL" | "SOFT_SKILL"
   final String? level; // enum Level, nullable
   final double percentage;
@@ -189,7 +222,7 @@ class CompetencyProfile {
     required this.competencyId,
     this.competencyFamiliesIds = const [],
     required this.name,
-    required this.normalizedName,
+    required this.slug,
     required this.type,
     this.level,
     required this.percentage,
@@ -207,7 +240,7 @@ class CompetencyProfile {
       competencyFamiliesIds:
           (json['competencyFamiliesIds'] as List<dynamic>?)?.map((id) => id as String).toList() ?? [],
       name: json['name'] as String,
-      normalizedName: json['normalizedName'] as String,
+      slug: json['slug'] as String,
       type: json['type'] as String,
       level: json['level'] as String?,
       percentage: (json['percentage'] as num).toDouble(),
