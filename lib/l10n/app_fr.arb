@@ -82,7 +82,7 @@
   "@user_ressources_module_subtitle": {
     "description": "Sous-titre du module des ressources de l'utilisateur"
   },
-  "user_ressources_module_button": "Créer",
+  "user_ressources_module_button": "Collecter",
   "@user_ressources_module_button": {
     "description": "Texte du bouton dans le module des ressources de l'utilisateur"
   },

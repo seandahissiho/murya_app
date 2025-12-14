@@ -46,10 +46,11 @@ class AppImages {
 
   static const String homeBox1Path = '$basePath/ff03516545db6da0da9726739ce405d776d67f79.jpg';
   static const String homeBox2Path = '$basePath/05c34ea24d63f53e8a18fe211b162e9e44963f98.jpg';
-  static const String homeBox3Path = '$basePath/5f525550d9f69079083a9843efb7d1db40701358.jpg';
+  static const String homeBox3Path = '$basePath/6c2390dc2cf8e5b3ed1cfaf209489d41b8963dce.jpg';
   static const String homeBox4Path = '$basePath/dfbcc7d3e7e543965cffcd51e56d787c8868cd6c.jpg';
   static const String homeBox5Path = '$basePath/eb362b1a86c460cd29621ebc37598a4e1cb92097.jpg';
   static const String homeBox6Path = '$basePath/5b12f577eaa24b657dbf6cb53583bf66f18eef4d.jpg';
   static const String homeBox7Path = '$basePath/b20766b828020a92530a96c36caa89c6672a469d.jpg';
+  static const String CFCardBackgroundPath = '$basePath/e030217e3d9eb744fa81ff9ea46943905ca506ff.jpg';
   static const String starsPath = '$basePath/vecteezy_stars_3.png';
 }

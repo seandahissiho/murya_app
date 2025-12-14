@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:beamer/beamer.dart';
 // import 'package:fl_chart/fl_chart.dart';
@@ -15,7 +17,6 @@ import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/models/quiz.dart';
-import 'package:murya/repositories/base.repository.dart';
 import 'package:murya/screens/base.dart';
 
 part '_job_evaluation_mobile.dart';

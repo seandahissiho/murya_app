@@ -169,7 +169,7 @@ class _JobModuleContentState extends State<JobModuleContent> {
                               width: constraints.maxWidth * 0.95,
                               child: AutoSizeText(
                                 _userJob.job?.title ?? '',
-                                maxLines: 3,
+                                maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.anton(
                                   color: Colors.white,

@@ -206,7 +206,7 @@ class _RankingChartState extends State<RankingChart> {
                 left: 0,
                 child: SizedBox(
                   height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                  width: isMobile ? null : constraints.maxWidth * 0.5,
+                  width: isMobile ? null : constraints.maxWidth * 0.55,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Row(

@@ -73,7 +73,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Murya content generation is instant';
 
   @override
-  String get user_ressources_module_button => 'Create';
+  String get user_ressources_module_button => 'Collect';
 
   @override
   String searchNoResults(String query) {
