@@ -48,6 +48,7 @@ class AuthenticationRepository extends BaseRepository {
         final String accessToken = response.data["data"]["access_token"];
         refreshToken = response.data["data"]?["refresh_token"] ?? refreshToken;
         // final User user = User.fromJson(response.data["data"]["user"]);
+
         return (accessToken, refreshToken);
       },
       parentFunctionName: "AuthenticationRepository.getToken",
@@ -85,6 +86,7 @@ class AuthenticationRepository extends BaseRepository {
         // final User user = User.fromJson(response.data["data"]["user"]);
 
         // save refresh token to shared preferences
+        prefs.setString("access_token", accessToken);
         prefs.setString("refresh_token", refreshToken);
 
         return (accessToken, refreshToken);

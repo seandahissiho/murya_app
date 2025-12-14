@@ -171,4 +171,146 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ranking => 'Ranking';
+
+  @override
+  String get resourceViewerPageTitle => 'ResourceViewer Page';
+
+  @override
+  String get unsupportedResourceType => 'Unsupported resource type';
+
+  @override
+  String get homeScreenTitle => 'Home';
+
+  @override
+  String get mainSearchTitle => 'Main Search';
+
+  @override
+  String get mediaLibrary => 'Media Library';
+
+  @override
+  String get summary => 'Summary';
+
+  @override
+  String get article => 'Article';
+
+  @override
+  String get quiz_ready_to_evaluate => 'Ready to evaluate yourself?';
+
+  @override
+  String get quiz_start_description_1 =>
+      'You are about to start the questionnaire for the Product Manager job.';
+
+  @override
+  String get quiz_start_description_2 =>
+      'It consists of 10 multiple-choice questions.';
+
+  @override
+  String get quiz_start_description_3 =>
+      'Your answers will help create your personalized resource.';
+
+  @override
+  String get quiz_start_advice =>
+      'Tip: Answer instinctively for a fairer analysis. It takes less than 5 minutes!';
+
+  @override
+  String get quiz_lets_go => 'Let\'s go!';
+
+  @override
+  String quiz_question_counter(int current, int total) {
+    return 'Question $current/$total';
+  }
+
+  @override
+  String get quiz_verify => 'Check';
+
+  @override
+  String get quiz_completed_title => 'Evaluation completed!';
+
+  @override
+  String get quiz_completed_subtitle =>
+      'Well done, your 10 answers have been analyzed!';
+
+  @override
+  String get quiz_completed_description =>
+      'The skills diagram is updated and you can create the perfect resource to keep progressing.';
+
+  @override
+  String get quiz_see_my_space => 'See my space';
+
+  @override
+  String get sampleResource => 'Sample Resource';
+
+  @override
+  String get resourceLabelSingular_article => 'an article';
+
+  @override
+  String get resourceLabelSingular_video => 'a video';
+
+  @override
+  String get resourceLabelSingular_podcast => 'a podcast';
+
+  @override
+  String get resourceLabelSingular_default => 'a resource';
+
+  @override
+  String get popup_validate => 'Validate';
+
+  @override
+  String get popup_unlock_resource_title => 'Unlock your resource?';
+
+  @override
+  String get popup_unlock_resource_description =>
+      'Use your points to generate your personalized article. Murya AI will instantly adapt it to your answers of the day.';
+
+  @override
+  String get cost_creation_label => 'Creation cost';
+
+  @override
+  String get cost_current_balance_label => 'Your current balance';
+
+  @override
+  String get cost_remaining_balance_label =>
+      'Your remaining balance (after creation)';
+
+  @override
+  String get loading_creating_resource => 'Creating your resource...';
+
+  @override
+  String get loading_murya_working => 'Murya is working!';
+
+  @override
+  String get loading_analyzing_answers =>
+      'We are analyzing your 10 answers to write a unique article, perfectly adapted to the skills you need to strengthen.';
+
+  @override
+  String create_resource_button(String resourceLabel) {
+    return 'Create $resourceLabel';
+  }
+
+  @override
+  String get resourcesPageTitle => 'Resources Page';
+
+  @override
+  String get page_title_resources => 'Resources';
+
+  @override
+  String get section_articles => 'Articles';
+
+  @override
+  String get section_videos => 'Videos';
+
+  @override
+  String get section_podcasts => 'Podcasts';
+
+  @override
+  String get quiz_daily_performance => 'Daily Performance';
+
+  @override
+  String get quiz_good_answers => 'Good Answers';
+
+  @override
+  String get quiz_answers_to_review => 'Answers to Review';
+
+  @override
+  String get quiz_reward => 'Reward';
 }

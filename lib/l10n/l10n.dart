@@ -379,6 +379,264 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Classement'**
   String get ranking;
+
+  /// Titre de la page de visualisation des ressources
+  ///
+  /// In fr, this message translates to:
+  /// **'Page Visualiseur de Ressource'**
+  String get resourceViewerPageTitle;
+
+  /// Message d'erreur pour les types de ressources non supportés
+  ///
+  /// In fr, this message translates to:
+  /// **'Type de ressource non supporté'**
+  String get unsupportedResourceType;
+
+  /// Titre de l'écran d'accueil
+  ///
+  /// In fr, this message translates to:
+  /// **'Accueil'**
+  String get homeScreenTitle;
+
+  /// Titre de l'écran de recherche principale
+  ///
+  /// In fr, this message translates to:
+  /// **'Recherche Principale'**
+  String get mainSearchTitle;
+
+  /// Libellé pour la médiathèque
+  ///
+  /// In fr, this message translates to:
+  /// **'Médiathèque'**
+  String get mediaLibrary;
+
+  /// Libellé pour le sommaire
+  ///
+  /// In fr, this message translates to:
+  /// **'Sommaire'**
+  String get summary;
+
+  /// Libellé pour la section Article
+  ///
+  /// In fr, this message translates to:
+  /// **'Article'**
+  String get article;
+
+  /// Titre de la popup avant de commencer le quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Prêt(e) à vous évaluer ?'**
+  String get quiz_ready_to_evaluate;
+
+  /// Première ligne de description du début du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous allez démarrer le questionnaire du métier de Product Manager.'**
+  String get quiz_start_description_1;
+
+  /// Deuxième ligne de description du début du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Il se compose de 10 questions à choix multiple.'**
+  String get quiz_start_description_2;
+
+  /// Troisième ligne de description du début du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Vos réponses permettront de créer votre ressource personnalisée.'**
+  String get quiz_start_description_3;
+
+  /// Conseil avant de commencer le quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Conseil : Répondez instinctivement pour une analyse plus juste. Cela prend moins de 5 minutes !'**
+  String get quiz_start_advice;
+
+  /// Bouton pour commencer le quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'C\'\'est parti !'**
+  String get quiz_lets_go;
+
+  /// Compteur de la question actuelle
+  ///
+  /// In fr, this message translates to:
+  /// **'Question {current}/{total}'**
+  String quiz_question_counter(int current, int total);
+
+  /// Bouton pour vérifier la réponse
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifier'**
+  String get quiz_verify;
+
+  /// Titre lorsque le quiz est terminé
+  ///
+  /// In fr, this message translates to:
+  /// **'Évaluation terminée !'**
+  String get quiz_completed_title;
+
+  /// Sous-titre lorsque le quiz est terminé
+  ///
+  /// In fr, this message translates to:
+  /// **'Bravo, vos 10 réponses ont été analysées !'**
+  String get quiz_completed_subtitle;
+
+  /// Description lorsque le quiz est terminé
+  ///
+  /// In fr, this message translates to:
+  /// **'Le diagramme de compétences est actualisé et vous pouvez créer la ressource parfaite pour continuer à progresser.'**
+  String get quiz_completed_description;
+
+  /// Bouton pour accéder à l'espace utilisateur après le quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir mon espace'**
+  String get quiz_see_my_space;
+
+  /// Titre par défaut pour une ressource exemple
+  ///
+  /// In fr, this message translates to:
+  /// **'Ressource Exemple'**
+  String get sampleResource;
+
+  /// Libellé singulier pour article
+  ///
+  /// In fr, this message translates to:
+  /// **'un article'**
+  String get resourceLabelSingular_article;
+
+  /// Libellé singulier pour vidéo
+  ///
+  /// In fr, this message translates to:
+  /// **'une vidéo'**
+  String get resourceLabelSingular_video;
+
+  /// Libellé singulier pour podcast
+  ///
+  /// In fr, this message translates to:
+  /// **'un podcast'**
+  String get resourceLabelSingular_podcast;
+
+  /// Libellé singulier pour ressource générique
+  ///
+  /// In fr, this message translates to:
+  /// **'une ressource'**
+  String get resourceLabelSingular_default;
+
+  /// Texte du bouton valider
+  ///
+  /// In fr, this message translates to:
+  /// **'Valider'**
+  String get popup_validate;
+
+  /// Titre du popup de déblocage
+  ///
+  /// In fr, this message translates to:
+  /// **'Débloquer votre ressource ?'**
+  String get popup_unlock_resource_title;
+
+  /// Description du popup de déblocage
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisez vos points pour générer votre article personnalisé. L\'IA de Murya l\'adaptera instantanément à vos réponses du jour.'**
+  String get popup_unlock_resource_description;
+
+  /// Libellé du coût de création
+  ///
+  /// In fr, this message translates to:
+  /// **'Coût de la création'**
+  String get cost_creation_label;
+
+  /// Libellé du solde actuel
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre solde actuel'**
+  String get cost_current_balance_label;
+
+  /// Libellé du solde restant
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre solde restant (après création)'**
+  String get cost_remaining_balance_label;
+
+  /// Texte de chargement pendant la création
+  ///
+  /// In fr, this message translates to:
+  /// **'Création de votre ressource...'**
+  String get loading_creating_resource;
+
+  /// Titre de chargement pendant la création
+  ///
+  /// In fr, this message translates to:
+  /// **'Murya est au travail !'**
+  String get loading_murya_working;
+
+  /// Description de chargement pendant la création
+  ///
+  /// In fr, this message translates to:
+  /// **'Nous analysons vos 10 réponses pour rédiger un article unique, parfaitement adapté aux compétences que vous devez renforcer.'**
+  String get loading_analyzing_answers;
+
+  /// Texte du bouton pour créer une ressource
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer {resourceLabel}'**
+  String create_resource_button(String resourceLabel);
+
+  /// Titre pour la page des ressources
+  ///
+  /// In fr, this message translates to:
+  /// **'Page Ressources'**
+  String get resourcesPageTitle;
+
+  /// En-tête pour l'écran des ressources
+  ///
+  /// In fr, this message translates to:
+  /// **'Ressources'**
+  String get page_title_resources;
+
+  /// En-tête de section pour les articles
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles'**
+  String get section_articles;
+
+  /// En-tête de section pour les vidéos
+  ///
+  /// In fr, this message translates to:
+  /// **'Vidéos'**
+  String get section_videos;
+
+  /// En-tête de section pour les podcasts
+  ///
+  /// In fr, this message translates to:
+  /// **'Podcasts'**
+  String get section_podcasts;
+
+  /// No description provided for @quiz_daily_performance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre performance du jour'**
+  String get quiz_daily_performance;
+
+  /// No description provided for @quiz_good_answers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bonnes réponses'**
+  String get quiz_good_answers;
+
+  /// No description provided for @quiz_answers_to_review.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réponses à revoir'**
+  String get quiz_answers_to_review;
+
+  /// No description provided for @quiz_reward.
+  ///
+  /// In fr, this message translates to:
+  /// **'Récompense'**
+  String get quiz_reward;
 }
 
 class _AppLocalizationsDelegate

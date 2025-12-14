@@ -71,6 +71,29 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   FutureOr<void> _onTryAutoLogin(TryAutoLogin event, Emitter<AuthenticationState> emit) async {
     final result = await authenticationRepository.getToken();
     if (result.isError) {
+      // try to login with device id
+      final service = DeviceIdService();
+      final deviceId = await service.getUniqueDeviceId();
+      final tempResult = await authenticationRepository.signIn(
+        data: {
+          "deviceId": deviceId,
+        },
+      );
+      if (tempResult.isError) {
+        _initialized = true;
+        unAuthenticate(emit);
+        return;
+      }
+      _token = tempResult.data!.$1;
+      // _user = tempResult.data!.$3;
+      updateRepositories(tempResult.data!.$1);
+      _initialized = true;
+      emit(const Authenticated(
+        // user: _user,
+        justLoggedIn: true,
+      ));
+      return;
+
       if (result.error?.isNotEmpty ?? false) {
         notificationBloc.add(InfoNotificationEvent(
           message: result.error ?? "Session expirée, veuillez vous reconnecter",

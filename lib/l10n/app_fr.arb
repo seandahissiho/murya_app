@@ -196,5 +196,136 @@
   "ranking": "Classement",
   "@ranking": {
     "description": "Titre pour la section de classement"
-  }
+  },
+  "resourceViewerPageTitle": "Page Visualiseur de Ressource",
+  "@resourceViewerPageTitle": {
+    "description": "Titre de la page de visualisation des ressources"
+  },
+  "unsupportedResourceType": "Type de ressource non supporté",
+  "@unsupportedResourceType": {
+    "description": "Message d'erreur pour les types de ressources non supportés"
+  },
+  "homeScreenTitle": "Accueil",
+  "@homeScreenTitle": {
+    "description": "Titre de l'écran d'accueil"
+  },
+  "mainSearchTitle": "Recherche Principale",
+  "@mainSearchTitle": {
+    "description": "Titre de l'écran de recherche principale"
+  },
+  "mediaLibrary": "Médiathèque",
+  "@mediaLibrary": {
+    "description": "Libellé pour la médiathèque"
+  },
+  "summary": "Sommaire",
+  "@summary": {
+    "description": "Libellé pour le sommaire"
+  },
+  "article": "Article",
+  "@article": {
+    "description": "Libellé pour la section Article"
+  },
+  "quiz_ready_to_evaluate": "Prêt(e) à vous évaluer ?",
+  "@quiz_ready_to_evaluate": {
+    "description": "Titre de la popup avant de commencer le quiz"
+  },
+  "quiz_start_description_1": "Vous allez démarrer le questionnaire du métier de Product Manager.",
+  "@quiz_start_description_1": {
+    "description": "Première ligne de description du début du quiz"
+  },
+  "quiz_start_description_2": "Il se compose de 10 questions à choix multiple.",
+  "@quiz_start_description_2": {
+    "description": "Deuxième ligne de description du début du quiz"
+  },
+  "quiz_start_description_3": "Vos réponses permettront de créer votre ressource personnalisée.",
+  "@quiz_start_description_3": {
+    "description": "Troisième ligne de description du début du quiz"
+  },
+  "quiz_start_advice": "Conseil : Répondez instinctivement pour une analyse plus juste. Cela prend moins de 5 minutes !",
+  "@quiz_start_advice": {
+    "description": "Conseil avant de commencer le quiz"
+  },
+  "quiz_lets_go": "C''est parti !",
+  "@quiz_lets_go": {
+    "description": "Bouton pour commencer le quiz"
+  },
+  "quiz_question_counter": "Question {current}/{total}",
+  "@quiz_question_counter": {
+    "description": "Compteur de la question actuelle",
+    "placeholders": {
+        "current": { "type": "int" },
+        "total": { "type": "int" }
+    }
+  },
+  "quiz_verify": "Vérifier",
+  "@quiz_verify": {
+    "description": "Bouton pour vérifier la réponse"
+  },
+  "quiz_completed_title": "Évaluation terminée !",
+  "@quiz_completed_title": {
+    "description": "Titre lorsque le quiz est terminé"
+  },
+  "quiz_completed_subtitle": "Bravo, vos 10 réponses ont été analysées !",
+  "@quiz_completed_subtitle": {
+    "description": "Sous-titre lorsque le quiz est terminé"
+  },
+  "quiz_completed_description": "Le diagramme de compétences est actualisé et vous pouvez créer la ressource parfaite pour continuer à progresser.",
+  "@quiz_completed_description": {
+    "description": "Description lorsque le quiz est terminé"
+  },
+  "quiz_see_my_space": "Voir mon espace",
+  "@quiz_see_my_space": {
+    "description": "Bouton pour accéder à l'espace utilisateur après le quiz"
+  },
+  "sampleResource": "Ressource Exemple",
+  "@sampleResource": {
+    "description": "Titre par défaut pour une ressource exemple"
+  },
+  "resourceLabelSingular_article": "un article",
+  "@resourceLabelSingular_article": { "description": "Libellé singulier pour article" },
+  "resourceLabelSingular_video": "une vidéo",
+  "@resourceLabelSingular_video": { "description": "Libellé singulier pour vidéo" },
+  "resourceLabelSingular_podcast": "un podcast",
+  "@resourceLabelSingular_podcast": { "description": "Libellé singulier pour podcast" },
+  "resourceLabelSingular_default": "une ressource",
+  "@resourceLabelSingular_default": { "description": "Libellé singulier pour ressource générique" },
+  "popup_validate": "Valider",
+  "@popup_validate": { "description": "Texte du bouton valider" },
+  "popup_unlock_resource_title": "Débloquer votre ressource ?",
+  "@popup_unlock_resource_title": { "description": "Titre du popup de déblocage" },
+  "popup_unlock_resource_description": "Utilisez vos points pour générer votre article personnalisé. L'IA de Murya l'adaptera instantanément à vos réponses du jour.",
+  "@popup_unlock_resource_description": { "description": "Description du popup de déblocage" },
+  "cost_creation_label": "Coût de la création",
+  "@cost_creation_label": { "description": "Libellé du coût de création" },
+  "cost_current_balance_label": "Votre solde actuel",
+  "@cost_current_balance_label": { "description": "Libellé du solde actuel" },
+  "cost_remaining_balance_label": "Votre solde restant (après création)",
+  "@cost_remaining_balance_label": { "description": "Libellé du solde restant" },
+  "loading_creating_resource": "Création de votre ressource...",
+  "@loading_creating_resource": { "description": "Texte de chargement pendant la création" },
+  "loading_murya_working": "Murya est au travail !",
+  "@loading_murya_working": { "description": "Titre de chargement pendant la création" },
+  "loading_analyzing_answers": "Nous analysons vos 10 réponses pour rédiger un article unique, parfaitement adapté aux compétences que vous devez renforcer.",
+  "@loading_analyzing_answers": { "description": "Description de chargement pendant la création" },
+  "create_resource_button": "Créer {resourceLabel}",
+  "@create_resource_button": {
+    "description": "Texte du bouton pour créer une ressource",
+    "placeholders": {
+        "resourceLabel": { "type": "String" }
+    }
+  },
+  "resourcesPageTitle": "Page Ressources",
+  "@resourcesPageTitle": { "description": "Titre pour la page des ressources" },
+  "page_title_resources": "Ressources",
+  "@page_title_resources": { "description": "En-tête pour l'écran des ressources" },
+  "section_articles": "Articles",
+  "@section_articles": { "description": "En-tête de section pour les articles" },
+  "section_videos": "Vidéos",
+  "@section_videos": { "description": "En-tête de section pour les vidéos" },
+  "section_podcasts": "Podcasts",
+  "@section_podcasts": { "description": "En-tête de section pour les podcasts" },
+  "quiz_daily_performance": "Votre performance du jour",
+  "quiz_good_answers": "Bonnes réponses",
+  "quiz_answers_to_review": "Réponses à revoir",
+  "quiz_reward": "Récompense"
 }
