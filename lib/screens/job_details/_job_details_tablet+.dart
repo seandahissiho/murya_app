@@ -11,7 +11,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
   Job _job = Job.empty();
   JobProgressionLevel _detailsLevel = JobProgressionLevel.JUNIOR;
   UserJob _userJob = UserJob.empty();
-  UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
+  UserJobCompetencyProfile _userJobCompetencyProfile =
+      UserJobCompetencyProfile.empty();
   User _user = User.empty();
 
   Duration? nextQuizAvailableIn;
@@ -23,10 +24,18 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dynamic beamState = Beamer.of(context).currentBeamLocation.state;
       final jobId = beamState.pathParameters['id'];
-      context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: jobId));
-      context.read<ProfileBloc>().add(ProfileLoadEvent(notifyIfNotFound: false));
-      context.read<JobBloc>().add(LoadUserJobDetails(context: context, jobId: jobId));
-      context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: jobId));
+      context
+          .read<JobBloc>()
+          .add(LoadJobDetails(context: context, jobId: jobId));
+      context
+          .read<ProfileBloc>()
+          .add(ProfileLoadEvent(notifyIfNotFound: false));
+      context
+          .read<JobBloc>()
+          .add(LoadUserJobDetails(context: context, jobId: jobId));
+      context
+          .read<JobBloc>()
+          .add(LoadUserJobCompetencyProfile(context: context, jobId: jobId));
       _checkQuizAvailability();
     });
   }
@@ -35,13 +44,19 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final locale = AppLocalizations.of(context);
-    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
+    var options = [
+      locale.skillLevel_easy,
+      locale.skillLevel_medium,
+      locale.skillLevel_hard,
+      locale.skillLevel_expert
+    ];
     bool hideBackButton = false;
     final history = Beamer.of(context).beamingHistory;
 
     if (history.length > 1) {
       final lastBeamState = history[history.length - 2];
-      final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
+      final lastPath = lastBeamState.state.routeInformation.uri.path
+          .toString(); // ← ceci est le path
       hideBackButton = lastPath == AppRoutes.landing;
     }
     return BlocListener<ProfileBloc, ProfileState>(
@@ -76,7 +91,9 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                   children: [
                     SizedBox(
                       height: bigConstraints.maxHeight > 780
-                          ? bigConstraints.maxHeight - 174 - AppSpacing.sectionMargin
+                          ? bigConstraints.maxHeight -
+                              174 -
+                              AppSpacing.sectionMargin
                           : bigConstraints.maxHeight,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +103,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                               if (!hideBackButton)
                                 GestureDetector(
                                   onTap: () {
-                                    navigateToPath(context, to: AppRoutes.jobModule);
+                                    navigateToPath(context,
+                                        to: AppRoutes.jobModule);
                                   },
                                   child: SvgPicture.asset(
                                     AppIcons.backButtonPath,
@@ -97,7 +115,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                               const Spacer(),
                               GestureDetector(
                                 onTap: () {
-                                  navigateToPath(context, to: AppRoutes.landing);
+                                  navigateToPath(context,
+                                      to: AppRoutes.landing);
                                 },
                                 child: SvgPicture.asset(
                                   AppIcons.searchBarCloseIconPath,
@@ -119,11 +138,13 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           Flexible(
                                             child: RichText(
@@ -131,32 +152,56 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                                 text: _job.title,
                                                 style: GoogleFonts.anton(
                                                   color: AppColors.textPrimary,
-                                                  fontSize: theme.textTheme.headlineLarge?.fontSize,
+                                                  fontSize: theme.textTheme
+                                                      .headlineLarge?.fontSize,
                                                   fontWeight: FontWeight.w700,
                                                 ),
                                                 children: [
                                                   WidgetSpan(
-                                                    alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                                                    alignment: PlaceholderAlignment
+                                                        .middle, // aligns icon vertically
                                                     child: Padding(
-                                                      padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
+                                                      padding: const EdgeInsets
+                                                          .only(
+                                                          left: AppSpacing
+                                                              .elementMargin),
                                                       child: GestureDetector(
                                                         onTap: () async {
-                                                          await ShareUtils.shareContent(
-                                                            text: locale.discover_job_profile(_job.title),
-                                                            url: ShareUtils.generateJobDetailsLink(_job.id!),
-                                                            subject: locale.job_profile_page_title(_job.title),
+                                                          await ShareUtils
+                                                              .shareContent(
+                                                            text: locale
+                                                                .discover_job_profile(
+                                                                    _job.title),
+                                                            url: ShareUtils
+                                                                .generateJobDetailsLink(
+                                                                    _job.id!),
+                                                            subject: locale
+                                                                .job_profile_page_title(
+                                                                    _job.title),
                                                           );
-                                                          if (kIsWeb && mounted && context.mounted) {
+                                                          if (kIsWeb &&
+                                                              mounted &&
+                                                              context.mounted) {
                                                             // On web, there's a good chance we just copied to clipboard
-                                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                              SnackBar(content: Text(locale.link_copied)),
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              SnackBar(
+                                                                  content: Text(
+                                                                      locale
+                                                                          .link_copied)),
                                                             );
                                                           }
                                                         },
                                                         child: Icon(
                                                           Icons.ios_share,
-                                                          size: theme.textTheme.displayLarge!.fontSize! / 1.75,
-                                                          color: AppColors.primaryDefault,
+                                                          size: theme
+                                                                  .textTheme
+                                                                  .displayLarge!
+                                                                  .fontSize! /
+                                                              1.75,
+                                                          color: AppColors
+                                                              .primaryDefault,
                                                         ),
                                                       ),
                                                     ),
@@ -176,13 +221,16 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                       AppXButton(
                                         onPressed: () {
                                           navigateToPath(context,
-                                              to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!));
+                                              to: AppRoutes.jobEvaluation
+                                                  .replaceAll(':id', _job.id!));
                                         },
                                         isLoading: false,
                                         disabled: nextQuizAvailableIn != null,
                                         text: nextQuizAvailableIn == null
                                             ? locale.evaluateSkills
-                                            : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
+                                            : locale.evaluateSkillsAvailableIn(
+                                                nextQuizAvailableIn!
+                                                    .formattedHMS),
                                         autoResize: false,
                                       ),
                                       AppSpacing.containerInsideMarginBox,
@@ -196,26 +244,37 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                 ),
                                 AppSpacing.groupMarginBox,
                                 Flexible(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        if (_userJob.isNotEmpty && _job.id.isNotEmptyOrNull) ...[
-                                          _rankingBuilder(locale, theme),
-                                          AppSpacing.elementMarginBox,
+                                  child: ScrollConfiguration(
+                                    behavior: ScrollConfiguration.of(context)
+                                        .copyWith(scrollbars: false),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          if (_userJob.isNotEmpty &&
+                                              _job.id.isNotEmptyOrNull) ...[
+                                            _rankingBuilder(locale, theme),
+                                            AppSpacing.elementMarginBox,
+                                          ],
+                                          _diagramBuilder(
+                                              locale, theme, options),
                                         ],
-                                        _diagramBuilder(locale, theme, options),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
                                 AppSpacing.groupMarginBox,
                                 Flexible(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        ...familiesBuilder(),
-                                      ],
+                                  child: ScrollConfiguration(
+                                    behavior: ScrollConfiguration.of(context)
+                                        .copyWith(scrollbars: false),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ...familiesBuilder(),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -246,7 +305,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
     return widgets;
   }
 
-  _diagramBuilder(AppLocalizations locale, ThemeData theme, List<String> options) {
+  _diagramBuilder(
+      AppLocalizations locale, ThemeData theme, List<String> options) {
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.backgroundCard,
@@ -286,15 +346,17 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                 Flexible(
                   child: Text(
                     locale.skillsDiagramTitle,
-                    style: theme.textTheme.bodyLarge!
-                        .copyWith(color: AppColors.primaryDefault, fontWeight: FontWeight.w700),
+                    style: theme.textTheme.bodyLarge!.copyWith(
+                        color: AppColors.primaryDefault,
+                        fontWeight: FontWeight.w700),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 AppSpacing.groupMarginBox,
                 AppXDropdown<int>(
-                  controller: TextEditingController(text: options[_detailsLevel.index]),
+                  controller:
+                      TextEditingController(text: options[_detailsLevel.index]),
                   items: options.map((level) => DropdownMenuEntry(
                         value: options.indexOf(level),
                         label: level,
@@ -359,7 +421,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
       lastQuizAt.day,
       lastQuizAt.hour,
     );
-    nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+    nextQuizAvailableIn =
+        lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) {
@@ -380,7 +443,9 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
           timer.cancel();
           return;
         }
-        nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+        nextQuizAvailableIn = lastQuizAt2
+            .add(Duration(hours: 24 - lastQuizAt2.hour))
+            .difference(now);
       });
     });
 
