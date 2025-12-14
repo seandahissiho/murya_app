@@ -18,7 +18,8 @@ class ResourcesRepository extends BaseRepository {
     prefs = await SharedPreferences.getInstance();
   }
 
-  Future<Result<Resource?>> generateResource({required ResourceType type, required String userJobId}) async {
+  Future<Result<Resource?>> generateResource(
+      {required ResourceType type, required String userJobId}) async {
     return AppResponse.execute(
       action: () async {
         while (!initialized) {
@@ -31,6 +32,26 @@ class ResourcesRepository extends BaseRepository {
         return Resource.fromJson(response.data["data"]);
       },
       parentFunctionName: "ResourcesRepository.generateResource",
+    );
+  }
+
+  Future<Result<List<Resource>>> fetchResources(String userJobId) async {
+    return AppResponse.execute(
+      action: () async {
+        while (!initialized) {
+          await Future.delayed(const Duration(milliseconds: 100));
+        }
+        final Response response = await api.dio.get(
+          '/userJobs/$userJobId/resources',
+        );
+
+        final List<Resource> resources = (response.data["data"] as List)
+            .map((e) => Resource.fromJson(e))
+            .toList();
+        return resources;
+      },
+      parentFunctionName: "ResourcesRepository.fetchResources",
+      errorResult: <Resource>[],
     );
   }
 }

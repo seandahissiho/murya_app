@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/blocs/modules/resources/resources_bloc.dart';
@@ -32,11 +31,9 @@ class RessourcesLocation
   @override
   List<BeamPage> buildPages(
       BuildContext context, RouteInformationSerializable state) {
-    final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(
-        key: ValueKey('ressources-page-$languageCode'),
-        title: AppLocalizations.of(context)!.resourcesPageTitle,
+        title: AppLocalizations.of(context).resourcesPageTitle,
         child: const RessourcesScreen(),
       ),
     ];
@@ -69,7 +66,7 @@ class ResourcesCarousel extends StatefulWidget {
 
 class _ResourcesCarouselState extends State<ResourcesCarousel> {
   String get ressourceLabelSingular {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     switch (widget.type) {
       case ResourceType.article:
         return localizations.resourceLabelSingular_article;
@@ -116,7 +113,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                 final int remaining = diamonds - cost;
                 final result = await displayPopUp(
                   context: this.context,
-                  okText: AppLocalizations.of(context)!.popup_validate,
+                  okText: AppLocalizations.of(context).popup_validate,
                   okEnabled: canCreate,
                   contents: [
                     SvgPicture.asset(
@@ -126,7 +123,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        AppLocalizations.of(context)!
+                        AppLocalizations.of(context)
                             .popup_unlock_resource_title,
                         style: theme.textTheme.labelLarge?.copyWith(
                           fontSize: theme.textTheme.displayMedium?.fontSize,
@@ -136,7 +133,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     ),
                     AppSpacing.groupMarginBox,
                     Text(
-                      AppLocalizations.of(context)!
+                      AppLocalizations.of(context)
                           .popup_unlock_resource_description,
                       style: theme.textTheme.bodyMedium
                           ?.copyWith(color: AppColors.textSecondary),
@@ -144,17 +141,16 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     ),
                     AppSpacing.containerInsideMarginBox,
                     _costRow(
-                        label:
-                            AppLocalizations.of(context)!.cost_creation_label,
+                        label: AppLocalizations.of(context).cost_creation_label,
                         cost: cost),
                     AppSpacing.groupMarginBox,
                     _costRow(
-                        label: AppLocalizations.of(context)!
+                        label: AppLocalizations.of(context)
                             .cost_current_balance_label,
                         cost: diamonds),
                     AppSpacing.groupMarginBox,
                     _costRow(
-                        label: AppLocalizations.of(context)!
+                        label: AppLocalizations.of(context)
                             .cost_remaining_balance_label,
                         cost: remaining),
                     AppSpacing.sectionMarginBox,
@@ -207,7 +203,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context)
                                       .loading_creating_resource,
                                   style: theme.textTheme.labelLarge,
                                 ),
@@ -218,7 +214,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                       ),
                       AppSpacing.groupMarginBox,
                       Text(
-                        AppLocalizations.of(context)!.loading_murya_working,
+                        AppLocalizations.of(context).loading_murya_working,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -226,7 +222,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                       ),
                       AppSpacing.elementMarginBox,
                       Text(
-                        AppLocalizations.of(context)!.loading_analyzing_answers,
+                        AppLocalizations.of(context).loading_analyzing_answers,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -280,7 +276,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        AppLocalizations.of(context)!
+                        AppLocalizations.of(context)
                             .create_resource_button(ressourceLabelSingular),
                         style: theme.textTheme.labelLarge?.copyWith(
                             color: AppColors.textSecondary,

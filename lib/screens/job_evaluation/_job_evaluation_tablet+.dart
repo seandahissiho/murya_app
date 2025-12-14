@@ -45,7 +45,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
       jobId = beamState.pathParameters['id'];
       context.read<QuizBloc>().add(LoadQuizForJob(jobId: jobId));
       final theme = Theme.of(context);
-      final localizations = AppLocalizations.of(context)!;
+      final localizations = AppLocalizations.of(context);
       displayPopUp(
         context: context,
         okText: localizations.quiz_lets_go,
@@ -139,7 +139,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     return BlocConsumer<QuizBloc, QuizState>(
       listener: (context, state) {
         if (state is QuizLoaded) {
@@ -1128,7 +1128,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
 
   Widget _todayRewardsWidget() {
     final theme = Theme.of(context);
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     final earnedDIAMONDS = pointsPerQuestion.fold(
         0,
         (int previousValue, element) =>
