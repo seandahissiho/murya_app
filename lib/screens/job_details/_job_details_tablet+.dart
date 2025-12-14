@@ -126,47 +126,44 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           Flexible(
-                                            child: FittedBox(
-                                              fit: BoxFit.scaleDown,
-                                              child: RichText(
-                                                text: TextSpan(
-                                                  text: _job.title,
-                                                  style: GoogleFonts.anton(
-                                                    color: AppColors.textPrimary,
-                                                    fontSize: theme.textTheme.headlineLarge?.fontSize,
-                                                    fontWeight: FontWeight.w700,
-                                                  ),
-                                                  children: [
-                                                    WidgetSpan(
-                                                      alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
-                                                        child: GestureDetector(
-                                                          onTap: () async {
-                                                            await ShareUtils.shareContent(
-                                                              text: locale.discover_job_profile(_job.title),
-                                                              url: ShareUtils.generateJobDetailsLink(_job.id!),
-                                                              subject: locale.job_profile_page_title(_job.title),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                text: _job.title,
+                                                style: GoogleFonts.anton(
+                                                  color: AppColors.textPrimary,
+                                                  fontSize: theme.textTheme.headlineLarge?.fontSize,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                                children: [
+                                                  WidgetSpan(
+                                                    alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
+                                                      child: GestureDetector(
+                                                        onTap: () async {
+                                                          await ShareUtils.shareContent(
+                                                            text: locale.discover_job_profile(_job.title),
+                                                            url: ShareUtils.generateJobDetailsLink(_job.id!),
+                                                            subject: locale.job_profile_page_title(_job.title),
+                                                          );
+                                                          if (kIsWeb && mounted && context.mounted) {
+                                                            // On web, there's a good chance we just copied to clipboard
+                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                              SnackBar(content: Text(locale.link_copied)),
                                                             );
-                                                            if (kIsWeb && mounted && context.mounted) {
-                                                              // On web, there's a good chance we just copied to clipboard
-                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                SnackBar(content: Text(locale.link_copied)),
-                                                              );
-                                                            }
-                                                          },
-                                                          child: Icon(
-                                                            Icons.ios_share,
-                                                            size: theme.textTheme.displayLarge!.fontSize! / 1.75,
-                                                            color: AppColors.primaryDefault,
-                                                          ),
+                                                          }
+                                                        },
+                                                        child: Icon(
+                                                          Icons.ios_share,
+                                                          size: theme.textTheme.displayLarge!.fontSize! / 1.75,
+                                                          color: AppColors.primaryDefault,
                                                         ),
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                                textAlign: TextAlign.start,
+                                                  ),
+                                                ],
                                               ),
+                                              textAlign: TextAlign.start,
                                             ),
                                           ),
                                           if (_user.isNotEmpty) ...[
@@ -182,31 +179,16 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                               to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!));
                                         },
                                         isLoading: false,
-                                        // disabled: nextQuizAvailableIn != null,
+                                        disabled: nextQuizAvailableIn != null,
                                         text: nextQuizAvailableIn == null
                                             ? locale.evaluateSkills
                                             : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
                                         autoResize: false,
                                       ),
                                       AppSpacing.containerInsideMarginBox,
-                                      Flexible(
-                                        child: SingleChildScrollView(
-                                          child: ExpandableText(
-                                            _job.description,
-                                            // FAKER.lorem.sentences(30).join(' '),
-                                            style: theme.textTheme.bodyMedium?.copyWith(
-                                              color: AppColors.primaryDefault,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            linkStyle: theme.textTheme.labelMedium?.copyWith(
-                                              color: AppColors.primaryDefault,
-                                              decoration: TextDecoration.underline,
-                                            ),
-                                            maxLines: 100,
-                                            expandText: '\n\n${locale.show_more}',
-                                            collapseText: '\n\n${locale.show_less}',
-                                            linkEllipsis: false,
-                                          ),
+                                      Expanded(
+                                        child: MarkdownWidget(
+                                          data: _job.description,
                                         ),
                                       ),
                                     ],
@@ -219,7 +201,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                       children: [
                                         if (_userJob.isNotEmpty && _job.id.isNotEmptyOrNull) ...[
                                           _rankingBuilder(locale, theme),
-                                          AppSpacing.groupMarginBox,
+                                          AppSpacing.elementMarginBox,
                                         ],
                                         _diagramBuilder(locale, theme, options),
                                       ],
@@ -350,7 +332,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
             children: [
               SizedBox(
                 width: constraints.maxWidth,
-                height: constraints.maxWidth / (1.618 * 2),
+                height: constraints.maxWidth / (1.618 * 2.5),
                 child: RankingChart(jobId: _job.id!),
               )
             ],

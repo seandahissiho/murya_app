@@ -28,6 +28,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
 
   bool locked = true;
 
+  int indexToRotate = -1;
+
   int get timeLeftInSeconds {
     return ((_countdown?.duration!.inSeconds ?? 0) * (_countdown?.value ?? 0)).ceil();
   }
@@ -264,6 +266,10 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                                       decoration: const BoxDecoration(
                                         color: AppColors.primaryDefault,
                                         borderRadius: AppRadius.borderRadius20,
+                                        image: DecorationImage(
+                                          image: AssetImage(AppImages.CFCardBackgroundPath),
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -294,7 +300,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                                       child: LayoutBuilder(builder: (context, constraints) {
                                         return Wrap(
                                           spacing: AppSpacing.elementMargin,
-                                          runSpacing: AppSpacing.elementMargin,
+                                          runSpacing: AppSpacing.groupMargin,
                                           children: List.generate(4, (index) {
                                             return GestureDetector(
                                               onTap: () {
@@ -313,70 +319,83 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                                                 showVerificationState = index;
                                                 showCorrectAnswer();
                                               },
-                                              child: Card(
-                                                elevation: 2,
-                                                shadowColor: AppColors.borderMedium,
-                                                margin: EdgeInsetsGeometry.zero,
-                                                shape: const RoundedRectangleBorder(
-                                                  borderRadius: AppRadius.borderRadius20,
-                                                ),
-                                                child: Stack(
-                                                  children: [
-                                                    _card(constraints, index, theme, type: "normal"),
-                                                    if (showVerificationState == index &&
-                                                        displayCorrectIndex == -1) ...[
-                                                      Positioned.fill(
-                                                        child: Container(
-                                                          decoration: BoxDecoration(
-                                                            color: AppColors.backgroundCard.withValues(alpha: .65),
-                                                            borderRadius: AppRadius.borderRadius20,
+                                              child: RotationTransition(
+                                                turns: (indexToRotate == index)
+                                                    ? Tween(begin: 1.0, end: 0.99).animate(
+                                                        CurvedAnimation(
+                                                          parent: AnimationController(
+                                                            vsync: this,
+                                                            duration: const Duration(milliseconds: 250),
+                                                          )..forward(),
+                                                          curve: Curves.easeInOut,
+                                                        ),
+                                                      )
+                                                    : const AlwaysStoppedAnimation(0),
+                                                child: Card(
+                                                  elevation: 2,
+                                                  shadowColor: AppColors.borderMedium,
+                                                  margin: EdgeInsetsGeometry.zero,
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: AppRadius.borderRadius20,
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      _card(constraints, index, theme, type: "normal"),
+                                                      if (showVerificationState == index &&
+                                                          displayCorrectIndex == -1) ...[
+                                                        Positioned.fill(
+                                                          child: Container(
+                                                            decoration: BoxDecoration(
+                                                              color: AppColors.backgroundCard.withValues(alpha: .65),
+                                                              borderRadius: AppRadius.borderRadius20,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      Positioned.fill(
-                                                        child: LayoutBuilder(builder: (context, constraints) {
-                                                          return Container(
-                                                            decoration: BoxDecoration(
-                                                              color: AppColors.primaryFocus.withValues(alpha: .15),
-                                                              borderRadius: AppRadius.borderRadius20,
-                                                              border: Border.all(
-                                                                color: AppColors.primaryFocus,
-                                                                width: 2,
-                                                              ),
-                                                            ),
-                                                            child: Center(
-                                                              child: Padding(
-                                                                padding:
-                                                                    EdgeInsets.only(top: constraints.maxHeight / 3),
-                                                                child: AppXButton(
-                                                                  onPressed: () {
-                                                                    showCorrectAnswer();
-                                                                  },
-                                                                  isLoading: false,
-                                                                  text: "Vérifier",
+                                                        Positioned.fill(
+                                                          child: LayoutBuilder(builder: (context, constraints) {
+                                                            return Container(
+                                                              decoration: BoxDecoration(
+                                                                color: AppColors.primaryFocus.withValues(alpha: .15),
+                                                                borderRadius: AppRadius.borderRadius20,
+                                                                border: Border.all(
+                                                                  color: AppColors.primaryFocus,
+                                                                  width: 2,
                                                                 ),
                                                               ),
+                                                              child: Center(
+                                                                child: Padding(
+                                                                  padding:
+                                                                      EdgeInsets.only(top: constraints.maxHeight / 3),
+                                                                  child: AppXButton(
+                                                                    onPressed: () {
+                                                                      showCorrectAnswer();
+                                                                    },
+                                                                    isLoading: false,
+                                                                    text: "Vérifier",
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }),
+                                                        ),
+                                                      ],
+                                                      if (displayCorrectIndex != -1) ...[
+                                                        Positioned.fill(
+                                                          child: Container(
+                                                            decoration: const BoxDecoration(
+                                                              color: Colors.transparent,
+                                                              borderRadius: AppRadius.borderRadius20,
                                                             ),
-                                                          );
-                                                        }),
-                                                      ),
-                                                    ],
-                                                    if (displayCorrectIndex != -1) ...[
-                                                      Positioned.fill(
-                                                        child: Container(
-                                                          decoration: const BoxDecoration(
-                                                            color: Colors.transparent,
-                                                            borderRadius: AppRadius.borderRadius20,
                                                           ),
                                                         ),
-                                                      ),
-                                                      if (displayCorrectIndex == index)
-                                                        _card(constraints, index, theme, type: "correct"),
-                                                      if (displayCorrectIndex != index &&
-                                                          showVerificationState == index)
-                                                        _card(constraints, index, theme, type: "error"),
-                                                    ]
-                                                  ],
+                                                        if (displayCorrectIndex == index)
+                                                          _card(constraints, index, theme, type: "correct"),
+                                                        if (displayCorrectIndex != index &&
+                                                            showVerificationState == index)
+                                                          _card(constraints, index, theme, type: "error"),
+                                                      ]
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             );
@@ -756,6 +775,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     _countdown?.addStatusListener(_listener);
     displayCorrectIndex = -1;
     showVerificationState = -1;
+    indexToRotate = -1;
     locked = false;
     setState(() {});
     restartTimer();
@@ -770,6 +790,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
 
   void showCorrectAnswer() {
     displayCorrectIndex = currentQuestion?.correctResponseIndex ?? -1;
+    indexToRotate = displayCorrectIndex;
     pauseTimer();
     locked = true;
     setState(() {});
@@ -791,6 +812,9 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   }
 
   _card(dynamic constraints, int index, dynamic theme, {required String type}) {
+    if (index == indexToRotate) {
+      log("Rotating index: $indexToRotate");
+    }
     return Container(
       height: constraints.maxHeight / 2 - AppSpacing.elementMargin / 2,
       width: constraints.maxWidth / 2 - AppSpacing.elementMargin / 2,
@@ -887,66 +911,69 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         showVerificationState = index;
         showCorrectAnswer();
       },
-      child: Card(
-        elevation: 2,
-        shadowColor: AppColors.borderMedium,
-        margin: EdgeInsetsGeometry.zero,
-        shape: const RoundedRectangleBorder(
-          borderRadius: AppRadius.borderRadius20,
-        ),
-        child: Stack(
-          children: [
-            _card(constraints, index, theme, type: "normal"),
-            if (showVerificationState == index && displayCorrectIndex == -1) ...[
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.backgroundCard.withValues(alpha: .65),
-                    borderRadius: AppRadius.borderRadius20,
+      child: RotationTransition(
+        turns: AlwaysStoppedAnimation((index == indexToRotate ? -15 : 0) / 360),
+        child: Card(
+          elevation: 2,
+          shadowColor: AppColors.borderMedium,
+          margin: EdgeInsetsGeometry.zero,
+          shape: const RoundedRectangleBorder(
+            borderRadius: AppRadius.borderRadius20,
+          ),
+          child: Stack(
+            children: [
+              _card(constraints, index, theme, type: "normal"),
+              if (showVerificationState == index && displayCorrectIndex == -1) ...[
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.backgroundCard.withValues(alpha: .65),
+                      borderRadius: AppRadius.borderRadius20,
+                    ),
                   ),
                 ),
-              ),
-              Positioned.fill(
-                child: LayoutBuilder(builder: (context, constraints) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryFocus.withValues(alpha: .15),
-                      borderRadius: AppRadius.borderRadius20,
-                      border: Border.all(
-                        color: AppColors.primaryFocus,
-                        width: 2,
-                      ),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: constraints.maxHeight / 3),
-                        child: AppXButton(
-                          onPressed: () {
-                            showCorrectAnswer();
-                          },
-                          isLoading: false,
-                          text: "Vérifier",
+                Positioned.fill(
+                  child: LayoutBuilder(builder: (context, constraints) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryFocus.withValues(alpha: .15),
+                        borderRadius: AppRadius.borderRadius20,
+                        border: Border.all(
+                          color: AppColors.primaryFocus,
+                          width: 2,
                         ),
                       ),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: constraints.maxHeight / 3),
+                          child: AppXButton(
+                            onPressed: () {
+                              showCorrectAnswer();
+                            },
+                            isLoading: false,
+                            text: "Vérifier",
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+              if (displayCorrectIndex != -1) ...[
+                Positioned.fill(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: AppRadius.borderRadius20,
                     ),
-                  );
-                }),
-              ),
-            ],
-            if (displayCorrectIndex != -1) ...[
-              Positioned.fill(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: AppRadius.borderRadius20,
                   ),
                 ),
-              ),
-              if (displayCorrectIndex == index) _card(constraints, index, theme, type: "correct"),
-              if (displayCorrectIndex != index && showVerificationState == index)
-                _card(constraints, index, theme, type: "error"),
-            ]
-          ],
+                if (displayCorrectIndex == index) _card(constraints, index, theme, type: "correct"),
+                if (displayCorrectIndex != index && showVerificationState == index)
+                  _card(constraints, index, theme, type: "error"),
+              ]
+            ],
+          ),
         ),
       ),
     );

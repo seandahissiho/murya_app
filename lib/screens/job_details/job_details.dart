@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:markdown_widget/widget/markdown.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
@@ -64,86 +65,130 @@ class JobDetailsScreen extends StatelessWidget {
   }
 }
 
-class CFCard extends StatelessWidget {
+class CFCard extends StatefulWidget {
   final Job job;
   final CompetencyFamily family;
 
   const CFCard({super.key, required this.job, required this.family});
 
   @override
+  State<CFCard> createState() => _CFCardState();
+}
+
+class _CFCardState extends State<CFCard> {
+  bool _isHovering = false;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final nbCompetencies = job.competenciesPerFamily(family).length;
+    final nbCompetencies = widget.job.competenciesPerFamily(widget.family).length;
     final locale = AppLocalizations.of(context);
     final isMobile = DeviceHelper.isMobile(context);
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.primaryDefault,
-        border: Border.all(color: AppColors.borderMedium, width: 2),
-        borderRadius: AppRadius.large,
-      ),
-      padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              color: AppColors.borderLight,
-              shape: BoxShape.circle,
-            ),
-            padding: const EdgeInsets.all(10),
-            child: SvgPicture.asset(
-              AppIcons.employeeSearchLoupePath,
-              height: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
-              width: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
-              colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
-            ),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (event) {
+        _isHovering = true;
+        setState(() {});
+      },
+      onExit: (event) {
+        _isHovering = false;
+        setState(() {});
+      },
+      child: GestureDetector(
+        onTap: () {
+          navigateToPath(context,
+              to: AppRoutes.competencyFamilyDetails
+                  .replaceAll(':jobId', widget.job.id!)
+                  .replaceAll(':cfId', widget.family.id!));
+        },
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: AppColors.backgroundDefault,
+            border: Border.all(color: _isHovering ? AppColors.primaryHover : AppColors.borderLight, width: 2),
+            borderRadius: AppRadius.large,
+            boxShadow: [
+              BoxShadow(
+                color: _isHovering ? AppColors.primaryHover : AppColors.secondaryHover,
+                blurRadius: 1,
+                offset: const Offset(0, 6),
+              ),
+            ],
+            image: _isHovering
+                ? const DecorationImage(
+                    image: AssetImage(AppImages.CFCardBackgroundPath),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
+                    opacity: 1,
+                  )
+                : null,
           ),
-          AppSpacing.groupMarginBox,
-          Expanded(
-            flex: 100,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  family.name,
-                  style: GoogleFonts.anton(
-                    color: AppColors.textInverted,
-                    fontSize:
-                        isMobile ? theme.textTheme.displayMedium!.fontSize : theme.textTheme.headlineSmall!.fontSize,
-                    fontWeight: FontWeight.w400,
-                    // height: 1 / 3.8,
-                  ),
+          padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: _isHovering ? AppColors.backgroundSurface : AppColors.borderLight,
+                  shape: BoxShape.circle,
                 ),
-                AppSpacing.tinyTinyMarginBox,
-                Text(
-                  locale.competencies_count(nbCompetencies),
-                  style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
-                    color: AppColors.textTertiary,
-                    // height: 1 / 2.4,
-                  ),
+                padding: const EdgeInsets.all(10),
+                child: SvgPicture.asset(
+                  AppIcons.employeeSearchLoupePath,
+                  height: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
+                  width: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
+                  colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
                 ),
-              ],
-            ),
+              ),
+              AppSpacing.groupMarginBox,
+              Expanded(
+                flex: 100,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.family.name,
+                      style: GoogleFonts.anton(
+                        color: _isHovering ? AppColors.textInverted : AppColors.textPrimary,
+                        fontSize: isMobile
+                            ? theme.textTheme.displayMedium!.fontSize
+                            : theme.textTheme.headlineSmall!.fontSize,
+                        fontWeight: FontWeight.w400,
+                        // height: 1 / 3.8,
+                      ),
+                    ),
+                    AppSpacing.tinyTinyMarginBox,
+                    Text(
+                      locale.competencies_count(nbCompetencies),
+                      style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
+                        color: _isHovering ? AppColors.textInverted : AppColors.textSecondary,
+                        // height: 1 / 2.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  // rightModalOpen(context, screen: const MainSearchScreen());
+                  navigateToPath(context,
+                      to: AppRoutes.competencyFamilyDetails
+                          .replaceAll(':jobId', widget.job.id!)
+                          .replaceAll(':cfId', widget.family.id!));
+                },
+                child: SvgPicture.asset(
+                  AppIcons.dropdownArrowRightPath,
+                  height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                  width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                ),
+              ),
+            ],
           ),
-          const Spacer(),
-          GestureDetector(
-            onTap: () {
-              // rightModalOpen(context, screen: const MainSearchScreen());
-              navigateToPath(context,
-                  to: AppRoutes.competencyFamilyDetails.replaceAll(':jobId', job.id!).replaceAll(':cfId', family.id!));
-            },
-            child: SvgPicture.asset(
-              AppIcons.dropdownArrowRightPath,
-              height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-              width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -451,8 +496,8 @@ class _RoundedRadarPainter extends CustomPainter {
       canvas: canvas,
       pts: defaultPts,
       cornerRadius: cornerR,
-      fillColor: Colors.black.withOpacity(0.1),
-      strokeColor: Colors.black,
+      fillColor: AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 0.1 : 0.025),
+      strokeColor: AppColors.primaryDefault,
       strokeWidth: dataStroke,
     );
     if (userValues.isNotEmpty) {
@@ -665,8 +710,8 @@ class _RoundedRadarPainter extends CustomPainter {
 
         // Clamp to bounds
         const double clampPad = 6.0;
-        final double maxX = (center.dx * 2) - tp.width - clampPad;
-        final double maxY = (center.dy * 2) - tp.height - clampPad;
+        final double maxX = math.max(clampPad, (center.dx * 2) - tp.width - clampPad);
+        final double maxY = math.max(clampPad, (center.dy * 2) - tp.height - clampPad);
         x = x.clamp(clampPad, maxX);
         y = y.clamp(clampPad, maxY);
       }

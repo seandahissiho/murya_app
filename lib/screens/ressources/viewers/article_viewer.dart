@@ -194,7 +194,6 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
   final TocController tocController = TocController();
   final AutoScrollController controller = AutoScrollController();
   int currentIndex = 0;
-  final List<Toc> _tocList = [];
 
   @override
   Widget build(BuildContext context) {

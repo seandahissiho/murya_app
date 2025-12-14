@@ -221,7 +221,7 @@ abstract class AppLocalizations {
   /// Texte du bouton dans le module des ressources de l'utilisateur
   ///
   /// In fr, this message translates to:
-  /// **'Créer'**
+  /// **'Collecter'**
   String get user_ressources_module_button;
 
   /// Message affiché lorsque la recherche ne retourne aucun résultat

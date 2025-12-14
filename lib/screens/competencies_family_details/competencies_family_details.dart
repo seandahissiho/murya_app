@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:markdown_widget/widget/markdown.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/components/app_button.dart';
@@ -111,27 +112,6 @@ class CompetencyCard extends StatelessWidget {
                       ]
                     ],
                   ),
-                  // if (isMobile) ...[
-                  //   AppSpacing.groupMarginBox,
-                  //   Row(
-                  //     mainAxisSize: MainAxisSize.max,
-                  //     mainAxisAlignment: MainAxisAlignment.start,
-                  //     crossAxisAlignment: CrossAxisAlignment.end,
-                  //     children: [
-                  //       AppXButton(
-                  //         onPressed: () {},
-                  //         isLoading: false,
-                  //         text: locale.consult,
-                  //       ),
-                  //       AppSpacing.elementMarginBox,
-                  //       SvgPicture.asset(
-                  //         AppIcons.smilingIconPath,
-                  //         width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                  //         height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ]
                 ],
               ),
             ),
@@ -153,8 +133,8 @@ class CompetencyCard extends StatelessWidget {
                   AppSpacing.elementMarginBox,
                   SvgPicture.asset(
                     AppIcons.smilingIconPath,
-                    width: theme.elevatedButtonTheme.style?.fixedSize?.resolve({})?.width ?? 32,
-                    height: theme.elevatedButtonTheme.style?.fixedSize?.resolve({})?.height ?? 32,
+                    width: tabletAndAboveCTAHeight,
+                    height: tabletAndAboveCTAHeight,
                   ),
                 ],
               ),

@@ -67,7 +67,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 2) / 2;
       return calculatedSize;
     } else {
-      final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 6) / 3;
+      final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 6) / 3.06;
       return calculatedSize;
     }
   }
@@ -86,7 +86,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       return (availableHeight + AppSpacing.sectionMargin) / 4;
     } else {
       // return ((availableHeight - AppSpacing.groupMargin) / 2) / 1.618;
-      return math.max((availableHeight) / 3, 325);
+      return math.max((availableHeight) / 2 - 90, 225);
     }
   }
 

@@ -74,7 +74,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'La génération des contenus de Murya est instantanée';
 
   @override
-  String get user_ressources_module_button => 'Créer';
+  String get user_ressources_module_button => 'Collecter';
 
   @override
   String searchNoResults(String query) {

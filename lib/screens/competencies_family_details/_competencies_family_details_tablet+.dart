@@ -173,24 +173,9 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                           ],
                         ),
                         AppSpacing.containerInsideMarginBox,
-                        Flexible(
-                          child: SingleChildScrollView(
-                            child: ExpandableText(
-                              _cf.description ?? '',
-                              // FAKER.lorem.sentences(100).join(' '),
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: AppColors.primaryDefault,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              linkStyle: theme.textTheme.labelMedium?.copyWith(
-                                color: AppColors.primaryDefault,
-                                decoration: TextDecoration.underline,
-                              ),
-                              maxLines: 400,
-                              expandText: '\n\n${locale.show_more}',
-                              collapseText: '\n\n${locale.show_less}',
-                              linkEllipsis: false,
-                            ),
+                        Expanded(
+                          child: MarkdownWidget(
+                            data: _cf.description ?? '',
                           ),
                         ),
                       ],
