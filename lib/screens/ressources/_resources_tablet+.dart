@@ -41,7 +41,7 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
               children: [
                 RichText(
                   text: TextSpan(
-                    text: "Ressources",
+                    text: AppLocalizations.of(context)!.page_title_resources,
                     style: GoogleFonts.anton(
                       color: AppColors.textPrimary,
                       fontSize: theme.textTheme.headlineMedium?.fontSize,
@@ -65,10 +65,12 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: "Articles",
+                              text: AppLocalizations.of(context)!
+                                  .section_articles,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
-                                fontSize: theme.textTheme.headlineSmall?.fontSize,
+                                fontSize:
+                                    theme.textTheme.headlineSmall?.fontSize,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -76,16 +78,20 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(resources: context.read<ResourcesBloc>().articles, type: ResourceType.article),
+                      ResourcesCarousel(
+                          resources: context.read<ResourcesBloc>().articles,
+                          type: ResourceType.article),
                       AppSpacing.containerInsideMarginBox,
                       Row(
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: "Podcasts",
+                              text: AppLocalizations.of(context)!
+                                  .section_podcasts,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
-                                fontSize: theme.textTheme.headlineSmall?.fontSize,
+                                fontSize:
+                                    theme.textTheme.headlineSmall?.fontSize,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -93,17 +99,21 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(resources: context.read<ResourcesBloc>().podcasts, type: ResourceType.podcast),
+                      ResourcesCarousel(
+                          resources: context.read<ResourcesBloc>().podcasts,
+                          type: ResourceType.podcast),
                       AppSpacing.containerInsideMarginBox,
                       // Videos Section
                       Row(
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: "Videos",
+                              text:
+                                  AppLocalizations.of(context)!.section_videos,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
-                                fontSize: theme.textTheme.headlineSmall?.fontSize,
+                                fontSize:
+                                    theme.textTheme.headlineSmall?.fontSize,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -111,7 +121,9 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(resources: context.read<ResourcesBloc>().videos, type: ResourceType.video),
+                      ResourcesCarousel(
+                          resources: context.read<ResourcesBloc>().videos,
+                          type: ResourceType.video),
                     ],
                   ),
                 ),

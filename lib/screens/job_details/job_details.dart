@@ -496,8 +496,8 @@ class _RoundedRadarPainter extends CustomPainter {
       canvas: canvas,
       pts: defaultPts,
       cornerRadius: cornerR,
-      fillColor: AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 0.1 : 0.025),
-      strokeColor: AppColors.primaryDefault,
+      fillColor: AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 0.1 : 0.05),
+      strokeColor: AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 1.0 : 0.125),
       strokeWidth: dataStroke,
     );
     if (userValues.isNotEmpty) {
@@ -517,8 +517,9 @@ class _RoundedRadarPainter extends CustomPainter {
       pts: defaultPts,
       baseDotRadius: dotRadius,
       borderWidth: dotBorderW,
-      fillColor: Colors.black,
-      borderColor: Colors.white,
+      fillColor: AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 1.0 : 0.25),
+      borderColor:
+          userValues.isEmpty ? Colors.white : AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 1.0 : 0),
       highlightIndex: highlightIndex,
       highlightScale: 1.6,
       // a bit larger

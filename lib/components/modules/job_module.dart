@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
@@ -40,7 +41,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
   @override
   void initState() {
     log("JobModuleWidget initState");
-    // context.read<JobBloc>().add(LoadUserCurrentJob(context: context));
+    context.read<JobBloc>().add(LoadUserCurrentJob(context: context));
     super.initState();
   }
 
@@ -125,110 +126,117 @@ class _JobModuleContentState extends State<JobModuleContent> {
     final locale = AppLocalizations.of(context);
     var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
 
-    return BlocConsumer<JobBloc, JobState>(
+    return BlocListener<AppBloc, AppState>(
       listener: (context, state) {
-        log("JobModuleContent JobBloc listener: $state");
-        if (state is UserJobDetailsLoaded) {
-          _userJob = state.userJob;
-          _job = _userJob.job!;
-          // context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: _userJob.jobId!));
-          context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
-          _checkQuizAvailability();
-        }
-        if (state is UserJobCompetencyProfileLoaded) {
-          _userJobCompetencyProfile = state.profile;
-        }
-        setState(() {});
+        // Reload profile when language changes
+        context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
       },
-      builder: (context, state) {
-        return LayoutBuilder(builder: (context, constraints) {
-          return Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Expanded(
-                flex: 1000,
-                child: InkWell(
-                  onTap: () {
-                    navigateToPath(
-                      context,
-                      to: AppRoutes.jobDetails.replaceAll(':id', _userJob.jobId!),
-                    );
-                  },
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              width: constraints.maxWidth * 0.95,
-                              child: AutoSizeText(
-                                _userJob.job?.title ?? '',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.anton(
-                                  color: Colors.white,
-                                  fontSize: isMobile
-                                      ? theme.textTheme.headlineSmall!.fontSize!
-                                      : theme.textTheme.displaySmall!.fontSize!,
-                                  fontWeight: FontWeight.w700,
+      listenWhen: (previous, current) => previous.language.code != current.language.code,
+      child: BlocConsumer<JobBloc, JobState>(
+        listener: (context, state) {
+          log("JobModuleContent JobBloc listener: $state");
+          if (state is UserJobDetailsLoaded) {
+            _userJob = state.userJob;
+            _job = _userJob.job!;
+            // context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: _userJob.jobId!));
+            context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
+            _checkQuizAvailability();
+          }
+          if (state is UserJobCompetencyProfileLoaded) {
+            _userJobCompetencyProfile = state.profile;
+          }
+          setState(() {});
+        },
+        builder: (context, state) {
+          return LayoutBuilder(builder: (context, constraints) {
+            return Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Expanded(
+                  flex: 1000,
+                  child: InkWell(
+                    onTap: () {
+                      navigateToPath(
+                        context,
+                        to: AppRoutes.jobDetails.replaceAll(':id', _userJob.jobId!),
+                      );
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: SizedBox(
+                                width: constraints.maxWidth * 0.95,
+                                child: AutoSizeText(
+                                  _userJob.job?.title ?? '',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.anton(
+                                    color: Colors.white,
+                                    fontSize: isMobile
+                                        ? theme.textTheme.headlineSmall!.fontSize!
+                                        : theme.textTheme.displaySmall!.fontSize!,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  minFontSize: theme.textTheme.bodyLarge!.fontSize!,
                                 ),
-                                minFontSize: theme.textTheme.bodyLarge!.fontSize!,
                               ),
                             ),
-                          ),
-                          AppSpacing.groupMarginBox,
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: AppSpacing.elementMargin,
-                              top: AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
+                            AppSpacing.groupMarginBox,
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                right: AppSpacing.elementMargin,
+                                top: AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
+                              ),
+                              child: ScoreWidget(
+                                  value: context.read<ProfileBloc>().user.diamonds, textColor: Colors.white),
                             ),
-                            child:
-                                ScoreWidget(value: context.read<ProfileBloc>().user.diamonds, textColor: Colors.white),
-                          ),
-                        ],
-                      ),
-                      AppSpacing.groupMarginBox,
-                      Expanded(flex: 2, child: _diagramBuilder(locale, theme, options)),
-                    ],
+                          ],
+                        ),
+                        AppSpacing.groupMarginBox,
+                        Expanded(flex: 2, child: _diagramBuilder(locale, theme, options)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              if (constraints.maxHeight >= 163 + (isMobile ? 0 : 36)) ...[
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    AppSpacing.groupMarginBox,
-                    AppXButton(
-                      autoResize: false,
-                      onPressed: () {
-                        log("Evaluate Skills button pressed");
-                        if (nextQuizAvailableIn != null) return;
-                        navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _userJob.jobId!));
-                      },
-                      isLoading: false,
-                      text: nextQuizAvailableIn == null
-                          ? locale.evaluateSkills
-                          : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
-                      disabled: nextQuizAvailableIn != null,
-                      borderColor: AppColors.whiteSwatch,
-                      bgColor: AppColors.whiteSwatch,
-                      fgColor: AppColors.primaryDefault,
-                      // disabledColor: AppColors.primaryDisabled,
-                    ),
-                  ],
-                ),
+                if (constraints.maxHeight >= 163 + (isMobile ? 0 : 36)) ...[
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      AppSpacing.groupMarginBox,
+                      AppXButton(
+                        autoResize: false,
+                        onPressed: () {
+                          log("Evaluate Skills button pressed");
+                          if (nextQuizAvailableIn != null) return;
+                          navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _userJob.jobId!));
+                        },
+                        isLoading: false,
+                        text: nextQuizAvailableIn == null
+                            ? locale.evaluateSkills
+                            : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
+                        disabled: nextQuizAvailableIn != null,
+                        borderColor: AppColors.whiteSwatch,
+                        bgColor: AppColors.whiteSwatch,
+                        fgColor: AppColors.primaryDefault,
+                        // disabledColor: AppColors.primaryDisabled,
+                      ),
+                    ],
+                  ),
+                ],
               ],
-            ],
-          );
-        });
-      },
+            );
+          });
+        },
+      ),
     );
   }
 

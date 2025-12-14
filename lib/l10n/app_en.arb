@@ -196,5 +196,136 @@
   "ranking": "Ranking",
   "@ranking": {
     "description": "Label for ranking"
-  }
+  },
+  "resourceViewerPageTitle": "ResourceViewer Page",
+  "@resourceViewerPageTitle": {
+    "description": "Title of the resource viewer page"
+  },
+  "unsupportedResourceType": "Unsupported resource type",
+  "@unsupportedResourceType": {
+    "description": "Error message for unsupported resource types"
+  },
+  "homeScreenTitle": "Home",
+  "@homeScreenTitle": {
+    "description": "Title for the Home screen"
+  },
+  "mainSearchTitle": "Main Search",
+  "@mainSearchTitle": {
+    "description": "Title for the Main Search screen"
+  },
+  "mediaLibrary": "Media Library",
+  "@mediaLibrary": {
+    "description": "Label for the media library"
+  },
+  "summary": "Summary",
+  "@summary": {
+    "description": "Label for the Table of Contents/Summary"
+  },
+  "article": "Article",
+  "@article": {
+    "description": "Label for the Article section"
+  },
+  "quiz_ready_to_evaluate": "Ready to evaluate yourself?",
+  "@quiz_ready_to_evaluate": {
+    "description": "Popup title before starting the quiz"
+  },
+  "quiz_start_description_1": "You are about to start the questionnaire for the Product Manager job.",
+  "@quiz_start_description_1": {
+    "description": "First line of quiz start description"
+  },
+  "quiz_start_description_2": "It consists of 10 multiple-choice questions.",
+  "@quiz_start_description_2": {
+    "description": "Second line of quiz start description"
+  },
+  "quiz_start_description_3": "Your answers will help create your personalized resource.",
+  "@quiz_start_description_3": {
+    "description": "Third line of quiz start description"
+  },
+  "quiz_start_advice": "Tip: Answer instinctively for a fairer analysis. It takes less than 5 minutes!",
+  "@quiz_start_advice": {
+    "description": "Advice before starting the quiz"
+  },
+  "quiz_lets_go": "Let''s go!",
+  "@quiz_lets_go": {
+    "description": "Button to start the quiz"
+  },
+  "quiz_question_counter": "Question {current}/{total}",
+  "@quiz_question_counter": {
+    "description": "Counter for current question",
+    "placeholders": {
+        "current": { "type": "int" },
+        "total": { "type": "int" }
+    }
+  },
+  "quiz_verify": "Check",
+  "@quiz_verify": {
+    "description": "Button to verify the answer"
+  },
+  "quiz_completed_title": "Evaluation completed!",
+  "@quiz_completed_title": {
+    "description": "Title when quiz is finished"
+  },
+  "quiz_completed_subtitle": "Well done, your 10 answers have been analyzed!",
+  "@quiz_completed_subtitle": {
+    "description": "Subtitle when quiz is finished"
+  },
+  "quiz_completed_description": "The skills diagram is updated and you can create the perfect resource to keep progressing.",
+  "@quiz_completed_description": {
+    "description": "Description when quiz is finished"
+  },
+  "quiz_see_my_space": "See my space",
+  "@quiz_see_my_space": {
+    "description": "Button to go to user space after quiz"
+  },
+  "sampleResource": "Sample Resource",
+  "@sampleResource": {
+    "description": "Default title for a sample resource"
+  },
+  "resourceLabelSingular_article": "an article",
+  "@resourceLabelSingular_article": { "description": "Singular label for article" },
+  "resourceLabelSingular_video": "a video",
+  "@resourceLabelSingular_video": { "description": "Singular label for video" },
+  "resourceLabelSingular_podcast": "a podcast",
+  "@resourceLabelSingular_podcast": { "description": "Singular label for podcast" },
+  "resourceLabelSingular_default": "a resource",
+  "@resourceLabelSingular_default": { "description": "Singular label for generic resource" },
+  "popup_validate": "Validate",
+  "@popup_validate": { "description": "Validate button text" },
+  "popup_unlock_resource_title": "Unlock your resource?",
+  "@popup_unlock_resource_title": { "description": "Title for unlock resource popup" },
+  "popup_unlock_resource_description": "Use your points to generate your personalized article. Murya AI will instantly adapt it to your answers of the day.",
+  "@popup_unlock_resource_description": { "description": "Description for unlock resource popup" },
+  "cost_creation_label": "Creation cost",
+  "@cost_creation_label": { "description": "Label for creation cost" },
+  "cost_current_balance_label": "Your current balance",
+  "@cost_current_balance_label": { "description": "Label for current balance" },
+  "cost_remaining_balance_label": "Your remaining balance (after creation)",
+  "@cost_remaining_balance_label": { "description": "Label for remaining balance" },
+  "loading_creating_resource": "Creating your resource...",
+  "@loading_creating_resource": { "description": "Loading text during creation" },
+  "loading_murya_working": "Murya is working!",
+  "@loading_murya_working": { "description": "Loading title during creation" },
+  "loading_analyzing_answers": "We are analyzing your 10 answers to write a unique article, perfectly adapted to the skills you need to strengthen.",
+  "@loading_analyzing_answers": { "description": "Loading description during creation" },
+  "create_resource_button": "Create {resourceLabel}",
+  "@create_resource_button": {
+    "description": "Button text to create a resource",
+    "placeholders": {
+        "resourceLabel": { "type": "String" }
+    }
+  },
+  "resourcesPageTitle": "Resources Page",
+  "@resourcesPageTitle": { "description": "Title for the resources page" },
+  "page_title_resources": "Resources",
+  "@page_title_resources": { "description": "Heading for resources screen" },
+  "section_articles": "Articles",
+  "@section_articles": { "description": "Section header for articles" },
+  "section_videos": "Videos",
+  "@section_videos": { "description": "Section header for videos" },
+  "section_podcasts": "Podcasts",
+  "@section_podcasts": { "description": "Section header for podcasts" },
+  "quiz_daily_performance": "Daily Performance",
+  "quiz_good_answers": "Good Answers",
+  "quiz_answers_to_review": "Answers to Review",
+  "quiz_reward": "Reward"
 }

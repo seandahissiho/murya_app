@@ -16,18 +16,21 @@ import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
+import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/quiz.dart';
 import 'package:murya/screens/base.dart';
 
 part '_job_evaluation_mobile.dart';
 part '_job_evaluation_tablet+.dart';
 
-class JobEvaluationLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class JobEvaluationLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.jobEvaluation];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(

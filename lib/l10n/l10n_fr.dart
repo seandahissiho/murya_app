@@ -172,4 +172,146 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get ranking => 'Classement';
+
+  @override
+  String get resourceViewerPageTitle => 'Page Visualiseur de Ressource';
+
+  @override
+  String get unsupportedResourceType => 'Type de ressource non supporté';
+
+  @override
+  String get homeScreenTitle => 'Accueil';
+
+  @override
+  String get mainSearchTitle => 'Recherche Principale';
+
+  @override
+  String get mediaLibrary => 'Médiathèque';
+
+  @override
+  String get summary => 'Sommaire';
+
+  @override
+  String get article => 'Article';
+
+  @override
+  String get quiz_ready_to_evaluate => 'Prêt(e) à vous évaluer ?';
+
+  @override
+  String get quiz_start_description_1 =>
+      'Vous allez démarrer le questionnaire du métier de Product Manager.';
+
+  @override
+  String get quiz_start_description_2 =>
+      'Il se compose de 10 questions à choix multiple.';
+
+  @override
+  String get quiz_start_description_3 =>
+      'Vos réponses permettront de créer votre ressource personnalisée.';
+
+  @override
+  String get quiz_start_advice =>
+      'Conseil : Répondez instinctivement pour une analyse plus juste. Cela prend moins de 5 minutes !';
+
+  @override
+  String get quiz_lets_go => 'C\'est parti !';
+
+  @override
+  String quiz_question_counter(int current, int total) {
+    return 'Question $current/$total';
+  }
+
+  @override
+  String get quiz_verify => 'Vérifier';
+
+  @override
+  String get quiz_completed_title => 'Évaluation terminée !';
+
+  @override
+  String get quiz_completed_subtitle =>
+      'Bravo, vos 10 réponses ont été analysées !';
+
+  @override
+  String get quiz_completed_description =>
+      'Le diagramme de compétences est actualisé et vous pouvez créer la ressource parfaite pour continuer à progresser.';
+
+  @override
+  String get quiz_see_my_space => 'Voir mon espace';
+
+  @override
+  String get sampleResource => 'Ressource Exemple';
+
+  @override
+  String get resourceLabelSingular_article => 'un article';
+
+  @override
+  String get resourceLabelSingular_video => 'une vidéo';
+
+  @override
+  String get resourceLabelSingular_podcast => 'un podcast';
+
+  @override
+  String get resourceLabelSingular_default => 'une ressource';
+
+  @override
+  String get popup_validate => 'Valider';
+
+  @override
+  String get popup_unlock_resource_title => 'Débloquer votre ressource ?';
+
+  @override
+  String get popup_unlock_resource_description =>
+      'Utilisez vos points pour générer votre article personnalisé. LIA de Murya ladaptera instantanément à vos réponses du jour.';
+
+  @override
+  String get cost_creation_label => 'Coût de la création';
+
+  @override
+  String get cost_current_balance_label => 'Votre solde actuel';
+
+  @override
+  String get cost_remaining_balance_label =>
+      'Votre solde restant (après création)';
+
+  @override
+  String get loading_creating_resource => 'Création de votre ressource...';
+
+  @override
+  String get loading_murya_working => 'Murya est au travail !';
+
+  @override
+  String get loading_analyzing_answers =>
+      'Nous analysons vos 10 réponses pour rédiger un article unique, parfaitement adapté aux compétences que vous devez renforcer.';
+
+  @override
+  String create_resource_button(String resourceLabel) {
+    return 'Créer $resourceLabel';
+  }
+
+  @override
+  String get resourcesPageTitle => 'Page Ressources';
+
+  @override
+  String get page_title_resources => 'Ressources';
+
+  @override
+  String get section_articles => 'Articles';
+
+  @override
+  String get section_videos => 'Vidéos';
+
+  @override
+  String get section_podcasts => 'Podcasts';
+
+  @override
+  String get quiz_daily_performance => 'Votre performance du jour';
+
+  @override
+  String get quiz_good_answers => 'Bonnes réponses';
+
+  @override
+  String get quiz_answers_to_review => 'Réponses à revoir';
+
+  @override
+  String get quiz_reward => 'Récompense';
 }
