@@ -45,7 +45,7 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
               children: [
                 RichText(
                   text: TextSpan(
-                    text: AppLocalizations.of(context)!.page_title_resources,
+                    text: AppLocalizations.of(context).page_title_resources,
                     style: GoogleFonts.anton(
                       color: AppColors.textPrimary,
                       fontSize: theme.textTheme.headlineMedium?.fontSize,
@@ -69,8 +69,8 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: AppLocalizations.of(context)!
-                                  .section_articles,
+                              text:
+                                  AppLocalizations.of(context).section_articles,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
                                 fontSize:
@@ -93,8 +93,8 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text: AppLocalizations.of(context)!
-                                  .section_podcasts,
+                              text:
+                                  AppLocalizations.of(context).section_podcasts,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
                                 fontSize:
@@ -118,8 +118,7 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text:
-                                  AppLocalizations.of(context)!.section_videos,
+                              text: AppLocalizations.of(context).section_videos,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
                                 fontSize:

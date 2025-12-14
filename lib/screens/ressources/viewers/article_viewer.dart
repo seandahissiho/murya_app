@@ -227,7 +227,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                             to: AppRoutes.userRessourcesModule);
                       },
                       child: Text(
-                        AppLocalizations.of(context)!.mediaLibrary,
+                        AppLocalizations.of(context).mediaLibrary,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: AppColors.textTertiary,
                         ),
@@ -274,7 +274,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                       Padding(
                         padding: const EdgeInsets.all(
                             AppSpacing.containerInsideMargin),
-                        child: Text(AppLocalizations.of(context)!.summary,
+                        child: Text(AppLocalizations.of(context).summary,
                             style: theme.textTheme.labelLarge),
                       ),
                       const Divider(
@@ -413,7 +413,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                       Padding(
                         padding: const EdgeInsets.all(
                             AppSpacing.containerInsideMargin),
-                        child: Text(AppLocalizations.of(context)!.article,
+                        child: Text(AppLocalizations.of(context).article,
                             style: theme.textTheme.labelLarge),
                       ),
                       const Divider(

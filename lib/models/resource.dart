@@ -101,9 +101,19 @@ class Resource {
     final String? title = json['title'] as String?;
     final String? description = json['description'] as String?;
     final String? url = json['url'] as String?;
-    final ResourceType? type = ResourceType.article;
-    final DateTime? createdAt = json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null;
-    final DateTime? updatedAt = json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null;
+    final String? typeString = json['type'] as String?;
+    final ResourceType type = typeString != null
+        ? ResourceType.values.firstWhere(
+            (e) => e.name.toUpperCase() == typeString.toUpperCase(),
+            orElse: () => ResourceType.article,
+          )
+        : ResourceType.article;
+    final DateTime? createdAt = json['createdAt'] != null
+        ? DateTime.parse(json['createdAt'] as String)
+        : null;
+    final DateTime? updatedAt = json['updatedAt'] != null
+        ? DateTime.parse(json['updatedAt'] as String)
+        : null;
     final String? content = json['content'] as String?;
 
     return Resource(

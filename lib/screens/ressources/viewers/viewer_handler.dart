@@ -26,7 +26,6 @@ class ResourceViewerLocation
   @override
   List<BeamPage> buildPages(
       BuildContext context, RouteInformationSerializable state) {
-    final languageCode = context.read<AppBloc>().appLanguage.code;
     // Cast the state to BeamState (or your custom state class)
     // final state = Beamer.of(context).currentBeamLocation.state as BeamState;
     // Now you can access the 'data' property
@@ -37,8 +36,9 @@ class ResourceViewerLocation
 
     return [
       BeamPage(
-        key: ValueKey('resourceViewer-page-$languageCode'),
-        title: AppLocalizations.of(context)!.resourceViewerPageTitle,
+        key: ValueKey(
+            'resourceViewer-page-${context.read<AppBloc>().appLanguage.code}'),
+        title: AppLocalizations.of(context).resourceViewerPageTitle,
         child: ViewerHandler(resource: resource),
       ),
     ];
@@ -73,7 +73,7 @@ class _ViewerHandlerState extends State<ViewerHandler> {
             Resource(
               id: resourceId ?? '1',
               type: ResourceType.article,
-              title: AppLocalizations.of(context)!.sampleResource,
+              title: AppLocalizations.of(context).sampleResource,
             );
       });
     });
@@ -91,7 +91,7 @@ class _ViewerHandlerState extends State<ViewerHandler> {
       // ignore: unreachable_switch_default
       default:
         return Center(
-            child: Text(AppLocalizations.of(context)!.unsupportedResourceType));
+            child: Text(AppLocalizations.of(context).unsupportedResourceType));
     }
   }
 }

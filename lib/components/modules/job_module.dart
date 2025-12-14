@@ -9,6 +9,7 @@ import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
+import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/modules/app_module.dart';
 import 'package:murya/components/score.dart';
@@ -73,7 +74,8 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                       onCardTap: () {
                         navigateToPath(
                           context,
-                          to: AppRoutes.jobDetails.replaceAll(':id', state.userCurrentJob!.jobId!),
+                          to: AppRoutes.jobDetails
+                              .replaceAll(':id', state.userCurrentJob!.jobId!),
                         );
                       },
                       content: JobModuleContent(userJob: state.userCurrentJob!),
@@ -108,13 +110,15 @@ class _JobModuleContentState extends State<JobModuleContent> {
   Timer? _countdownTimer;
   Job _job = Job.empty();
   int _detailsLevel = 0;
-  UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
+  UserJobCompetencyProfile _userJobCompetencyProfile =
+      UserJobCompetencyProfile.empty();
 
   @override
   void initState() {
     _userJob = widget.userJob;
     _job = _userJob.job!;
-    context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
+    context.read<JobBloc>().add(
+        LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
     _checkQuizAvailability();
     super.initState();
   }
@@ -124,14 +128,21 @@ class _JobModuleContentState extends State<JobModuleContent> {
     final ThemeData theme = Theme.of(context);
     final bool isMobile = DeviceHelper.isMobile(context);
     final locale = AppLocalizations.of(context);
-    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
+    var options = [
+      locale.skillLevel_easy,
+      locale.skillLevel_medium,
+      locale.skillLevel_hard,
+      locale.skillLevel_expert
+    ];
 
     return BlocListener<AppBloc, AppState>(
       listener: (context, state) {
         // Reload profile when language changes
-        context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
+        context.read<JobBloc>().add(LoadUserJobCompetencyProfile(
+            context: context, jobId: _userJob.jobId!));
       },
-      listenWhen: (previous, current) => previous.language.code != current.language.code,
+      listenWhen: (previous, current) =>
+          previous.language.code != current.language.code,
       child: BlocConsumer<JobBloc, JobState>(
         listener: (context, state) {
           log("JobModuleContent JobBloc listener: $state");
@@ -139,7 +150,11 @@ class _JobModuleContentState extends State<JobModuleContent> {
             _userJob = state.userJob;
             _job = _userJob.job!;
             // context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: _userJob.jobId!));
-            context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
+            context.read<JobBloc>().add(LoadUserJobCompetencyProfile(
+                context: context, jobId: _userJob.jobId!));
+            context
+                .read<ResourcesBloc>()
+                .add(LoadResources(userJobId: _userJob.id!));
             _checkQuizAvailability();
           }
           if (state is UserJobCompetencyProfileLoaded) {
@@ -159,7 +174,8 @@ class _JobModuleContentState extends State<JobModuleContent> {
                     onTap: () {
                       navigateToPath(
                         context,
-                        to: AppRoutes.jobDetails.replaceAll(':id', _userJob.jobId!),
+                        to: AppRoutes.jobDetails
+                            .replaceAll(':id', _userJob.jobId!),
                       );
                     },
                     child: Column(
@@ -181,11 +197,14 @@ class _JobModuleContentState extends State<JobModuleContent> {
                                   style: GoogleFonts.anton(
                                     color: Colors.white,
                                     fontSize: isMobile
-                                        ? theme.textTheme.headlineSmall!.fontSize!
-                                        : theme.textTheme.displaySmall!.fontSize!,
+                                        ? theme
+                                            .textTheme.headlineSmall!.fontSize!
+                                        : theme
+                                            .textTheme.displaySmall!.fontSize!,
                                     fontWeight: FontWeight.w700,
                                   ),
-                                  minFontSize: theme.textTheme.bodyLarge!.fontSize!,
+                                  minFontSize:
+                                      theme.textTheme.bodyLarge!.fontSize!,
                                 ),
                               ),
                             ),
@@ -193,15 +212,20 @@ class _JobModuleContentState extends State<JobModuleContent> {
                             Padding(
                               padding: const EdgeInsets.only(
                                 right: AppSpacing.elementMargin,
-                                top: AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
+                                top: AppSpacing.tinyMargin +
+                                    AppSpacing.tinyTinyMargin,
                               ),
                               child: ScoreWidget(
-                                  value: context.read<ProfileBloc>().user.diamonds, textColor: Colors.white),
+                                  value:
+                                      context.read<ProfileBloc>().user.diamonds,
+                                  textColor: Colors.white),
                             ),
                           ],
                         ),
                         AppSpacing.groupMarginBox,
-                        Expanded(flex: 2, child: _diagramBuilder(locale, theme, options)),
+                        Expanded(
+                            flex: 2,
+                            child: _diagramBuilder(locale, theme, options)),
                       ],
                     ),
                   ),
@@ -217,12 +241,15 @@ class _JobModuleContentState extends State<JobModuleContent> {
                         onPressed: () {
                           log("Evaluate Skills button pressed");
                           if (nextQuizAvailableIn != null) return;
-                          navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _userJob.jobId!));
+                          navigateToPath(context,
+                              to: AppRoutes.jobEvaluation
+                                  .replaceAll(':id', _userJob.jobId!));
                         },
                         isLoading: false,
                         text: nextQuizAvailableIn == null
                             ? locale.evaluateSkills
-                            : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
+                            : locale.evaluateSkillsAvailableIn(
+                                nextQuizAvailableIn!.formattedHMS),
                         disabled: nextQuizAvailableIn != null,
                         borderColor: AppColors.whiteSwatch,
                         bgColor: AppColors.whiteSwatch,
@@ -257,7 +284,8 @@ class _JobModuleContentState extends State<JobModuleContent> {
       lastQuizAt.day,
       lastQuizAt.hour,
     );
-    nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+    nextQuizAvailableIn =
+        lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) {
@@ -278,12 +306,15 @@ class _JobModuleContentState extends State<JobModuleContent> {
           timer.cancel();
           return;
         }
-        nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+        nextQuizAvailableIn = lastQuizAt2
+            .add(Duration(hours: 24 - lastQuizAt2.hour))
+            .difference(now);
       });
     });
   }
 
-  _diagramBuilder(AppLocalizations locale, ThemeData theme, List<String> options) {
+  _diagramBuilder(
+      AppLocalizations locale, ThemeData theme, List<String> options) {
     return Center(
       child: LayoutBuilder(builder: (context, constraints) {
         return SizedBox(
@@ -291,7 +322,9 @@ class _JobModuleContentState extends State<JobModuleContent> {
           width: constraints.maxWidth,
           child: Center(
             child: InteractiveRoundedRadarChart(
-              labels: _userJobCompetencyProfile.competencyFamilies.map((cf) => cf.name).toList(),
+              labels: _userJobCompetencyProfile.competencyFamilies
+                  .map((cf) => cf.name)
+                  .toList(),
               defaultValues: _userJobCompetencyProfile.kiviatValues,
               userValues: _userJobCompetencyProfile.kiviatValues,
               labelBgColor: AppColors.whiteSwatch,
