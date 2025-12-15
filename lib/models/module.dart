@@ -1,4 +1,10 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
+import 'package:murya/components/popup.dart';
+import 'package:murya/config/DS.dart';
+import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
@@ -208,7 +214,41 @@ class Module {
         };
       case 'job':
         return () {
-          navigateToPath(context, to: AppRoutes.jobModule);
+          final theme = Theme.of(context);
+          displayPopUp(
+            context: context,
+            okText: AppLocalizations.of(context).popup_validate,
+            contents: [
+              SvgPicture.asset(
+                AppIcons.popupIconPath,
+              ),
+              AppSpacing.containerInsideMarginBox,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  AppLocalizations.of(context).popup_unlock_resource_title,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontSize: theme.textTheme.displayMedium?.fontSize,
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              AppSpacing.groupMarginBox,
+              Text(
+                AppLocalizations.of(context).popup_unlock_resource_description,
+                style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                textAlign: TextAlign.start,
+              ),
+              AppSpacing.sectionMarginBox,
+            ],
+          ).then((value) {
+            if (value == true) {
+              final jobId = context.read<JobBloc>().jobs.firstOrNull?.id!;
+              if (jobId != null) {
+                navigateToPath(context, to: AppRoutes.jobDetails.replaceAll(':id', jobId));
+              }
+            }
+          });
         };
       case 'ressources':
         return () {

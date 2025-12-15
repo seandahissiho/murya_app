@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'base.repository.dart';
 
+import 'package:murya/services/cache.service.dart';
+
 class AuthenticationRepository extends BaseRepository {
   late final SharedPreferences prefs;
   bool initialized = false;
@@ -74,7 +76,8 @@ class AuthenticationRepository extends BaseRepository {
     );
   }
 
-  Future<Result<(String, String)>> signIn({required Map<String, dynamic> data}) async {
+  Future<Result<(String, String)>> signIn(
+      {required Map<String, dynamic> data}) async {
     return AppResponse.execute(
       action: () async {
         final Response response = await api.dio.post(
@@ -97,12 +100,12 @@ class AuthenticationRepository extends BaseRepository {
 
   Future<void> deleteToken() async {
     await prefs.remove("refresh_token");
+    await CacheService().clear();
   }
 
   Future<Result<bool>> signOut() async {
     return AppResponse.execute(
       action: () async {
-        await prefs.remove("access_token");
         await deleteToken();
         return true;
       },
@@ -110,7 +113,8 @@ class AuthenticationRepository extends BaseRepository {
     );
   }
 
-  Future<Result<(String, String)>> register({required Map<String, dynamic> data}) async {
+  Future<Result<(String, String)>> register(
+      {required Map<String, dynamic> data}) async {
     return AppResponse.execute(
       action: () async {
         final Response response = await api.dio.post(
@@ -130,7 +134,8 @@ class AuthenticationRepository extends BaseRepository {
     );
   }
 
-  Future<Result<(String, String)>> registerTemp({required Map<String, dynamic> data}) async {
+  Future<Result<(String, String)>> registerTemp(
+      {required Map<String, dynamic> data}) async {
     return AppResponse.execute(
       action: () async {
         final Response response = await api.dio.post(
@@ -148,10 +153,5 @@ class AuthenticationRepository extends BaseRepository {
       },
       parentFunctionName: "AuthenticationRepository.registerTemp",
     );
-  }
-
-  void clearTokens() {
-    prefs.remove("refresh_token");
-    prefs.remove("access_token");
   }
 }

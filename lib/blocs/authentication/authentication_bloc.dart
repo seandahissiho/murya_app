@@ -81,7 +81,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       );
       if (tempResult.isError) {
         _initialized = true;
-        unAuthenticate(emit);
+        await unAuthenticate(emit);
         return;
       }
       _token = tempResult.data!.$1;
@@ -92,15 +92,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         // user: _user,
         justLoggedIn: true,
       ));
-      return;
-
-      if (result.error?.isNotEmpty ?? false) {
-        notificationBloc.add(InfoNotificationEvent(
-          message: result.error ?? "Session expirée, veuillez vous reconnecter",
-        ));
-      }
-      _initialized = true;
-      unAuthenticate(emit);
       return;
     }
     if (context.mounted) {
@@ -123,7 +114,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       notificationBloc.add(ErrorNotificationEvent(
         message: result.error,
       ));
-      unAuthenticate(emit);
+      await unAuthenticate(emit);
       return;
     }
     _token = result.data!.$1;
@@ -203,20 +194,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     timer = null;
   }
 
-  void unAuthenticate(Emitter<AuthenticationState> emit) {
-    authenticationRepository.clearTokens();
+  Future<void> unAuthenticate(Emitter<AuthenticationState> emit) async {
+    await authenticationRepository.deleteToken();
     if (context.mounted) {
-      // pop until first context
       while (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
-      // context.read<AppBloc>().add(
-      //       AppChangeRoute(
-      //         currentRoute: AppRoutes.landing,
-      //         nextRoute: AppRoutes.landing,
-      //       ),
-      //     );
-      // Beamer.of(context).beamToNamed(AppRoutes.landing);
     }
     if (context.mounted) {
       _resetAllBlocs(context);
@@ -233,7 +216,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       return;
     }
     notificationBloc.add(SuccessNotificationEvent(message: 'Déconnexion réussie.'));
-    unAuthenticate(emit);
+    await unAuthenticate(emit);
   }
 
   FutureOr<void> _onTempRegisterEvent(TempRegisterEvent event, Emitter<AuthenticationState> emit) async {
@@ -262,7 +245,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       notificationBloc.add(ErrorNotificationEvent(
         message: result.error,
       ));
-      unAuthenticate(emit);
+      await unAuthenticate(emit);
       return;
     }
     _token = result.data!.$1;
