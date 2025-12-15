@@ -174,6 +174,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ranking => 'Ranking';
 
   @override
+  String get popup_job_selection_title => 'Choose your job';
+
+  @override
+  String get popup_job_selection_technician_title => 'Cybersecurity Technician';
+
+  @override
+  String get popup_job_selection_technician_subtitle =>
+      'Protect critical infrastructures. Become a sought-after expert.';
+
+  @override
+  String get popup_job_selection_continue_button => 'Continue';
+
+  @override
+  String get popup_job_selection_other_expertise_label =>
+      'Looking for another expertise?';
+
+  @override
+  String get popup_job_selection_search_hint =>
+      'Ex: Developer, Product Manager...';
+
+  @override
   String get resourceViewerPageTitle => 'ResourceViewer Page';
 
   @override

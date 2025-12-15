@@ -197,6 +197,30 @@
   "@ranking": {
     "description": "Label for ranking"
   },
+  "popup_job_selection_title": "Choose your job",
+  "@popup_job_selection_title": {
+    "description": "Title of the job selection popup"
+  },
+  "popup_job_selection_technician_title": "Cybersecurity Technician",
+  "@popup_job_selection_technician_title": {
+    "description": "Title of the cybersecurity technician job in the popup"
+  },
+  "popup_job_selection_technician_subtitle": "Protect critical infrastructures. Become a sought-after expert.",
+  "@popup_job_selection_technician_subtitle": {
+    "description": "Subtitle of the cybersecurity technician job in the popup"
+  },
+  "popup_job_selection_continue_button": "Continue",
+  "@popup_job_selection_continue_button": {
+    "description": "Text of the continue button in the job selection popup"
+  },
+  "popup_job_selection_other_expertise_label": "Looking for another expertise?",
+  "@popup_job_selection_other_expertise_label": {
+    "description": "Label for the other expertise section in the popup"
+  },
+  "popup_job_selection_search_hint": "Ex: Developer, Product Manager...",
+  "@popup_job_selection_search_hint": {
+    "description": "Hint text for the other expertise search in the popup"
+  },
   "resourceViewerPageTitle": "ResourceViewer Page",
   "@resourceViewerPageTitle": {
     "description": "Title of the resource viewer page"

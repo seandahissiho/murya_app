@@ -197,6 +197,30 @@
   "@ranking": {
     "description": "Titre pour la section de classement"
   },
+  "popup_job_selection_title": "Choisissez votre métier",
+  "@popup_job_selection_title": {
+    "description": "Titre du popup de sélection de métier"
+  },
+  "popup_job_selection_technician_title": "Technicien en Cybersécurité",
+  "@popup_job_selection_technician_title": {
+    "description": "Titre du métier de technicien en cybersécurité dans le popup"
+  },
+  "popup_job_selection_technician_subtitle": "Protégez les infrastructures critiques. Devenez un expert recherché.",
+  "@popup_job_selection_technician_subtitle": {
+    "description": "Sous-titre du métier de technicien en cybersécurité dans le popup"
+  },
+  "popup_job_selection_continue_button": "Continuer",
+  "@popup_job_selection_continue_button": {
+    "description": "Texte du bouton continuer dans le popup de sélection de métier"
+  },
+  "popup_job_selection_other_expertise_label": "Vous visez une autre expertise?",
+  "@popup_job_selection_other_expertise_label": {
+    "description": "Label pour la section d'autre expertise dans le popup"
+  },
+  "popup_job_selection_search_hint": "Ex: Développeur, Product Manager...",
+  "@popup_job_selection_search_hint": {
+    "description": "Hint text pour la recherche d'autre expertise dans le popup"
+  },
   "resourceViewerPageTitle": "Page Visualiseur de Ressource",
   "@resourceViewerPageTitle": {
     "description": "Titre de la page de visualisation des ressources"
