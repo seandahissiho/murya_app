@@ -64,6 +64,15 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     if (!authenticationBloc.state.isAuthenticated) {
       return;
     }
+
+    final cachedResult = await jobRepository.getUserCurrentJobCached();
+    if (cachedResult.data != null) {
+      _userCurrentJob = cachedResult.data;
+      emit(UserJobDetailsLoaded(userJob: _userCurrentJob!, userCurrentJob: _userCurrentJob));
+      return;
+    }
+    if (event.context.mounted == false) return;
+
     final local = AppLocalizations.of(event.context);
 
     final result = await jobRepository.getUserCurrentJob();
@@ -78,6 +87,12 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   }
 
   FutureOr<void> _onLoadJobDetails(LoadJobDetails event, Emitter<JobState> emit) async {
+    final cachedResult = await jobRepository.getJobDetailsCached(event.jobId);
+    if (cachedResult.data != null) {
+      emit(JobDetailsLoaded(job: cachedResult.data!, userCurrentJob: state.userCurrentJob));
+    }
+    if (event.context.mounted == false) return;
+
     final local = AppLocalizations.of(event.context);
     final result = await jobRepository.getJobDetails(event.jobId);
 
@@ -94,6 +109,13 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     if (!authenticationBloc.state.isAuthenticated) {
       return;
     }
+
+    final cachedResult = await jobRepository.getUserJobDetailsCached(event.jobId);
+    if (cachedResult.data != null) {
+      emit(UserJobDetailsLoaded(userJob: cachedResult.data!, userCurrentJob: state.userCurrentJob));
+    }
+    if (event.context.mounted == false) return;
+
     final local = AppLocalizations.of(event.context);
     final result = await jobRepository.getUserJobDetails(event.jobId);
 
@@ -111,6 +133,13 @@ class JobBloc extends Bloc<JobEvent, JobState> {
       return;
     }
     if (event.jobId.isEmptyOrNull) return;
+
+    final cachedResult = await jobRepository.getRankingForJobCached(event.jobId, event.from, event.to);
+    if (cachedResult.data != null) {
+      emit(JobRankingLoaded(ranking: cachedResult.data!, userCurrentJob: state.userCurrentJob));
+    }
+    if (event.context.mounted == false) return;
+
     final local = AppLocalizations.of(event.context);
     final result = await jobRepository.getRankingForJob(event.jobId, event.from, event.to);
 
@@ -124,6 +153,13 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   }
 
   FutureOr<void> _onLoadCFDetails(LoadCFDetails event, Emitter<JobState> emit) async {
+    final cachedResult = await jobRepository.getCFDetailsCached(event.jobId, event.cfId);
+    if (cachedResult.data != null) {
+      emit(CFDetailsLoaded(
+          cfamily: cachedResult.data!.$1, job: cachedResult.data!.$2, userCurrentJob: state.userCurrentJob));
+    }
+    if (event.context.mounted == false) return;
+
     final local = AppLocalizations.of(event.context);
     final result = await jobRepository.getCFDetails(event.jobId, event.cfId);
 
@@ -141,7 +177,18 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     if (!authenticationBloc.state.isAuthenticated) {
       return;
     }
+
     final local = AppLocalizations.of(event.context);
+
+    // Try to load from cache first
+    final cachedResult = await jobRepository.fetchUserJobCompetencyProfileCached(event.jobId);
+    if (cachedResult.data != null && cachedResult.data!.competencyFamilies.isNotEmpty) {
+      // Ensure we don't display empty profiles if we can avoid it, or check if empty is valid state
+      if (cachedResult.data!.competencyFamilies.isNotEmpty) {
+        emit(UserJobCompetencyProfileLoaded(profile: cachedResult.data!, userCurrentJob: state.userCurrentJob));
+      }
+    }
+
     final result = await jobRepository.fetchUserJobCompetencyProfile(event.jobId);
     if (result.isError) {
       // notificationBloc.add(ErrorNotificationEvent(message: result.error ?? local.user_ressources_module_title));

@@ -98,10 +98,7 @@ class Job {
 
   static Job empty() {
     return Job(
-        id: '',
-        title: FAKER.lorem.word(),
-        description: FAKER.lorem.sentences(2).join(' '),
-        competencies: List.generate(20, (_) => Competency.empty()));
+        id: '', title: FAKER.lorem.word(), description: '', competencies: List.generate(20, (_) => Competency.empty()));
   }
 
   competenciesPerFamily(CompetencyFamily family) {
@@ -310,7 +307,7 @@ class CompetencyFamily {
     return CompetencyFamily(
       id: '',
       name: FAKER.lorem.words(1).join(' '),
-      description: FAKER.lorem.sentences(50).join(' '),
+      description: '',
     );
   }
 }
