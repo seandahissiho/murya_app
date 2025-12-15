@@ -20,11 +20,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landing_page_title => 'Landing Page';
 
   @override
-  String get landing_first_title => 'Enhance your skills';
+  String get landing_first_title => 'Grow your career';
 
   @override
   String get landing_first_subtitle =>
-      'Registration and login to Murya are free';
+      'Create your account, explore and progress. It\'s free with no hidden fees.';
 
   @override
   String get landing_first_button1 => 'Sign up';
@@ -33,13 +33,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landing_first_button2 => 'Log in';
 
   @override
-  String get landing_second_title => 'Advance in your profession';
+  String get landing_second_title => 'Measure your skills';
 
   @override
-  String get landing_second_subtitle => 'Browsing the Murya catalog is free';
+  String get landing_second_subtitle =>
+      'Choose your job and get started. Short questions, concrete progress.';
 
   @override
-  String get landing_second_button => 'Search';
+  String get landing_second_button => 'Discover';
 
   @override
   String get footer_language_english => '🇬🇧 English';
@@ -92,13 +93,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get skillsDiagramTitle => 'Skills Diagram';
 
   @override
-  String get skillLevel_easy => 'Easy';
+  String get skillLevel_easy => 'Junior';
 
   @override
-  String get skillLevel_medium => 'Medium';
+  String get skillLevel_medium => 'Intermediate';
 
   @override
-  String get skillLevel_hard => 'Hard';
+  String get skillLevel_hard => 'Senior';
 
   @override
   String get skillLevel_expert => 'Expert';
@@ -210,7 +211,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quiz_start_advice =>
-      'Tip: Answer instinctively for a fairer analysis. It takes less than 5 minutes!';
+      'Tip: Answer instinctively for a more accurate analysis. It takes less than 5 minutes!';
 
   @override
   String get quiz_lets_go => 'Let\'s go!';
@@ -303,10 +304,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get section_podcasts => 'Podcasts';
 
   @override
-  String get quiz_daily_performance => 'Daily Performance';
+  String get quiz_daily_performance => 'Your daily performance';
 
   @override
-  String get quiz_good_answers => 'Good Answers';
+  String get quiz_good_answers => 'Correct answers';
 
   @override
   String get quiz_answers_to_review => 'Answers to Review';

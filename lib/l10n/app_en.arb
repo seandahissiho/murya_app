@@ -14,11 +14,11 @@
   "@landing_page_title": {
     "description": "Title of the landing page"
   },
-  "landing_first_title": "Enhance your skills",
+  "landing_first_title": "Grow your career",
   "@landing_first_title": {
     "description": "Title of the first box on the landing page"
   },
-  "landing_first_subtitle": "Registration and login to Murya are free",
+  "landing_first_subtitle": "Create your account, explore and progress. It''s free with no hidden fees.",
   "@landing_first_subtitle": {
     "description": "Subtitle of the first box on the landing page"
   },
@@ -30,15 +30,15 @@
   "@landing_first_button2": {
     "description": "Text of the second button in the first box"
   },
-  "landing_second_title": "Advance in your profession",
+  "landing_second_title": "Measure your skills",
   "@landing_second_title": {
     "description": "Title of the second box on the landing page"
   },
-  "landing_second_subtitle": "Browsing the Murya catalog is free",
+  "landing_second_subtitle": "Choose your job and get started. Short questions, concrete progress.",
   "@landing_second_subtitle": {
     "description": "Subtitle of the second box on the landing page"
   },
-  "landing_second_button": "Search",
+  "landing_second_button": "Discover",
   "@landing_second_button": {
     "description": "Text of the button in the second box"
   },
@@ -113,15 +113,15 @@
   "@skillsDiagramTitle": {
     "description": "Title of the skills diagram"
   },
-  "skillLevel_easy": "Easy",
+  "skillLevel_easy": "Junior",
   "@skillLevel_easy": {
     "description": "Label for easy skill level"
   },
-  "skillLevel_medium": "Medium",
+  "skillLevel_medium": "Intermediate",
   "@skillLevel_medium": {
     "description": "Label for medium skill level"
   },
-  "skillLevel_hard": "Hard",
+  "skillLevel_hard": "Senior",
   "@skillLevel_hard": {
     "description": "Label for hard skill level"
   },
@@ -241,7 +241,7 @@
   "@quiz_start_description_3": {
     "description": "Third line of quiz start description"
   },
-  "quiz_start_advice": "Tip: Answer instinctively for a fairer analysis. It takes less than 5 minutes!",
+  "quiz_start_advice": "Tip: Answer instinctively for a more accurate analysis. It takes less than 5 minutes!",
   "@quiz_start_advice": {
     "description": "Advice before starting the quiz"
   },
@@ -324,8 +324,8 @@
   "@section_videos": { "description": "Section header for videos" },
   "section_podcasts": "Podcasts",
   "@section_podcasts": { "description": "Section header for podcasts" },
-  "quiz_daily_performance": "Daily Performance",
-  "quiz_good_answers": "Good Answers",
+  "quiz_daily_performance": "Your daily performance",
+  "quiz_good_answers": "Correct answers",
   "quiz_answers_to_review": "Answers to Review",
   "quiz_reward": "Reward"
 }
