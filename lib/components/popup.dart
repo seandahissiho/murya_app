@@ -23,6 +23,7 @@ Future<T?> displayPopUp<T>({
   String? iconPath,
   bool barrierDismissible = true,
   Alignment contentAlignment = Alignment.centerLeft,
+  double? width,
 }) async {
   return await showDialog<T?>(
     context: context,
@@ -34,7 +35,7 @@ Future<T?> displayPopUp<T>({
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
             constraints: BoxConstraints(
-              maxWidth: DeviceHelper.kMainBodyWidth(context),
+              maxWidth: width ?? DeviceHelper.kMainBodyWidth(context),
             ),
             decoration: BoxDecoration(
               color: AppColors.whiteSwatch,

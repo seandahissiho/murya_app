@@ -183,7 +183,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
                                       style: GoogleFonts.anton(
-                                        color: Colors.white,
+                                        color: AppColors.textInverted,
                                         fontSize: isMobile
                                             ? theme.textTheme.headlineSmall!.fontSize!
                                             : theme.textTheme.displaySmall!.fontSize!,
@@ -203,7 +203,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                                     maxLines: 4,
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.inter(
-                                      color: Colors.white,
+                                      color: AppColors.textInverted,
                                       fontSize: isMobile
                                           ? theme.textTheme.bodyMedium!.fontSize
                                           : theme.textTheme.bodyLarge!.fontSize,

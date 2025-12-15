@@ -124,7 +124,7 @@ class AddModuleButton extends StatelessWidget {
                 ),
                 child: const Icon(
                   Icons.add,
-                  color: Colors.white,
+                  color: AppColors.textInverted,
                   size: 32,
                 ),
               ),

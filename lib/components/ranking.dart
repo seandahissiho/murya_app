@@ -193,7 +193,7 @@ class _RankingChartState extends State<RankingChart> {
                             color: AppColors.primaryFocus,
                             shadowColor: AppColors.primaryPressed,
                             imageBorderColor: AppColors.backgroundCard,
-                            textColor: Colors.white,
+                            textColor: AppColors.textInverted,
                           ),
                         ),
                       ),

@@ -39,6 +39,7 @@ class AppIcons {
 
   //popupIconPath
   static const String popupIconPath = '$basePath/Frame155.svg';
+  static const String cyberSecurityJobPopupIconPath = '$basePath/shieldIconCyberSecurity.svg';
 }
 
 class AppImages {

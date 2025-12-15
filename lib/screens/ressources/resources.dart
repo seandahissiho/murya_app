@@ -23,14 +23,12 @@ import 'package:murya/screens/base.dart';
 part '_resources_mobile.dart';
 part '_resources_tablet+.dart';
 
-class RessourcesLocation
-    extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class RessourcesLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.userRessourcesModule];
 
   @override
-  List<BeamPage> buildPages(
-      BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     return [
       BeamPage(
         title: AppLocalizations.of(context).resourcesPageTitle,
@@ -57,8 +55,7 @@ class ResourcesCarousel extends StatefulWidget {
   final ResourceType type;
   final List<Resource> resources;
 
-  const ResourcesCarousel(
-      {super.key, required this.resources, required this.type});
+  const ResourcesCarousel({super.key, required this.resources, required this.type});
 
   @override
   State<ResourcesCarousel> createState() => _ResourcesCarouselState();
@@ -98,16 +95,14 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
           disableCenter: true,
           pageSnapping: true,
           padEnds: false,
-          viewportFraction:
-              (height * (isMobile ? 1.168 : 1.393)) / appSize.screenWidth,
+          viewportFraction: (height * (isMobile ? 1.168 : 1.393)) / appSize.screenWidth,
           // aspectRatio: 1,
         ),
         itemBuilder: (context, index, realIndex) {
           if (index == 0) {
             return InkWell(
               onTap: () async {
-                final int diamonds =
-                    context.read<ProfileBloc>().state.user.diamonds;
+                final int diamonds = context.read<ProfileBloc>().state.user.diamonds;
                 final int cost = Costs.byType(widget.type);
                 final canCreate = diamonds >= cost;
                 final int remaining = diamonds - cost;
@@ -123,8 +118,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        AppLocalizations.of(context)
-                            .popup_unlock_resource_title,
+                        AppLocalizations.of(context).popup_unlock_resource_title,
                         style: theme.textTheme.labelLarge?.copyWith(
                           fontSize: theme.textTheme.displayMedium?.fontSize,
                         ),
@@ -133,26 +127,16 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     ),
                     AppSpacing.groupMarginBox,
                     Text(
-                      AppLocalizations.of(context)
-                          .popup_unlock_resource_description,
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(color: AppColors.textSecondary),
+                      AppLocalizations.of(context).popup_unlock_resource_description,
+                      style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
                       textAlign: TextAlign.start,
                     ),
                     AppSpacing.containerInsideMarginBox,
-                    _costRow(
-                        label: AppLocalizations.of(context).cost_creation_label,
-                        cost: cost),
+                    _costRow(label: AppLocalizations.of(context).cost_creation_label, cost: cost),
                     AppSpacing.groupMarginBox,
-                    _costRow(
-                        label: AppLocalizations.of(context)
-                            .cost_current_balance_label,
-                        cost: diamonds),
+                    _costRow(label: AppLocalizations.of(context).cost_current_balance_label, cost: diamonds),
                     AppSpacing.groupMarginBox,
-                    _costRow(
-                        label: AppLocalizations.of(context)
-                            .cost_remaining_balance_label,
-                        cost: remaining),
+                    _costRow(label: AppLocalizations.of(context).cost_remaining_balance_label, cost: remaining),
                     AppSpacing.sectionMarginBox,
                   ],
                 );
@@ -177,9 +161,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                                       AppIcons.appIcon2Path,
                                       width: 16,
                                       height: 16,
-                                      colorFilter: const ColorFilter.mode(
-                                          AppColors.primaryFocus,
-                                          BlendMode.srcIn),
+                                      colorFilter: const ColorFilter.mode(AppColors.primaryFocus, BlendMode.srcIn),
                                     ),
                                   ),
                                 ),
@@ -188,8 +170,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                                   height: 32,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        AppColors.primaryFocus),
+                                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryFocus),
                                     constraints: BoxConstraints(
                                       maxHeight: 32,
                                       maxWidth: 26,
@@ -203,8 +184,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
-                                  AppLocalizations.of(context)
-                                      .loading_creating_resource,
+                                  AppLocalizations.of(context).loading_creating_resource,
                                   style: theme.textTheme.labelLarge,
                                 ),
                               ),
@@ -230,15 +210,11 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                       ),
                     ],
                   );
-                  final userJobId =
-                      context.read<JobBloc>().state.userCurrentJob?.id;
-                  if (mounted &&
-                      context.mounted &&
-                      userJobId.isNotEmptyOrNull) {
+                  final userJobId = context.read<JobBloc>().state.userCurrentJob?.id;
+                  if (mounted && context.mounted && userJobId.isNotEmptyOrNull) {
                     Future.delayed(const Duration(seconds: 5), () {
                       if (mounted && context.mounted) {
-                        context.read<ResourcesBloc>().add(GenerateResource(
-                            type: widget.type, userJobId: userJobId!));
+                        context.read<ResourcesBloc>().add(GenerateResource(type: widget.type, userJobId: userJobId!));
                       }
                     });
                   }
@@ -260,24 +236,21 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border:
-                            Border.all(color: AppColors.borderMedium, width: 2),
+                        border: Border.all(color: AppColors.borderMedium, width: 2),
                       ),
                       padding: const EdgeInsets.all(AppSpacing.elementMargin),
                       child: SvgPicture.asset(
                         AppIcons.addResourceIconPath,
                         width: 20,
                         height: 20,
-                        colorFilter: const ColorFilter.mode(
-                            AppColors.textSecondary, BlendMode.srcIn),
+                        colorFilter: const ColorFilter.mode(AppColors.textSecondary, BlendMode.srcIn),
                       ),
                     ),
                     AppSpacing.containerInsideMarginSmallBox,
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        AppLocalizations.of(context)
-                            .create_resource_button(ressourceLabelSingular),
+                        AppLocalizations.of(context).create_resource_button(ressourceLabelSingular),
                         style: theme.textTheme.labelLarge?.copyWith(
                             color: AppColors.textSecondary,
                             fontSize: theme.textTheme.displayMedium?.fontSize,
@@ -318,9 +291,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                   Text(
                     resource.title ?? '',
                     style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        fontSize: theme.textTheme.displayMedium?.fontSize,
-                        height: 0),
+                        color: AppColors.textInverted, fontSize: theme.textTheme.displayMedium?.fontSize, height: 0),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.start,
@@ -328,8 +299,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                   AppSpacing.containerInsideMarginSmallBox,
                   Text(
                     resource.createdAt?.formattedDate ?? '',
-                    style: theme.textTheme.labelLarge
-                        ?.copyWith(color: Colors.white),
+                    style: theme.textTheme.labelLarge?.copyWith(color: AppColors.textInverted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.start,
