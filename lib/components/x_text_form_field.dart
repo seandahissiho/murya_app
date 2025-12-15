@@ -110,7 +110,7 @@ class _AppXTextFormFieldState extends State<AppXTextFormField> {
       children: [
         if (widget.labelInside == false) ...[
           Text(
-            widget.labelText!,
+            widget.labelText ?? '',
             style: theme.textTheme.labelMedium,
           ),
           AppSpacing.elementMarginBox,

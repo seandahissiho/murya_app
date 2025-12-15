@@ -76,7 +76,7 @@
 //                     tile.spanY = (h / cellH).ceil().clamp(1, crossAxis);
 //                   });
 //                 },
-//                 child: Icon(Icons.drag_handle, size: 20, color: Colors.white),
+//                 child: Icon(Icons.drag_handle, size: 20, color: AppColors.textInverted),
 //               ),
 //             ),
 //           ],

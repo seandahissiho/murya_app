@@ -198,7 +198,7 @@ class AppXButton extends StatelessWidget {
           text!,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: isMobile ? null : theme.textTheme.bodyLarge?.copyWith(color: fgColor ?? Colors.white),
+          style: isMobile ? null : theme.textTheme.labelLarge?.copyWith(color: fgColor ?? AppColors.textInverted),
           // style: textStyle?.copyWith(color: AppColors.primary.shade900),
         ),
       ));

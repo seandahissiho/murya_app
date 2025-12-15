@@ -244,7 +244,7 @@ class InteractiveRoundedRadarChart extends StatefulWidget {
     this.maxValue = 5.0,
     this.cornerRadius = 3.0,
     this.labelBgColor = AppColors.primaryDefault,
-    this.labelTextColor = Colors.white,
+    this.labelTextColor = AppColors.textInverted,
   }) : super(key: key);
 
   @override
@@ -391,7 +391,7 @@ class _ValueTooltip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           child: Text(
             text,
-            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+            style: const TextStyle(color: AppColors.textInverted, fontSize: 12, fontWeight: FontWeight.w600),
           ),
         ),
       ),
@@ -419,7 +419,7 @@ class _RoundedRadarPainter extends CustomPainter {
     this.highlightIndex,
     this.highlightColor = Colors.red,
     this.labelBgColor = AppColors.primaryDefault,
-    this.labelTextColor = Colors.white,
+    this.labelTextColor = AppColors.textInverted,
   });
 
   @override
@@ -518,8 +518,9 @@ class _RoundedRadarPainter extends CustomPainter {
       baseDotRadius: dotRadius,
       borderWidth: dotBorderW,
       fillColor: AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 1.0 : 0.25),
-      borderColor:
-          userValues.isEmpty ? Colors.white : AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 1.0 : 0),
+      borderColor: userValues.isEmpty
+          ? AppColors.textInverted
+          : AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 1.0 : 0),
       highlightIndex: highlightIndex,
       highlightScale: 1.6,
       // a bit larger
@@ -532,7 +533,7 @@ class _RoundedRadarPainter extends CustomPainter {
         baseDotRadius: dotRadius,
         borderWidth: dotBorderW,
         fillColor: AppColors.primaryFocus,
-        borderColor: Colors.white,
+        borderColor: AppColors.textInverted,
         highlightIndex: null,
         highlightScale: 1.0,
         // no highlight for user points

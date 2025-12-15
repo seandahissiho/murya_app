@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
+import 'package:murya/components/app_button.dart';
 import 'package:murya/components/popup.dart';
+import 'package:murya/components/text_form_field.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
@@ -215,31 +218,96 @@ class Module {
       case 'job':
         return () {
           final theme = Theme.of(context);
+          bool isMobile = DeviceHelper.isMobile(context);
           displayPopUp(
+            width: 736,
             context: context,
-            okText: AppLocalizations.of(context).popup_validate,
+            noActions: true,
             contents: [
-              SvgPicture.asset(
-                AppIcons.popupIconPath,
-              ),
+              Center(
+                  child: Text("Choisissez votre métier",
+                      style: GoogleFonts.anton(
+                        color: AppColors.primaryDefault,
+                        fontSize: isMobile
+                            ? theme.textTheme.headlineSmall!.fontSize!
+                            : theme.textTheme.displaySmall!.fontSize!,
+                        fontWeight: FontWeight.w400,
+                      ))),
               AppSpacing.containerInsideMarginBox,
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  AppLocalizations.of(context).popup_unlock_resource_title,
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontSize: theme.textTheme.displayMedium?.fontSize,
+              Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  borderRadius: AppRadius.borderRadius20,
+                  image: DecorationImage(
+                    image: AssetImage(AppImages.homeBox1Path),
+                    fit: BoxFit.cover,
                   ),
-                  textAlign: TextAlign.start,
+                ),
+                padding: const EdgeInsets.all(AppSpacing.textFieldMargin),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SvgPicture.asset(AppIcons.cyberSecurityJobPopupIconPath),
+                    AppSpacing.textFieldMarginBox,
+                    Text(
+                      "Technicien en Cybersécurité",
+                      style: GoogleFonts.anton(
+                        color: AppColors.textInverted,
+                        fontSize: isMobile
+                            ? theme.textTheme.headlineSmall!.fontSize!
+                            : theme.textTheme.displaySmall!.fontSize!,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSpacing.tinyTinyMarginBox,
+                    Text(
+                      "Protégez les infrastructures critiques. Devenez un expert recherché.",
+                      style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textInverted),
+                      textAlign: TextAlign.start,
+                    ),
+                    AppSpacing.containerInsideMarginBox,
+                    AppXButton(
+                      autoResize: false,
+                      bgColor: AppColors.textInverted,
+                      fgColor: AppColors.primaryDefault,
+                      maxWidth: double.infinity,
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(true);
+                      },
+                      isLoading: false,
+                      text: "Continuer",
+                    )
+                  ],
                 ),
               ),
-              AppSpacing.groupMarginBox,
-              Text(
-                AppLocalizations.of(context).popup_unlock_resource_description,
-                style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-                textAlign: TextAlign.start,
-              ),
-              AppSpacing.sectionMarginBox,
+              AppSpacing.containerInsideMarginBox,
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.borderMedium),
+                  borderRadius: AppRadius.borderRadius20,
+                ),
+                padding: const EdgeInsets.all(AppSpacing.textFieldMargin),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Vous visez une autre expertise?',
+                      style: theme.textTheme.labelLarge,
+                    ),
+                    AppSpacing.containerInsideMarginSmallBox,
+                    SizedBox(
+                      height: tabletAndAboveCTAHeight,
+                      child: AppTextFormField(
+                        // maxWidth: double.infinity,
+                        autoResize: true,
+                        controller: TextEditingController(),
+                        hintText: 'Ex: Développeur, Product Manager...',
+                        label: null,
+                      ),
+                    ),
+                  ],
+                ),
+              )
             ],
           ).then((value) {
             if (value == true) {
@@ -313,108 +381,108 @@ class ModuleBuilder {
     local = AppLocalizations.of(context);
   }
 
-  // Widget accountModule() {
-  //   return AppModuleWidget(
-  //     key: const ValueKey('module-account'),
-  //     boxType: AppModuleType.type2_2,
-  //     imagePath: AppImages.homeBox3Path,
-  //     title: local.landing_first_title,
-  //     subtitle: local.landing_first_subtitle,
-  //     button1Text: local.landing_first_button1,
-  //     button2Text: local.landing_first_button2,
-  //     button1OnPressed: () {
-  //       navigateToPath(context, to: AppRoutes.register);
-  //     },
-  //     button2OnPressed: () {
-  //       navigateToPath(context, to: AppRoutes.login);
-  //     },
-  //   );
-  // }
-  //
-  // Widget jobModule() {
-  //   return AppModuleWidget(
-  //     key: const ValueKey('module-job'),
-  //     boxType: AppModuleType.type2_1,
-  //     imagePath: AppImages.homeBox6Path,
-  //     title: local.landing_second_title,
-  //     subtitle: local.landing_second_subtitle,
-  //     button1Text: local.landing_second_button,
-  //     button1OnPressed: () {
-  //       navigateToPath(context, to: AppRoutes.jobModule);
-  //     },
-  //   );
-  // }
-  //
-  // Widget ressourcesModule() {
-  //   return AppModuleWidget(
-  //     key: const ValueKey('module-ressources'),
-  //     boxType: AppModuleType.type2_1,
-  //     imagePath: AppImages.homeBox4Path,
-  //     title: local.user_ressources_module_title,
-  //     subtitle: local.user_ressources_module_subtitle,
-  //     button1Text: local.user_ressources_module_button,
-  //     button1OnPressed: () {
-  //       navigateToPath(context, to: AppRoutes.userRessourcesModule);
-  //     },
-  //   );
-  // }
-  //
-  // Widget getById(String id) {
-  //   switch (id) {
-  //     case 'account':
-  //       return accountModule();
-  //     case 'job':
-  //       return jobModule();
-  //     case 'ressources':
-  //       return ressourcesModule();
-  //     default:
-  //       return AppModuleWidget(
-  //         key: ValueKey('module-$id'),
-  //         title: '${FAKER.lorem.words(3).join(' ')} ${FAKER.lorem.words(2).join(' ')}',
-  //         subtitle: '${FAKER.lorem.sentence()} ${FAKER.lorem.sentence()}',
-  //         boxType: AppModuleType.type2_2,
-  //         imagePath: [
-  //           AppImages.homeBox1Path,
-  //           AppImages.homeBox2Path,
-  //           AppImages.homeBox3Path,
-  //           AppImages.homeBox4Path,
-  //           AppImages.homeBox5Path,
-  //           AppImages.homeBox6Path
-  //         ].getRandomElement()!,
-  //         button1Text: '${FAKER.lorem.word()} ${FAKER.lorem.word()} ${FAKER.lorem.word()}',
-  //         button1OnPressed: () {
-  //           navigateToPath(context, to: AppRoutes.profile);
-  //         },
-  //         // can be null
-  //         button2Text: FAKER.randomGenerator.boolean()
-  //             ? '${FAKER.lorem.word()} ${FAKER.lorem.word()} ${FAKER.lorem.word()}'
-  //             : null,
-  //         button2OnPressed: FAKER.randomGenerator.boolean()
-  //             ? () {
-  //                 navigateToPath(context, to: AppRoutes.landing);
-  //               }
-  //             : null,
-  //       );
-  //   }
-  // }
+// Widget accountModule() {
+//   return AppModuleWidget(
+//     key: const ValueKey('module-account'),
+//     boxType: AppModuleType.type2_2,
+//     imagePath: AppImages.homeBox3Path,
+//     title: local.landing_first_title,
+//     subtitle: local.landing_first_subtitle,
+//     button1Text: local.landing_first_button1,
+//     button2Text: local.landing_first_button2,
+//     button1OnPressed: () {
+//       navigateToPath(context, to: AppRoutes.register);
+//     },
+//     button2OnPressed: () {
+//       navigateToPath(context, to: AppRoutes.login);
+//     },
+//   );
+// }
+//
+// Widget jobModule() {
+//   return AppModuleWidget(
+//     key: const ValueKey('module-job'),
+//     boxType: AppModuleType.type2_1,
+//     imagePath: AppImages.homeBox6Path,
+//     title: local.landing_second_title,
+//     subtitle: local.landing_second_subtitle,
+//     button1Text: local.landing_second_button,
+//     button1OnPressed: () {
+//       navigateToPath(context, to: AppRoutes.jobModule);
+//     },
+//   );
+// }
+//
+// Widget ressourcesModule() {
+//   return AppModuleWidget(
+//     key: const ValueKey('module-ressources'),
+//     boxType: AppModuleType.type2_1,
+//     imagePath: AppImages.homeBox4Path,
+//     title: local.user_ressources_module_title,
+//     subtitle: local.user_ressources_module_subtitle,
+//     button1Text: local.user_ressources_module_button,
+//     button1OnPressed: () {
+//       navigateToPath(context, to: AppRoutes.userRessourcesModule);
+//     },
+//   );
+// }
+//
+// Widget getById(String id) {
+//   switch (id) {
+//     case 'account':
+//       return accountModule();
+//     case 'job':
+//       return jobModule();
+//     case 'ressources':
+//       return ressourcesModule();
+//     default:
+//       return AppModuleWidget(
+//         key: ValueKey('module-$id'),
+//         title: '${FAKER.lorem.words(3).join(' ')} ${FAKER.lorem.words(2).join(' ')}',
+//         subtitle: '${FAKER.lorem.sentence()} ${FAKER.lorem.sentence()}',
+//         boxType: AppModuleType.type2_2,
+//         imagePath: [
+//           AppImages.homeBox1Path,
+//           AppImages.homeBox2Path,
+//           AppImages.homeBox3Path,
+//           AppImages.homeBox4Path,
+//           AppImages.homeBox5Path,
+//           AppImages.homeBox6Path
+//         ].getRandomElement()!,
+//         button1Text: '${FAKER.lorem.word()} ${FAKER.lorem.word()} ${FAKER.lorem.word()}',
+//         button1OnPressed: () {
+//           navigateToPath(context, to: AppRoutes.profile);
+//         },
+//         // can be null
+//         button2Text: FAKER.randomGenerator.boolean()
+//             ? '${FAKER.lorem.word()} ${FAKER.lorem.word()} ${FAKER.lorem.word()}'
+//             : null,
+//         button2OnPressed: FAKER.randomGenerator.boolean()
+//             ? () {
+//                 navigateToPath(context, to: AppRoutes.landing);
+//               }
+//             : null,
+//       );
+//   }
+// }
 
-  // Widget getBy(Module module) {
-  //   // final AppModuleWidget widget = getById(module.id) as AppModuleWidget;
-  //
-  //   return AppModuleWidget(
-  //     module: module,
-  //     // key: widget.key,
-  //     // title: widget.title,
-  //     // subtitle: widget.subtitle,
-  //     // boxType: module.boxType,
-  //     // imagePath: widget.imagePath,
-  //     // button1Text: widget.button1Text,
-  //     // button2Text: widget.button2Text,
-  //     // button1OnPressed: widget.button1OnPressed,
-  //     // button2OnPressed: widget.button2OnPressed,
-  //     onSizeChanged: () {
-  //       // print('Module ${module.id} size changed to $newSize');
-  //     },
-  //   );
-  // }
+// Widget getBy(Module module) {
+//   // final AppModuleWidget widget = getById(module.id) as AppModuleWidget;
+//
+//   return AppModuleWidget(
+//     module: module,
+//     // key: widget.key,
+//     // title: widget.title,
+//     // subtitle: widget.subtitle,
+//     // boxType: module.boxType,
+//     // imagePath: widget.imagePath,
+//     // button1Text: widget.button1Text,
+//     // button2Text: widget.button2Text,
+//     // button1OnPressed: widget.button1OnPressed,
+//     // button2OnPressed: widget.button2OnPressed,
+//     onSizeChanged: () {
+//       // print('Module ${module.id} size changed to $newSize');
+//     },
+//   );
+// }
 }
