@@ -1,5 +1,5 @@
 name: murya
-description: A new Flutter project.
+description: "Murya: Reveal your potential. The ultimate app for career growth and competency tracking."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -100,6 +100,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -146,3 +147,15 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/Logo_V1.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/Logo_V1.png"
+    background_color: "#ffffff"
+    theme_color: "#ffffff"
+
