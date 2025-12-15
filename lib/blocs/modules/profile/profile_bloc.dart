@@ -38,10 +38,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
   }
 
-  FutureOr<void> _onProfileLoadEvent(ProfileLoadEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> _onProfileLoadEvent(
+      ProfileLoadEvent event, Emitter<ProfileState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
+    // Attempt to load from cache
+    final cachedResult = await profileRepository.getMeCached();
+    if (cachedResult.data != null &&
+        (cachedResult.data!.id?.isNotEmpty ?? false)) {
+      _userProfile = cachedResult.data!;
+      emit(ProfileLoaded(user: _userProfile));
+    }
+
+    if (!context.mounted) return;
+
     final result = await profileRepository.getMe();
     if (result.isError && event.notifyIfNotFound) {
       notificationBloc.add(ErrorNotificationEvent(

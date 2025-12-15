@@ -12,6 +12,7 @@ part 'resources_event.dart';
 part 'resources_state.dart';
 
 class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
+  final BuildContext context;
   late final JobBloc jobBloc;
   late final StreamSubscription<JobState> _jobSubscription;
   late final AuthenticationBloc _authenticationBloc;
@@ -39,7 +40,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
   late final ResourcesRepository resourceRepository;
   late final ProfileBloc profileBloc;
 
-  ResourcesBloc({required BuildContext context}) : super(ResourcesInitial()) {
+  ResourcesBloc({required this.context}) : super(ResourcesInitial()) {
     on<ResourcesEvent>((event, emit) {
       emit(ResourcesLoading());
     });
@@ -71,8 +72,10 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     });
   }
 
-  FutureOr<void> _onGenerateResource(GenerateResource event, Emitter<ResourcesState> emit) async {
-    final result = await resourceRepository.generateResource(type: event.type, userJobId: event.userJobId);
+  FutureOr<void> _onGenerateResource(
+      GenerateResource event, Emitter<ResourcesState> emit) async {
+    final result = await resourceRepository.generateResource(
+        type: event.type, userJobId: event.userJobId);
     if (result.isError) {
       // Handle error (e.g., emit an error state or log the error)
       return;
@@ -83,13 +86,49 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     profileBloc.add(ProfileLoadEvent());
   }
 
-  FutureOr<void> _onLoadResourceDetails(LoadResourceDetails event, Emitter<ResourcesState> emit) async {}
+  FutureOr<void> _onLoadResourceDetails(
+      LoadResourceDetails event, Emitter<ResourcesState> emit) async {}
 
-  FutureOr<void> _onLoadResources(LoadResources event, Emitter<ResourcesState> emit) async {
+  FutureOr<void> _onLoadResources(
+      LoadResources event, Emitter<ResourcesState> emit) async {
     final userJobId = event.userJobId;
     if (userJobId == null || userJobId.isEmpty) {
       return;
     }
+
+    // cache first
+    final cachedResult =
+        await resourceRepository.fetchResourcesCached(userJobId);
+    if (cachedResult.data != null && cachedResult.data!.isNotEmpty) {
+      final resources = cachedResult.data!;
+
+      // IMPORTANT:
+      // Since we don't want to clear and look empty
+      // we might just want to replace...
+      // For now let's just clear and add like normal flow
+      _articles.clear();
+      _videos.clear();
+      _podcasts.clear();
+
+      for (var resource in resources) {
+        switch (resource.type) {
+          case ResourceType.article:
+            _articles.add(resource);
+            break;
+          case ResourceType.video:
+            _videos.add(resource);
+            break;
+          case ResourceType.podcast:
+            _podcasts.add(resource);
+            break;
+          default:
+            _articles.add(resource);
+        }
+      }
+      emit(ResourcesLoaded(resources: resources));
+    }
+
+    if (!context.mounted) return;
 
     final result = await resourceRepository.fetchResources(userJobId);
 
