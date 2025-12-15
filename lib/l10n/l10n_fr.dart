@@ -174,6 +174,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get ranking => 'Classement';
 
   @override
+  String get popup_job_selection_title => 'Choisissez votre métier';
+
+  @override
+  String get popup_job_selection_technician_title =>
+      'Technicien en Cybersécurité';
+
+  @override
+  String get popup_job_selection_technician_subtitle =>
+      'Protégez les infrastructures critiques. Devenez un expert recherché.';
+
+  @override
+  String get popup_job_selection_continue_button => 'Continuer';
+
+  @override
+  String get popup_job_selection_other_expertise_label =>
+      'Vous visez une autre expertise?';
+
+  @override
+  String get popup_job_selection_search_hint =>
+      'Ex: Développeur, Product Manager...';
+
+  @override
   String get resourceViewerPageTitle => 'Page Visualiseur de Ressource';
 
   @override

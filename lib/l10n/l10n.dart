@@ -380,6 +380,42 @@ abstract class AppLocalizations {
   /// **'Classement'**
   String get ranking;
 
+  /// Titre du popup de sélection de métier
+  ///
+  /// In fr, this message translates to:
+  /// **'Choisissez votre métier'**
+  String get popup_job_selection_title;
+
+  /// Titre du métier de technicien en cybersécurité dans le popup
+  ///
+  /// In fr, this message translates to:
+  /// **'Technicien en Cybersécurité'**
+  String get popup_job_selection_technician_title;
+
+  /// Sous-titre du métier de technicien en cybersécurité dans le popup
+  ///
+  /// In fr, this message translates to:
+  /// **'Protégez les infrastructures critiques. Devenez un expert recherché.'**
+  String get popup_job_selection_technician_subtitle;
+
+  /// Texte du bouton continuer dans le popup de sélection de métier
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer'**
+  String get popup_job_selection_continue_button;
+
+  /// Label pour la section d'autre expertise dans le popup
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous visez une autre expertise?'**
+  String get popup_job_selection_other_expertise_label;
+
+  /// Hint text pour la recherche d'autre expertise dans le popup
+  ///
+  /// In fr, this message translates to:
+  /// **'Ex: Développeur, Product Manager...'**
+  String get popup_job_selection_search_hint;
+
   /// Titre de la page de visualisation des ressources
   ///
   /// In fr, this message translates to:

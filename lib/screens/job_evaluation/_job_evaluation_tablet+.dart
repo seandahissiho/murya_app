@@ -4,12 +4,10 @@ class TabletJobEvaluationScreen extends StatefulWidget {
   const TabletJobEvaluationScreen({super.key});
 
   @override
-  State<TabletJobEvaluationScreen> createState() =>
-      _TabletJobEvaluationScreenState();
+  State<TabletJobEvaluationScreen> createState() => _TabletJobEvaluationScreenState();
 }
 
-class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
-    with TickerProviderStateMixin {
+class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> with TickerProviderStateMixin {
   late final String jobId;
   Quiz quiz = Quiz(questionResponses: []);
   QuestionResponses? currentQuestion;
@@ -33,8 +31,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
   int indexToRotate = -1;
 
   int get timeLeftInSeconds {
-    return ((_countdown?.duration!.inSeconds ?? 0) * (_countdown?.value ?? 0))
-        .ceil();
+    return ((_countdown?.duration!.inSeconds ?? 0) * (_countdown?.value ?? 0)).ceil();
   }
 
   @override
@@ -50,6 +47,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
         context: context,
         okText: localizations.quiz_lets_go,
         // okEnabled: quizLoaded,
+        noActions: true,
         contents: [
           SvgPicture.asset(
             AppIcons.popupIconPath,
@@ -68,34 +66,51 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
           AppSpacing.groupMarginBox,
           Text(
             localizations.quiz_start_description_1,
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: AppColors.textSecondary),
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.start,
           ),
           AppSpacing.groupMarginBox,
           Text(
             localizations.quiz_start_description_2,
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: AppColors.textSecondary),
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.start,
           ),
           AppSpacing.groupMarginBox,
           Text(
             localizations.quiz_start_description_3,
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: AppColors.textSecondary),
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.start,
           ),
           AppSpacing.containerInsideMarginBox,
           Text(
             localizations.quiz_start_advice,
-            style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.w100),
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic, fontWeight: FontWeight.w100),
             textAlign: TextAlign.start,
           ),
           AppSpacing.sectionMarginBox,
+          BlocConsumer<QuizBloc, QuizState>(
+            listener: (context, state) {
+              setState(() {});
+            },
+            builder: (context, state) {
+              return Row(
+                children: [
+                  Flexible(
+                    child: AppXButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pop(true);
+                      },
+                      isLoading: state is! QuizLoaded,
+                      disabled: state is! QuizLoaded,
+                      autoResize: false,
+                      text: localizations.quiz_lets_go,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ).then((value) {
         if (value == true) {
@@ -109,8 +124,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
           });
         } else {
           if (!mounted) return;
-          navigateToPath(context,
-              to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
+          navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
         }
       });
 
@@ -164,8 +178,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                 children: [
                   GestureDetector(
                     onTap: () {
-                      navigateToPath(context,
-                          to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
+                      navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
                     },
                     child: SvgPicture.asset(
                       AppIcons.exitIconPath,
@@ -194,8 +207,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                                     alignment: Alignment.centerRight,
                                     child: FractionallySizedBox(
                                       alignment: Alignment.centerRight,
-                                      widthFactor:
-                                          _countdown?.value, // 1.0..0.0
+                                      widthFactor: _countdown?.value, // 1.0..0.0
                                       child: Container(
                                         color: AppColors.primaryFocus,
                                         child: Stack(
@@ -206,19 +218,15 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                                               top: 0,
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   Flexible(
                                                     child: FittedBox(
                                                       fit: BoxFit.scaleDown,
                                                       child: Text(
                                                         '$timeLeftInSeconds',
-                                                        style: theme.textTheme
-                                                            .labelLarge
-                                                            ?.copyWith(
-                                                                color: AppColors
-                                                                    .whiteSwatch),
+                                                        style: theme.textTheme.labelLarge
+                                                            ?.copyWith(color: AppColors.whiteSwatch),
                                                       ),
                                                     ),
                                                   ),
@@ -241,11 +249,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                   ScoreWidget(
                     // key: UniqueKey(),
                     value: pointsPerQuestion.fold(
-                        0,
-                        (int previousValue, element) =>
-                            previousValue + element < 0
-                                ? 0
-                                : previousValue + element),
+                        0, (int previousValue, element) => previousValue + element < 0 ? 0 : previousValue + element),
                   ),
                 ],
               ),
@@ -273,8 +277,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                                 children: [
                                   Text(
                                     localizations.quiz_question_counter(
-                                        currentQuestionIndex + 1,
-                                        quiz.questionResponses.length),
+                                        currentQuestionIndex + 1, quiz.questionResponses.length),
                                     style: theme.textTheme.labelLarge,
                                   ),
                                   AppSpacing.groupMarginBox,
@@ -282,8 +285,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                                     child: Container(
                                       constraints: BoxConstraints(
                                         minWidth: bigConstraints.maxWidth,
-                                        minHeight:
-                                            bigConstraints.maxWidth / 1.618,
+                                        minHeight: bigConstraints.maxWidth / 1.618,
                                         maxWidth: bigConstraints.maxWidth,
                                         maxHeight: bigConstraints.maxWidth,
                                       ),
@@ -291,8 +293,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                                         color: AppColors.primaryDefault,
                                         borderRadius: AppRadius.borderRadius20,
                                         image: DecorationImage(
-                                          image: AssetImage(
-                                              AppImages.CFCardBackgroundPath),
+                                          image: AssetImage(AppImages.CFCardBackgroundPath),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -303,8 +304,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                             ),
                             AppSpacing.sectionMarginBox,
                             Expanded(
-                              child: LayoutBuilder(
-                                  builder: (context, constraints) {
+                              child: LayoutBuilder(builder: (context, constraints) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -313,9 +313,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                                     AppSpacing.groupMarginBox,
                                     AutoSizeText(
                                       currentQuestion?.question.text ?? '',
-                                      style: theme.textTheme.displayMedium
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w600),
+                                      style: theme.textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600),
                                       maxLines: 3,
                                       textAlign: TextAlign.center,
                                     ),
@@ -323,11 +321,9 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                                     Container(
                                       constraints: BoxConstraints(
                                         maxWidth: constraints.maxWidth,
-                                        maxHeight: constraints.maxWidth /
-                                            (1.618 * 1.25),
+                                        maxHeight: constraints.maxWidth / (1.618 * 1.25),
                                       ),
-                                      child: LayoutBuilder(
-                                          builder: (context, constraints) {
+                                      child: LayoutBuilder(builder: (context, constraints) {
                                         return Wrap(
                                           spacing: AppSpacing.elementMargin,
                                           runSpacing: AppSpacing.groupMargin,
@@ -339,8 +335,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                                                   // already showing correct answer, do nothing
                                                   return;
                                                 }
-                                                if (showVerificationState !=
-                                                    index) {
+                                                if (showVerificationState != index) {
                                                   showVerificationState = index;
                                                   setState(() {});
                                                 } else {}
@@ -352,98 +347,57 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                                               },
                                               child: RotationTransition(
                                                 turns: (indexToRotate == index)
-                                                    ? Tween(
-                                                            begin: 1.0,
-                                                            end: 0.99)
-                                                        .animate(
+                                                    ? Tween(begin: 1.0, end: 0.99).animate(
                                                         CurvedAnimation(
-                                                          parent:
-                                                              AnimationController(
+                                                          parent: AnimationController(
                                                             vsync: this,
-                                                            duration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        250),
+                                                            duration: const Duration(milliseconds: 250),
                                                           )..forward(),
-                                                          curve:
-                                                              Curves.easeInOut,
+                                                          curve: Curves.easeInOut,
                                                         ),
                                                       )
-                                                    : const AlwaysStoppedAnimation(
-                                                        0),
+                                                    : const AlwaysStoppedAnimation(0),
                                                 child: Card(
                                                   elevation: 2,
-                                                  shadowColor:
-                                                      AppColors.borderMedium,
-                                                  margin:
-                                                      EdgeInsetsGeometry.zero,
-                                                  shape:
-                                                      const RoundedRectangleBorder(
-                                                    borderRadius: AppRadius
-                                                        .borderRadius20,
+                                                  shadowColor: AppColors.borderMedium,
+                                                  margin: EdgeInsetsGeometry.zero,
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: AppRadius.borderRadius20,
                                                   ),
                                                   child: Stack(
                                                     children: [
-                                                      _card(constraints, index,
-                                                          theme,
-                                                          type: "normal"),
-                                                      if (showVerificationState ==
-                                                              index &&
-                                                          displayCorrectIndex ==
-                                                              -1) ...[
+                                                      _card(constraints, index, theme, type: "normal"),
+                                                      if (showVerificationState == index &&
+                                                          displayCorrectIndex == -1) ...[
                                                         Positioned.fill(
                                                           child: Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: AppColors
-                                                                  .backgroundCard
-                                                                  .withValues(
-                                                                      alpha:
-                                                                          .65),
-                                                              borderRadius:
-                                                                  AppRadius
-                                                                      .borderRadius20,
+                                                            decoration: BoxDecoration(
+                                                              color: AppColors.backgroundCard.withValues(alpha: .65),
+                                                              borderRadius: AppRadius.borderRadius20,
                                                             ),
                                                           ),
                                                         ),
                                                         Positioned.fill(
-                                                          child: LayoutBuilder(
-                                                              builder: (context,
-                                                                  constraints) {
+                                                          child: LayoutBuilder(builder: (context, constraints) {
                                                             return Container(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: AppColors
-                                                                    .primaryFocus
-                                                                    .withValues(
-                                                                        alpha:
-                                                                            .15),
-                                                                borderRadius:
-                                                                    AppRadius
-                                                                        .borderRadius20,
-                                                                border:
-                                                                    Border.all(
-                                                                  color: AppColors
-                                                                      .primaryFocus,
+                                                              decoration: BoxDecoration(
+                                                                color: AppColors.primaryFocus.withValues(alpha: .15),
+                                                                borderRadius: AppRadius.borderRadius20,
+                                                                border: Border.all(
+                                                                  color: AppColors.primaryFocus,
                                                                   width: 2,
                                                                 ),
                                                               ),
                                                               child: Center(
                                                                 child: Padding(
-                                                                  padding: EdgeInsets.only(
-                                                                      top: constraints
-                                                                              .maxHeight /
-                                                                          3),
-                                                                  child:
-                                                                      AppXButton(
-                                                                    onPressed:
-                                                                        () {
+                                                                  padding:
+                                                                      EdgeInsets.only(top: constraints.maxHeight / 3),
+                                                                  child: AppXButton(
+                                                                    onPressed: () {
                                                                       showCorrectAnswer();
                                                                     },
-                                                                    isLoading:
-                                                                        false,
-                                                                    text: localizations
-                                                                        .quiz_verify,
+                                                                    isLoading: false,
+                                                                    text: localizations.quiz_verify,
                                                                   ),
                                                                 ),
                                                               ),
@@ -451,32 +405,20 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                                                           }),
                                                         ),
                                                       ],
-                                                      if (displayCorrectIndex !=
-                                                          -1) ...[
+                                                      if (displayCorrectIndex != -1) ...[
                                                         Positioned.fill(
                                                           child: Container(
-                                                            decoration:
-                                                                const BoxDecoration(
-                                                              color: Colors
-                                                                  .transparent,
-                                                              borderRadius:
-                                                                  AppRadius
-                                                                      .borderRadius20,
+                                                            decoration: const BoxDecoration(
+                                                              color: Colors.transparent,
+                                                              borderRadius: AppRadius.borderRadius20,
                                                             ),
                                                           ),
                                                         ),
-                                                        if (displayCorrectIndex ==
-                                                            index)
-                                                          _card(constraints,
-                                                              index, theme,
-                                                              type: "correct"),
-                                                        if (displayCorrectIndex !=
-                                                                index &&
-                                                            showVerificationState ==
-                                                                index)
-                                                          _card(constraints,
-                                                              index, theme,
-                                                              type: "error"),
+                                                        if (displayCorrectIndex == index)
+                                                          _card(constraints, index, theme, type: "correct"),
+                                                        if (displayCorrectIndex != index &&
+                                                            showVerificationState == index)
+                                                          _card(constraints, index, theme, type: "error"),
                                                       ]
                                                     ],
                                                   ),
@@ -800,6 +742,14 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
       final theme = Theme.of(context);
       final localizations = AppLocalizations.of(context)!;
 
+      context.read<QuizBloc>().add(SaveQuizResults(
+            jobId: jobId,
+            quizId: quiz.id!,
+            questions: quiz.questionResponses.map((e) => e.question).toList(),
+            responses: answers,
+            context: context,
+          ));
+
       displayPopUp(
         context: context,
         okText: localizations.quiz_see_my_space,
@@ -823,15 +773,13 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
           AppSpacing.groupMarginBox,
           Text(
             localizations.quiz_completed_subtitle,
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: AppColors.textSecondary),
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
           AppSpacing.containerInsideMarginBox,
           Text(
             localizations.quiz_completed_description,
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: AppColors.textSecondary),
+            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
           AppSpacing.containerInsideMarginBox,
@@ -842,24 +790,16 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
         ],
       ).then((value) {
         if (!mounted) return;
-        context.read<QuizBloc>().add(SaveQuizResults(
-              jobId: jobId,
-              quizId: quiz.id!,
-              questions: quiz.questionResponses.map((e) => e.question).toList(),
-              responses: answers,
-              context: context,
-            ));
+        navigateToPath(context, to: AppRoutes.landing);
       });
 
-      // navigateToPath(context, to: AppRoutes.landing);
       // navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
       return;
     }
     currentQuestion = quiz.questionResponses[currentQuestionIndex];
     _countdown?.removeStatusListener(_listener);
     // _countdown?.dispose();
-    _countdown = AnimationController(
-        vsync: this, duration: currentQuestion?.question.timeLimit ?? _total);
+    _countdown = AnimationController(vsync: this, duration: currentQuestion?.question.timeLimit ?? _total);
     _countdown?.addStatusListener(_listener);
     displayCorrectIndex = -1;
     showVerificationState = -1;
@@ -890,8 +830,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
           ) ??
           QuizResponse.empty());
       if (answers.last.isCorrect) {
-        pointsPerQuestion
-            .add((currentQuestion?.question.points ?? 0) + timeLeftInSeconds);
+        pointsPerQuestion.add((currentQuestion?.question.points ?? 0) + timeLeftInSeconds);
       } else {
         pointsPerQuestion.add(0);
       }
@@ -949,8 +888,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                 width: 2,
               ),
             ),
-            padding: const EdgeInsets.all(
-                AppSpacing.elementMargin + AppSpacing.tinyMargin),
+            padding: const EdgeInsets.all(AppSpacing.elementMargin + AppSpacing.tinyMargin),
             child: Text(
               '${index + 1}',
               // String.fromCharCode(65 + index),
@@ -969,8 +907,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
           Expanded(
             child: Center(
               child: AutoSizeText(
-                (currentQuestion?.responses.elementAtOrNull(index)?.text ??
-                    '\n\n\n'),
+                (currentQuestion?.responses.elementAtOrNull(index)?.text ?? '\n\n\n'),
                 style: theme.textTheme.labelMedium,
                 textAlign: TextAlign.center,
                 maxLines: 4,
@@ -1014,8 +951,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
           child: Stack(
             children: [
               _card(constraints, index, theme, type: "normal"),
-              if (showVerificationState == index &&
-                  displayCorrectIndex == -1) ...[
+              if (showVerificationState == index && displayCorrectIndex == -1) ...[
                 Positioned.fill(
                   child: Container(
                     decoration: BoxDecoration(
@@ -1037,8 +973,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                       ),
                       child: Center(
                         child: Padding(
-                          padding:
-                              EdgeInsets.only(top: constraints.maxHeight / 3),
+                          padding: EdgeInsets.only(top: constraints.maxHeight / 3),
                           child: AppXButton(
                             onPressed: () {
                               showCorrectAnswer();
@@ -1061,10 +996,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
                     ),
                   ),
                 ),
-                if (displayCorrectIndex == index)
-                  _card(constraints, index, theme, type: "correct"),
-                if (displayCorrectIndex != index &&
-                    showVerificationState == index)
+                if (displayCorrectIndex == index) _card(constraints, index, theme, type: "correct"),
+                if (displayCorrectIndex != index && showVerificationState == index)
                   _card(constraints, index, theme, type: "error"),
               ]
             ],
@@ -1080,8 +1013,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(localizations.quiz_daily_performance,
-            style: theme.textTheme.bodyLarge),
+        Text(localizations.quiz_daily_performance, style: theme.textTheme.bodyLarge),
         AppSpacing.groupMarginBox,
         Row(
           children: [
@@ -1090,13 +1022,11 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text("${answers.whereOrEmpty((a) => a.isCorrect).length}",
-                    style: theme.textTheme.displaySmall?.copyWith(
-                        color: AppColors.successDefault,
-                        fontWeight: FontWeight.bold)),
+                    style: theme.textTheme.displaySmall
+                        ?.copyWith(color: AppColors.successDefault, fontWeight: FontWeight.bold)),
                 AppSpacing.elementMarginBox,
                 Text(localizations.quiz_good_answers,
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(color: AppColors.textTertiary)),
+                    style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textTertiary)),
               ],
             ),
             const Spacer(flex: 5),
@@ -1110,13 +1040,11 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text("${answers.whereOrEmpty((a) => !a.isCorrect).length}",
-                    style: theme.textTheme.displaySmall?.copyWith(
-                        color: AppColors.errorDefault,
-                        fontWeight: FontWeight.bold)),
+                    style: theme.textTheme.displaySmall
+                        ?.copyWith(color: AppColors.errorDefault, fontWeight: FontWeight.bold)),
                 AppSpacing.elementMarginBox,
                 Text(localizations.quiz_answers_to_review,
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(color: AppColors.textTertiary)),
+                    style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textTertiary)),
               ],
             ),
             const Spacer(flex: 4),
@@ -1130,9 +1058,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen>
     final theme = Theme.of(context);
     final localizations = AppLocalizations.of(context);
     final earnedDIAMONDS = pointsPerQuestion.fold(
-        0,
-        (int previousValue, element) =>
-            previousValue + element < 0 ? 0 : previousValue + element);
+        0, (int previousValue, element) => previousValue + element < 0 ? 0 : previousValue + element);
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,

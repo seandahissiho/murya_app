@@ -218,6 +218,7 @@ class Module {
       case 'job':
         return () {
           final theme = Theme.of(context);
+          final locale = AppLocalizations.of(context);
           bool isMobile = DeviceHelper.isMobile(context);
           displayPopUp(
             width: 736,
@@ -225,7 +226,7 @@ class Module {
             noActions: true,
             contents: [
               Center(
-                  child: Text("Choisissez votre métier",
+                  child: Text(locale.popup_job_selection_title,
                       style: GoogleFonts.anton(
                         color: AppColors.primaryDefault,
                         fontSize: isMobile
@@ -250,7 +251,7 @@ class Module {
                     SvgPicture.asset(AppIcons.cyberSecurityJobPopupIconPath),
                     AppSpacing.textFieldMarginBox,
                     Text(
-                      "Technicien en Cybersécurité",
+                      locale.popup_job_selection_technician_title,
                       style: GoogleFonts.anton(
                         color: AppColors.textInverted,
                         fontSize: isMobile
@@ -261,8 +262,9 @@ class Module {
                     ),
                     AppSpacing.tinyTinyMarginBox,
                     Text(
-                      "Protégez les infrastructures critiques. Devenez un expert recherché.",
-                      style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textInverted),
+                      locale.popup_job_selection_technician_subtitle,
+                      style: theme.textTheme.bodyLarge
+                          ?.copyWith(color: AppColors.textInverted),
                       textAlign: TextAlign.start,
                     ),
                     AppSpacing.containerInsideMarginBox,
@@ -275,7 +277,7 @@ class Module {
                         Navigator.of(context, rootNavigator: true).pop(true);
                       },
                       isLoading: false,
-                      text: "Continuer",
+                      text: locale.popup_job_selection_continue_button,
                     )
                   ],
                 ),
@@ -291,7 +293,7 @@ class Module {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Vous visez une autre expertise?',
+                      locale.popup_job_selection_other_expertise_label,
                       style: theme.textTheme.labelLarge,
                     ),
                     AppSpacing.containerInsideMarginSmallBox,
@@ -301,7 +303,7 @@ class Module {
                         // maxWidth: double.infinity,
                         autoResize: true,
                         controller: TextEditingController(),
-                        hintText: 'Ex: Développeur, Product Manager...',
+                        hintText: locale.popup_job_selection_search_hint,
                         label: null,
                       ),
                     ),
@@ -313,7 +315,8 @@ class Module {
             if (value == true) {
               final jobId = context.read<JobBloc>().jobs.firstOrNull?.id!;
               if (jobId != null) {
-                navigateToPath(context, to: AppRoutes.jobDetails.replaceAll(':id', jobId));
+                navigateToPath(context,
+                    to: AppRoutes.jobDetails.replaceAll(':id', jobId));
               }
             }
           });
