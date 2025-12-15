@@ -1,11 +1,11 @@
 {
-    "name": "murya",
-    "short_name": "murya",
+    "name": "Murya",
+    "short_name": "Murya",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff",
+    "description": "Murya: Reveal your potential. The ultimate app for career growth and competency tracking.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
