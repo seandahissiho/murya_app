@@ -6,6 +6,7 @@ import 'package:blobs/blobs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
+import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/components/app_footer.dart';
 import 'package:murya/components/modules/account_module.dart';

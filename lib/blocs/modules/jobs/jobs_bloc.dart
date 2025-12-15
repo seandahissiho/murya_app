@@ -16,7 +16,7 @@ part 'jobs_state.dart';
 
 class JobBloc extends Bloc<JobEvent, JobState> {
   UserJob? _userCurrentJob;
-  final List<Job> _myJobs = [];
+  final List<Job> jobs = [];
   late final JobRepository jobRepository;
   late final NotificationBloc notificationBloc;
   late final AuthenticationBloc authenticationBloc;
@@ -57,6 +57,8 @@ class JobBloc extends Bloc<JobEvent, JobState> {
       return;
     }
 
+    jobs.clear();
+    jobs.addAll(result.data ?? []);
     emit(JobsSearchResults(searchResults: result.data ?? [], userCurrentJob: state.userCurrentJob));
   }
 

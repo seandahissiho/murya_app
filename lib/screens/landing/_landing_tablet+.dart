@@ -18,6 +18,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
 
   @override
   void initState() {
+    context.read<JobBloc>().add(SearchJobs(query: "", context: context));
     super.initState();
     safeAreaPadding = context.read<AppBloc>().safeAreaPadding;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
