@@ -14,10 +14,14 @@ import 'package:murya/screens/base.dart';
 import 'package:provider/provider.dart';
 
 class AppFooter extends StatelessWidget {
-  const AppFooter({super.key});
+  final bool isLanding;
+  const AppFooter({super.key, this.isLanding = false});
 
   @override
   Widget build(BuildContext context) {
+    if (!isLanding) {
+      return Container();
+    }
     return Column(
       children: [
         Container(

@@ -65,63 +65,24 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
     // account module
     final Module accountModule = Module(
       id: "account",
-      index: 0,
-      boxType: AppModuleType.type2_2,
+      index: 2,
+      boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
     );
     final Module searchModule = Module(
       id: "job",
-      index: 1,
+      index: 0,
       boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
     );
     final Module ressourcesModule = Module(
       id: "ressources",
-      index: 2,
-      boxType: AppModuleType.type1,
-    );
-    final Module accountModule2 = Module(
-      id: "account-2",
-      index: 3,
-      boxType: AppModuleType.type2_1,
-    );
-    final Module searchModule2 = Module(
-      id: "search-2",
-      index: 4,
-      boxType: AppModuleType.type2_1,
-    );
-    final Module ressourcesModule2 = Module(
-      id: "ressources-2",
-      index: 5,
-      boxType: AppModuleType.type2_2,
-    );
-    final Module accountModule3 = Module(
-      id: "account-3",
-      index: 6,
-      boxType: AppModuleType.type2_1,
-    );
-    final Module searchModule3 = Module(
-      id: "search-3",
-      index: 7,
-      boxType: AppModuleType.type2_1,
-    );
-    final Module ressourcesModule3 = Module(
-      id: "ressources-3",
-      index: 8,
-      boxType: AppModuleType.type2_2,
+      index: 1,
+      boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
     );
 
     _modules.addAll([
-      accountModule,
       searchModule,
-      // ressourcesModule,
-      // ressourcesModule,
-      // ressourcesModule,
-      // ressourcesModule,
-      // accountModule2,
-      // searchModule2,
-      // ressourcesModule2,
-      // accountModule3,
-      // searchModule3,
-      // ressourcesModule3,
+      ressourcesModule,
+      accountModule,
     ]);
     if (_modules.isNotEmpty) {
       _modules.sort((a, b) => a.index.compareTo(b.index));

@@ -206,7 +206,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                 ],
               ),
             ),
-            AppSpacing.sectionMarginBox,
+            // AppSpacing.sectionMarginBox,
             const AppFooter(),
           ],
         );

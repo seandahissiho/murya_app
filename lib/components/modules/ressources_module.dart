@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/components/modules/app_module.dart';
-import 'package:murya/config/app_icons.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/module.dart';
 
@@ -37,7 +36,7 @@ class _RessourcesModuleWidgetState extends State<RessourcesModuleWidget> {
             return AppModuleWidget(
               module: widget.module,
               content: null,
-              backgroundImage: AppImages.homeBox3Path,
+              // backgroundImage: AppImages.homeBox3Path,
               onSizeChanged: widget.onSizeChanged,
             );
           },

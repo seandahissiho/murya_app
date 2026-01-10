@@ -300,14 +300,14 @@ class AppColors {
 }
 
 class AppElevatedButtonStyle {
-  static WidgetStateProperty<Color> foregroundColor = WidgetStateProperty.all<Color>(AppColors.backgroundColor);
+  static WidgetStateProperty<Color> foregroundColor = WidgetStateProperty.all<Color>(AppColors.primaryDefault);
 
   static WidgetStateProperty<Color> backgroundColor = WidgetStateProperty.resolveWith<Color>(
     (states) {
       if (states.contains(WidgetState.disabled)) {
-        return AppColors.primary.withValues(alpha: .4);
+        return AppColors.primaryDefault;
       }
-      return AppColors.primary;
+      return AppColors.primaryDefault;
     },
   );
 
@@ -328,28 +328,28 @@ class AppElevatedButtonStyle {
 
   static WidgetStateProperty<Color> shadowColor = WidgetStateProperty.resolveWith<Color>(
     (states) {
-      if (states.contains(WidgetState.pressed)) {
-        return AppColors.primary.shade500;
-      }
-      if (states.contains(WidgetState.disabled)) {
-        return AppColors.primary.shade50;
-      }
-      if (states.contains(WidgetState.hovered)) {
-        return AppColors.primary.shade100;
-      }
-      if (states.contains(WidgetState.focused)) {
-        return AppColors.primary.shade600;
-      }
+      // if (states.contains(WidgetState.pressed)) {
+      //   return AppColors.primary.shade500;
+      // }
+      // if (states.contains(WidgetState.disabled)) {
+      //   return AppColors.primary.shade50;
+      // }
+      // if (states.contains(WidgetState.hovered)) {
+      //   return AppColors.primary.shade100;
+      // }
+      // if (states.contains(WidgetState.focused)) {
+      //   return AppColors.primary.shade600;
+      // }
       return AppColors.primaryDefault;
     },
   );
 
   static WidgetStateProperty<Color> surfaceTintColor = WidgetStateProperty.resolveWith<Color>(
     (states) {
-      if (states.contains(WidgetState.pressed)) {
-        return AppColors.primary.shade500;
-      }
-      return AppColors.primary.shade500;
+      // if (states.contains(WidgetState.pressed)) {
+      //   return AppColors.primary.shade500;
+      // }
+      return AppColors.primaryDefault;
     },
   );
 
@@ -361,7 +361,7 @@ class AppElevatedButtonStyle {
   });
 
   static WidgetStateProperty<TextStyle?>? textStyle;
-  static WidgetStateProperty<double> elevation = WidgetStateProperty.all<double>(0);
+  static WidgetStateProperty<double> elevation = WidgetStateProperty.all<double>(4);
   static WidgetStateProperty<EdgeInsetsGeometry> padding = WidgetStateProperty.all<EdgeInsetsGeometry>(
     const EdgeInsets.symmetric(
       horizontal: AppSpacing.buttonHorizontalPadding * 1.5,
@@ -382,7 +382,7 @@ class AppElevatedButtonStyle {
   });
   static WidgetStateProperty<double> iconSize = WidgetStateProperty.all<double>(16);
   static WidgetStateProperty<OutlinedBorder> shape = WidgetStateProperty.all<OutlinedBorder>(
-    const RoundedRectangleBorder(borderRadius: AppRadius.extraLarge),
+    const RoundedRectangleBorder(borderRadius: AppRadius.small),
   );
   static WidgetStateProperty<MouseCursor> mouseCursor = WidgetStateProperty.all<MouseCursor>(SystemMouseCursors.click);
   static VisualDensity? visualDensity = VisualDensity.compact;

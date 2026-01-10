@@ -18,18 +18,21 @@ import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/module.dart';
+import 'package:murya/helpers.dart';
 import 'package:murya/screens/app_bar/app_bar.dart';
 import 'package:murya/screens/base.dart';
 
 part '_landing_mobile.dart';
 part '_landing_tablet+.dart';
 
-class LandingLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class LandingLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.landing];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(
@@ -104,28 +107,35 @@ class AddModuleButton extends StatelessWidget {
         child: Center(
           child: MouseRegion(
             cursor: SystemMouseCursors.click,
-            child: Container(
-              width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
-              height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
-              margin: const EdgeInsets.only(top: 10, left: 10),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: _colors,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              padding: const EdgeInsets.all(2),
+            child: InkWell(
+              onTap: () {
+                navigateToPath(context, to: AppRoutes.dashboard);
+              },
               child: Container(
+                width:
+                    (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
+                height:
+                    (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
+                margin: const EdgeInsets.only(top: 10, left: 10),
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.black,
+                  gradient: LinearGradient(
+                    colors: _colors,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.add,
-                  color: AppColors.textInverted,
-                  size: 32,
+                padding: const EdgeInsets.all(2),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black,
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    color: AppColors.textInverted,
+                    size: 32,
+                  ),
                 ),
               ),
             ),
