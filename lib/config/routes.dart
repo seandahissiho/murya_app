@@ -7,6 +7,7 @@ import 'package:murya/screens/competencies_family_details/competencies_family_de
 import 'package:murya/screens/job_details/job_details.dart';
 import 'package:murya/screens/job_evaluation/job_evaluation.dart';
 import 'package:murya/screens/landing/landing.dart';
+import 'package:murya/screens/dashboard/dashboard.dart';
 import 'package:murya/screens/ressources/resources.dart';
 import 'package:murya/screens/ressources/viewers/viewer_handler.dart';
 import 'package:murya/screens/search/search.dart';
@@ -18,6 +19,7 @@ class AppRoutes {
   static const String forgotPassword = '/forgot-password';
 
   // static const String home = '/home';
+  static const String dashboard = '/dashboard';
   static const String profile = '/profile';
 
   // allModules
@@ -30,7 +32,8 @@ class AppRoutes {
   // Jobs
   static const String jobDetails = '/job/:id/details';
   // competencyFamilyDetails
-  static const String competencyFamilyDetails = '/job/:jobId/competency-family/:cfId/details';
+  static const String competencyFamilyDetails =
+      '/job/:jobId/competency-family/:cfId/details';
   // jobEvaluation
   static const String jobEvaluation = '/job/:id/evaluation';
 
@@ -64,6 +67,7 @@ const List<String> routesWithoutHeader = [
 
 List<BeamLocation<RouteInformationSerializable<dynamic>>> beamLocations = [
   LandingLocation(),
+  DashboardLocation(),
   MainSearchLocation(),
   JobDetailsLocation(),
   CfDetailsLocation(),
@@ -75,12 +79,14 @@ List<BeamLocation<RouteInformationSerializable<dynamic>>> beamLocations = [
   OtherLocation(), // Add other locations as needed
 ];
 
-class OtherLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class OtherLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => ['*'];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(
@@ -91,7 +97,8 @@ class OtherLocation extends BeamLocation<RouteInformationSerializable<dynamic>> 
             navigateToPath(context, to: AppRoutes.landing);
           },
           child: const Center(
-            child: Text('Page not found', style: TextStyle(color: Colors.black)),
+            child:
+                Text('Page not found', style: TextStyle(color: Colors.black)),
           ),
         ),
       ),

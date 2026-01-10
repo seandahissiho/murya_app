@@ -188,7 +188,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                             child: AppSpacing.containerInsideMarginSmallBox,
                           ),
                           SliverToBoxAdapter(
-                            child: AppFooter(key: _footerWrapKey),
+                            child: AppFooter(key: _footerWrapKey, isLanding: true),
                           ),
                         ],
                       ),

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/components/modules/app_module.dart';
-import 'package:murya/config/app_icons.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/module.dart';
 
@@ -35,7 +34,7 @@ class _AccountModuleWidgetState extends State<AccountModuleWidget> {
           },
           builder: (context, state) {
             return AppModuleWidget(
-              backgroundImage: AppImages.homeBox1Path,
+              // backgroundImage: AppImages.homeBox1Path,
               module: widget.module,
               content: state.user.isRegistered ? ProfileModuleContent(user: state.user) : null,
               onSizeChanged: widget.onSizeChanged,

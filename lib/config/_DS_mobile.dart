@@ -61,28 +61,6 @@ class TextSize {
     // Caption Regular
     double bodySmall = 12.0;
 
-    // if ((Platform.isMacOS || Platform.isWindows || Platform.isLinux) == true) {
-    //   displayLarge -= 5 - 0;
-    //   displayMedium -= 5 - 0;
-    //   displaySmall -= 5 - 0;
-    //
-    //   headingLarge -= 5 - 0;
-    //   headingMedium -= 5 - 0;
-    //   headingSmall -= 5 - 0;
-    //
-    //   titleLarge -= 5 - 0;
-    //   titleMedium -= 5 - 0;
-    //   titleSmall -= 5 - 0;
-    //
-    //   labelLarge -= 2 - 0;
-    //   labelMedium -= 2 - 0;
-    //   labelSmall -= 2 - 0;
-    //
-    //   bodyLarge -= 2 - 0;
-    //   bodyMedium -= 2 - 0;
-    //   bodySmall -= 2 - 0;
-    // }
-
     this.displayLarge = displayLarge;
     this.displayMedium = displayMedium;
     this.displaySmall = displaySmall;

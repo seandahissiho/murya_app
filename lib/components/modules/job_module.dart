@@ -14,7 +14,6 @@ import 'package:murya/components/app_button.dart';
 import 'package:murya/components/modules/app_module.dart';
 import 'package:murya/components/score.dart';
 import 'package:murya/config/DS.dart';
-import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
@@ -82,7 +81,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                     )
                   : AppModuleWidget(
                       module: widget.module,
-                      backgroundImage: AppImages.homeBox2Path,
+                      // backgroundImage: AppImages.homeBox2Path,
                       content: null,
                       onSizeChanged: widget.onSizeChanged,
                     ),
