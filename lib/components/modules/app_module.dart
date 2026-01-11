@@ -74,7 +74,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 2) / 2;
       return calculatedSize;
     } else {
-      final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 6) / 3.12;
+      final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 6) / 3.11;
       return calculatedSize;
     }
   }
@@ -144,7 +144,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
-        margin: widget.cardMargin,
+        // margin: widget.cardMargin,
         elevation: .5,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 800),
