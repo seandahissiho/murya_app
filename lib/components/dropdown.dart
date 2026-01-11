@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:murya/components/app_button.dart';
 import 'package:murya/components/text_form_field.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/custom_classes.dart';
@@ -18,9 +17,6 @@ class AppXDropdown<T> extends StatefulWidget {
     this.rightIconPath,
     this.rightIcon,
     this.leftIcon,
-    this.size = AppXButtonSize.MEDIUM,
-    this.state = AppXButtonState.ENABLED,
-    this.type = AppXButtonType.PRIMARY,
     this.background = Colors.transparent,
     this.foregroundColor,
     this.borderColor,
@@ -51,9 +47,6 @@ class AppXDropdown<T> extends StatefulWidget {
   final String? rightIconPath;
   final Widget? rightIcon;
   final Widget? leftIcon;
-  final AppXButtonSize size;
-  final AppXButtonState state;
-  final AppXButtonType type;
   final Color background;
   final Color? foregroundColor;
   final Color? borderColor;

@@ -7,13 +7,7 @@ import 'package:responsive_framework/responsive_framework.dart' show ResponsiveB
 //kButtonMinWidth
 const double kButtonMinWidth = 144;
 
-enum AppXButtonSize { SMALL, MEDIUM, LARGE }
-
-enum AppXButtonState { ENABLED, DISABLED }
-
-enum AppXButtonType { PRIMARY, SECONDARY }
-
-class AppXButton extends StatelessWidget {
+class AppXButton extends StatefulWidget {
   const AppXButton({
     super.key,
     this.text,
@@ -24,16 +18,14 @@ class AppXButton extends StatelessWidget {
     this.leftIconPath,
     this.rightIcon,
     this.rightIconPath,
-    this.size = AppXButtonSize.SMALL,
     this.disabled = false,
-    this.type = AppXButtonType.PRIMARY,
     this.bgColor,
     this.fgColor,
     this.borderColor,
     this.hoverColor,
     this.onPressedColor,
     this.disabledColor = AppColors.primaryDisabled,
-    this.autoResize = true,
+    this.shrinkWrap = true,
     this.borderLineWidth = 1,
     this.removePaddings = false,
     this.horizontalAlignment = MainAxisAlignment.center,
@@ -43,6 +35,8 @@ class AppXButton extends StatelessWidget {
     this.radius,
     this.height,
     this.iconSize = 24,
+    this.iconTextPadding = 9,
+    this.iconOnlyPadding = 5,
     this.onlyLeftRounded = false,
     this.onlyRightRounded = false,
   });
@@ -55,16 +49,14 @@ class AppXButton extends StatelessWidget {
   final String? leftIconPath;
   final Widget? rightIcon;
   final String? rightIconPath;
-  final AppXButtonSize size;
   final bool disabled;
-  final AppXButtonType type;
   final Color? bgColor;
   final Color? fgColor;
   final Color? borderColor;
   final Color? hoverColor;
   final Color? onPressedColor;
   final Color? disabledColor;
-  final bool autoResize;
+  final bool shrinkWrap;
   final double borderLineWidth;
   final bool removePaddings;
   final MainAxisAlignment horizontalAlignment;
@@ -74,11 +66,41 @@ class AppXButton extends StatelessWidget {
   final double? radius;
   final double? height;
   final double iconSize;
+  final double iconTextPadding;
+  final double iconOnlyPadding;
   final bool onlyLeftRounded;
   final bool onlyRightRounded;
 
-  (double?, double?, double?, double?) get getPositionParams {
-    switch (loadingAlignment) {
+  @override
+  State<AppXButton> createState() => _AppXButtonState();
+}
+
+class _AppXButtonState extends State<AppXButton> {
+  bool _hovered = false;
+  bool _focused = false;
+  bool _pressed = false;
+  int _pressSeq = 0;
+  // = 100ms (ton AnimatedContainer) + un petit buffer
+  static const Duration _pressAnim = Duration(milliseconds: 150);
+  static const Duration _pressHold = Duration(milliseconds: 110); // = ton AnimatedContainer (100ms) + marge
+
+  // Tune these to match the exact Figma numbers.
+  static const double _hardShadowOffsetY = 5;
+  static const Color _focusGlowColor = Color(0xFFB0C6EA);
+
+  bool get _isDisabled => widget.disabled || widget.onPressed == null;
+
+  Set<WidgetState> _states() {
+    final s = <WidgetState>{};
+    if (_isDisabled) s.add(WidgetState.disabled);
+    if (_hovered) s.add(WidgetState.hovered);
+    if (_focused) s.add(WidgetState.focused);
+    if (_pressed) s.add(WidgetState.pressed);
+    return s;
+  }
+
+  (double?, double?, double?, double?) get _loadingPositionParams {
+    switch (widget.loadingAlignment) {
       case Alignment.center:
         return (0, 0, 0, 0);
       case Alignment.centerLeft:
@@ -102,36 +124,113 @@ class AppXButton extends StatelessWidget {
     }
   }
 
-  WidgetStateProperty<OutlinedBorder?>? get shape {
-    if (onlyLeftRounded) {
-      return WidgetStateProperty.all<OutlinedBorder>(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(radius ?? 64),
-            bottomLeft: Radius.circular(radius ?? 64),
-          ),
-        ),
+  BorderRadius _resolveBorderRadius(ThemeData theme, Set<WidgetState> states) {
+    // 1) Explicit per-widget overrides (same behavior as previous shape getter).
+    if (widget.onlyLeftRounded) {
+      final r = widget.radius ?? 64;
+      return BorderRadius.only(
+        topLeft: Radius.circular(r),
+        bottomLeft: Radius.circular(r),
       );
     }
 
-    if (onlyRightRounded) {
-      return WidgetStateProperty.all<OutlinedBorder>(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(radius ?? 64),
-            bottomRight: Radius.circular(radius ?? 64),
-          ),
-        ),
+    if (widget.onlyRightRounded) {
+      final r = widget.radius ?? 64;
+      return BorderRadius.only(
+        topRight: Radius.circular(r),
+        bottomRight: Radius.circular(r),
       );
     }
 
-    return radius != null
-        ? WidgetStateProperty.all<OutlinedBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radius!),
-            ),
-          )
-        : null;
+    if (widget.radius != null) {
+      return BorderRadius.circular(widget.radius!);
+    }
+
+    // 2) Fallback to ElevatedButton theme shape if it is a RoundedRectangleBorder.
+    final themedShape = theme.elevatedButtonTheme.style?.shape?.resolve(states);
+    if (themedShape is RoundedRectangleBorder) {
+      final brg = themedShape.borderRadius;
+      if (brg is BorderRadius) return brg;
+      return brg.resolve(Directionality.of(context));
+    }
+
+    // 3) Safe default.
+    return BorderRadius.circular(16);
+  }
+
+  BorderSide _resolveSide(ThemeData theme, Set<WidgetState> states) {
+    if (widget.borderColor != null) {
+      return BorderSide(
+        color: widget.borderColor!,
+        width: widget.borderLineWidth,
+      );
+    }
+
+    return theme.elevatedButtonTheme.style?.side?.resolve(states) ??
+        const BorderSide(width: 0, color: Colors.transparent);
+  }
+
+  Color _resolveForegroundColor(ThemeData theme, Set<WidgetState> states) {
+    return widget.fgColor ?? theme.elevatedButtonTheme.style?.foregroundColor?.resolve(states) ?? AppColors.whiteSwatch;
+  }
+
+  Color _resolveIconColor(ThemeData theme, Set<WidgetState> states) {
+    return widget.fgColor ?? theme.elevatedButtonTheme.style?.iconColor?.resolve(states) ?? AppColors.whiteSwatch;
+  }
+
+  Color _resolveBackgroundColor(ThemeData theme, Set<WidgetState> states) {
+    final style = theme.elevatedButtonTheme.style;
+
+    if (states.contains(WidgetState.disabled)) {
+      return widget.disabledColor ??
+          style?.backgroundColor?.resolve({WidgetState.disabled}) ??
+          style?.backgroundColor?.resolve(states) ??
+          AppColors.primaryDisabled;
+    }
+
+    if (states.contains(WidgetState.pressed)) {
+      return widget.onPressedColor ??
+          style?.backgroundColor?.resolve({WidgetState.pressed}) ??
+          widget.bgColor ??
+          style?.backgroundColor?.resolve(states) ??
+          theme.colorScheme.primary;
+    }
+
+    if (states.contains(WidgetState.hovered)) {
+      return widget.hoverColor ??
+          style?.backgroundColor?.resolve({WidgetState.hovered}) ??
+          widget.bgColor ??
+          style?.backgroundColor?.resolve(states) ??
+          theme.colorScheme.primary;
+    }
+
+    return widget.bgColor ?? style?.backgroundColor?.resolve(states) ?? theme.colorScheme.primary;
+  }
+
+  TextStyle _resolveTextStyle(ThemeData theme, Set<WidgetState> states, {required bool isMobile}) {
+    final fg = _resolveForegroundColor(theme, states);
+
+    // If the caller gives an explicit textStyle, respect it (but force color by default).
+    if (widget.textStyle != null) {
+      final ts = widget.textStyle!;
+      return ts.copyWith(color: ts.color ?? fg);
+    }
+
+    // Preserve previous behavior:
+    // - mobile: let ElevatedButtonTheme drive it
+    // - desktop/tablet: use labelLarge with fg
+    final themed = theme.elevatedButtonTheme.style?.textStyle?.resolve(states);
+    if (isMobile) {
+      return (themed ?? theme.textTheme.labelLarge ?? const TextStyle()).copyWith(color: fg);
+    }
+
+    return (theme.textTheme.labelLarge ?? themed ?? const TextStyle()).copyWith(color: fg);
+  }
+
+  double _resolveMaxWidth(BuildContext context) {
+    return widget.maxWidth ??
+        ResponsiveBreakpoints.of(context).breakpoints.elementAtOrNull(1)?.start ??
+        AppBreakpoints.mobile;
   }
 
   @override
@@ -139,266 +238,336 @@ class AppXButton extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final bool isMobile = DeviceHelper.isMobile(context);
 
-    var children = <Widget>[];
-    bool onlyOneIcon = leftIcon != null && (rightIcon == null && rightIconPath == null) ||
-        rightIcon != null && (leftIcon == null && leftIconPath == null) ||
-        leftIconPath != null && (rightIcon == null && rightIconPath == null) ||
-        rightIconPath != null && (leftIcon == null && leftIconPath == null);
+    final states = _states();
+    final fg = _resolveForegroundColor(theme, states);
+    final iconColor = _resolveIconColor(theme, states);
+    final bg = _resolveBackgroundColor(theme, states);
+    final BorderSide side = _resolveSide(theme, states);
+    final borderRadius = _resolveBorderRadius(theme, states);
 
-    onlyOneIcon = onlyOneIcon && text == null;
+    final double effectiveHeight =
+        widget.height ?? theme.elevatedButtonTheme.style?.maximumSize?.resolve({})?.height ?? 40;
+    final double maxWidth = _resolveMaxWidth(context);
 
-    if (!onlyOneIcon) {
-      // children.add(AppSpacing.elementMarginBox);
-      if (leftIcon == null && leftIconPath == null && (rightIconPath != null || rightIcon != null)) {
-        // children.add(AppSpacing.tinyMarginBox);
-      }
+    final bool onlyOneIconBase =
+        (widget.leftIcon != null && (widget.rightIcon == null && widget.rightIconPath == null)) ||
+            (widget.rightIcon != null && (widget.leftIcon == null && widget.leftIconPath == null)) ||
+            (widget.leftIconPath != null && (widget.rightIcon == null && widget.rightIconPath == null)) ||
+            (widget.rightIconPath != null && (widget.leftIcon == null && widget.leftIconPath == null));
+
+    final bool onlyOneIcon = onlyOneIconBase && widget.text == null;
+
+    final List<Widget> children = <Widget>[];
+
+    if (widget.leftIcon != null || widget.leftIconPath != null) {
+      children.add(
+        Padding(
+          padding: EdgeInsets.only(
+            right: widget.removePaddings
+                ? 0
+                : widget.text != null
+                    ? widget.iconTextPadding
+                    : widget.rightIcon != null
+                        ? widget.iconOnlyPadding
+                        : 0,
+          ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: widget.leftIcon != null
+                ? widget.leftIcon!
+                : SizedBox(
+                    height: widget.iconSize,
+                    width: widget.iconSize,
+                    child: SvgPicture.asset(
+                      widget.leftIconPath!,
+                      fit: BoxFit.scaleDown,
+                      height: widget.iconSize,
+                      width: widget.iconSize,
+                      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcATop),
+                    ),
+                  ),
+          ),
+        ),
+      );
     }
 
-    if (leftIcon != null || leftIconPath != null) {
-      children.add(Padding(
-        padding: EdgeInsets.only(
-          right: removePaddings
-              ? 0
-              : text != null
-                  ? (size == AppXButtonSize.LARGE
-                      ? 18
-                      : size == AppXButtonSize.MEDIUM
-                          ? 14
-                          : 9)
-                  : rightIcon != null
-                      ? (size == AppXButtonSize.SMALL ? 5 : 10)
-                      : 0,
-        ),
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: leftIcon != null
-              ? leftIcon!
+    if (widget.text != null) {
+      final textWidget = Text(
+        widget.text!,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: _resolveTextStyle(theme, states, isMobile: isMobile),
+      );
+
+      children.add(
+        widget.shrinkWrap ? textWidget : Flexible(child: textWidget),
+      );
+    }
+
+    if (widget.rightIcon != null || widget.rightIconPath != null) {
+      children.add(
+        Padding(
+          padding: EdgeInsets.only(
+            left: widget.removePaddings
+                ? 0
+                : widget.text != null
+                    ? widget.iconTextPadding
+                    : widget.leftIcon != null
+                        ? widget.iconOnlyPadding
+                        : 0,
+          ),
+          child: widget.rightIcon != null
+              ? widget.rightIcon!
               : SizedBox(
-                  height: iconSize,
-                  width: iconSize,
-                  child: SvgPicture.asset(
-                    leftIconPath!,
+                  height: widget.iconSize,
+                  width: widget.iconSize,
+                  child: FittedBox(
                     fit: BoxFit.scaleDown,
-                    height: iconSize,
-                    width: iconSize,
-                    colorFilter: ColorFilter.mode(
-                      fgColor ?? theme.elevatedButtonTheme.style?.iconColor?.resolve({}) ?? AppColors.whiteSwatch,
-                      BlendMode.srcATop,
+                    child: SvgPicture.asset(
+                      widget.rightIconPath!,
+                      fit: BoxFit.scaleDown,
+                      height: widget.iconSize,
+                      width: widget.iconSize,
+                      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcATop),
                     ),
                   ),
                 ),
         ),
-      ));
-    }
-    if (text != null) {
-      children.add(Flexible(
-        // flex: 10,
-        // fit: FlexFit.loose,
-        child: Text(
-          text!,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: isMobile ? null : theme.textTheme.labelLarge?.copyWith(color: fgColor ?? AppColors.textInverted),
-          // style: textStyle?.copyWith(color: AppColors.primary.shade900),
-        ),
-      ));
-    }
-
-    if (rightIcon != null || rightIconPath != null) {
-      children.add(Padding(
-        padding: EdgeInsets.only(
-          left: removePaddings
-              ? 0
-              : text != null
-                  ? (size == AppXButtonSize.LARGE
-                      ? 18
-                      : size == AppXButtonSize.MEDIUM
-                          ? 14
-                          : 9)
-                  : leftIcon != null
-                      ? (size == AppXButtonSize.SMALL ? 5 : 10)
-                      : 0,
-        ),
-        child: rightIcon != null
-            ? rightIcon!
-            : SizedBox(
-                height: iconSize,
-                width: iconSize,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: SvgPicture.asset(
-                    rightIconPath!,
-                    fit: BoxFit.scaleDown,
-                    height: iconSize,
-                    width: iconSize,
-                    colorFilter: ColorFilter.mode(
-                      fgColor ?? theme.elevatedButtonTheme.style?.iconColor?.resolve({}) ?? AppColors.whiteSwatch,
-                      BlendMode.srcATop,
-                    ),
-                  ),
-                ),
-              ),
-      ));
+      );
     }
 
     if (!onlyOneIcon) {
-      // children.add(AppSpacing.elementMarginBox);
-      if (rightIcon == null && rightIconPath == null && (leftIconPath != null || leftIcon != null)) {
+      if (widget.rightIcon == null &&
+          widget.rightIconPath == null &&
+          (widget.leftIconPath != null || widget.leftIcon != null)) {
         children.add(AppSpacing.tinyMarginBox);
       }
     }
 
-    var positionParams = getPositionParams;
+    final hardShadowColor = theme.elevatedButtonTheme.style?.shadowColor?.resolve(states) ?? theme.shadowColor;
 
-    return Theme(
-      data: ThemeData(elevatedButtonTheme: theme.elevatedButtonTheme),
-      child: Stack(
-        children: [
-          ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              isLoading ? Colors.white70 : Colors.transparent,
-              BlendMode.srcATop,
-            ),
-            child: ElevatedButton(
-              style: theme.elevatedButtonTheme.style?.copyWith(
-                backgroundColor: WidgetStateProperty.resolveWith<Color?>(
-                  (states) {
-                    if (states.contains(WidgetState.pressed)) {
-                      return onPressedColor ??
-                          theme.elevatedButtonTheme.style?.backgroundColor?.resolve({WidgetState.pressed});
-                    }
-                    if (states.contains(WidgetState.hovered)) {
-                      return hoverColor ??
-                          theme.elevatedButtonTheme.style?.backgroundColor?.resolve({WidgetState.hovered});
-                    }
-                    if (states.contains(WidgetState.disabled)) {
-                      return disabledColor ??
-                          theme.elevatedButtonTheme.style?.backgroundColor?.resolve({WidgetState.disabled});
-                    }
-                    return bgColor ?? theme.elevatedButtonTheme.style?.backgroundColor?.resolve(states);
-                  },
-                ),
-                foregroundColor: fgColor != null ? WidgetStatePropertyAll(fgColor) : null,
-                side: WidgetStateProperty.resolveWith<BorderSide?>(
-                  (states) {
-                    return borderColor != null
-                        ? BorderSide(
-                            color: borderColor!,
-                            width: borderLineWidth,
-                          )
-                        : theme.elevatedButtonTheme.style?.side?.resolve(states);
-                  },
-                ),
-                overlayColor: WidgetStateProperty.resolveWith<Color?>(
-                  (states) {
-                    if (states.contains(WidgetState.pressed)) {
-                      return onPressedColor ??
-                          theme.elevatedButtonTheme.style?.overlayColor?.resolve({WidgetState.pressed});
-                    }
-                    if (states.contains(WidgetState.hovered)) {
-                      return hoverColor ??
-                          theme.elevatedButtonTheme.style?.overlayColor?.resolve({WidgetState.hovered});
-                    }
-                    if (states.contains(WidgetState.disabled)) {
-                      return disabledColor ??
-                          theme.elevatedButtonTheme.style?.overlayColor?.resolve({WidgetState.disabled});
-                    }
-                    return theme.elevatedButtonTheme.style?.overlayColor?.resolve(states);
-                  },
-                ),
-                shape: shape,
-                maximumSize: height == null
-                    ? null
-                    : WidgetStateProperty.all<Size>(
-                        Size(
-                          maxWidth ??
-                              ResponsiveBreakpoints.of(context).breakpoints.elementAtOrNull(1)?.start ??
-                              AppBreakpoints.mobile,
-                          height!,
-                        ),
-                      ),
-                minimumSize: height == null
-                    ? null
-                    : WidgetStateProperty.all<Size>(Size(
-                        maxWidth ??
-                            ResponsiveBreakpoints.of(context).breakpoints.elementAtOrNull(1)?.start ??
-                            AppBreakpoints.mobile,
-                        height!,
-                      )),
-                fixedSize: height == null
-                    ? null
-                    : WidgetStateProperty.all<Size>(
-                        Size(
-                          maxWidth ??
-                              ResponsiveBreakpoints.of(context).breakpoints.elementAtOrNull(1)?.start ??
-                              AppBreakpoints.mobile,
-                          height!,
-                        ),
-                      ),
+    final List<BoxShadow> shadows = <BoxShadow>[
+      if (_focused && !_isDisabled)
+        BoxShadow(
+          color: _focusGlowColor.withValues(alpha: 0.55),
+          blurRadius: 18,
+          spreadRadius: 8,
+          offset: Offset.zero,
+        ),
+      if (!_pressed && !_isDisabled)
+        BoxShadow(
+          color: hardShadowColor,
+          offset: const Offset(0, _hardShadowOffsetY),
+          blurRadius: 0,
+          spreadRadius: 0,
+        ),
+    ];
+
+    final double translateY = (_pressed && !_isDisabled) ? _hardShadowOffsetY : 0;
+
+    final onTap = (!_isDisabled && !widget.isLoading)
+        ? () {
+            widget.onPressed?.call();
+          }
+        : null;
+
+    final onLongPress = (!_isDisabled && !widget.isLoading)
+        ? () {
+            widget.onLongPress?.call();
+          }
+        : null;
+
+    final positionParams = _loadingPositionParams;
+
+    return Stack(
+      children: [
+        ColorFiltered(
+          colorFilter: ColorFilter.mode(
+            widget.isLoading ? Colors.white70 : Colors.transparent,
+            BlendMode.srcATop,
+          ),
+          child: FocusableActionDetector(
+            enabled: !_isDisabled && !widget.isLoading,
+            onShowHoverHighlight: (v) => setState(() => _hovered = v),
+            onShowFocusHighlight: (v) => setState(() => _focused = v),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 100),
+              transform: Matrix4.translationValues(0, translateY, 0),
+              decoration: BoxDecoration(
+                borderRadius: borderRadius,
+                boxShadow: shadows,
               ),
-              onPressed: disabled
-                  ? null
-                  : () {
-                      if (isLoading == true) return;
-                      onPressed?.call();
-                    },
-              onLongPress: disabled
-                  ? null
-                  : () {
-                      if (isLoading == true) return;
-                      onLongPress?.call();
-                    },
-              child: Container(
-                constraints: BoxConstraints(
-                  maxHeight: height ?? theme.elevatedButtonTheme.style?.maximumSize?.resolve({})?.height ?? 40,
-                  maxWidth: maxWidth ??
-                      ResponsiveBreakpoints.of(context).breakpoints.elementAtOrNull(1)?.start ??
-                      AppBreakpoints.mobile,
+              child: Material(
+                color: bg,
+                shape: RoundedRectangleBorder(
+                  borderRadius: borderRadius,
+                  side: side,
                 ),
-                child: Stack(
-                  children: [
-                    Row(
-                      mainAxisSize: autoResize ? MainAxisSize.min : MainAxisSize.max,
-                      mainAxisAlignment: horizontalAlignment,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: children,
-                    ),
-                    if (disabled) ...[
-                      Positioned.fill(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: shape?.resolve({}) is RoundedRectangleBorder
-                                ? (shape!.resolve({}) as RoundedRectangleBorder).borderRadius
-                                : null,
-                            color: disabledColor?.withAlpha(150),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: (onTap == null)
+                      ? null
+                      : () async {
+                          // Pour clavier (Enter/Space) : pas de tapDown -> on force l’état pressed
+                          if (!_pressed) setState(() => _pressed = true);
+
+                          final int seq = ++_pressSeq;
+
+                          // ✅ attendre la fin de l’animation de "descente"
+                          await Future<void>.delayed(_pressAnim);
+                          if (!mounted) return;
+                          if (_pressSeq != seq) return; // un nouveau tap a pris le dessus
+                          if (_isDisabled || widget.isLoading) return;
+
+                          // ✅ action seulement à la fin
+                          widget.onPressed?.call();
+
+                          // ✅ remonter juste après (ou tu peux ajouter un petit délai)
+                          await Future<void>.delayed(const Duration(milliseconds: 60));
+                          if (!mounted) return;
+                          if (_pressSeq != seq) return;
+                          setState(() => _pressed = false);
+                        },
+
+                  onLongPress: onLongPress,
+
+                  onTapDown: (_) {
+                    if (_isDisabled || widget.isLoading) return;
+                    ++_pressSeq; // invalide les tâches en cours
+                    setState(() => _pressed = true);
+                  },
+
+                  // on ne remonte PAS ici
+                  onTapUp: (_) {},
+
+                  onTapCancel: () {
+                    if (_isDisabled || widget.isLoading) return;
+                    ++_pressSeq;
+                    setState(() => _pressed = false);
+                  },
+
+                  borderRadius: borderRadius,
+                  hoverColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+
+                  child: widget.shrinkWrap
+                      ? IntrinsicWidth(
+                          child: _ButtonBody(
+                            borderRadius: borderRadius,
+                            side: side,
+                            effectiveHeight: effectiveHeight,
+                            maxWidth: maxWidth,
+                            shrinkWrap: widget.shrinkWrap,
+                            horizontalAlignment: widget.horizontalAlignment,
+                            children: children,
+                            disabled: widget.disabled,
+                            disabledColor: widget.disabledColor ?? AppColors.primaryDisabled,
                           ),
+                        )
+                      : _ButtonBody(
+                          borderRadius: borderRadius,
+                          side: side,
+                          effectiveHeight: effectiveHeight,
+                          maxWidth: maxWidth,
+                          shrinkWrap: widget.shrinkWrap,
+                          horizontalAlignment: widget.horizontalAlignment,
+                          children: children,
+                          disabled: widget.disabled,
+                          disabledColor: widget.disabledColor ?? AppColors.primaryDisabled,
                         ),
-                      ),
-                    ],
-                  ],
                 ),
               ),
             ),
           ),
-          if (isLoading) ...[
-            Positioned(
-              left: positionParams.$1,
-              right: positionParams.$2,
-              top: positionParams.$3,
-              bottom: positionParams.$4,
-              child: SizedBox(
-                height: 20,
-                width: 20,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: CupertinoActivityIndicator(
-                    color: bgColor ?? AppColors.primary,
-                  ),
+        ),
+        if (widget.isLoading) ...[
+          Positioned(
+            left: positionParams.$1,
+            right: positionParams.$2,
+            top: positionParams.$3,
+            bottom: positionParams.$4,
+            child: SizedBox(
+              height: 20,
+              width: 20,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: CupertinoActivityIndicator(
+                  color: widget.bgColor ?? AppColors.primary,
                 ),
               ),
             ),
-          ],
+          ),
         ],
+      ],
+    );
+  }
+}
+
+class _ButtonBody extends StatelessWidget {
+  const _ButtonBody({
+    required this.borderRadius,
+    required this.side,
+    required this.effectiveHeight,
+    required this.maxWidth,
+    required this.shrinkWrap,
+    required this.horizontalAlignment,
+    required this.children,
+    required this.disabled,
+    required this.disabledColor,
+  });
+
+  final BorderRadius borderRadius;
+  final BorderSide side;
+  final double effectiveHeight;
+  final double maxWidth;
+  final bool shrinkWrap;
+  final MainAxisAlignment horizontalAlignment;
+  final List<Widget> children;
+  final bool disabled;
+  final Color disabledColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        border: Border.all(
+          color: side.color,
+          width: side.width + 1,
+        ),
+      ),
+      constraints: BoxConstraints(
+        maxHeight: effectiveHeight,
+        maxWidth: shrinkWrap ? double.infinity : maxWidth,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: shrinkWrap ? AppSpacing.containerInsideMarginSmall : AppSpacing.containerInsideMargin,
+      ),
+      child: SizedBox(
+        height: effectiveHeight,
+        child: Stack(
+          children: [
+            Center(
+              child: Row(
+                mainAxisSize: shrinkWrap ? MainAxisSize.min : MainAxisSize.max,
+                mainAxisAlignment: horizontalAlignment,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: children,
+              ),
+            ),
+            if (disabled)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: borderRadius,
+                    color: disabledColor.withAlpha(150),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

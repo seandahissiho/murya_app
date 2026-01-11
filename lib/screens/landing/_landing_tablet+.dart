@@ -262,7 +262,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
             clipBehavior: Clip.antiAlias,
             child: ConstrainedBox(
               // Give the feedback a reasonable size; it doesn’t have to be perfect
-              constraints: const BoxConstraints(maxWidth: 320),
+              constraints: const BoxConstraints(maxWidth: 1880),
               child: Opacity(opacity: 0.9, child: tile),
             ),
           ),
