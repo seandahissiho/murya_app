@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/components/dropdown.dart';
@@ -127,114 +128,127 @@ class _RankingChartState extends State<RankingChart> {
                       painter.pointOnLine(size, thirdQuartilePercentage, isMobile: isMobile); // #3max/4
                   final userRank = painter.pointOnLine(size, userPercentage, isMobile: isMobile); // user's rank
 
-                  return Stack(
-                    clipBehavior: Clip.none,
+                  return Column(
                     children: [
-                      // The line
-                      CustomPaint(
-                        size: size,
-                        painter: painter,
+                      Container(
+                        color: Colors.red,
+                        height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.containerInsideMargin,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(locale.ranking,
+                                style: GoogleFonts.anton(
+                                  fontSize: isMobile ? 24 : 32,
+                                  color: AppColors.primaryDefault,
+                                  letterSpacing: -0.6,
+                                )),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: AppXDropdown<int>(
+                                controller: TextEditingController(text: options[_detailsLevel]),
+                                items: options.map(
+                                  (level) => DropdownMenuEntry(
+                                    value: options.indexOf(level),
+                                    label: level,
+                                  ),
+                                ),
+                                onSelected: (level) {
+                                  setState(() {
+                                    _detailsLevel = level!;
+                                  });
+                                },
+                                labelInside: null,
+                                autoResize: true,
+                                foregroundColor: AppColors.primaryDefault,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      Expanded(
+                        child: Container(
+                          color: Colors.green,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              // The line
+                              CustomPaint(
+                                size: size,
+                                painter: painter,
+                              ),
 
-                      // First place
-                      Positioned(
-                        left: firstRank.dx,
-                        top: firstRank.dy,
-                        child: const FractionalTranslation(
-                          translation: Offset(-0.5, -0.5),
-                          child: RankingCard(rank: 1),
-                        ),
-                      ),
-                      // First quartile place
-                      if (firstQuartileRanking != null)
-                        Positioned(
-                          left: firstQuartileRank.dx,
-                          top: firstQuartileRank.dy,
-                          child: FractionalTranslation(
-                            translation: const Offset(-0.5, -0.5),
-                            child: RankingCard(
-                              rank: firstQuartileRanking.rank ?? -1,
-                            ),
-                          ),
-                        ),
-                      // Second quartile place
-                      if (secondQuartileRanking != null)
-                        Positioned(
-                          left: secondQuartileRank.dx,
-                          top: secondQuartileRank.dy,
-                          child: FractionalTranslation(
-                            translation: const Offset(-0.5, -0.5),
-                            child: RankingCard(
-                              rank: secondQuartileRanking.rank ?? -1,
-                            ),
-                          ),
-                        ),
-                      // Third quartile place
-                      if (thirdQuartileRanking != null)
-                        Positioned(
-                          left: thirdQuartileRank.dx,
-                          top: thirdQuartileRank.dy,
-                          child: FractionalTranslation(
-                            translation: const Offset(-0.5, -0.5),
-                            child: RankingCard(
-                              rank: thirdQuartileRanking.rank ?? -1,
-                            ),
-                          ),
-                        ),
+                              // First place
+                              Positioned(
+                                left: firstRank.dx,
+                                top: firstRank.dy,
+                                child: const FractionalTranslation(
+                                  translation: Offset(-0.5, -0.5),
+                                  child: RankingCard(rank: 1),
+                                ),
+                              ),
+                              // First quartile place
+                              if (firstQuartileRanking != null)
+                                Positioned(
+                                  left: firstQuartileRank.dx,
+                                  top: firstQuartileRank.dy,
+                                  child: FractionalTranslation(
+                                    translation: const Offset(-0.5, -0.5),
+                                    child: RankingCard(
+                                      rank: firstQuartileRanking.rank ?? -1,
+                                    ),
+                                  ),
+                                ),
+                              // Second quartile place
+                              if (secondQuartileRanking != null)
+                                Positioned(
+                                  left: secondQuartileRank.dx,
+                                  top: secondQuartileRank.dy,
+                                  child: FractionalTranslation(
+                                    translation: const Offset(-0.5, -0.5),
+                                    child: RankingCard(
+                                      rank: secondQuartileRanking.rank ?? -1,
+                                    ),
+                                  ),
+                                ),
+                              // Third quartile place
+                              if (thirdQuartileRanking != null)
+                                Positioned(
+                                  left: thirdQuartileRank.dx,
+                                  top: thirdQuartileRank.dy,
+                                  child: FractionalTranslation(
+                                    translation: const Offset(-0.5, -0.5),
+                                    child: RankingCard(
+                                      rank: thirdQuartileRanking.rank ?? -1,
+                                    ),
+                                  ),
+                                ),
 
-                      // User's place
-                      Positioned(
-                        left: userRank.dx,
-                        top: userRank.dy,
-                        child: FractionalTranslation(
-                          translation: const Offset(-0.5, -0.5), // center card on the point
-                          child: RankingCard(
-                            rank: userRanking?.rank ?? -1,
-                            color: AppColors.primaryFocus,
-                            shadowColor: AppColors.primaryPressed,
-                            imageBorderColor: AppColors.backgroundCard,
-                            textColor: AppColors.textInverted,
+                              // User's place
+                              Positioned(
+                                left: userRank.dx,
+                                top: userRank.dy,
+                                child: FractionalTranslation(
+                                  translation: const Offset(-0.5, -0.5), // center card on the point
+                                  child: RankingCard(
+                                    rank: userRanking?.rank ?? -1,
+                                    color: AppColors.primaryFocus,
+                                    shadowColor: AppColors.primaryPressed,
+                                    imageBorderColor: AppColors.backgroundCard,
+                                    textColor: AppColors.textInverted,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ],
                   );
                 },
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                child: SizedBox(
-                  height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                  width: isMobile ? null : constraints.maxWidth * 0.55,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(locale.ranking, style: theme.textTheme.labelLarge),
-                        AppSpacing.elementMarginBox,
-                        AppXDropdown<int>(
-                          controller: TextEditingController(text: options[_detailsLevel]),
-                          items: options.map(
-                            (level) => DropdownMenuEntry(
-                              value: options.indexOf(level),
-                              label: level,
-                            ),
-                          ),
-                          onSelected: (level) {
-                            setState(() {
-                              _detailsLevel = level!;
-                            });
-                          },
-                          labelInside: null,
-                          autoResize: true,
-                          foregroundColor: AppColors.primaryDefault,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
               ),
             ],
           );
