@@ -18,6 +18,7 @@ class AppModuleWidget extends StatefulWidget {
   final VoidCallback? onCardTap;
   final Widget? content;
   final String? backgroundImage;
+  final Widget? dragHandle;
 
   // final String title;
   // final String subtitle;
@@ -44,6 +45,7 @@ class AppModuleWidget extends StatefulWidget {
     // this.button2OnPressed,
     this.onSizeChanged,
     this.backgroundImage,
+    this.dragHandle,
   });
 
   @override
@@ -347,6 +349,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                     ));
               },
             ),
+            AppSpacing.tinyTinyMarginBox,
             _BentoOption(
               iconPath: AppIcons.bento2_1Path,
               isSelected: widget.module.boxType == AppModuleType.type2_1,
@@ -363,6 +366,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                     ));
               },
             ),
+            AppSpacing.tinyTinyMarginBox,
             _BentoOption(
               iconPath: AppIcons.bento1_2Path,
               isSelected: widget.module.boxType == AppModuleType.type1_2,
@@ -379,6 +383,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                     ));
               },
             ),
+            AppSpacing.tinyTinyMarginBox,
             _BentoOption(
               iconPath: AppIcons.bento2_2Path,
               isSelected: widget.module.boxType == AppModuleType.type2_2,
@@ -397,23 +402,27 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
             ),
           ],
         ),
+        AppSpacing.containerInsideMarginSmallBox,
         Container(
           height: 24,
           width: 1,
           color: AppColors.borderMedium,
         ),
-        _DragHandle(),
+        AppSpacing.containerInsideMarginSmallBox,
+        widget.dragHandle ?? const AppModuleDragHandle(),
       ],
     );
   }
 }
 
-class _DragHandle extends StatefulWidget {
+class AppModuleDragHandle extends StatefulWidget {
+  const AppModuleDragHandle({super.key});
+
   @override
-  State<_DragHandle> createState() => _DragHandleState();
+  State<AppModuleDragHandle> createState() => _AppModuleDragHandleState();
 }
 
-class _DragHandleState extends State<_DragHandle> {
+class _AppModuleDragHandleState extends State<AppModuleDragHandle> {
   bool isHovered = false;
 
   @override

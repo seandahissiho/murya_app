@@ -26,11 +26,13 @@ import 'package:murya/screens/job_details/job_details.dart';
 class JobModuleWidget extends StatefulWidget {
   final Module module;
   final VoidCallback? onSizeChanged;
+  final Widget? dragHandle;
 
   const JobModuleWidget({
     super.key,
     required this.module,
     this.onSizeChanged,
+    this.dragHandle,
   });
 
   @override
@@ -78,12 +80,14 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                       },
                       content: JobModuleContent(userJob: state.userCurrentJob!),
                       onSizeChanged: widget.onSizeChanged,
+                      dragHandle: widget.dragHandle,
                     )
                   : AppModuleWidget(
                       module: widget.module,
                       // backgroundImage: AppImages.homeBox2Path,
                       content: null,
                       onSizeChanged: widget.onSizeChanged,
+                      dragHandle: widget.dragHandle,
                     ),
             );
           },

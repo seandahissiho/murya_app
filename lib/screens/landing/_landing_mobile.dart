@@ -12,6 +12,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
   final GlobalKey _footerWrapKey = GlobalKey();
   double mainBodyHey = 0;
   double footerHey = 0;
+  int? _draggingIndex;
 
   final Set<int> concats = {};
 
@@ -198,7 +199,30 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
   }
 
   Widget _test(Module module, int i) {
-    final tile = _getTileForModule(module);
+    final feedbackTile = _getTileForModule(
+      module,
+      dragHandle: const AppModuleDragHandle(),
+    );
+    final dragHandle = LongPressDraggable<int>(
+      data: i,
+      dragAnchorStrategy: pointerDragAnchorStrategy,
+      onDragStarted: () => setState(() => _draggingIndex = i),
+      onDragCompleted: () => setState(() => _draggingIndex = null),
+      onDragEnd: (_) => setState(() => _draggingIndex = null),
+      onDraggableCanceled: (_, __) => setState(() => _draggingIndex = null),
+      feedback: Material(
+        elevation: 8,
+        borderRadius: BorderRadius.circular(12),
+        clipBehavior: Clip.antiAlias,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 320),
+          child: Opacity(opacity: 0.9, child: feedbackTile),
+        ),
+      ),
+      childWhenDragging: const AppModuleDragHandle(),
+      child: const AppModuleDragHandle(),
+    );
+    final tile = _getTileForModule(module, dragHandle: dragHandle);
     return DragTarget<int>(
       // We drag by passing the source index as "data"
       onWillAcceptWithDetails: (_) => true,
@@ -207,6 +231,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
         if (fromIndex.data != i) {
           context.read<ModulesBloc>().add(ReorderModules(from: fromIndex.data, to: i));
         }
+        setState(() => _draggingIndex = null);
       },
       builder: (context, candidate, rejected) {
         // Optional hover/highlight effect while dragging over this slot
@@ -222,37 +247,22 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           child: tile,
         );
 
-        // Make the tile draggable on long-press
-        return LongPressDraggable<int>(
-          data: i,
-          // <— we carry the index of this module
-          dragAnchorStrategy: pointerDragAnchorStrategy,
-          // smoother grab
-          feedback: Material(
-            elevation: 8,
-            borderRadius: BorderRadius.circular(12),
-            clipBehavior: Clip.antiAlias,
-            child: ConstrainedBox(
-              // Give the feedback a reasonable size; it doesn’t have to be perfect
-              constraints: const BoxConstraints(maxWidth: 320),
-              child: Opacity(opacity: 0.9, child: tile),
-            ),
-          ),
-          // Keep tap working: Long-press starts drag; normal tap still hits child
-          childWhenDragging: Opacity(opacity: 0.25, child: tile),
-          child: tile,
-        );
+        if (_draggingIndex == i) {
+          return Opacity(opacity: 0.25, child: decorated);
+        }
+        return decorated;
       },
     );
   }
 
-  _getTileForModule(Module module) {
+  _getTileForModule(Module module, {Widget? dragHandle}) {
     switch (module.id) {
       case 'account':
         return AccountModuleWidget(
           // key: ValueKey('module-${module.id}'),
           module: module,
           onSizeChanged: onSizeChanged,
+          dragHandle: dragHandle,
         );
       case 'job':
         return JobModuleWidget(
@@ -260,18 +270,21 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           // key: ValueKey('module-${module.id}'),
           module: module,
           onSizeChanged: onSizeChanged,
+          dragHandle: dragHandle,
         );
       case 'ressources':
         return RessourcesModuleWidget(
           // key: ValueKey('module-${module.id}'),
           module: module,
           onSizeChanged: onSizeChanged,
+          dragHandle: dragHandle,
         );
       default:
         return AppModuleWidget(
           key: ValueKey('module-${module.id}'),
           module: module,
           onSizeChanged: onSizeChanged,
+          dragHandle: dragHandle,
         );
     }
   }

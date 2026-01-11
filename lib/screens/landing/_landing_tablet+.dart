@@ -13,6 +13,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
   double mainBodyHey = 0;
   double footerHey = 0;
   var safeAreaPadding = EdgeInsets.zero;
+  int? _draggingIndex;
 
   final Set<int> concats = {};
 
@@ -226,7 +227,30 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
   }
 
   Widget _test(Module module, int i) {
-    final tile = _getTileForModule(module);
+    final feedbackTile = _getTileForModule(
+      module,
+      dragHandle: const AppModuleDragHandle(),
+    );
+    final dragHandle = LongPressDraggable<int>(
+      data: i,
+      dragAnchorStrategy: pointerDragAnchorStrategy,
+      onDragStarted: () => setState(() => _draggingIndex = i),
+      onDragCompleted: () => setState(() => _draggingIndex = null),
+      onDragEnd: (_) => setState(() => _draggingIndex = null),
+      onDraggableCanceled: (_, __) => setState(() => _draggingIndex = null),
+      feedback: Material(
+        elevation: 3,
+        borderRadius: AppRadius.large,
+        clipBehavior: Clip.antiAlias,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1880),
+          child: Opacity(opacity: 0.9, child: feedbackTile),
+        ),
+      ),
+      childWhenDragging: const Opacity(opacity: 0.25, child: AppModuleDragHandle()),
+      child: const AppModuleDragHandle(),
+    );
+    final tile = _getTileForModule(module, dragHandle: dragHandle);
     return DragTarget<int>(
       // We drag by passing the source index as "data"
       onWillAcceptWithDetails: (_) => true,
@@ -235,6 +259,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
         if (fromIndex.data != i) {
           context.read<ModulesBloc>().add(ReorderModules(from: fromIndex.data, to: i));
         }
+        setState(() => _draggingIndex = null);
       },
       builder: (context, candidate, rejected) {
         // Optional hover/highlight effect while dragging over this slot
@@ -243,59 +268,47 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           duration: const Duration(milliseconds: 120),
           foregroundDecoration: isActive
               ? BoxDecoration(
-                  border: Border.all(width: 2),
-                  borderRadius: AppRadius.borderRadius20,
+                  border: Border.all(width: 2, color: AppColors.borderMedium),
+                  borderRadius: AppRadius.large,
                 )
               : null,
           child: tile,
         );
 
-        // Make the tile draggable on long-press
-        return LongPressDraggable<int>(
-          data: i,
-          // <— we carry the index of this module
-          dragAnchorStrategy: pointerDragAnchorStrategy,
-          // smoother grab
-          feedback: Material(
-            elevation: 8,
-            borderRadius: BorderRadius.circular(12),
-            clipBehavior: Clip.antiAlias,
-            child: ConstrainedBox(
-              // Give the feedback a reasonable size; it doesn’t have to be perfect
-              constraints: const BoxConstraints(maxWidth: 1880),
-              child: Opacity(opacity: 0.9, child: tile),
-            ),
-          ),
-          // Keep tap working: Long-press starts drag; normal tap still hits child
-          childWhenDragging: Opacity(opacity: 0.25, child: tile),
-          child: tile,
-        );
+        if (_draggingIndex == i) {
+          return Opacity(opacity: 0.25, child: decorated);
+        }
+        return decorated;
       },
     );
   }
 
-  _getTileForModule(Module module) {
+  _getTileForModule(Module module, {Widget? dragHandle}) {
     switch (module.id) {
       case 'account':
         return AccountModuleWidget(
           module: module,
           onSizeChanged: onSizeChanged,
+          dragHandle: dragHandle,
         );
       case 'job':
         return JobModuleWidget(
           module: module,
           onSizeChanged: onSizeChanged,
+          dragHandle: dragHandle,
         );
       case 'ressources':
         return RessourcesModuleWidget(
           module: module,
           onSizeChanged: onSizeChanged,
+          dragHandle: dragHandle,
         );
       default:
         return AppModuleWidget(
           key: ValueKey('module-${module.id}'),
           module: module,
           onSizeChanged: onSizeChanged,
+          dragHandle: dragHandle,
         );
     }
   }

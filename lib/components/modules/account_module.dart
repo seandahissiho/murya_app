@@ -9,11 +9,13 @@ import 'package:murya/models/module.dart';
 class AccountModuleWidget extends StatefulWidget {
   final Module module;
   final VoidCallback? onSizeChanged;
+  final Widget? dragHandle;
 
   const AccountModuleWidget({
     super.key,
     required this.module,
     this.onSizeChanged,
+    this.dragHandle,
   });
 
   @override
@@ -38,6 +40,7 @@ class _AccountModuleWidgetState extends State<AccountModuleWidget> {
               module: widget.module,
               content: state.user.isRegistered ? ProfileModuleContent(user: state.user) : null,
               onSizeChanged: widget.onSizeChanged,
+              dragHandle: widget.dragHandle,
             );
           },
         );
