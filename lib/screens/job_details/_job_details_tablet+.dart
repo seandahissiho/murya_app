@@ -259,11 +259,14 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                     child: SingleChildScrollView(
                                       child: Column(
                                         children: [
-                                          if (_userJob.isNotEmpty && _job.id.isNotEmptyOrNull) ...[
-                                            _rankingBuilder(locale, theme),
-                                            AppSpacing.elementMarginBox,
-                                          ],
                                           _diagramBuilder(locale, theme, options),
+                                          if (_userJob.isNotEmpty &&
+                                              _job.id.isNotEmptyOrNull &&
+                                              _userJob.jobId == _job.id &&
+                                              _userJob.completedQuizzes > -1) ...[
+                                            AppSpacing.groupMarginBox,
+                                            _rankingBuilder(locale, theme),
+                                          ],
                                         ],
                                       ),
                                     ),
@@ -328,9 +331,45 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // AppSpacing.sectionMarginBox,
-            // AppSpacing.sectionMarginBox,
-            // AppSpacing.sectionMarginBox,
+            Padding(
+              padding: const EdgeInsets.only(
+                top: AppSpacing.containerInsideMargin,
+                left: AppSpacing.containerInsideMargin - AppSpacing.elementMargin,
+                right: AppSpacing.containerInsideMargin - AppSpacing.elementMargin,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      locale.skillsDiagramTitle,
+                      style: GoogleFonts.anton(
+                        fontSize: 32,
+                        color: AppColors.primaryDefault,
+                        letterSpacing: -0.6,
+                      ),
+                    ),
+                  ),
+                  AppXDropdown<int>(
+                    controller: TextEditingController(text: options[_detailsLevel.index]),
+                    items: options.map((level) => DropdownMenuEntry(
+                          value: options.indexOf(level),
+                          label: level,
+                        )),
+                    onSelected: (level) {
+                      setState(() {
+                        _detailsLevel = JobProgressionLevel.values[level!];
+                      });
+                    },
+                    labelInside: null,
+                    autoResize: true,
+                    foregroundColor: AppColors.primaryDefault,
+                  ),
+                ],
+              ),
+            ),
+            AppSpacing.groupMarginBox,
             SizedBox(
               height: constraints.maxWidth,
               width: constraints.maxWidth,
@@ -339,40 +378,6 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                 defaultValues: _job.kiviatValues(_detailsLevel),
                 userValues: _userJobCompetencyProfile.kiviatValues,
               ),
-            ),
-            AppSpacing.groupMarginBox,
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              // spacing: AppSpacing.elementMargin,
-              // runSpacing: AppSpacing.groupMargin,
-              children: [
-                Flexible(
-                  child: Text(
-                    locale.skillsDiagramTitle,
-                    style: theme.textTheme.bodyLarge!
-                        .copyWith(color: AppColors.primaryDefault, fontWeight: FontWeight.w700),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                AppSpacing.groupMarginBox,
-                AppXDropdown<int>(
-                  controller: TextEditingController(text: options[_detailsLevel.index]),
-                  items: options.map((level) => DropdownMenuEntry(
-                        value: options.indexOf(level),
-                        label: level,
-                      )),
-                  onSelected: (level) {
-                    setState(() {
-                      _detailsLevel = JobProgressionLevel.values[level!];
-                    });
-                  },
-                  labelInside: null,
-                  autoResize: true,
-                  foregroundColor: AppColors.primaryDefault,
-                ),
-              ],
             ),
           ],
         );

@@ -245,7 +245,7 @@ abstract class AppLocalizations {
   /// Titre du diagramme des compétences
   ///
   /// In fr, this message translates to:
-  /// **'Diagramme des compétences'**
+  /// **'Diagramme'**
   String get skillsDiagramTitle;
 
   /// Niveau de compétence facile
