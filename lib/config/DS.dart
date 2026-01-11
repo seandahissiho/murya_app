@@ -632,8 +632,8 @@ class AppDropdownMenuThemeData {
     border: baseInputBorder,
     alignLabelWithHint: false,
     contentPadding: const EdgeInsets.only(
-      left: 24,
-      right: 16,
+      left: AppSpacing.elementMargin + AppSpacing.tinyMargin,
+      right: AppSpacing.elementMargin + AppSpacing.tinyMargin,
       top: 0,
       bottom: 0,
     ),

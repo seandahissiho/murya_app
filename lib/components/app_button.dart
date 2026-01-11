@@ -19,6 +19,7 @@ class AppXButton extends StatefulWidget {
     this.rightIcon,
     this.rightIconPath,
     this.disabled = false,
+    this.shadowColor,
     this.bgColor,
     this.fgColor,
     this.borderColor,
@@ -52,6 +53,7 @@ class AppXButton extends StatefulWidget {
   final bool disabled;
   final Color? bgColor;
   final Color? fgColor;
+  final Color? shadowColor;
   final Color? borderColor;
   final Color? hoverColor;
   final Color? onPressedColor;
@@ -344,7 +346,8 @@ class _AppXButtonState extends State<AppXButton> {
       }
     }
 
-    final hardShadowColor = theme.elevatedButtonTheme.style?.shadowColor?.resolve(states) ?? theme.shadowColor;
+    final hardShadowColor =
+        widget.shadowColor ?? theme.elevatedButtonTheme.style?.shadowColor?.resolve(states) ?? theme.shadowColor;
 
     final List<BoxShadow> shadows = <BoxShadow>[
       if (_focused && !_isDisabled)
@@ -460,6 +463,7 @@ class _AppXButtonState extends State<AppXButton> {
                             effectiveHeight: effectiveHeight,
                             maxWidth: maxWidth,
                             shrinkWrap: widget.shrinkWrap,
+                            removePaddings: widget.removePaddings,
                             horizontalAlignment: widget.horizontalAlignment,
                             children: children,
                             disabled: widget.disabled,
@@ -472,6 +476,7 @@ class _AppXButtonState extends State<AppXButton> {
                           effectiveHeight: effectiveHeight,
                           maxWidth: maxWidth,
                           shrinkWrap: widget.shrinkWrap,
+                          removePaddings: widget.removePaddings,
                           horizontalAlignment: widget.horizontalAlignment,
                           children: children,
                           disabled: widget.disabled,
@@ -512,6 +517,7 @@ class _ButtonBody extends StatelessWidget {
     required this.effectiveHeight,
     required this.maxWidth,
     required this.shrinkWrap,
+    required this.removePaddings,
     required this.horizontalAlignment,
     required this.children,
     required this.disabled,
@@ -523,6 +529,7 @@ class _ButtonBody extends StatelessWidget {
   final double effectiveHeight;
   final double maxWidth;
   final bool shrinkWrap;
+  final bool removePaddings;
   final MainAxisAlignment horizontalAlignment;
   final List<Widget> children;
   final bool disabled;
@@ -543,7 +550,9 @@ class _ButtonBody extends StatelessWidget {
         maxWidth: shrinkWrap ? double.infinity : maxWidth,
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: shrinkWrap ? AppSpacing.containerInsideMarginSmall : AppSpacing.containerInsideMargin,
+        horizontal: shrinkWrap
+            ? (removePaddings ? 0 : AppSpacing.containerInsideMarginSmall)
+            : AppSpacing.containerInsideMargin,
       ),
       child: SizedBox(
         height: effectiveHeight,

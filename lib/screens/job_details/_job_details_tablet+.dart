@@ -149,16 +149,37 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                               //   ),
                               // ),
                               const Spacer(),
-                              GestureDetector(
-                                onTap: () {
+                              AppXButton(
+                                onPressed: () {
                                   navigateToPath(context, to: AppRoutes.landing);
                                 },
-                                child: SvgPicture.asset(
-                                  AppIcons.searchBarCloseIconPath,
-                                  width: tabletAndAboveCTAHeight,
-                                  height: tabletAndAboveCTAHeight,
+                                isLoading: false,
+                                // leftIconPath: AppIcons.searchBarCloseIconPath,
+                                removePaddings: true,
+                                leftIcon: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: SvgPicture.asset(
+                                    AppIcons.searchBarCloseIconPath,
+                                    width: 16,
+                                    height: 16,
+                                  ),
                                 ),
+                                shadowColor: AppColors.borderMedium,
+                                bgColor: AppColors.backgroundColor,
+                                borderColor: AppColors.borderMedium,
+                                hoverColor: AppColors.backgroundColor,
+                                onPressedColor: AppColors.backgroundColor,
                               ),
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     navigateToPath(context, to: AppRoutes.landing);
+                              //   },
+                              //   child: SvgPicture.asset(
+                              //     AppIcons.searchBarCloseIconPath,
+                              //     width: tabletAndAboveCTAHeight,
+                              //     height: tabletAndAboveCTAHeight,
+                              //   ),
+                              // ),
                             ],
                           ),
                           AppSpacing.sectionMarginBox,
@@ -362,8 +383,9 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                         _detailsLevel = JobProgressionLevel.values[level!];
                       });
                     },
-                    labelInside: null,
-                    autoResize: true,
+                    // labelInside: null,
+                    shrinkWrap: false,
+                    maxDropdownWidth: 150,
                     foregroundColor: AppColors.primaryDefault,
                   ),
                 ],
