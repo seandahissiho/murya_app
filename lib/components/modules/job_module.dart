@@ -27,12 +27,14 @@ class JobModuleWidget extends StatefulWidget {
   final Module module;
   final VoidCallback? onSizeChanged;
   final Widget? dragHandle;
+  final GlobalKey? tileKey;
 
   const JobModuleWidget({
     super.key,
     required this.module,
     this.onSizeChanged,
     this.dragHandle,
+    this.tileKey,
   });
 
   @override
@@ -81,6 +83,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                       content: JobModuleContent(userJob: state.userCurrentJob!),
                       onSizeChanged: widget.onSizeChanged,
                       dragHandle: widget.dragHandle,
+                      tileKey: widget.tileKey,
                     )
                   : AppModuleWidget(
                       module: widget.module,
@@ -88,6 +91,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                       content: null,
                       onSizeChanged: widget.onSizeChanged,
                       dragHandle: widget.dragHandle,
+                      tileKey: widget.tileKey,
                     ),
             );
           },

@@ -19,6 +19,7 @@ class AppModuleWidget extends StatefulWidget {
   final Widget? content;
   final String? backgroundImage;
   final Widget? dragHandle;
+  final GlobalKey? tileKey;
 
   // final String title;
   // final String subtitle;
@@ -46,6 +47,7 @@ class AppModuleWidget extends StatefulWidget {
     this.onSizeChanged,
     this.backgroundImage,
     this.dragHandle,
+    this.tileKey,
   });
 
   @override
@@ -134,192 +136,196 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     final VoidCallback? secondaryAction = widget.module.button2OnPressed(context);
     final VoidCallback? cardTapAction = widget.onCardTap ?? primaryAction;
 
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
-      elevation: .5,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 800),
-        curve: Curves.easeInOut,
-        width: width,
-        height: height,
-        onEnd: () {
-          hide = false;
-          setState(() {});
-        },
-        decoration: BoxDecoration(
-          color: AppColors.backgroundColor,
-          image: widget.backgroundImage != null
-              ? DecorationImage(
-                  image: AssetImage(widget.backgroundImage!),
-                  fit: BoxFit.cover,
-                )
-              : null,
+    return Container(
+      key: widget.tileKey,
+      child: Card(
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: AppColors.borderMedium,
-            width: 1,
-          ),
         ),
-        child: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                top: appSize.screenWidth < 1140
-                    ? AppSpacing.containerInsideMargin
-                    : AppSpacing.containerInsideMarginSmall,
-                left: appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
-                right: appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
-                bottom:
-                    appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
-              ),
-              child: widget.content ??
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            // width: constraints.maxWidth,
-                            height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                          ),
-                          Expanded(
-                            child: InkWell(
-                              onTap: cardTapAction,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (hide == false) ...[
-                                    Flexible(
-                                      child: SizedBox(
-                                        width: constraints.maxWidth * 0.85,
-                                        child: AutoSizeText(
-                                          widget.module.title(context),
-                                          maxLines: 2,
+        elevation: .5,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOut,
+          width: width,
+          height: height,
+          onEnd: () {
+            hide = false;
+            setState(() {});
+          },
+          decoration: BoxDecoration(
+            color: AppColors.backgroundColor,
+            image: widget.backgroundImage != null
+                ? DecorationImage(
+                    image: AssetImage(widget.backgroundImage!),
+                    fit: BoxFit.cover,
+                  )
+                : null,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: AppColors.borderMedium,
+              width: 1,
+            ),
+          ),
+          child: Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: appSize.screenWidth < 1140
+                      ? AppSpacing.containerInsideMargin
+                      : AppSpacing.containerInsideMarginSmall,
+                  left: appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
+                  right:
+                      appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
+                  bottom:
+                      appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
+                ),
+                child: widget.content ??
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              // width: constraints.maxWidth,
+                              height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: cardTapAction,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (hide == false) ...[
+                                      Flexible(
+                                        child: SizedBox(
+                                          width: constraints.maxWidth * 0.85,
+                                          child: AutoSizeText(
+                                            widget.module.title(context),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.anton(
+                                              color: AppColors.textPrimary,
+                                              fontSize: isMobile
+                                                  ? theme.textTheme.headlineSmall!.fontSize!
+                                                  : theme.textTheme.displaySmall!.fontSize!,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                            minFontSize: theme.textTheme.bodyLarge!.fontSize!,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                    if (hide == false && constraints.maxHeight >= 145) ...[
+                                      AppSpacing.elementMarginBox,
+                                      SizedBox(
+                                        width: constraints.maxWidth,
+                                        child: Text(
+                                          widget.module.subtitle(context),
+                                          maxLines: 4,
                                           overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.anton(
+                                          style: GoogleFonts.inter(
                                             color: AppColors.textPrimary,
                                             fontSize: isMobile
-                                                ? theme.textTheme.headlineSmall!.fontSize!
-                                                : theme.textTheme.displaySmall!.fontSize!,
-                                            fontWeight: FontWeight.w700,
+                                                ? theme.textTheme.bodyMedium!.fontSize
+                                                : theme.textTheme.bodyLarge!.fontSize,
+                                            fontWeight: FontWeight.w400,
                                           ),
-                                          minFontSize: theme.textTheme.bodyLarge!.fontSize!,
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ],
-                                  if (hide == false && constraints.maxHeight >= 145) ...[
-                                    AppSpacing.elementMarginBox,
-                                    SizedBox(
-                                      width: constraints.maxWidth,
-                                      child: Text(
-                                        widget.module.subtitle(context),
-                                        maxLines: 4,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.inter(
-                                          color: AppColors.textPrimary,
-                                          fontSize: isMobile
-                                              ? theme.textTheme.bodyMedium!.fontSize
-                                              : theme.textTheme.bodyLarge!.fontSize,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ],
+                                ),
                               ),
                             ),
-                          ),
-                          if (hide == false && constraints.maxHeight >= 163 + (isMobile ? 0 : 36)) ...[
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppSpacing.groupMarginBox,
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: size_1W,
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    // runSpacing: AppSpacing.elementMargin,
-                                    // spacing: AppSpacing.elementMargin,
-                                    children: [
-                                      if (widget.module.button1Text(context) != null) ...[
-                                        Flexible(
-                                          child: AppXButton(
-                                            shrinkWrap: false,
-                                            onPressed: primaryAction,
-                                            isLoading: false,
-                                            text: widget.module.button1Text(context) ?? '',
-                                            // borderColor: AppColors.whiteSwatch,
-                                            // bgColor: AppColors.whiteSwatch,
-                                            // fgColor: AppColors.primaryDefault,
+                            if (hide == false && constraints.maxHeight >= 163 + (isMobile ? 0 : 36)) ...[
+                              Column(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AppSpacing.groupMarginBox,
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: size_1W,
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      // runSpacing: AppSpacing.elementMargin,
+                                      // spacing: AppSpacing.elementMargin,
+                                      children: [
+                                        if (widget.module.button1Text(context) != null) ...[
+                                          Flexible(
+                                            child: AppXButton(
+                                              shrinkWrap: false,
+                                              onPressed: primaryAction,
+                                              isLoading: false,
+                                              text: widget.module.button1Text(context) ?? '',
+                                              // borderColor: AppColors.whiteSwatch,
+                                              // bgColor: AppColors.whiteSwatch,
+                                              // fgColor: AppColors.primaryDefault,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                      if (widget.module.button2Text(context) != null) ...[
-                                        AppSpacing.groupMarginBox,
-                                        Flexible(
-                                          child: AppXButton(
-                                            shrinkWrap: false,
-                                            onPressed: secondaryAction,
-                                            isLoading: false,
-                                            text: widget.module.button2Text(context) ?? '',
-                                            // bgColor: Colors.transparent,
-                                            // borderColor: AppColors.whiteSwatch,
+                                        ],
+                                        if (widget.module.button2Text(context) != null) ...[
+                                          AppSpacing.groupMarginBox,
+                                          Flexible(
+                                            child: AppXButton(
+                                              shrinkWrap: false,
+                                              onPressed: secondaryAction,
+                                              isLoading: false,
+                                              text: widget.module.button2Text(context) ?? '',
+                                              // bgColor: Colors.transparent,
+                                              // borderColor: AppColors.whiteSwatch,
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ],
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            ],
                           ],
-                        ],
-                      );
-                    },
-                  ),
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              child: hide
-                  ? Container()
-                  : Container(
-                      width: width,
-                      height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFE5E3D7),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
-                        ),
-                        border: Border(
-                          right: BorderSide(
-                            color: AppColors.borderMedium,
-                            width: 1.125,
+                        );
+                      },
+                    ),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                child: hide
+                    ? Container()
+                    : Container(
+                        width: width,
+                        height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFE5E3D7),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24),
+                          ),
+                          border: Border(
+                            right: BorderSide(
+                              color: AppColors.borderMedium,
+                              width: 1.125,
+                            ),
                           ),
                         ),
+                        padding: EdgeInsets.only(
+                          right: AppSpacing.groupMargin,
+                          left: AppSpacing.groupMargin,
+                          top: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
+                          bottom: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
+                        ),
+                        child: _customisationRow(),
                       ),
-                      padding: EdgeInsets.only(
-                        right: AppSpacing.groupMargin,
-                        left: AppSpacing.groupMargin,
-                        top: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
-                        bottom: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
-                      ),
-                      child: _customisationRow(),
-                    ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
