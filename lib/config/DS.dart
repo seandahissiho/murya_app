@@ -138,6 +138,56 @@ class AppRadius {
 }
 
 /// Murya – Foundations → Colors
+class AppButtonColors {
+  // Primary
+  static const Color primaryTextDefault = Color(0xFFFFFFFF);
+  static const Color primarySurfaceDefault = Color(0xFF6F3FF5);
+  static const Color primaryBorderDefault = Color(0xFF1F1633);
+  static const Color primaryShadowDefault = Color(0xFF4B22B5);
+
+  static const Color primarySurfaceHover = Color(0xFF825AF7);
+  static const Color primarySurfacePressed = Color(0xFF6F3FF5);
+
+  static const Color primaryTextDisabled = Color(0xFFA0A0A0);
+  static const Color primarySurfaceDisabled = Color(0xFFB8B8B8);
+
+  // Secondary
+  static const Color secondaryTextDefault = Color(0xFF1F1633);
+  static const Color secondarySurfaceDefault = Color(0xFFF4F3EC);
+  static const Color secondaryBorderDefault = Color(0xFFD8D5D1);
+  static const Color secondaryShadowDefault = Color(0xFFD8D5D1);
+
+  static const Color secondarySurfaceHover = Color(0xFFF4F6FF);
+  static const Color secondarySurfacePressed = Color(0xFFF4F3EC);
+  static const Color secondaryBorderFocus = Color(0x572B7FFF);
+
+  static const Color secondaryTextDisabled = Color(0xFFA3A3A3);
+  static const Color secondarySurfaceDisabled = Color(0xFFF5F5F5);
+  static const Color secondaryBorderDisabled = Color(0xFFC0C0C0);
+
+  // Tertiary
+  static const Color tertiaryTextDefault = Color(0xFF5E5873);
+  static const Color tertiarySurfaceDefault = Color(0x00FFFFFF);
+
+  static const Color tertiaryTextHover = Color(0xFF1F1633);
+  static const Color tertiarySurfaceHover = Color(0xFFE5E3D7);
+
+  static const Color tertiaryTextPressed = Color(0xFF1F1633);
+  static const Color tertiarySurfacePressed = Color(0xFFD4D4D4);
+
+  static const Color tertiaryTextDisabled = Color(0xFFA0A0A0);
+  static const Color tertiarySurfaceDisabled = Color(0x00FFFFFF);
+
+  // Destructive
+  static const Color destructiveSurfaceDefault = Color(0xFFFB2C36);
+  static const Color destructiveSurfaceHover = Color(0xFFFF6B73);
+  static const Color destructiveShadowHover = Color(0xFF1F1633);
+
+  static const Color destructiveTextDisabled = Color(0xFFFFB3B3);
+  static const Color destructiveSurfaceDisabled = Color(0xFFFFE5E5);
+  static const Color destructiveBorderDisabled = Color(0xFFFFB3B3);
+}
+
 class AppColors {
   static Color backgroundColor = const Color(0XFFF4F3EC);
 
@@ -300,64 +350,39 @@ class AppColors {
 }
 
 class AppElevatedButtonStyle {
-  static WidgetStateProperty<Color> foregroundColor = WidgetStateProperty.all<Color>(AppColors.primaryDefault);
+  static WidgetStateProperty<Color> foregroundColor = WidgetStateProperty.resolveWith<Color>((states) {
+    if (states.contains(WidgetState.disabled)) {
+      return AppButtonColors.primaryTextDisabled;
+    }
+    return AppButtonColors.primaryTextDefault;
+  });
 
   static WidgetStateProperty<Color> backgroundColor = WidgetStateProperty.resolveWith<Color>(
     (states) {
       if (states.contains(WidgetState.disabled)) {
-        return AppColors.primaryDefault;
+        return AppButtonColors.primarySurfaceDisabled;
       }
-      return AppColors.primaryDefault;
-    },
-  );
-
-  static WidgetStateProperty<Color> overlayColor = WidgetStateProperty.resolveWith<Color>(
-    (states) {
       if (states.contains(WidgetState.pressed)) {
-        return AppColors.primary.shade400;
+        return AppButtonColors.primarySurfacePressed;
       }
       if (states.contains(WidgetState.hovered)) {
-        return AppColors.primary.shade300;
+        return AppButtonColors.primarySurfaceHover;
       }
-      if (states.contains(WidgetState.focused)) {
-        return AppColors.primary.shade400;
-      }
-      return AppColors.primary.shade500;
+      return AppButtonColors.primarySurfaceDefault;
     },
   );
 
-  static WidgetStateProperty<Color> shadowColor = WidgetStateProperty.resolveWith<Color>(
-    (states) {
-      // if (states.contains(WidgetState.pressed)) {
-      //   return AppColors.primary.shade500;
-      // }
-      // if (states.contains(WidgetState.disabled)) {
-      //   return AppColors.primary.shade50;
-      // }
-      // if (states.contains(WidgetState.hovered)) {
-      //   return AppColors.primary.shade100;
-      // }
-      // if (states.contains(WidgetState.focused)) {
-      //   return AppColors.primary.shade600;
-      // }
-      return AppColors.primaryDefault;
-    },
-  );
+  static WidgetStateProperty<Color> overlayColor = WidgetStateProperty.all(Colors.transparent);
 
-  static WidgetStateProperty<Color> surfaceTintColor = WidgetStateProperty.resolveWith<Color>(
-    (states) {
-      // if (states.contains(WidgetState.pressed)) {
-      //   return AppColors.primary.shade500;
-      // }
-      return AppColors.primaryDefault;
-    },
-  );
+  static WidgetStateProperty<Color> shadowColor = WidgetStateProperty.all(AppButtonColors.primaryShadowDefault);
+
+  static WidgetStateProperty<Color> surfaceTintColor = WidgetStateProperty.all(Colors.transparent);
 
   static WidgetStateProperty<BorderSide> side = WidgetStateProperty.resolveWith((states) {
-    if (states.contains(WidgetState.pressed)) {
-      return BorderSide(color: AppColors.primary.shade100, width: 2);
-    }
-    return BorderSide.none;
+    return const BorderSide(
+      color: AppButtonColors.primaryBorderDefault,
+      width: 1,
+    );
   });
 
   static WidgetStateProperty<TextStyle?>? textStyle;
@@ -370,13 +395,11 @@ class AppElevatedButtonStyle {
   );
   static WidgetStateProperty<Size>? minimumSize;
 
-  // = WidgetStateProperty.all<Size>(const Size(0, 40));
   static WidgetStateProperty<Size>? fixedSize =
       WidgetStateProperty.resolveWith<Size>((states) => const Size.fromHeight(mobileCTAHeight));
 
   static WidgetStateProperty<Size>? maximumSize;
 
-  // = WidgetStateProperty.all<Size>(const Size.fromHeight(40));
   static WidgetStateProperty<Color> iconColor = WidgetStateProperty.resolveWith((states) {
     return AppColors.whiteSwatch;
   });

@@ -263,13 +263,12 @@ class Module {
                     AppSpacing.tinyTinyMarginBox,
                     Text(
                       locale.popup_job_selection_technician_subtitle,
-                      style: theme.textTheme.bodyLarge
-                          ?.copyWith(color: AppColors.textInverted),
+                      style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textInverted),
                       textAlign: TextAlign.start,
                     ),
                     AppSpacing.containerInsideMarginBox,
                     AppXButton(
-                      autoResize: false,
+                      shrinkWrap: false,
                       bgColor: AppColors.textInverted,
                       fgColor: AppColors.primaryDefault,
                       maxWidth: double.infinity,
@@ -315,8 +314,7 @@ class Module {
             if (value == true) {
               final jobId = context.read<JobBloc>().jobs.firstOrNull?.id!;
               if (jobId != null) {
-                navigateToPath(context,
-                    to: AppRoutes.jobDetails.replaceAll(':id', jobId));
+                navigateToPath(context, to: AppRoutes.jobDetails.replaceAll(':id', jobId));
               }
             }
           });

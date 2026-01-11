@@ -62,7 +62,7 @@ Future<T?> displayPopUp<T>({
                                 },
                                 isLoading: false,
                                 disabled: !okEnabled,
-                                autoResize: false,
+                                shrinkWrap: false,
                                 text: okText,
                               ),
                             ),
@@ -75,7 +75,7 @@ Future<T?> displayPopUp<T>({
                                   },
                                   isLoading: false,
                                   disabled: !cancelEnabled,
-                                  autoResize: false,
+                                  shrinkWrap: false,
                                   text: cancelText,
                                   bgColor: AppColors.whiteSwatch,
                                   borderColor: AppColors.primary.shade200,
@@ -123,7 +123,7 @@ Future<T?> displayPopUp<T>({
                           children: [
                             if (cancelText != null) ...[
                               AppXButton(
-                                autoResize: false,
+                                shrinkWrap: false,
                                 maxWidth: constraints.maxWidth / 2 - AppSpacing.elementMargin * 2,
                                 onPressed: () {
                                   Navigator.of(context).pop(false);
@@ -137,7 +137,7 @@ Future<T?> displayPopUp<T>({
                               AppSpacing.elementMarginBox,
                             ],
                             AppXButton(
-                              autoResize: false,
+                              shrinkWrap: false,
                               maxWidth: constraints.maxWidth / 2 - AppSpacing.elementMargin * 2,
                               onPressed: () {
                                 Navigator.of(context).pop(true);

@@ -194,7 +194,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                   text: nextQuizAvailableIn == null
                       ? locale.evaluateSkills
                       : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
-                  autoResize: false,
+                  shrinkWrap: false,
                 ),
                 AppSpacing.containerInsideMarginBox,
                 Expanded(

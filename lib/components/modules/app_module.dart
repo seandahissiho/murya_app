@@ -3,10 +3,13 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
+import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/config/DS.dart';
+import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/module.dart';
 
@@ -65,7 +68,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 2) / 2;
       return calculatedSize;
     } else {
-      final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 6) / 3.06;
+      final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 6) / 3.12;
       return calculatedSize;
     }
   }
@@ -133,7 +136,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
       ),
-      elevation: 1.5,
+      elevation: .5,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 800),
         curve: Curves.easeInOut,
@@ -250,13 +253,13 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                                       if (widget.module.button1Text(context) != null) ...[
                                         Flexible(
                                           child: AppXButton(
-                                            autoResize: false,
+                                            shrinkWrap: false,
                                             onPressed: primaryAction,
                                             isLoading: false,
                                             text: widget.module.button1Text(context) ?? '',
-                                            borderColor: AppColors.whiteSwatch,
-                                            bgColor: AppColors.whiteSwatch,
-                                            fgColor: AppColors.primaryDefault,
+                                            // borderColor: AppColors.whiteSwatch,
+                                            // bgColor: AppColors.whiteSwatch,
+                                            // fgColor: AppColors.primaryDefault,
                                           ),
                                         ),
                                       ],
@@ -264,12 +267,12 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                                         AppSpacing.groupMarginBox,
                                         Flexible(
                                           child: AppXButton(
-                                            autoResize: false,
+                                            shrinkWrap: false,
                                             onPressed: secondaryAction,
                                             isLoading: false,
                                             text: widget.module.button2Text(context) ?? '',
-                                            bgColor: Colors.transparent,
-                                            borderColor: AppColors.whiteSwatch,
+                                            // bgColor: Colors.transparent,
+                                            // borderColor: AppColors.whiteSwatch,
                                           ),
                                         ),
                                       ],
@@ -287,21 +290,205 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
             Positioned(
               top: 0,
               left: 0,
-              child: Container(
-                width: width,
-                height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE5E3D7),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
-                  ),
-                ),
-              ),
+              child: hide
+                  ? Container()
+                  : Container(
+                      width: width,
+                      height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE5E3D7),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
+                        ),
+                        border: Border(
+                          right: BorderSide(
+                            color: AppColors.borderMedium,
+                            width: 1.125,
+                          ),
+                        ),
+                      ),
+                      padding: EdgeInsets.only(
+                        right: AppSpacing.groupMargin,
+                        left: AppSpacing.groupMargin,
+                        top: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
+                        bottom: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
+                      ),
+                      child: _customisationRow(),
+                    ),
             )
           ],
         ),
       ),
     );
+  }
+
+  _customisationRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _BentoOption(
+              iconPath: AppIcons.bento1_1Path,
+              isSelected: widget.module.boxType == AppModuleType.type1,
+              onTap: () {
+                hide = true;
+                setState(() {});
+                widget.onSizeChanged!();
+                context.read<ModulesBloc>().add(UpdateModule(
+                      module: Module(
+                        id: widget.module.id,
+                        index: widget.module.index,
+                        boxType: AppModuleType.type1,
+                      ),
+                    ));
+              },
+            ),
+            _BentoOption(
+              iconPath: AppIcons.bento2_1Path,
+              isSelected: widget.module.boxType == AppModuleType.type2_1,
+              onTap: () {
+                hide = true;
+                setState(() {});
+                widget.onSizeChanged!();
+                context.read<ModulesBloc>().add(UpdateModule(
+                      module: Module(
+                        id: widget.module.id,
+                        index: widget.module.index,
+                        boxType: AppModuleType.type2_1,
+                      ),
+                    ));
+              },
+            ),
+            _BentoOption(
+              iconPath: AppIcons.bento1_2Path,
+              isSelected: widget.module.boxType == AppModuleType.type1_2,
+              onTap: () {
+                hide = true;
+                setState(() {});
+                widget.onSizeChanged!();
+                context.read<ModulesBloc>().add(UpdateModule(
+                      module: Module(
+                        id: widget.module.id,
+                        index: widget.module.index,
+                        boxType: AppModuleType.type1_2,
+                      ),
+                    ));
+              },
+            ),
+            _BentoOption(
+              iconPath: AppIcons.bento2_2Path,
+              isSelected: widget.module.boxType == AppModuleType.type2_2,
+              onTap: () {
+                hide = true;
+                setState(() {});
+                widget.onSizeChanged!();
+                context.read<ModulesBloc>().add(UpdateModule(
+                      module: Module(
+                        id: widget.module.id,
+                        index: widget.module.index,
+                        boxType: AppModuleType.type2_2,
+                      ),
+                    ));
+              },
+            ),
+          ],
+        ),
+        Container(
+          height: 24,
+          width: 1,
+          color: AppColors.borderMedium,
+        ),
+        _DragHandle(),
+      ],
+    );
+  }
+}
+
+class _DragHandle extends StatefulWidget {
+  @override
+  State<_DragHandle> createState() => _DragHandleState();
+}
+
+class _DragHandleState extends State<_DragHandle> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.grab,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        child: SvgPicture.asset(
+          AppIcons.bentoDragPath,
+          colorFilter: ColorFilter.mode(
+            isHovered ? AppColors.primaryDefault : AppColors.textTertiary,
+            BlendMode.srcIn,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BentoOption extends StatefulWidget {
+  final String iconPath;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _BentoOption({
+    required this.iconPath,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  State<_BentoOption> createState() => _BentoOptionState();
+}
+
+class _BentoOptionState extends State<_BentoOption> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isActive = widget.isSelected || isHovered;
+
+    return LayoutBuilder(builder: (context, constraints) {
+      return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: Container(
+            height: constraints.maxHeight,
+            width: constraints.maxHeight,
+            // padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: widget.isSelected ? AppColors.whiteSwatch : Colors.transparent,
+              borderRadius: AppRadius.tiny,
+              border: Border.all(
+                color: widget.isSelected ? AppColors.borderMedium : Colors.transparent,
+                width: 1,
+              ),
+            ),
+            child: Center(
+              child: SvgPicture.asset(
+                widget.iconPath,
+                colorFilter: ColorFilter.mode(
+                  isActive ? AppColors.primaryDefault : AppColors.textTertiary,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    });
   }
 }

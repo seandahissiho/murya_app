@@ -103,7 +103,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                       },
                       isLoading: state is! QuizLoaded,
                       disabled: state is! QuizLoaded,
-                      autoResize: false,
+                      shrinkWrap: false,
                       text: localizations.quiz_lets_go,
                     ),
                   ),

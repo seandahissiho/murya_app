@@ -44,6 +44,13 @@ class AppIcons {
   static const String popupIconPath = '$basePath/Frame155.svg';
   static const String cyberSecurityJobPopupIconPath =
       '$basePath/shieldIconCyberSecurity.svg';
+
+  // Bento Icons
+  static const String bento1_1Path = '$basePath/bento_1_1.svg';
+  static const String bento1_2Path = '$basePath/bento_1_2.svg';
+  static const String bento2_1Path = '$basePath/bento_2_1.svg';
+  static const String bento2_2Path = '$basePath/bento_2_2.svg';
+  static const String bentoDragPath = '$basePath/bento_drag.svg';
 }
 
 class AppImages {

@@ -214,7 +214,7 @@ class _JobModuleContentState extends State<JobModuleContent> {
                     children: [
                       AppSpacing.groupMarginBox,
                       AppXButton(
-                        autoResize: false,
+                        shrinkWrap: false,
                         onPressed: () {
                           log("Evaluate Skills button pressed");
                           if (nextQuizAvailableIn != null) return;

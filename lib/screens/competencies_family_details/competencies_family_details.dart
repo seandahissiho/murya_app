@@ -124,7 +124,7 @@ class CompetencyCard extends StatelessWidget {
                 children: [
                   Flexible(
                     child: AppXButton(
-                      autoResize: true,
+                      shrinkWrap: true,
                       onPressed: () {},
                       isLoading: false,
                       text: locale.consult,
