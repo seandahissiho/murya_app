@@ -90,7 +90,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get skillsDiagramTitle => 'Diagramme des compétences';
+  String get skillsDiagramTitle => 'Diagramme';
 
   @override
   String get skillLevel_easy => 'Junior';

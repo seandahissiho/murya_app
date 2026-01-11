@@ -109,7 +109,7 @@
       }
     }
   },
-  "skillsDiagramTitle": "Diagramme des compétences",
+  "skillsDiagramTitle": "Diagramme",
   "@skillsDiagramTitle": {
     "description": "Titre du diagramme des compétences"
   },

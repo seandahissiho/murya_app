@@ -116,7 +116,14 @@ class _RankingChartState extends State<RankingChart> {
                   final userPercentage = 1.0 * (max - (userRanking?.rank ?? 0)) / (math.max(max, 2) - 1);
 
                   final size = Size(constraints.maxWidth, constraints.maxHeight);
-                  final painter = _DiagonalLinePainter(userPercentage);
+                  final baseInset = (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * 0.45;
+                  final pointInset = baseInset + 4;
+                  final painter = _DiagonalLinePainter(
+                    userPercentage,
+                    lineInset: 2,
+                    pointInset: pointInset,
+                    verticalSpanFactor: 0.65,
+                  );
 
                   // Positions along the line (0.0 → left/bottom, 1.0 → right/top)
                   final firstRank = painter.pointOnLine(size, firstPercentage, isMobile: isMobile); // #1
@@ -131,21 +138,26 @@ class _RankingChartState extends State<RankingChart> {
                   return Column(
                     children: [
                       Container(
-                        color: Colors.red,
                         height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.containerInsideMargin,
+                        margin: const EdgeInsets.only(
+                          top: AppSpacing.containerInsideMargin,
+                        ),
+                        padding: const EdgeInsets.only(
+                          left: AppSpacing.containerInsideMargin,
+                          right: AppSpacing.containerInsideMargin,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(locale.ranking,
-                                style: GoogleFonts.anton(
-                                  fontSize: isMobile ? 24 : 32,
-                                  color: AppColors.primaryDefault,
-                                  letterSpacing: -0.6,
-                                )),
+                            Text(
+                              locale.ranking,
+                              style: GoogleFonts.anton(
+                                fontSize: isMobile ? 24 : 32,
+                                color: AppColors.primaryDefault,
+                                letterSpacing: -0.6,
+                              ),
+                            ),
                             FittedBox(
                               fit: BoxFit.scaleDown,
                               child: AppXDropdown<int>(
@@ -170,82 +182,80 @@ class _RankingChartState extends State<RankingChart> {
                         ),
                       ),
                       Expanded(
-                        child: Container(
-                          color: Colors.green,
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              // The line
-                              CustomPaint(
-                                size: size,
-                                painter: painter,
-                              ),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            // The line
+                            CustomPaint(
+                              size: size,
+                              painter: painter,
+                            ),
 
-                              // First place
-                              Positioned(
-                                left: firstRank.dx,
-                                top: firstRank.dy,
-                                child: const FractionalTranslation(
-                                  translation: Offset(-0.5, -0.5),
-                                  child: RankingCard(rank: 1),
-                                ),
+                            // First place
+                            Positioned(
+                              left: firstRank.dx,
+                              top: firstRank.dy,
+                              child: const FractionalTranslation(
+                                translation: Offset(-0.5, -0.5),
+                                child: RankingCard(rank: 1),
                               ),
-                              // First quartile place
-                              if (firstQuartileRanking != null)
-                                Positioned(
-                                  left: firstQuartileRank.dx,
-                                  top: firstQuartileRank.dy,
-                                  child: FractionalTranslation(
-                                    translation: const Offset(-0.5, -0.5),
-                                    child: RankingCard(
-                                      rank: firstQuartileRanking.rank ?? -1,
-                                    ),
-                                  ),
-                                ),
-                              // Second quartile place
-                              if (secondQuartileRanking != null)
-                                Positioned(
-                                  left: secondQuartileRank.dx,
-                                  top: secondQuartileRank.dy,
-                                  child: FractionalTranslation(
-                                    translation: const Offset(-0.5, -0.5),
-                                    child: RankingCard(
-                                      rank: secondQuartileRanking.rank ?? -1,
-                                    ),
-                                  ),
-                                ),
-                              // Third quartile place
-                              if (thirdQuartileRanking != null)
-                                Positioned(
-                                  left: thirdQuartileRank.dx,
-                                  top: thirdQuartileRank.dy,
-                                  child: FractionalTranslation(
-                                    translation: const Offset(-0.5, -0.5),
-                                    child: RankingCard(
-                                      rank: thirdQuartileRanking.rank ?? -1,
-                                    ),
-                                  ),
-                                ),
-
-                              // User's place
+                            ),
+                            // First quartile place
+                            if (firstQuartileRanking != null)
                               Positioned(
-                                left: userRank.dx,
-                                top: userRank.dy,
+                                left: firstQuartileRank.dx,
+                                top: firstQuartileRank.dy,
                                 child: FractionalTranslation(
-                                  translation: const Offset(-0.5, -0.5), // center card on the point
+                                  translation: const Offset(-0.5, -0.5),
                                   child: RankingCard(
-                                    rank: userRanking?.rank ?? -1,
-                                    color: AppColors.primaryFocus,
-                                    shadowColor: AppColors.primaryPressed,
-                                    imageBorderColor: AppColors.backgroundCard,
-                                    textColor: AppColors.textInverted,
+                                    rank: firstQuartileRanking.rank ?? -1,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            // Second quartile place
+                            if (secondQuartileRanking != null)
+                              Positioned(
+                                left: secondQuartileRank.dx,
+                                top: secondQuartileRank.dy,
+                                child: FractionalTranslation(
+                                  translation: const Offset(-0.5, -0.5),
+                                  child: RankingCard(
+                                    rank: secondQuartileRanking.rank ?? -1,
+                                  ),
+                                ),
+                              ),
+                            // Third quartile place
+                            if (thirdQuartileRanking != null)
+                              Positioned(
+                                left: thirdQuartileRank.dx,
+                                top: thirdQuartileRank.dy,
+                                child: FractionalTranslation(
+                                  translation: const Offset(-0.5, -0.5),
+                                  child: RankingCard(
+                                    rank: thirdQuartileRanking.rank ?? -1,
+                                  ),
+                                ),
+                              ),
+
+                            // User's place
+                            Positioned(
+                              left: userRank.dx,
+                              top: userRank.dy,
+                              child: FractionalTranslation(
+                                translation: const Offset(-0.5, -0.5), // center card on the point
+                                child: RankingCard(
+                                  rank: userRanking?.rank ?? -1,
+                                  color: AppColors.primaryFocus,
+                                  shadowColor: AppColors.primaryPressed,
+                                  imageBorderColor: AppColors.backgroundCard,
+                                  textColor: AppColors.textInverted,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      AppSpacing.containerInsideMarginSmallBox,
                     ],
                   );
                 },
@@ -260,15 +270,48 @@ class _RankingChartState extends State<RankingChart> {
 
 class _DiagonalLinePainter extends CustomPainter {
   final double progress;
+  final double lineInset;
+  final double pointInset;
+  final double verticalSpanFactor;
 
-  const _DiagonalLinePainter(this.progress);
+  const _DiagonalLinePainter(
+    this.progress, {
+    required this.lineInset,
+    required this.pointInset,
+    required this.verticalSpanFactor,
+  });
+
+  double _effectiveInset(Size size, double inset) => math.min(inset, math.min(size.width, size.height) * 0.45);
+
+  Offset _start(Size size, double inset) {
+    final effectiveInset = _effectiveInset(size, inset);
+    final center = Offset(size.width / 2, size.height / 2);
+    final dxSpan = math.max(0.0, size.width - (2 * effectiveInset));
+    final dySpan = math.max(0.0, size.height * verticalSpanFactor);
+    return Offset(
+      center.dx - dxSpan / 2,
+      center.dy + dySpan / 2,
+    );
+  }
+
+  Offset _end(Size size, double inset) {
+    final effectiveInset = _effectiveInset(size, inset);
+    final center = Offset(size.width / 2, size.height / 2);
+    final dxSpan = math.max(0.0, size.width - (2 * effectiveInset));
+    final dySpan = math.max(0.0, size.height * verticalSpanFactor);
+    return Offset(
+      center.dx + dxSpan / 2,
+      center.dy - dySpan / 2,
+    );
+  }
 
   /// Returns a point on the diagonal line for a given [percent] (0.0 → start, 1.0 → end)
   Offset pointOnLine(Size size, double percent, {bool isMobile = false}) {
-    final start = Offset(-size.width * 0.15 + 32.5, size.height * 0.9);
-    final end = Offset(size.width * 1.1 - 12.5, size.height * 0.15);
+    final start = _start(size, pointInset);
+    final end = _end(size, pointInset);
 
-    final double clampedPercent = percent > .5 ? percent - (isMobile ? .05 : .065) : percent + (isMobile ? .06 : .015);
+    final double adjustedPercent = percent > .5 ? percent - (isMobile ? .05 : .065) : percent + (isMobile ? .06 : .015);
+    final double clampedPercent = adjustedPercent.clamp(0.0, 1.0);
 
     return Offset(
       start.dx + (end.dx - start.dx) * clampedPercent,
@@ -285,8 +328,8 @@ class _DiagonalLinePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    final start = Offset(-size.width * 0.15 + 32.5, size.height * 0.9);
-    final end = Offset(size.width * 1.1 - 12.5, size.height * 0.15);
+    final start = _start(size, lineInset);
+    final end = _end(size, lineInset);
     canvas.drawLine(start, end, backgroundPaint);
 
     final foregroundPaint = Paint()

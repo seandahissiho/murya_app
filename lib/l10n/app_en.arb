@@ -109,7 +109,7 @@
       }
     }
   },
-  "skillsDiagramTitle": "Skills Diagram",
+  "skillsDiagramTitle": "Diagram",
   "@skillsDiagramTitle": {
     "description": "Title of the skills diagram"
   },
