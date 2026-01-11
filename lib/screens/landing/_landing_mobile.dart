@@ -13,6 +13,8 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
   double mainBodyHey = 0;
   double footerHey = 0;
   int? _draggingIndex;
+  static const Offset _dragFeedbackOffset = Offset(0, 0);
+  final Map<String, GlobalKey> _tileKeys = {};
 
   final Set<int> concats = {};
 
@@ -199,13 +201,22 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
   }
 
   Widget _test(Module module, int i) {
+    final tileKey = _tileKeys.putIfAbsent(module.id!, () => GlobalKey());
     final feedbackTile = _getTileForModule(
       module,
       dragHandle: const AppModuleDragHandle(),
     );
     final dragHandle = LongPressDraggable<int>(
       data: i,
-      dragAnchorStrategy: pointerDragAnchorStrategy,
+      dragAnchorStrategy: (draggable, context, position) {
+        final renderBox = tileKey.currentContext?.findRenderObject() as RenderBox?;
+        if (renderBox == null) {
+          return childDragAnchorStrategy(draggable, context, position) + _dragFeedbackOffset;
+        }
+        final tileOrigin = renderBox.localToGlobal(Offset.zero);
+        final localPosition = position - tileOrigin;
+        return localPosition + _dragFeedbackOffset;
+      },
       onDragStarted: () => setState(() => _draggingIndex = i),
       onDragCompleted: () => setState(() => _draggingIndex = null),
       onDragEnd: (_) => setState(() => _draggingIndex = null),
@@ -222,7 +233,11 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
       childWhenDragging: const AppModuleDragHandle(),
       child: const AppModuleDragHandle(),
     );
-    final tile = _getTileForModule(module, dragHandle: dragHandle);
+    final tile = _getTileForModule(
+      module,
+      dragHandle: dragHandle,
+      tileKey: tileKey,
+    );
     return DragTarget<int>(
       // We drag by passing the source index as "data"
       onWillAcceptWithDetails: (_) => true,
@@ -255,7 +270,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
     );
   }
 
-  _getTileForModule(Module module, {Widget? dragHandle}) {
+  _getTileForModule(Module module, {Widget? dragHandle, GlobalKey? tileKey}) {
     switch (module.id) {
       case 'account':
         return AccountModuleWidget(
@@ -263,6 +278,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
+          tileKey: tileKey,
         );
       case 'job':
         return JobModuleWidget(
@@ -271,6 +287,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
+          tileKey: tileKey,
         );
       case 'ressources':
         return RessourcesModuleWidget(
@@ -278,6 +295,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
+          tileKey: tileKey,
         );
       default:
         return AppModuleWidget(
@@ -285,6 +303,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
+          tileKey: tileKey,
         );
     }
   }

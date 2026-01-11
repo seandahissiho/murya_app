@@ -14,6 +14,8 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
   double footerHey = 0;
   var safeAreaPadding = EdgeInsets.zero;
   int? _draggingIndex;
+  static const Offset _dragFeedbackOffset = Offset(-10, -10);
+  final Map<String, GlobalKey> _tileKeys = {};
 
   final Set<int> concats = {};
 
@@ -227,13 +229,22 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
   }
 
   Widget _test(Module module, int i) {
+    final tileKey = _tileKeys.putIfAbsent(module.id!, () => GlobalKey());
     final feedbackTile = _getTileForModule(
       module,
       dragHandle: const AppModuleDragHandle(),
     );
     final dragHandle = LongPressDraggable<int>(
       data: i,
-      dragAnchorStrategy: pointerDragAnchorStrategy,
+      dragAnchorStrategy: (draggable, context, position) {
+        final renderBox = tileKey.currentContext?.findRenderObject() as RenderBox?;
+        if (renderBox == null) {
+          return childDragAnchorStrategy(draggable, context, position) + _dragFeedbackOffset;
+        }
+        final tileOrigin = renderBox.localToGlobal(Offset.zero);
+        final localPosition = position - tileOrigin;
+        return localPosition + _dragFeedbackOffset;
+      },
       onDragStarted: () => setState(() => _draggingIndex = i),
       onDragCompleted: () => setState(() => _draggingIndex = null),
       onDragEnd: (_) => setState(() => _draggingIndex = null),
@@ -250,7 +261,11 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
       childWhenDragging: const Opacity(opacity: 0.25, child: AppModuleDragHandle()),
       child: const AppModuleDragHandle(),
     );
-    final tile = _getTileForModule(module, dragHandle: dragHandle);
+    final tile = _getTileForModule(
+      module,
+      dragHandle: dragHandle,
+      tileKey: tileKey,
+    );
     return DragTarget<int>(
       // We drag by passing the source index as "data"
       onWillAcceptWithDetails: (_) => true,
@@ -283,25 +298,28 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
     );
   }
 
-  _getTileForModule(Module module, {Widget? dragHandle}) {
+  _getTileForModule(Module module, {Widget? dragHandle, GlobalKey? tileKey}) {
     switch (module.id) {
       case 'account':
         return AccountModuleWidget(
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
+          tileKey: tileKey,
         );
       case 'job':
         return JobModuleWidget(
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
+          tileKey: tileKey,
         );
       case 'ressources':
         return RessourcesModuleWidget(
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
+          tileKey: tileKey,
         );
       default:
         return AppModuleWidget(
@@ -309,6 +327,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
+          tileKey: tileKey,
         );
     }
   }

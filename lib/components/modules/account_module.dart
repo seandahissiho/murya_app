@@ -10,12 +10,14 @@ class AccountModuleWidget extends StatefulWidget {
   final Module module;
   final VoidCallback? onSizeChanged;
   final Widget? dragHandle;
+  final GlobalKey? tileKey;
 
   const AccountModuleWidget({
     super.key,
     required this.module,
     this.onSizeChanged,
     this.dragHandle,
+    this.tileKey,
   });
 
   @override
@@ -41,6 +43,7 @@ class _AccountModuleWidgetState extends State<AccountModuleWidget> {
               content: state.user.isRegistered ? ProfileModuleContent(user: state.user) : null,
               onSizeChanged: widget.onSizeChanged,
               dragHandle: widget.dragHandle,
+              tileKey: widget.tileKey,
             );
           },
         );

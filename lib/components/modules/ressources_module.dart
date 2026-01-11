@@ -10,12 +10,14 @@ class RessourcesModuleWidget extends StatefulWidget {
   final Module module;
   final VoidCallback? onSizeChanged;
   final Widget? dragHandle;
+  final GlobalKey? tileKey;
 
   const RessourcesModuleWidget({
     super.key,
     required this.module,
     this.onSizeChanged,
     this.dragHandle,
+    this.tileKey,
   });
 
   @override
@@ -41,6 +43,7 @@ class _RessourcesModuleWidgetState extends State<RessourcesModuleWidget> {
               // backgroundImage: AppImages.homeBox3Path,
               onSizeChanged: widget.onSizeChanged,
               dragHandle: widget.dragHandle,
+              tileKey: widget.tileKey,
             );
           },
         );
