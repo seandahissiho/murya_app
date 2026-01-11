@@ -8,29 +8,39 @@ class AppIcons {
   static const String appIcon2Path = '$basePath/Logo_V1.svg';
   static const String homeSearchIconPath = '$basePath/search-big-3.svg';
   static const String homeSearchIcon2Path = '$basePath/search_bar_icon.svg';
-  static const String searchBarCloseIconPath = '$basePath/search_bar_close_icon.svg';
+  static const String searchBarCloseIconPath = '$basePath/close.svg';
   static const String backButtonPath = '$basePath/back_button.svg';
+
   //Group 106.svg
   static const String group106Path = '$basePath/Group 106.svg';
+
   // employee-search-loupe.svg
   static const String employeeSearchLoupePath = '$basePath/employee-search-loupe.svg';
+
   // dropdownArrowRightPath
   static const String dropdownArrowRightPath = '$basePath/ButtonRight.svg';
+
   // buttons_button.svg
   static const String buttonsButtonPath = '$basePath/buttons_button.svg';
 
   static const String arrowDPath = '$basePath/keyboard_arrow_down.svg';
   static const String searchIconPath = '$basePath/search.svg';
+
   // clearIconPath
   static const String clearIconPath = '$basePath/close.svg';
+
   // enLanguageIconPath
   static const String enLanguageIconPath = '$basePath/flag_us.svg';
+
   // frLanguageIconPath
   static const String frLanguageIconPath = '$basePath/flag_fr.svg';
+
   // smiling_icon.svg
   static const String smilingIconPath = '$basePath/smiling_icon.svg';
+
   // exit_icon.svg
   static const String exitIconPath = '$basePath/exit_icon.svg';
+
   // diamond.svg
   static const String diamondIconPath = '$basePath/diamond.svg';
 
@@ -47,6 +57,9 @@ class AppIcons {
   static const String bento2_1Path = '$basePath/bento_2_1.svg';
   static const String bento2_2Path = '$basePath/bento_2_2.svg';
   static const String bentoDragPath = '$basePath/bento_drag.svg';
+
+  // chevronDownPixel
+  static const String chevronDownPixelPath = '$basePath/chevron_down_pixel.svg';
 }
 
 class AppImages {

@@ -302,8 +302,8 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                       _detailsLevel = JobProgressionLevel.values[level!];
                     });
                   },
-                  labelInside: null,
-                  autoResize: true,
+                  // labelInside: null,
+                  shrinkWrap: true,
                   foregroundColor: AppColors.primaryDefault,
                 ),
               ],

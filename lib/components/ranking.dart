@@ -158,25 +158,23 @@ class _RankingChartState extends State<RankingChart> {
                                 letterSpacing: -0.6,
                               ),
                             ),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: AppXDropdown<int>(
-                                controller: TextEditingController(text: options[_detailsLevel]),
-                                items: options.map(
-                                  (level) => DropdownMenuEntry(
-                                    value: options.indexOf(level),
-                                    label: level,
-                                  ),
+                            AppXDropdown<int>(
+                              controller: TextEditingController(text: options[_detailsLevel]),
+                              items: options.map(
+                                (level) => DropdownMenuEntry(
+                                  value: options.indexOf(level),
+                                  label: level,
                                 ),
-                                onSelected: (level) {
-                                  setState(() {
-                                    _detailsLevel = level!;
-                                  });
-                                },
-                                labelInside: null,
-                                autoResize: true,
-                                foregroundColor: AppColors.primaryDefault,
                               ),
+                              onSelected: (level) {
+                                setState(() {
+                                  _detailsLevel = level!;
+                                });
+                              },
+                              // labelInside: null,
+                              shrinkWrap: false,
+                              maxDropdownWidth: 150,
+                              foregroundColor: AppColors.primaryDefault,
                             ),
                           ],
                         ),

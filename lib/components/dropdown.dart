@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:murya/components/text_form_field.dart';
 import 'package:murya/config/DS.dart';
+import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 
 class AppXDropdown<T> extends StatefulWidget {
@@ -14,13 +13,13 @@ class AppXDropdown<T> extends StatefulWidget {
     this.labelInside = false,
     this.hintText,
     this.leftIconPath,
-    this.rightIconPath,
+    this.rightIconPath = AppIcons.chevronDownPixelPath,
     this.rightIcon,
     this.leftIcon,
     this.background = Colors.transparent,
     this.foregroundColor,
     this.borderColor,
-    this.autoResize = false,
+    this.shrinkWrap = false,
     this.borderLineWidth = 1,
     this.removePaddings = false,
     this.horizontalAlignment = MainAxisAlignment.center,
@@ -50,7 +49,7 @@ class AppXDropdown<T> extends StatefulWidget {
   final Color background;
   final Color? foregroundColor;
   final Color? borderColor;
-  final bool autoResize;
+  final bool shrinkWrap;
   final double borderLineWidth;
   final bool removePaddings;
   final MainAxisAlignment horizontalAlignment;
@@ -97,9 +96,7 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
       child: FormField(
           initialValue: widget.controller.text,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          // autovalidateMode: AutovalidateMode.always,
           validator: (value) {
-            // return 'Veuillez saisir ${widget.labelText.isNotEmpytOrNull ? "votre ${widget.labelText}" : "une donnée"}';
             if (widget.excludeNull && (value)?.isEmpty != false) {
               return null;
             }
@@ -275,7 +272,7 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                   }
                 });
               },
-              constraints: widget.autoResize == true
+              constraints: widget.shrinkWrap == true
                   ? null
                   : BoxConstraints(
                       minHeight: tabletAndAboveCTAHeight,
@@ -293,88 +290,11 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      // Row(
-                      //   mainAxisSize: MainAxisSize.min,
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: [
-                      //     Flexible(
-                      //       child: AppXTextFormField(
-                      //         maxWidth: widget.maxDropdownWidth ??
-                      //             theme.inputDecorationTheme.constraints?.maxWidth ??
-                      //             double.infinity,
-                      //         fillColor: widget.disabled && widget.readOnly ? null : AppColors.whiteSwatch,
-                      //         borderColor: widget.borderColor,
-                      //         autoResize: widget.autoResize,
-                      //         expands: widget.autoResize,
-                      //         disabled: widget.items.isNotEmpty && !widget.disabled,
-                      //         onTap: () {
-                      //           // if (widget.items.isNotEmpty) {
-                      //           //   return;
-                      //           // }
-                      //           widget.onTap?.call();
-                      //         },
-                      //         onEditingComplete: () {
-                      //           state.didChange(widget.controller.text);
-                      //         },
-                      //         onChanged: (value) {
-                      //           state.didChange(value);
-                      //         },
-                      //         onSubmitted: (value) {
-                      //           state.didChange(value);
-                      //         },
-                      //         onFocusChanged: (hasFocus) {
-                      //           if (!hasFocus) {
-                      //             state.didChange(widget.controller.text);
-                      //           }
-                      //         },
-                      //         controller: widget.controller,
-                      //         decoration: widget.decoration,
-                      //         constraints: widget.constraints,
-                      //         labelText: widget.labelInside == null ? null : widget.labelText,
-                      //         labelInside: widget.labelInside,
-                      //         hintText: widget.hintTextForced
-                      //             ? widget.hintText!
-                      //             : "2Sélectionnez ${widget.hintText ?? "une option"}",
-                      //         hintTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                      //           color: AppColors.textSecondary,
-                      //         ),
-                      //         prefixIcon: widget.leftIcon != null
-                      //             ? SizedBox(
-                      //                 height: 20,
-                      //                 width: 20,
-                      //                 child: FittedBox(
-                      //                   fit: BoxFit.scaleDown,
-                      //                   child: widget.leftIcon,
-                      //                 ),
-                      //               )
-                      //             : null,
-                      //         prefixIconPath: widget.leftIconPath,
-                      //         suffixIcon: widget.rightIcon != null
-                      //             ? SizedBox(
-                      //                 height: 20,
-                      //                 width: 20,
-                      //                 child: FittedBox(
-                      //                   fit: BoxFit.scaleDown,
-                      //                   child: widget.rightIcon,
-                      //                 ),
-                      //               )
-                      //             : null,
-                      //         suffixIconPath: widget.rightIconPath,
-                      //         readOnly: true,
-                      //         errorMaxLines: 10,
-                      //         contentPadding: widget.contentPadding ??
-                      //             theme.inputDecorationTheme.contentPadding?.add(
-                      //               const EdgeInsets.only(left: AppSpacing.elementMargin),
-                      //             ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
                       Container(
                         height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
                         decoration: BoxDecoration(
                           color: Colors.transparent,
-                          borderRadius: AppRadius.extraLarge,
+                          borderRadius: AppRadius.small,
                           border: Border.all(
                             color: state.hasError
                                 ? AppColors.error.shade500
@@ -385,30 +305,36 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                         // constraints: widget.constraints ?? theme.dropdownMenuTheme.inputDecorationTheme?.constraints,
                         padding: widget.contentPadding ?? theme.dropdownMenuTheme.inputDecorationTheme?.contentPadding,
                         width: widget.maxDropdownWidth,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Row(
-                            mainAxisSize: (widget.autoResize || widget.maxDropdownWidth != null)
-                                ? MainAxisSize.min
-                                : MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.controller.text.isNotEmpty
-                                    ? widget.controller.text
-                                    : (widget.hintTextForced
-                                        ? widget.hintText!
-                                        : "Sélectionnez ${widget.hintText ?? "une option"}"),
-                                style: (isMobile ? theme.textTheme.labelSmall : theme.textTheme.bodyMedium)?.copyWith(
-                                  color: widget.controller.text.isNotEmpty
-                                      ? (widget.foregroundColor ?? AppColors.primaryDefault)
-                                      : AppColors.textSecondary,
-                                ),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final hasBoundedWidth = constraints.maxWidth.isFinite;
+                            final textWidget = Text(
+                              widget.controller.text.isNotEmpty
+                                  ? widget.controller.text
+                                  : (widget.hintTextForced
+                                      ? widget.hintText!
+                                      : "Sélectionnez ${widget.hintText ?? "une option"}"),
+                              style: (isMobile ? theme.textTheme.labelSmall : theme.textTheme.bodyMedium)?.copyWith(
+                                color: widget.controller.text.isNotEmpty
+                                    ? (widget.foregroundColor ?? AppColors.primaryDefault)
+                                    : AppColors.textSecondary,
                               ),
-                              AppSpacing.elementMarginBox,
-                              _dropdownIcon(context),
-                            ],
-                          ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            );
+
+                            return Row(
+                              mainAxisSize:
+                                  (widget.shrinkWrap || !hasBoundedWidth) ? MainAxisSize.min : MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                if (widget.shrinkWrap || !hasBoundedWidth) textWidget else Expanded(child: textWidget),
+                                if (widget.shrinkWrap) AppSpacing.elementMarginBox,
+                                if (!widget.shrinkWrap) const SizedBox(width: AppSpacing.elementMargin),
+                                _dropdownIcon(context),
+                              ],
+                            );
+                          },
                         ),
                       ),
                       if (state.hasError) ...[
@@ -435,9 +361,17 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
       return widget.rightIcon;
     } else if (widget.rightIconPath != null) {
       if (widget.rightIconPath!.contains(".svg")) {
-        return SvgPicture.asset(
-          widget.rightIconPath!,
-          height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+        return SizedBox(
+          height: isMobile ? 12 : 14,
+          width: isMobile ? 12 : 14,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: SvgPicture.asset(
+              widget.rightIconPath!,
+              height: isMobile ? 12 : 14,
+              width: isMobile ? 12 : 14,
+            ),
+          ),
         );
       } else {
         return Image.asset(
@@ -449,68 +383,68 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
       return Icon(
         Icons.keyboard_arrow_down,
         color: AppColors.textSecondary,
-        size: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 1.618,
-        opticalSize: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 1.618,
+        size: (isMobile ? 18 : 20),
+        opticalSize: (isMobile ? 18 : 20),
       );
     }
   }
 }
 
-class AppTypeDropDown<T> extends StatefulWidget {
-  final String label;
+// class AppTypeDropDown<T> extends StatefulWidget {
+//   final String label;
+//
+//   // suggestionsCallback
+//   final Function(String search) suggestionsCallback;
+//   final T? selected;
+//   final Function(T)? onSelected;
+//   final double? maxDropdownWidth;
+//   final EdgeInsetsGeometry? contentPadding;
+//
+//   const AppTypeDropDown({
+//     super.key,
+//     required this.label,
+//     required this.suggestionsCallback,
+//     this.selected,
+//     this.onSelected,
+//     this.maxDropdownWidth,
+//     this.contentPadding,
+//   });
+//
+//   @override
+//   State<AppTypeDropDown> createState() => _AppTypeDropDownState();
+// }
 
-  // suggestionsCallback
-  final Function(String search) suggestionsCallback;
-  final T? selected;
-  final Function(T)? onSelected;
-  final double? maxDropdownWidth;
-  final EdgeInsetsGeometry? contentPadding;
-
-  const AppTypeDropDown({
-    super.key,
-    required this.label,
-    required this.suggestionsCallback,
-    this.selected,
-    this.onSelected,
-    this.maxDropdownWidth,
-    this.contentPadding,
-  });
-
-  @override
-  State<AppTypeDropDown> createState() => _AppTypeDropDownState();
-}
-
-class _AppTypeDropDownState<T> extends State<AppTypeDropDown> {
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return Container(
-      constraints: BoxConstraints(
-        minWidth: widget.maxDropdownWidth ?? theme.inputDecorationTheme.constraints?.maxWidth ?? double.infinity,
-        maxWidth: widget.maxDropdownWidth ?? theme.inputDecorationTheme.constraints?.maxWidth ?? double.infinity,
-      ),
-      child: TypeAheadField<T>(
-        suggestionsCallback: (search) => widget.suggestionsCallback(search),
-        builder: (context, controller, focusNode) {
-          return AppTextFormField(
-            controller: controller,
-            focusNode: focusNode,
-            label: widget.label,
-            // contentPadding: EdgeInsets.zero,
-          );
-        },
-        itemBuilder: (context, client) {
-          return Container();
-          // return ListTile(
-          //   title: Text(client.name),
-          //   subtitle: Text(client.country ?? '-'),
-          // );
-        },
-        onSelected: (item) {
-          // Handle the selected client
-          widget.onSelected?.call(item);
-        },
-      ),
-    );
-  }
-}
+// class _AppTypeDropDownState<T> extends State<AppTypeDropDown> {
+//   @override
+//   Widget build(BuildContext context) {
+//     final ThemeData theme = Theme.of(context);
+//     return Container(
+//       constraints: BoxConstraints(
+//         minWidth: widget.maxDropdownWidth ?? theme.inputDecorationTheme.constraints?.maxWidth ?? double.infinity,
+//         maxWidth: widget.maxDropdownWidth ?? theme.inputDecorationTheme.constraints?.maxWidth ?? double.infinity,
+//       ),
+//       child: TypeAheadField<T>(
+//         suggestionsCallback: (search) => widget.suggestionsCallback(search),
+//         builder: (context, controller, focusNode) {
+//           return AppTextFormField(
+//             controller: controller,
+//             focusNode: focusNode,
+//             label: widget.label,
+//             // contentPadding: EdgeInsets.zero,
+//           );
+//         },
+//         itemBuilder: (context, client) {
+//           return Container();
+//           // return ListTile(
+//           //   title: Text(client.name),
+//           //   subtitle: Text(client.country ?? '-'),
+//           // );
+//         },
+//         onSelected: (item) {
+//           // Handle the selected client
+//           widget.onSelected?.call(item);
+//         },
+//       ),
+//     );
+//   }
+// }
