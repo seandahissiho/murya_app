@@ -274,6 +274,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
   }
 
   _getTileForModule(Module module, {Widget? dragHandle, GlobalKey? tileKey}) {
+    const cardMargin = EdgeInsets.zero;
     switch (module.id) {
       case 'account':
         return AccountModuleWidget(
@@ -282,6 +283,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
           tileKey: tileKey,
+          cardMargin: cardMargin,
         );
       case 'job':
         return JobModuleWidget(
@@ -291,6 +293,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
           tileKey: tileKey,
+          cardMargin: cardMargin,
         );
       case 'ressources':
         return RessourcesModuleWidget(
@@ -299,6 +302,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
           tileKey: tileKey,
+          cardMargin: cardMargin,
         );
       default:
         return AppModuleWidget(
@@ -307,6 +311,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
           tileKey: tileKey,
+          cardMargin: cardMargin,
         );
     }
   }

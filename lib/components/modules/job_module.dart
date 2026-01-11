@@ -28,6 +28,7 @@ class JobModuleWidget extends StatefulWidget {
   final VoidCallback? onSizeChanged;
   final Widget? dragHandle;
   final GlobalKey? tileKey;
+  final EdgeInsetsGeometry cardMargin;
 
   const JobModuleWidget({
     super.key,
@@ -35,6 +36,7 @@ class JobModuleWidget extends StatefulWidget {
     this.onSizeChanged,
     this.dragHandle,
     this.tileKey,
+    this.cardMargin = const EdgeInsets.all(4),
   });
 
   @override
@@ -84,6 +86,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                       onSizeChanged: widget.onSizeChanged,
                       dragHandle: widget.dragHandle,
                       tileKey: widget.tileKey,
+                      cardMargin: widget.cardMargin,
                     )
                   : AppModuleWidget(
                       module: widget.module,
@@ -92,6 +95,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                       onSizeChanged: widget.onSizeChanged,
                       dragHandle: widget.dragHandle,
                       tileKey: widget.tileKey,
+                      cardMargin: widget.cardMargin,
                     ),
             );
           },

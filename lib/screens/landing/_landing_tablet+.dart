@@ -286,7 +286,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           duration: const Duration(milliseconds: 120),
           foregroundDecoration: isActive
               ? BoxDecoration(
-                  border: Border.all(width: 2, color: AppColors.borderMedium),
+                  border: Border.all(width: 2, color: AppColors.borderDark),
                   borderRadius: AppRadius.large,
                 )
               : null,
@@ -302,6 +302,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
   }
 
   _getTileForModule(Module module, {Widget? dragHandle, GlobalKey? tileKey}) {
+    const cardMargin = EdgeInsets.zero;
     switch (module.id) {
       case 'account':
         return AccountModuleWidget(
@@ -309,6 +310,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
           tileKey: tileKey,
+          cardMargin: cardMargin,
         );
       case 'job':
         return JobModuleWidget(
@@ -316,6 +318,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
           tileKey: tileKey,
+          cardMargin: cardMargin,
         );
       case 'ressources':
         return RessourcesModuleWidget(
@@ -323,6 +326,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
           tileKey: tileKey,
+          cardMargin: cardMargin,
         );
       default:
         return AppModuleWidget(
@@ -331,6 +335,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
           tileKey: tileKey,
+          cardMargin: cardMargin,
         );
     }
   }

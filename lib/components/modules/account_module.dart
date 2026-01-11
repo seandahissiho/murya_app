@@ -11,6 +11,7 @@ class AccountModuleWidget extends StatefulWidget {
   final VoidCallback? onSizeChanged;
   final Widget? dragHandle;
   final GlobalKey? tileKey;
+  final EdgeInsetsGeometry cardMargin;
 
   const AccountModuleWidget({
     super.key,
@@ -18,6 +19,7 @@ class AccountModuleWidget extends StatefulWidget {
     this.onSizeChanged,
     this.dragHandle,
     this.tileKey,
+    this.cardMargin = const EdgeInsets.all(4),
   });
 
   @override
@@ -44,6 +46,7 @@ class _AccountModuleWidgetState extends State<AccountModuleWidget> {
               onSizeChanged: widget.onSizeChanged,
               dragHandle: widget.dragHandle,
               tileKey: widget.tileKey,
+              cardMargin: widget.cardMargin,
             );
           },
         );
