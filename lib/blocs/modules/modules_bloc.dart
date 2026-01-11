@@ -8,6 +8,7 @@ import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/module.dart';
+import 'package:murya/services/cache.service.dart';
 
 part 'modules_event.dart';
 part 'modules_state.dart';
@@ -15,6 +16,10 @@ part 'modules_state.dart';
 class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
   final BuildContext context;
   final List<Module> _modules = [];
+  final CacheService _cacheService = CacheService();
+
+  static const String _modulesKeyMobile = 'modules_layout_mobile';
+  static const String _modulesKeyDesktop = 'modules_layout_desktop';
 
   late final ProfileBloc profileBloc;
   late final StreamSubscription<ProfileState> _profileSubscription;
@@ -60,34 +65,21 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
     });
   }
 
-  FutureOr<void> _onInitializeModules(InitializeModules event, Emitter<ModulesState> emit) {
-    bool isMobile = DeviceHelper.isMobile(event.context);
-    // account module
-    final Module accountModule = Module(
-      id: "account",
-      index: 2,
-      boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
-    );
-    final Module searchModule = Module(
-      id: "job",
-      index: 0,
-      boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
-    );
-    final Module ressourcesModule = Module(
-      id: "ressources",
-      index: 1,
-      boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
-    );
-
-    _modules.addAll([
-      searchModule,
-      ressourcesModule,
-      accountModule,
-    ]);
-    if (_modules.isNotEmpty) {
-      _modules.sort((a, b) => a.index.compareTo(b.index));
+  FutureOr<void> _onInitializeModules(InitializeModules event, Emitter<ModulesState> emit) async {
+    final cachedModules = await _loadModulesFromCache(event.context);
+    if (cachedModules != null && cachedModules.isNotEmpty) {
+      _modules
+        ..clear()
+        ..addAll(cachedModules);
+      emit(ModulesLoaded(modules: _modules));
+      return;
     }
+
+    _modules
+      ..clear()
+      ..addAll(_defaultModules(event.context));
     emit(ModulesLoaded(modules: _modules));
+    await _persistModules(event.context);
   }
 
   FutureOr<void> _onLoadModules(LoadModules event, Emitter<ModulesState> emit) {
@@ -95,6 +87,7 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
       _modules.sort((a, b) => a.index.compareTo(b.index));
     }
     emit(ModulesLoaded(modules: _modules));
+    _persistModules(context);
   }
 
   FutureOr<void> _onUpdateModule(UpdateModule event, Emitter<ModulesState> emit) {
@@ -116,6 +109,7 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
     }
     // save to persistent storage
     // save online
+    _persistModules(context);
   }
 
   FutureOr<void> _onReorderModules(ReorderModules event, Emitter<ModulesState> emit) {
@@ -135,5 +129,74 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
       _modules.sort((a, b) => a.index.compareTo(b.index));
     }
     emit(ModulesLoaded(modules: _modules));
+    _persistModules(context);
+  }
+
+  String _storageKeyForContext(BuildContext ctx) {
+    return DeviceHelper.isMobile(ctx) ? _modulesKeyMobile : _modulesKeyDesktop;
+  }
+
+  List<Module> _defaultModules(BuildContext ctx) {
+    final bool isMobile = DeviceHelper.isMobile(ctx);
+    return [
+      Module(
+        id: "job",
+        index: 0,
+        boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
+      ),
+      Module(
+        id: "ressources",
+        index: 1,
+        boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
+      ),
+      Module(
+        id: "account",
+        index: 2,
+        boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
+      ),
+    ];
+  }
+
+  List<Module> _normalizeModules(List<Module> modules, BuildContext ctx) {
+    final defaults = _defaultModules(ctx);
+    final Map<String, Module> unique = {};
+    for (final module in modules) {
+      final id = module.id;
+      if (id == null) continue;
+      unique[id] = module;
+    }
+    for (final module in defaults) {
+      final id = module.id;
+      if (id == null) continue;
+      unique.putIfAbsent(id, () => module);
+    }
+    final ordered = unique.values.toList()..sort((a, b) => a.index.compareTo(b.index));
+    return [for (var i = 0; i < ordered.length; i++) ordered[i].copyWith(index: i)];
+  }
+
+  Future<List<Module>?> _loadModulesFromCache(BuildContext ctx) async {
+    final data = await _cacheService.get(_storageKeyForContext(ctx));
+    if (data == null) return null;
+    final raw = data['modules'];
+    if (raw is! List) return null;
+    try {
+      final modules = raw
+          .whereType<Map>()
+          .map((item) => Module.fromJson(Map<String, dynamic>.from(item)))
+          .toList();
+      if (modules.isEmpty) return null;
+      return _normalizeModules(modules, ctx);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _persistModules(BuildContext ctx) async {
+    await _cacheService.save(
+      _storageKeyForContext(ctx),
+      {
+        'modules': _modules.map((m) => m.toJson()).toList(),
+      },
+    );
   }
 }

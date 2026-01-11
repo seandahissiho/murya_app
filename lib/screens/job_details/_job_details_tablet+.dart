@@ -92,62 +92,62 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                     height: tabletAndAboveCTAHeight,
                                   ),
                                 ),
-                              AppSpacing.groupMarginBox,
-                              Expanded(
-                                flex: 10,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Flexible(
-                                      child: RichText(
-                                        text: TextSpan(
-                                          text: _job.title,
-                                          style: GoogleFonts.anton(
-                                            color: AppColors.textPrimary,
-                                            fontSize: theme.textTheme.headlineLarge?.fontSize,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                          children: [
-                                            WidgetSpan(
-                                              alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
-                                                child: GestureDetector(
-                                                  onTap: () async {
-                                                    await ShareUtils.shareContent(
-                                                      text: locale.discover_job_profile(_job.title),
-                                                      url: ShareUtils.generateJobDetailsLink(_job.id!),
-                                                      subject: locale.job_profile_page_title(_job.title),
-                                                    );
-                                                    if (kIsWeb && mounted && context.mounted) {
-                                                      // On web, there's a good chance we just copied to clipboard
-                                                      ScaffoldMessenger.of(context).showSnackBar(
-                                                        SnackBar(content: Text(locale.link_copied)),
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Icon(
-                                                    Icons.ios_share,
-                                                    size: theme.textTheme.displayLarge!.fontSize! / 1.75,
-                                                    color: AppColors.primaryDefault,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        textAlign: TextAlign.start,
-                                        maxLines: 2,
-                                      ),
-                                    ),
-                                    if (_user.isNotEmpty) ...[
-                                      AppSpacing.groupMarginBox,
-                                      ScoreWidget(value: _user.diamonds),
-                                    ],
-                                  ],
-                                ),
-                              ),
+                              // AppSpacing.groupMarginBox,
+                              // Expanded(
+                              //   flex: 10,
+                              //   child: Row(
+                              //     mainAxisSize: MainAxisSize.max,
+                              //     mainAxisAlignment: MainAxisAlignment.start,
+                              //     children: [
+                              //       Flexible(
+                              //         child: RichText(
+                              //           text: TextSpan(
+                              //             text: _job.title,
+                              //             style: GoogleFonts.anton(
+                              //               color: AppColors.textPrimary,
+                              //               fontSize: theme.textTheme.headlineLarge?.fontSize,
+                              //               fontWeight: FontWeight.w700,
+                              //             ),
+                              //             children: [
+                              //               WidgetSpan(
+                              //                 alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                              //                 child: Padding(
+                              //                   padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
+                              //                   child: GestureDetector(
+                              //                     onTap: () async {
+                              //                       await ShareUtils.shareContent(
+                              //                         text: locale.discover_job_profile(_job.title),
+                              //                         url: ShareUtils.generateJobDetailsLink(_job.id!),
+                              //                         subject: locale.job_profile_page_title(_job.title),
+                              //                       );
+                              //                       if (kIsWeb && mounted && context.mounted) {
+                              //                         // On web, there's a good chance we just copied to clipboard
+                              //                         ScaffoldMessenger.of(context).showSnackBar(
+                              //                           SnackBar(content: Text(locale.link_copied)),
+                              //                         );
+                              //                       }
+                              //                     },
+                              //                     child: Icon(
+                              //                       Icons.ios_share,
+                              //                       size: theme.textTheme.displayLarge!.fontSize! / 1.75,
+                              //                       color: AppColors.primaryDefault,
+                              //                     ),
+                              //                   ),
+                              //                 ),
+                              //               ),
+                              //             ],
+                              //           ),
+                              //           textAlign: TextAlign.start,
+                              //           maxLines: 2,
+                              //         ),
+                              //       ),
+                              //       if (_user.isNotEmpty) ...[
+                              //         AppSpacing.groupMarginBox,
+                              //         ScoreWidget(value: _user.diamonds),
+                              //       ],
+                              //     ],
+                              //   ),
+                              // ),
                               const Spacer(),
                               GestureDetector(
                                 onTap: () {
@@ -174,7 +174,63 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                     mainAxisSize: MainAxisSize.max,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // AppSpacing.containerInsideMarginBox,
+                                      Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Flexible(
+                                            child: RichText(
+                                              text: TextSpan(
+                                                text: _job.title,
+                                                style: GoogleFonts.anton(
+                                                  color: AppColors.textPrimary,
+                                                  fontSize: theme.textTheme.headlineLarge?.fontSize,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                                children: [
+                                                  WidgetSpan(
+                                                    alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
+                                                      child: GestureDetector(
+                                                        onTap: () async {
+                                                          await ShareUtils.shareContent(
+                                                            text: locale.discover_job_profile(_job.title),
+                                                            url: ShareUtils.generateJobDetailsLink(_job.id!),
+                                                            subject: locale.job_profile_page_title(_job.title),
+                                                          );
+                                                          if (kIsWeb && mounted && context.mounted) {
+                                                            // On web, there's a good chance we just copied to clipboard
+                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                              SnackBar(content: Text(locale.link_copied)),
+                                                            );
+                                                          }
+                                                        },
+                                                        child: Icon(
+                                                          Icons.ios_share,
+                                                          size: theme.textTheme.displayLarge!.fontSize! / 1.75,
+                                                          color: AppColors.primaryDefault,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              textAlign: TextAlign.start,
+                                              maxLines: 2,
+                                            ),
+                                          ),
+                                          if (_user.isNotEmpty) ...[
+                                            AppSpacing.groupMarginBox,
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 20.0),
+                                              child: ScoreWidget(value: _user.diamonds),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                      AppSpacing.containerInsideMarginBox,
                                       AppXButton(
                                         onPressed: () {
                                           navigateToPath(context,
@@ -332,19 +388,15 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
         shape: const RoundedRectangleBorder(
           borderRadius: AppRadius.large,
         ),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: constraints.maxWidth,
-                height: constraints.maxWidth / (1.618 * 2.5),
-                child: RankingChart(jobId: _job.id!),
-              )
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: constraints.maxWidth,
+              height: constraints.maxWidth / (1.618 * 1.5),
+              child: RankingChart(jobId: _job.id!),
+            )
+          ],
         ),
       );
     });
