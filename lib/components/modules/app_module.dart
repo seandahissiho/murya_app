@@ -425,6 +425,8 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
   }
 }
 
+enum _UiState { inactive, hover, active }
+
 class AppModuleDragHandle extends StatefulWidget {
   const AppModuleDragHandle({super.key});
 
@@ -434,20 +436,62 @@ class AppModuleDragHandle extends StatefulWidget {
 
 class _AppModuleDragHandleState extends State<AppModuleDragHandle> {
   bool isHovered = false;
+  bool isPressed = false;
+
+  _UiState get _state {
+    if (isPressed) return _UiState.active;
+    if (isHovered) return _UiState.hover;
+    return _UiState.inactive;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final s = _state;
+
+    final Color iconColor = (s == _UiState.inactive) ? AppColors.textTertiary : AppColors.primaryDefault;
+
+    final Color bgColor = (s == _UiState.active)
+        ? AppColors.whiteSwatch
+        : (s == _UiState.hover)
+            ? AppColors.whiteSwatch.withOpacity(0.55)
+            : Colors.transparent;
+
+    final Color borderColor = (s == _UiState.active)
+        ? AppColors.borderMedium
+        : (s == _UiState.hover)
+            ? AppColors.borderMedium.withOpacity(0.35)
+            : Colors.transparent;
+
     return MouseRegion(
       cursor: SystemMouseCursors.grab,
       onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        child: SvgPicture.asset(
-          AppIcons.bentoDragPath,
-          colorFilter: ColorFilter.mode(
-            isHovered ? AppColors.primaryDefault : AppColors.textTertiary,
-            BlendMode.srcIn,
+      onExit: (_) => setState(() {
+        isHovered = false;
+        isPressed = false; // sécurité si on sort pendant un press
+      }),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (_) => setState(() => isPressed = true),
+        onTapUp: (_) => setState(() => isPressed = false),
+        onTapCancel: () => setState(() => isPressed = false),
+
+        // utile si tu commences un drag : onPanDown/onPanEnd gèrent le "pressed"
+        onPanDown: (_) => setState(() => isPressed = true),
+        onPanEnd: (_) => setState(() => isPressed = false),
+        onPanCancel: () => setState(() => isPressed = false),
+
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOut,
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: AppRadius.tiny,
+            border: Border.all(color: borderColor, width: 1),
+          ),
+          child: SvgPicture.asset(
+            AppIcons.bentoDragPath,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           ),
         ),
       ),
@@ -473,36 +517,52 @@ class _BentoOption extends StatefulWidget {
 class _BentoOptionState extends State<_BentoOption> {
   bool isHovered = false;
 
+  _UiState get _state {
+    if (widget.isSelected) return _UiState.active;
+    if (isHovered) return _UiState.hover;
+    return _UiState.inactive;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bool isActive = widget.isSelected || isHovered;
-
     return LayoutBuilder(builder: (context, constraints) {
+      final s = _state;
+
+      final Color iconColor = (s == _UiState.inactive) ? AppColors.textTertiary : AppColors.primaryDefault;
+
+      final Color bgColor = (s == _UiState.active)
+          ? AppColors.whiteSwatch
+          : (s == _UiState.hover)
+              ? AppColors.whiteSwatch.withOpacity(0.55)
+              : Colors.transparent;
+
+      final Color borderColor = (s == _UiState.active)
+          ? AppColors.borderMedium
+          : (s == _UiState.hover)
+              ? AppColors.borderMedium.withOpacity(0.35)
+              : Colors.transparent;
+
       return MouseRegion(
         cursor: SystemMouseCursors.click,
         onEnter: (_) => setState(() => isHovered = true),
         onExit: (_) => setState(() => isHovered = false),
         child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: widget.onTap,
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            curve: Curves.easeOut,
             height: constraints.maxHeight,
             width: constraints.maxHeight,
-            // padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: widget.isSelected ? AppColors.whiteSwatch : Colors.transparent,
+              color: bgColor,
               borderRadius: AppRadius.tiny,
-              border: Border.all(
-                color: widget.isSelected ? AppColors.borderMedium : Colors.transparent,
-                width: 1,
-              ),
+              border: Border.all(color: borderColor, width: 1),
             ),
             child: Center(
               child: SvgPicture.asset(
                 widget.iconPath,
-                colorFilter: ColorFilter.mode(
-                  isActive ? AppColors.primaryDefault : AppColors.textTertiary,
-                  BlendMode.srcIn,
-                ),
+                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
               ),
             ),
           ),
