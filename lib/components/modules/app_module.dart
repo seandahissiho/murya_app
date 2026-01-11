@@ -20,6 +20,7 @@ class AppModuleWidget extends StatefulWidget {
   final String? backgroundImage;
   final Widget? dragHandle;
   final GlobalKey? tileKey;
+  final EdgeInsetsGeometry cardMargin;
 
   // final String title;
   // final String subtitle;
@@ -48,6 +49,7 @@ class AppModuleWidget extends StatefulWidget {
     this.backgroundImage,
     this.dragHandle,
     this.tileKey,
+    this.cardMargin = const EdgeInsets.all(4),
   });
 
   @override
@@ -142,6 +144,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
+        margin: widget.cardMargin,
         elevation: .5,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 800),
@@ -173,7 +176,8 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                   top: appSize.screenWidth < 1140
                       ? AppSpacing.containerInsideMargin
                       : AppSpacing.containerInsideMarginSmall,
-                  left: appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
+                  left:
+                      appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
                   right:
                       appSize.screenWidth < 1140 ? AppSpacing.containerInsideMargin : AppSpacing.containerInsideMargin,
                   bottom:

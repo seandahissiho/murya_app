@@ -11,6 +11,7 @@ class RessourcesModuleWidget extends StatefulWidget {
   final VoidCallback? onSizeChanged;
   final Widget? dragHandle;
   final GlobalKey? tileKey;
+  final EdgeInsetsGeometry cardMargin;
 
   const RessourcesModuleWidget({
     super.key,
@@ -18,6 +19,7 @@ class RessourcesModuleWidget extends StatefulWidget {
     this.onSizeChanged,
     this.dragHandle,
     this.tileKey,
+    this.cardMargin = const EdgeInsets.all(4),
   });
 
   @override
@@ -44,6 +46,7 @@ class _RessourcesModuleWidgetState extends State<RessourcesModuleWidget> {
               onSizeChanged: widget.onSizeChanged,
               dragHandle: widget.dragHandle,
               tileKey: widget.tileKey,
+              cardMargin: widget.cardMargin,
             );
           },
         );
