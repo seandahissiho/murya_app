@@ -250,12 +250,15 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
       onDragEnd: (_) => setState(() => _draggingIndex = null),
       onDraggableCanceled: (_, __) => setState(() => _draggingIndex = null),
       feedback: Material(
-        elevation: 3,
+        elevation: 0,
         borderRadius: AppRadius.large,
+        color: Colors.transparent,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         clipBehavior: Clip.antiAlias,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1880),
-          child: Opacity(opacity: 0.9, child: feedbackTile),
+          child: Opacity(opacity: 0.95, child: feedbackTile),
         ),
       ),
       childWhenDragging: const Opacity(opacity: 0.25, child: AppModuleDragHandle()),

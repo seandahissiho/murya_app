@@ -222,8 +222,11 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
       onDragEnd: (_) => setState(() => _draggingIndex = null),
       onDraggableCanceled: (_, __) => setState(() => _draggingIndex = null),
       feedback: Material(
-        elevation: 8,
+        elevation: 0,
         borderRadius: BorderRadius.circular(12),
+        color: Colors.transparent,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         clipBehavior: Clip.antiAlias,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 320),
