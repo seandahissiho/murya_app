@@ -9,11 +9,13 @@ import 'package:murya/models/module.dart';
 class RessourcesModuleWidget extends StatefulWidget {
   final Module module;
   final VoidCallback? onSizeChanged;
+  final Widget? dragHandle;
 
   const RessourcesModuleWidget({
     super.key,
     required this.module,
     this.onSizeChanged,
+    this.dragHandle,
   });
 
   @override
@@ -38,6 +40,7 @@ class _RessourcesModuleWidgetState extends State<RessourcesModuleWidget> {
               content: null,
               // backgroundImage: AppImages.homeBox3Path,
               onSizeChanged: widget.onSizeChanged,
+              dragHandle: widget.dragHandle,
             );
           },
         );
