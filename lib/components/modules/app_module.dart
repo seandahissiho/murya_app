@@ -230,13 +230,17 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                           color: AppColors.borderMedium,
                           width: 1.125,
                         ),
+                        bottom: BorderSide(
+                          color: AppColors.borderMedium,
+                          width: 1,
+                        ),
                       ),
                     ),
                     padding: EdgeInsets.only(
                       right: AppSpacing.groupMargin,
                       left: AppSpacing.groupMargin,
-                      top: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
-                      bottom: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
+                      top: isMobile ? AppSpacing.tinyMargin : AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
+                      bottom: isMobile ? AppSpacing.tinyMargin : AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
                     ),
                     child: _customisationRow(),
                   ),
@@ -386,7 +390,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     }
     if (boxType == AppModuleType.type1) {
       return const EdgeInsets.only(
-        top: AppSpacing.containerInsideMargin,
+        top: AppSpacing.groupMargin + tabletAndAboveCTAHeight,
         left: AppSpacing.containerInsideMargin,
         right: AppSpacing.containerInsideMargin,
         bottom: AppSpacing.containerInsideMargin,
@@ -394,7 +398,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     }
     if (boxType == AppModuleType.type1_2) {
       return const EdgeInsets.only(
-        top: AppSpacing.containerInsideMargin,
+        top: AppSpacing.groupMargin + tabletAndAboveCTAHeight,
         left: AppSpacing.containerInsideMargin,
         right: AppSpacing.containerInsideMargin,
         bottom: AppSpacing.containerInsideMargin,
@@ -402,14 +406,14 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     }
     if (boxType == AppModuleType.type2_1) {
       return const EdgeInsets.only(
-        top: AppSpacing.containerInsideMargin,
+        top: AppSpacing.groupMargin + tabletAndAboveCTAHeight,
         left: AppSpacing.containerInsideMargin,
         right: AppSpacing.containerInsideMargin,
         bottom: AppSpacing.containerInsideMargin,
       );
     }
     return const EdgeInsets.only(
-      top: AppSpacing.containerInsideMargin,
+      top: AppSpacing.groupMargin + tabletAndAboveCTAHeight,
       left: AppSpacing.containerInsideMargin,
       right: AppSpacing.containerInsideMargin,
       bottom: AppSpacing.containerInsideMargin,
