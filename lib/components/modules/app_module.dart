@@ -67,6 +67,15 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     safeAreaPadding = context.read<AppBloc>().safeAreaPadding;
   }
 
+  @override
+  void didUpdateWidget(covariant AppModuleWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.module.boxType != widget.module.boxType) {
+      hide = true;
+      setState(() {});
+    }
+  }
+
   double get size_1W {
     final AppSize appSize = AppSize(context);
     // log("AppSizeWidth: ${appSize.screenWidth - AppSpacing.pageMargin * 6}");
@@ -90,7 +99,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         27 -
         AppSpacing.sectionMargin;
     if (DeviceHelper.isMobile(context)) {
-      return (availableHeight + AppSpacing.sectionMargin) / 4;
+      return math.max((availableHeight + AppSpacing.sectionMargin) / 4, size_1W);
     } else {
       // return ((availableHeight - AppSpacing.groupMargin) / 2) / 1.618;
       return math.max((availableHeight) / 2 - 90, 225);
@@ -152,8 +161,8 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
           width: width,
           height: height,
           onEnd: () {
-            hide = false;
-            setState(() {});
+            if (!mounted || !hide) return;
+            setState(() => hide = false);
           },
           decoration: BoxDecoration(
             color: AppColors.backgroundColor,
@@ -174,131 +183,32 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
             child: Stack(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(
-                    top: appSize.screenWidth < 1140
-                        ? AppSpacing.containerInsideMargin
-                        : AppSpacing.containerInsideMarginSmall,
-                    left: appSize.screenWidth < 1140
-                        ? AppSpacing.containerInsideMargin
-                        : AppSpacing.containerInsideMargin,
-                    right: appSize.screenWidth < 1140
-                        ? AppSpacing.containerInsideMargin
-                        : AppSpacing.containerInsideMargin,
-                    bottom: appSize.screenWidth < 1140
-                        ? AppSpacing.containerInsideMargin
-                        : AppSpacing.containerInsideMargin,
-                  ),
+                  padding: getBoxPaddingForModuleType(context, widget.module.boxType, appSize, isMobile),
                   child: widget.content ??
                       LayoutBuilder(
                         builder: (context, constraints) {
+                          final bool isCompactHeight = constraints.maxHeight < (isMobile ? 110 : 160);
+                          final int titleMaxLines = isCompactHeight ? 1 : 2;
+                          final double titleMinFontSize = isCompactHeight
+                              ? (theme.textTheme.bodySmall?.fontSize ?? 12)
+                              : theme.textTheme.bodyLarge!.fontSize!;
+                          final double subtitleGap = isCompactHeight ? AppSpacing.tinyMargin : AppSpacing.elementMargin;
                           return Column(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                // width: constraints.maxWidth,
-                                height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: cardTapAction,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      if (hide == false) ...[
-                                        Flexible(
-                                          child: SizedBox(
-                                            width: constraints.maxWidth * 0.85,
-                                            child: AutoSizeText(
-                                              widget.module.title(context),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.anton(
-                                                color: AppColors.textPrimary,
-                                                fontSize: isMobile
-                                                    ? theme.textTheme.headlineSmall!.fontSize!
-                                                    : theme.textTheme.displaySmall!.fontSize!,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                              minFontSize: theme.textTheme.bodyLarge!.fontSize!,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                      if (hide == false && constraints.maxHeight >= 145) ...[
-                                        AppSpacing.elementMarginBox,
-                                        SizedBox(
-                                          width: constraints.maxWidth,
-                                          child: Text(
-                                            widget.module.subtitle(context),
-                                            maxLines: 4,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.inter(
-                                              color: AppColors.textPrimary,
-                                              fontSize: isMobile
-                                                  ? theme.textTheme.bodyMedium!.fontSize
-                                                  : theme.textTheme.bodyLarge!.fontSize,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              if (hide == false && constraints.maxHeight >= 163 + (isMobile ? 0 : 36)) ...[
-                                Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    AppSpacing.groupMarginBox,
-                                    ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: size_1W,
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        // runSpacing: AppSpacing.elementMargin,
-                                        // spacing: AppSpacing.elementMargin,
-                                        children: [
-                                          if (widget.module.button1Text(context) != null) ...[
-                                            Flexible(
-                                              child: AppXButton(
-                                                shrinkWrap: false,
-                                                onPressed: primaryAction,
-                                                isLoading: false,
-                                                text: widget.module.button1Text(context) ?? '',
-                                                // borderColor: AppColors.whiteSwatch,
-                                                // bgColor: AppColors.whiteSwatch,
-                                                // fgColor: AppColors.primaryDefault,
-                                              ),
-                                            ),
-                                          ],
-                                          if (widget.module.button2Text(context) != null) ...[
-                                            AppSpacing.groupMarginBox,
-                                            Flexible(
-                                              child: AppXButton(
-                                                shrinkWrap: false,
-                                                onPressed: secondaryAction,
-                                                isLoading: false,
-                                                text: widget.module.button2Text(context) ?? '',
-                                                // bgColor: Colors.transparent,
-                                                // borderColor: AppColors.whiteSwatch,
-                                              ),
-                                            ),
-                                          ],
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ],
+                            children: getBoxContentWidgets(
+                              context,
+                              widget.module,
+                              titleMaxLines,
+                              titleMinFontSize,
+                              subtitleGap,
+                              primaryAction,
+                              secondaryAction,
+                              isMobile,
+                              cardTapAction,
+                              constraints,
+                            ),
                           );
                         },
                       ),
@@ -306,32 +216,30 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                 Positioned(
                   top: 0,
                   left: 0,
-                  child: hide
-                      ? Container()
-                      : Container(
-                          width: width,
-                          height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFE5E3D7),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(24),
-                              topRight: Radius.circular(24),
-                            ),
-                            border: Border(
-                              right: BorderSide(
-                                color: AppColors.borderMedium,
-                                width: 1.125,
-                              ),
-                            ),
-                          ),
-                          padding: EdgeInsets.only(
-                            right: AppSpacing.groupMargin,
-                            left: AppSpacing.groupMargin,
-                            top: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
-                            bottom: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
-                          ),
-                          child: _customisationRow(),
+                  child: Container(
+                    width: width,
+                    height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFE5E3D7),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
+                      ),
+                      border: Border(
+                        right: BorderSide(
+                          color: AppColors.borderMedium,
+                          width: 1.125,
                         ),
+                      ),
+                    ),
+                    padding: EdgeInsets.only(
+                      right: AppSpacing.groupMargin,
+                      left: AppSpacing.groupMargin,
+                      top: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
+                      bottom: isMobile ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin,
+                    ),
+                    child: _customisationRow(),
+                  ),
                 )
               ],
             ),
@@ -355,9 +263,11 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                 _BentoOption(
                   iconPath: AppIcons.bento1_1Path,
                   isSelected: widget.module.boxType == AppModuleType.type1,
-                  onTap: () {
+                  onTap: () async {
                     hide = true;
                     setState(() {});
+                    // await Future.delayed(const Duration(milliseconds: 100));
+                    if (!mounted || !context.mounted) return;
                     widget.onSizeChanged!();
                     context.read<ModulesBloc>().add(UpdateModule(
                           module: Module(
@@ -372,9 +282,11 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                 _BentoOption(
                   iconPath: AppIcons.bento2_1Path,
                   isSelected: widget.module.boxType == AppModuleType.type2_1,
-                  onTap: () {
+                  onTap: () async {
                     hide = true;
                     setState(() {});
+                    // await Future.delayed(const Duration(milliseconds: 100));
+                    if (!mounted || !context.mounted) return;
                     widget.onSizeChanged!();
                     context.read<ModulesBloc>().add(UpdateModule(
                           module: Module(
@@ -389,9 +301,11 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                 _BentoOption(
                   iconPath: AppIcons.bento1_2Path,
                   isSelected: widget.module.boxType == AppModuleType.type1_2,
-                  onTap: () {
+                  onTap: () async {
                     hide = true;
                     setState(() {});
+                    // await Future.delayed(const Duration(milliseconds: 100));
+                    if (!mounted || !context.mounted) return;
                     widget.onSizeChanged!();
                     context.read<ModulesBloc>().add(UpdateModule(
                           module: Module(
@@ -406,9 +320,11 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                 _BentoOption(
                   iconPath: AppIcons.bento2_2Path,
                   isSelected: widget.module.boxType == AppModuleType.type2_2,
-                  onTap: () {
+                  onTap: () async {
                     hide = true;
                     setState(() {});
+                    // await Future.delayed(const Duration(milliseconds: 100));
+                    if (!mounted || !context.mounted) return;
                     widget.onSizeChanged!();
                     context.read<ModulesBloc>().add(UpdateModule(
                           module: Module(
@@ -433,6 +349,383 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         widget.dragHandle ?? const AppModuleDragHandle(),
       ],
     );
+  }
+
+  getBoxPaddingForModuleType(BuildContext context, AppModuleType boxType, AppSize appSize, bool isMobile) {
+    if (isMobile) {
+      if (boxType == AppModuleType.type1) {
+        return const EdgeInsets.only(
+          top: mobileCTAHeight + AppSpacing.elementMargin,
+          left: AppSpacing.containerInsideMarginSmall,
+          right: AppSpacing.containerInsideMarginSmall,
+          bottom: AppSpacing.containerInsideMargin * 2 / 3,
+        );
+      }
+      if (boxType == AppModuleType.type1_2) {
+        return const EdgeInsets.only(
+          top: mobileCTAHeight + AppSpacing.elementMargin,
+          left: AppSpacing.containerInsideMarginSmall,
+          right: AppSpacing.containerInsideMarginSmall,
+          bottom: AppSpacing.containerInsideMargin * 2 / 3,
+        );
+      }
+      if (boxType == AppModuleType.type2_1) {
+        return const EdgeInsets.only(
+          top: mobileCTAHeight + AppSpacing.elementMargin,
+          left: AppSpacing.containerInsideMarginSmall,
+          right: AppSpacing.containerInsideMarginSmall,
+          bottom: AppSpacing.containerInsideMargin * 2 / 3,
+        );
+      }
+      return const EdgeInsets.only(
+        top: mobileCTAHeight + AppSpacing.elementMargin,
+        left: AppSpacing.containerInsideMarginSmall,
+        right: AppSpacing.containerInsideMarginSmall,
+        bottom: AppSpacing.containerInsideMargin * 2 / 3,
+      );
+    }
+    if (boxType == AppModuleType.type1) {
+      return const EdgeInsets.only(
+        top: AppSpacing.containerInsideMargin,
+        left: AppSpacing.containerInsideMargin,
+        right: AppSpacing.containerInsideMargin,
+        bottom: AppSpacing.containerInsideMargin,
+      );
+    }
+    if (boxType == AppModuleType.type1_2) {
+      return const EdgeInsets.only(
+        top: AppSpacing.containerInsideMargin,
+        left: AppSpacing.containerInsideMargin,
+        right: AppSpacing.containerInsideMargin,
+        bottom: AppSpacing.containerInsideMargin,
+      );
+    }
+    if (boxType == AppModuleType.type2_1) {
+      return const EdgeInsets.only(
+        top: AppSpacing.containerInsideMargin,
+        left: AppSpacing.containerInsideMargin,
+        right: AppSpacing.containerInsideMargin,
+        bottom: AppSpacing.containerInsideMargin,
+      );
+    }
+    return const EdgeInsets.only(
+      top: AppSpacing.containerInsideMargin,
+      left: AppSpacing.containerInsideMargin,
+      right: AppSpacing.containerInsideMargin,
+      bottom: AppSpacing.containerInsideMargin,
+    );
+  }
+
+  List<Widget> getBoxContentWidgets(
+    BuildContext context,
+    Module module,
+    int titleMaxLines,
+    double titleMinFontSize,
+    double subtitleGap,
+    VoidCallback? primaryAction,
+    VoidCallback? secondaryAction,
+    bool isMobile,
+    VoidCallback? cardTapAction,
+    BoxConstraints constraints,
+  ) {
+    if (isMobile) {
+      return mobileBoxContentWidgets(
+        context,
+        module,
+        titleMaxLines,
+        titleMinFontSize,
+        subtitleGap,
+        primaryAction,
+        secondaryAction,
+        cardTapAction,
+        constraints,
+      );
+    }
+    return tabletAndAboveBoxContentWidgets(
+      context,
+      module,
+      titleMaxLines,
+      titleMinFontSize,
+      subtitleGap,
+      primaryAction,
+      secondaryAction,
+      cardTapAction,
+      constraints,
+    );
+  }
+
+  List<Widget> mobileBoxContentWidgets(
+    BuildContext context,
+    Module module,
+    int titleMaxLines,
+    double titleMinFontSize,
+    double subtitleGap,
+    VoidCallback? primaryAction,
+    VoidCallback? secondaryAction,
+    cardTapAction,
+    BoxConstraints constraints,
+  ) {
+    final ThemeData theme = Theme.of(context);
+    return [
+      Expanded(
+        child: InkWell(
+          onTap: cardTapAction,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (showTitleOnMobile(module)) ...[
+                Flexible(
+                  child: SizedBox(
+                    width: constraints.maxWidth,
+                    child: AutoSizeText(
+                      widget.module.title(context),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.anton(
+                        color: AppColors.textPrimary,
+                        fontSize: theme.textTheme.headlineSmall!.fontSize!,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      minFontSize: titleMinFontSize,
+                    ),
+                  ),
+                ),
+              ],
+              if (showSubtitleOnMobile(module)) ...[
+                SizedBox(height: subtitleGap),
+                SizedBox(
+                  width: constraints.maxWidth,
+                  child: Text(
+                    widget.module.subtitle(context),
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.inter(
+                      color: AppColors.textPrimary,
+                      fontSize: theme.textTheme.bodyMedium!.fontSize,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+      if (showButtonsOnMobile(widget.module))
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSpacing.groupMarginBox,
+            ConstrainedBox(
+              constraints: const BoxConstraints(
+                  // maxWidth: size_1W,
+                  ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                // runSpacing: AppSpacing.elementMargin,
+                // spacing: AppSpacing.elementMargin,
+                children: [
+                  if (widget.module.button1Text(context) != null) ...[
+                    Flexible(
+                      child: AppXButton(
+                        shrinkWrap: false,
+                        onPressed: primaryAction,
+                        isLoading: false,
+                        text: widget.module.button1Text(context) ?? '',
+                        // borderColor: AppColors.whiteSwatch,
+                        // bgColor: AppColors.whiteSwatch,
+                        // fgColor: AppColors.primaryDefault,
+                      ),
+                    ),
+                  ],
+                  if (widget.module.button2Text(context) != null && showSecondButtonOnMobile(module)) ...[
+                    AppSpacing.groupMarginBox,
+                    Flexible(
+                      child: AppXButton(
+                        shrinkWrap: false,
+                        onPressed: secondaryAction,
+                        isLoading: false,
+                        text: widget.module.button2Text(context) ?? '',
+                        // bgColor: Colors.transparent,
+                        // borderColor: AppColors.whiteSwatch,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+    ];
+  }
+
+  List<Widget> tabletAndAboveBoxContentWidgets(
+    BuildContext context,
+    Module module,
+    int titleMaxLines,
+    double titleMinFontSize,
+    double subtitleGap,
+    VoidCallback? primaryAction,
+    VoidCallback? secondaryAction,
+    cardTapAction,
+    BoxConstraints constraints,
+  ) {
+    final ThemeData theme = Theme.of(context);
+    return [
+      Expanded(
+        child: InkWell(
+          onTap: cardTapAction,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (showTitleOnTabletAndAbove(module))
+                Flexible(
+                  child: SizedBox(
+                    width: constraints.maxWidth,
+                    child: AutoSizeText(
+                      widget.module.title(context),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.anton(
+                        color: AppColors.textPrimary,
+                        fontSize: theme.textTheme.displaySmall!.fontSize!,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      minFontSize: titleMinFontSize,
+                    ),
+                  ),
+                ),
+              if (showSubtitleOnTabletAndAbove(module)) ...[
+                SizedBox(height: subtitleGap),
+                SizedBox(
+                  width: constraints.maxWidth,
+                  child: Text(
+                    widget.module.subtitle(context),
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.inter(
+                      color: AppColors.textPrimary,
+                      fontSize: theme.textTheme.bodyLarge!.fontSize,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+      if (showButtonsOnTabletAndAbove(widget.module))
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSpacing.groupMarginBox,
+            ConstrainedBox(
+              constraints: const BoxConstraints(
+                  // maxWidth: size_1W,
+                  ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                // runSpacing: AppSpacing.elementMargin,
+                // spacing: AppSpacing.elementMargin,
+                children: [
+                  if (widget.module.button1Text(context) != null) ...[
+                    Flexible(
+                      child: AppXButton(
+                        shrinkWrap: false,
+                        onPressed: primaryAction,
+                        isLoading: false,
+                        text: widget.module.button1Text(context) ?? '',
+                        // borderColor: AppColors.whiteSwatch,
+                        // bgColor: AppColors.whiteSwatch,
+                        // fgColor: AppColors.primaryDefault,
+                      ),
+                    ),
+                  ],
+                  if (widget.module.button2Text(context) != null && showSecondButtonOnTabletAndAbove(module)) ...[
+                    AppSpacing.groupMarginBox,
+                    Flexible(
+                      child: AppXButton(
+                        shrinkWrap: false,
+                        onPressed: secondaryAction,
+                        isLoading: false,
+                        text: widget.module.button2Text(context) ?? '',
+                        // bgColor: Colors.transparent,
+                        // borderColor: AppColors.whiteSwatch,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+    ];
+  }
+
+  showTitleOnMobile(Module module) {
+    if (module.boxType == AppModuleType.type2_2) return true;
+    if (module.boxType == AppModuleType.type2_1) return true;
+    if (module.boxType == AppModuleType.type1_2) return true;
+    if (module.boxType == AppModuleType.type1) return true;
+  }
+
+  showTitleOnTabletAndAbove(Module module) {
+    if (module.boxType == AppModuleType.type2_2) return true;
+    if (module.boxType == AppModuleType.type2_1) return true;
+    if (module.boxType == AppModuleType.type1_2) return true;
+    if (module.boxType == AppModuleType.type1) return true;
+  }
+
+  showSubtitleOnMobile(Module module) {
+    if (hide) return false;
+    if (module.boxType == AppModuleType.type2_2) return !hide;
+    if (module.boxType == AppModuleType.type2_1) return !hide;
+    if (module.boxType == AppModuleType.type1_2) return false;
+    if (module.boxType == AppModuleType.type1) return false;
+  }
+
+  showSubtitleOnTabletAndAbove(Module module) {
+    if (module.boxType == AppModuleType.type2_2) return true;
+    if (module.boxType == AppModuleType.type2_1) return true;
+    if (module.boxType == AppModuleType.type1_2) return true;
+    if (module.boxType == AppModuleType.type1) return false;
+  }
+
+  showButtonsOnMobile(Module module) {
+    if (module.boxType == AppModuleType.type2_2) return true;
+    if (module.boxType == AppModuleType.type2_1) return true;
+    if (module.boxType == AppModuleType.type1_2) return true;
+    if (module.boxType == AppModuleType.type1) return true;
+  }
+
+  showButtonsOnTabletAndAbove(Module module) {
+    if (module.boxType == AppModuleType.type2_2) return true;
+    if (module.boxType == AppModuleType.type2_1) return true;
+    if (module.boxType == AppModuleType.type1_2) return true;
+    if (module.boxType == AppModuleType.type1) return true;
+  }
+
+  showSecondButtonOnMobile(Module module) {
+    if (module.boxType == AppModuleType.type2_2) return true;
+    if (module.boxType == AppModuleType.type2_1) return false;
+    if (module.boxType == AppModuleType.type1_2) return true;
+    if (module.boxType == AppModuleType.type1) return false;
+  }
+
+  showSecondButtonOnTabletAndAbove(Module module) {
+    if (module.boxType == AppModuleType.type2_2) return true;
+    if (module.boxType == AppModuleType.type2_1) return true;
+    if (module.boxType == AppModuleType.type1_2) return true;
+    if (module.boxType == AppModuleType.type1) return false;
   }
 }
 

@@ -12,6 +12,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
   final GlobalKey _footerWrapKey = GlobalKey();
   double mainBodyHey = 0;
   double footerHey = 0;
+  var safeAreaPadding = EdgeInsets.zero;
   int? _draggingIndex;
   static const Offset _dragFeedbackOffset = Offset(0, 0);
   final Map<String, GlobalKey> _tileKeys = {};
@@ -21,12 +22,30 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
   @override
   void initState() {
     super.initState();
+    safeAreaPadding = context.read<AppBloc>().safeAreaPadding;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Future.delayed(const Duration(milliseconds: 10), () {
         if (!mounted || !context.mounted) return;
         calculus();
       });
     });
+  }
+
+  double get size_1H {
+    final AppSize appSize = AppSize(context);
+    final screenHeight = appSize.screenHeight;
+    // remove all margins and paddings
+    final availableHeight = screenHeight -
+        safeAreaPadding.top -
+        safeAreaPadding.bottom -
+        (AppSpacing.pageMargin * 2) -
+        27 -
+        AppSpacing.sectionMargin;
+    if (DeviceHelper.isMobile(context)) {
+      return (availableHeight + AppSpacing.sectionMargin) / 4;
+    } else {
+      return math.max((availableHeight) / 2 - 90, 225);
+    }
   }
 
   @override
@@ -39,7 +58,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           child: BlocConsumer<ModulesBloc, ModulesState>(
             listener: (context, state) {
               setState(() {});
-              Future.delayed(const Duration(microseconds: 1), () {
+              Future.delayed(const Duration(seconds: 1), () {
                 if (!mounted || !this.context.mounted) return;
                 calculus();
               });
@@ -54,8 +73,8 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                       footerHey +
                       AppSpacing.pageMargin +
                       MediaQuery.of(context).padding.bottom;
-                  if (mainBodyHey > constraints.maxHeight / 2) {
-                    mainBodyHeight = constraints.maxHeight;
+                  if (mainBodyHey > 2 * size_1H) {
+                    mainBodyHeight = 0;
                   }
                   log('MaxHeight: ${constraints.maxHeight}, mainBodyHey: $mainBodyHey, footerHey: $footerHey');
                   log('Max Width: ${constraints.maxWidth}');
@@ -76,7 +95,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                               child: SingleChildScrollView(
                                 physics: const NeverScrollableScrollPhysics(),
                                 child: Align(
-                                  alignment: Alignment.topCenter,
+                                  alignment: Alignment.topLeft,
                                   child: Wrap(
                                     key: _bodyWrapKey,
                                     spacing: 0, // AppSpacing.groupMargin,
@@ -92,65 +111,66 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                                       // final i = entry.value.index;
                                       final module = state.modules[i];
                                       final nextModule = i + 1 < state.modules.length ? state.modules[i + 1] : null;
-                                      final nextNextModule = i + 2 < state.modules.length ? state.modules[i + 2] : null;
 
                                       // Your actual tile widget
-                                      bool concat2 = false;
-                                      bool concat3 = false;
+                                      bool concatRow = false;
+                                      bool concatColumn = false;
 
                                       if (nextModule != null) {
-                                        if ((module.boxType == AppModuleType.type1 &&
-                                            nextModule.boxType == AppModuleType.type1)) {
-                                          concat2 = true;
-                                        }
+                                        bool currentIsOneWide = module.boxType == AppModuleType.type1 ||
+                                            module.boxType == AppModuleType.type2_1;
+                                        bool nextIsOneWide = nextModule.boxType == AppModuleType.type1 ||
+                                            nextModule.boxType == AppModuleType.type2_1;
                                         bool currentIsType1_2 = module.boxType == AppModuleType.type1_2;
                                         bool nextIsType1_2 = nextModule.boxType == AppModuleType.type1_2;
-                                        if (currentIsType1_2 && nextIsType1_2) {
-                                          concat2 = true;
-                                        }
-                                      }
-                                      if (nextModule != null && nextNextModule != null) {
-                                        bool currentIsType1_2 = module.boxType == AppModuleType.type1_2;
-                                        bool nextIsType1 = nextModule.boxType == AppModuleType.type1;
-                                        bool nextNextIsType1 = nextNextModule.boxType == AppModuleType.type1;
 
-                                        if (currentIsType1_2 && nextIsType1 && nextNextIsType1) {
-                                          concat3 = true;
-                                          concat2 = false;
+                                        if (currentIsOneWide && nextIsOneWide) {
+                                          concatRow = true;
+                                        } else if (currentIsType1_2 && nextIsType1_2) {
+                                          concatColumn = true;
                                         }
                                       }
 
-                                      if (concat2 && !concat3) {
+                                      if (concatRow || concatColumn) {
                                         concats.add(i + 1);
                                       }
-                                      if (concat3) {
-                                        concats.add(i + 1);
-                                        concats.add(i + 2);
-                                      }
+                                      bool isFirstOfRow = i == 0 ||
+                                          (i > 0 && concats.contains(i - 1)) ||
+                                          (i > 1 && concats.contains(i - 2));
+                                      double left = isFirstOfRow ? 0 : AppSpacing.elementMargin / 2;
 
-                                      log('Building module at index $i, concat: $concat2');
+                                      log('Building module at index $i, concat: ${concatRow || concatColumn}');
                                       return Padding(
-                                        padding: const EdgeInsets.only(right: AppSpacing.groupMargin),
-                                        child: Column(
-                                          children: [
-                                            _test(module, i),
-                                            AppSpacing.groupMarginBox,
-                                            if (concat2) ...[
-                                              _test(nextModule!, i + 1),
-                                              AppSpacing.groupMarginBox,
+                                        padding: EdgeInsets.only(
+                                          left: left,
+                                          right: AppSpacing.elementMargin / 2,
+                                        ),
+                                        child: SingleChildScrollView(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          child: Column(
+                                            children: [
+                                              if (concatRow)
+                                                SingleChildScrollView(
+                                                  scrollDirection: Axis.horizontal,
+                                                  physics: const NeverScrollableScrollPhysics(),
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      _test(module, i),
+                                                      AppSpacing.elementMarginBox,
+                                                      _test(nextModule!, i + 1),
+                                                    ],
+                                                  ),
+                                                )
+                                              else
+                                                _test(module, i),
+                                              AppSpacing.elementMarginBox,
+                                              if (concatColumn) ...[
+                                                _test(nextModule!, i + 1),
+                                                AppSpacing.elementMarginBox,
+                                              ],
                                             ],
-                                            if (concat3) ...[
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  _test(nextModule!, i + 1),
-                                                  AppSpacing.groupMarginBox,
-                                                  _test(nextNextModule!, i + 2),
-                                                ],
-                                              ),
-                                              AppSpacing.groupMarginBox,
-                                            ],
-                                          ],
+                                          ),
                                         ),
                                       );
                                     }),
@@ -163,7 +183,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                             child: AppSpacing.sectionMarginBox,
                           ),
                           SliverToBoxAdapter(
-                            child: AppFooter(key: _footerWrapKey),
+                            child: AppFooter(key: _footerWrapKey, isLanding: true),
                           ),
                         ],
                       ),
@@ -233,7 +253,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           child: Opacity(opacity: 0.9, child: feedbackTile),
         ),
       ),
-      childWhenDragging: const AppModuleDragHandle(),
+      childWhenDragging: const Opacity(opacity: 0.25, child: AppModuleDragHandle()),
       child: const AppModuleDragHandle(),
     );
     final tile = _getTileForModule(
@@ -258,7 +278,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           duration: const Duration(milliseconds: 120),
           foregroundDecoration: isActive
               ? BoxDecoration(
-                  border: Border.all(width: 2),
+                  border: Border.all(width: 2, color: AppColors.borderDark),
                   borderRadius: AppRadius.borderRadius20,
                 )
               : null,
@@ -287,8 +307,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
         );
       case 'job':
         return JobModuleWidget(
-          key: UniqueKey(),
-          // key: ValueKey('module-${module.id}'),
+          key: ValueKey('module-${module.id}'),
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,

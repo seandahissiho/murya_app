@@ -75,6 +75,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
               },
               child: state.userCurrentJob != null
                   ? AppModuleWidget(
+                      key: ValueKey('job-module-${widget.module.id}-loaded'),
                       module: widget.module,
                       onCardTap: () {
                         navigateToPath(
@@ -89,6 +90,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                       cardMargin: widget.cardMargin,
                     )
                   : AppModuleWidget(
+                      key: ValueKey('job-module-${widget.module.id}-empty'),
                       module: widget.module,
                       // backgroundImage: AppImages.homeBox2Path,
                       content: null,

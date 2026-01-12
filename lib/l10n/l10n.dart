@@ -119,7 +119,7 @@ abstract class AppLocalizations {
   /// Titre de la première boîte sur la page d'atterrissage
   ///
   /// In fr, this message translates to:
-  /// **'Développez votre carrière'**
+  /// **'Parcours'**
   String get landing_first_title;
 
   /// Sous-titre de la première boîte sur la page d'atterrissage
@@ -143,7 +143,7 @@ abstract class AppLocalizations {
   /// Titre de la deuxième boîte sur la page d'atterrissage
   ///
   /// In fr, this message translates to:
-  /// **'Mesurez vos compétences'**
+  /// **'Compétences'**
   String get landing_second_title;
 
   /// Sous-titre de la deuxième boîte sur la page d'atterrissage
@@ -155,7 +155,7 @@ abstract class AppLocalizations {
   /// Texte du bouton de la deuxième boîte
   ///
   /// In fr, this message translates to:
-  /// **'Découvrir'**
+  /// **'Perfectionner'**
   String get landing_second_button;
 
   /// Libellé du changement de langue vers l'anglais
@@ -209,7 +209,7 @@ abstract class AppLocalizations {
   /// Titre du module des ressources de l'utilisateur
   ///
   /// In fr, this message translates to:
-  /// **'Personnalisez vos ressources'**
+  /// **'Ressources'**
   String get user_ressources_module_title;
 
   /// Sous-titre du module des ressources de l'utilisateur
@@ -221,7 +221,7 @@ abstract class AppLocalizations {
   /// Texte du bouton dans le module des ressources de l'utilisateur
   ///
   /// In fr, this message translates to:
-  /// **'Collecter'**
+  /// **'Personnaliser'**
   String get user_ressources_module_button;
 
   /// Message affiché lorsque la recherche ne retourne aucun résultat
