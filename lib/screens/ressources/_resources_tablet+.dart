@@ -21,22 +21,13 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
       builder: (context, state) {
         return Column(
           children: [
-            Row(
-              children: [
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    navigateToPath(context, to: AppRoutes.landing);
-                  },
-                  child: SvgPicture.asset(
-                    AppIcons.searchBarCloseIconPath,
-                    width: mobileCTAHeight,
-                    height: mobileCTAHeight,
-                  ),
-                ),
-              ],
-            ),
-            AppSpacing.groupMarginBox,
+            // const Row(
+            //   children: [
+            //     Spacer(),
+            //     AppXCloseButton(),
+            //   ],
+            // ),
+            // AppSpacing.groupMarginBox,
             Row(
               children: [
                 RichText(
@@ -49,6 +40,8 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                     ),
                   ),
                 ),
+                const Spacer(),
+                const AppXCloseButton(),
               ],
             ),
             AppSpacing.sectionMarginBox,
@@ -65,12 +58,10 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text:
-                                  AppLocalizations.of(context).section_articles,
+                              text: AppLocalizations.of(context).section_articles,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
-                                fontSize:
-                                    theme.textTheme.headlineSmall?.fontSize,
+                                fontSize: theme.textTheme.headlineSmall?.fontSize,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -78,20 +69,16 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(
-                          resources: context.read<ResourcesBloc>().articles,
-                          type: ResourceType.article),
+                      ResourcesCarousel(resources: context.read<ResourcesBloc>().articles, type: ResourceType.article),
                       AppSpacing.containerInsideMarginBox,
                       Row(
                         children: [
                           RichText(
                             text: TextSpan(
-                              text:
-                                  AppLocalizations.of(context).section_podcasts,
+                              text: AppLocalizations.of(context).section_podcasts,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
-                                fontSize:
-                                    theme.textTheme.headlineSmall?.fontSize,
+                                fontSize: theme.textTheme.headlineSmall?.fontSize,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -99,9 +86,7 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(
-                          resources: context.read<ResourcesBloc>().podcasts,
-                          type: ResourceType.podcast),
+                      ResourcesCarousel(resources: context.read<ResourcesBloc>().podcasts, type: ResourceType.podcast),
                       AppSpacing.containerInsideMarginBox,
                       // Videos Section
                       Row(
@@ -111,8 +96,7 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                               text: AppLocalizations.of(context).section_videos,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
-                                fontSize:
-                                    theme.textTheme.headlineSmall?.fontSize,
+                                fontSize: theme.textTheme.headlineSmall?.fontSize,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -120,9 +104,7 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(
-                          resources: context.read<ResourcesBloc>().videos,
-                          type: ResourceType.video),
+                      ResourcesCarousel(resources: context.read<ResourcesBloc>().videos, type: ResourceType.video),
                     ],
                   ),
                 ),

@@ -131,7 +131,7 @@ abstract class AppLocalizations {
   /// Texte du premier bouton de la première boîte
   ///
   /// In fr, this message translates to:
-  /// **'Inscription'**
+  /// **'Piloter'**
   String get landing_first_button1;
 
   /// Texte du second bouton de la première boîte

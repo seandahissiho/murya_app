@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
+import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/popup.dart';
 import 'package:murya/components/text_form_field.dart';
@@ -199,6 +201,7 @@ class Module {
 
     switch (id) {
       case 'account':
+        return null;
         return locale.landing_first_button2;
       case 'job':
         return null;
@@ -212,8 +215,33 @@ class Module {
   VoidCallback? button1OnPressed(BuildContext context) {
     switch (id) {
       case 'account':
-        return () {
-          navigateToPath(context, to: AppRoutes.accountModule);
+        return () async {
+          final authBloc = context.read<AuthenticationBloc>();
+          final profileBloc = context.read<ProfileBloc>();
+          const profileLoadTimeout = Duration(seconds: 3);
+          var authState = authBloc.state;
+          if (authState is AuthenticationLoading) {
+            authState = await authBloc.stream.firstWhere((state) => state is! AuthenticationLoading);
+          }
+          if (!authState.isAuthenticated) {
+            navigateToPath(context, to: AppRoutes.login);
+            return;
+          }
+          ProfileState profileState = profileBloc.state;
+          if (profileState is! ProfileLoaded) {
+            profileBloc.add(ProfileLoadEvent());
+            profileState = await profileBloc.stream
+                .firstWhere((state) => state is ProfileLoaded || state is ProfileInitial)
+                .timeout(profileLoadTimeout, onTimeout: () => profileBloc.state);
+          }
+          authState = authBloc.state;
+          if (!authState.isAuthenticated) {
+            navigateToPath(context, to: AppRoutes.login);
+            return;
+          }
+          final user = profileState.user;
+          final hasEmail = (user.email ?? '').isNotEmpty;
+          navigateToPath(context, to: hasEmail ? AppRoutes.profile : AppRoutes.login);
         };
       case 'job':
         return () {

@@ -27,7 +27,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Create your account, explore, and improve. It\'s free with no hidden fees.';
 
   @override
-  String get landing_first_button1 => 'Sign up';
+  String get landing_first_button1 => 'Pilot';
 
   @override
   String get landing_first_button2 => 'Log in';

@@ -1,0 +1,99 @@
+import 'package:beamer/beamer.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/blocs/app/app_bloc.dart';
+import 'package:murya/config/routes.dart';
+import 'package:murya/screens/base.dart';
+
+part '_authentication_mobile.dart';
+part '_authentication_tablet+.dart';
+
+class LoginLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+  @override
+  List<String> get pathPatterns => [AppRoutes.login];
+
+  @override
+  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+    final languageCode = context.read<AppBloc>().appLanguage.code;
+    return [
+      BeamPage(
+        key: ValueKey('login-page-$languageCode'),
+        title: 'Login',
+        child: const LoginScreen(),
+      ),
+    ];
+  }
+}
+
+class RegisterLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+  @override
+  List<String> get pathPatterns => [AppRoutes.register];
+
+  @override
+  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+    final languageCode = context.read<AppBloc>().appLanguage.code;
+    return [
+      BeamPage(
+        key: ValueKey('register-page-$languageCode'),
+        title: 'Register',
+        child: const RegisterScreen(),
+      ),
+    ];
+  }
+}
+
+class ForgotPasswordLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+  @override
+  List<String> get pathPatterns => [AppRoutes.forgotPassword];
+
+  @override
+  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+    final languageCode = context.read<AppBloc>().appLanguage.code;
+    return [
+      BeamPage(
+        key: ValueKey('forgot-password-page-$languageCode'),
+        title: 'Forgot Password',
+        child: const ForgotPasswordScreen(),
+      ),
+    ];
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const BaseScreen(
+      mobileScreen: MobileLoginScreen(),
+      tabletScreen: TabletLoginScreen(),
+      desktopScreen: TabletLoginScreen(),
+    );
+  }
+}
+
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const BaseScreen(
+      mobileScreen: MobileRegisterScreen(),
+      tabletScreen: TabletRegisterScreen(),
+      desktopScreen: TabletRegisterScreen(),
+    );
+  }
+}
+
+class ForgotPasswordScreen extends StatelessWidget {
+  const ForgotPasswordScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const BaseScreen(
+      mobileScreen: MobileForgotPasswordScreen(),
+      tabletScreen: TabletForgotPasswordScreen(),
+      desktopScreen: TabletForgotPasswordScreen(),
+    );
+  }
+}

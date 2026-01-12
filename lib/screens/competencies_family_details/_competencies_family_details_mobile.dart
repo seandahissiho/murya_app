@@ -97,16 +97,7 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                       ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      navigateToPath(context, to: AppRoutes.landing);
-                    },
-                    child: SvgPicture.asset(
-                      AppIcons.searchBarCloseIconPath,
-                      width: mobileCTAHeight,
-                      height: mobileCTAHeight,
-                    ),
-                  ),
+                  const AppXCloseButton(),
                 ],
               ),
               AppSpacing.groupMarginBox,
