@@ -22,7 +22,7 @@
   "@landing_first_subtitle": {
     "description": "Subtitle of the first box on the landing page"
   },
-  "landing_first_button1": "Sign up",
+  "landing_first_button1": "Pilot",
   "@landing_first_button1": {
     "description": "Text of the first button in the first box"
   },

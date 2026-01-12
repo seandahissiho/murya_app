@@ -273,7 +273,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
       // We drag by passing the source index as "data"
       onWillAcceptWithDetails: (_) => true,
       onAcceptWithDetails: (fromIndex) {
-        if (i <= 2) return;
+        // if (i <= 2) return;
         if (fromIndex.data != i) {
           context.read<ModulesBloc>().add(ReorderModules(from: fromIndex.data, to: i));
         }

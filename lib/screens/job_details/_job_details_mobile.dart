@@ -109,30 +109,21 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                const Row(
                   children: [
-                    if (!hideBackButton)
-                      GestureDetector(
-                        onTap: () {
-                          navigateToPath(context, to: AppRoutes.jobModule);
-                        },
-                        child: SvgPicture.asset(
-                          AppIcons.backButtonPath,
-                          width: mobileCTAHeight,
-                          height: mobileCTAHeight,
-                        ),
-                      ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        navigateToPath(context, to: AppRoutes.landing);
-                      },
-                      child: SvgPicture.asset(
-                        AppIcons.searchBarCloseIconPath,
-                        width: mobileCTAHeight,
-                        height: mobileCTAHeight,
-                      ),
-                    ),
+                    // if (!hideBackButton)
+                    //   GestureDetector(
+                    //     onTap: () {
+                    //       navigateToPath(context, to: AppRoutes.jobModule);
+                    //     },
+                    //     child: SvgPicture.asset(
+                    //       AppIcons.backButtonPath,
+                    //       width: mobileCTAHeight,
+                    //       height: mobileCTAHeight,
+                    //     ),
+                    //   ),
+                    Spacer(),
+                    AppXCloseButton(),
                   ],
                 ),
                 AppSpacing.groupMarginBox,
@@ -140,40 +131,41 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                   children: [
                     Expanded(
                       child: RichText(
+                        maxLines: 2,
                         text: TextSpan(
                           text: _job.title,
                           style: GoogleFonts.anton(
                             color: AppColors.textPrimary,
-                            fontSize: theme.textTheme.headlineMedium?.fontSize,
+                            fontSize: theme.textTheme.headlineMedium!.fontSize!,
                             fontWeight: FontWeight.w700,
                           ),
                           children: [
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    await ShareUtils.shareContent(
-                                      text: locale.discover_job_profile(_job.title),
-                                      url: ShareUtils.generateJobDetailsLink(_job.id!),
-                                      subject: locale.job_profile_page_title(_job.title),
-                                    );
-                                    if (kIsWeb && mounted && context.mounted) {
-                                      // On web, there's a good chance we just copied to clipboard
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text(locale.link_copied)),
-                                      );
-                                    }
-                                  },
-                                  child: const Icon(
-                                    Icons.ios_share,
-                                    size: mobileCTAHeight / 1.618,
-                                    color: AppColors.primaryDefault,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            // WidgetSpan(
+                            //   alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                            //   child: Padding(
+                            //     padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
+                            //     child: GestureDetector(
+                            //       onTap: () async {
+                            //         await ShareUtils.shareContent(
+                            //           text: locale.discover_job_profile(_job.title),
+                            //           url: ShareUtils.generateJobDetailsLink(_job.id!),
+                            //           subject: locale.job_profile_page_title(_job.title),
+                            //         );
+                            //         if (kIsWeb && mounted && context.mounted) {
+                            //           // On web, there's a good chance we just copied to clipboard
+                            //           ScaffoldMessenger.of(context).showSnackBar(
+                            //             SnackBar(content: Text(locale.link_copied)),
+                            //           );
+                            //         }
+                            //       },
+                            //       child: const Icon(
+                            //         Icons.ios_share,
+                            //         size: mobileCTAHeight / 1.618,
+                            //         color: AppColors.primaryDefault,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

@@ -22,7 +22,7 @@
   "@landing_first_subtitle": {
     "description": "Sous-titre de la première boîte sur la page d'atterrissage"
   },
-  "landing_first_button1": "Inscription",
+  "landing_first_button1": "Piloter",
   "@landing_first_button1": {
     "description": "Texte du premier bouton de la première boîte"
   },

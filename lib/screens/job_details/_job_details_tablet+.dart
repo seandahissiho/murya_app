@@ -149,37 +149,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                               //   ),
                               // ),
                               const Spacer(),
-                              AppXButton(
-                                onPressed: () {
-                                  navigateToPath(context, to: AppRoutes.landing);
-                                },
-                                isLoading: false,
-                                // leftIconPath: AppIcons.searchBarCloseIconPath,
-                                removePaddings: true,
-                                leftIcon: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: SvgPicture.asset(
-                                    AppIcons.searchBarCloseIconPath,
-                                    width: 16,
-                                    height: 16,
-                                  ),
-                                ),
-                                shadowColor: AppColors.borderMedium,
-                                bgColor: AppColors.backgroundColor,
-                                borderColor: AppColors.borderMedium,
-                                hoverColor: AppColors.backgroundColor,
-                                onPressedColor: AppColors.backgroundColor,
-                              ),
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     navigateToPath(context, to: AppRoutes.landing);
-                              //   },
-                              //   child: SvgPicture.asset(
-                              //     AppIcons.searchBarCloseIconPath,
-                              //     width: tabletAndAboveCTAHeight,
-                              //     height: tabletAndAboveCTAHeight,
-                              //   ),
-                              // ),
+                              const AppXCloseButton(),
                             ],
                           ),
                           AppSpacing.sectionMarginBox,

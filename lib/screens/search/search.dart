@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
+import 'package:murya/components/app_button.dart';
 import 'package:murya/components/text_form_field.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
@@ -95,23 +95,7 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
               ),
               AppSpacing.groupMarginBox,
               // const Spacer(),
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () {
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                      return;
-                    }
-                    navigateToPath(context, to: AppRoutes.landing);
-                  },
-                  child: SvgPicture.asset(
-                    AppIcons.searchBarCloseIconPath,
-                    width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                    height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                  ),
-                ),
-              )
+              const AppXCloseButton(),
             ],
           ),
           if (isMobile) AppSpacing.sectionMarginBox else AppSpacing.pageMarginBox,

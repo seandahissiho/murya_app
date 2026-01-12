@@ -95,16 +95,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                     ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    navigateToPath(context, to: AppRoutes.landing);
-                  },
-                  child: SvgPicture.asset(
-                    AppIcons.searchBarCloseIconPath,
-                    width: tabletAndAboveCTAHeight,
-                    height: tabletAndAboveCTAHeight,
-                  ),
-                ),
+                const AppXCloseButton(),
               ],
             ),
             AppSpacing.sectionMarginBox,

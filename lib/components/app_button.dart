@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
 import 'package:murya/config/DS.dart';
+import 'package:murya/config/app_icons.dart';
+import 'package:murya/config/routes.dart';
+import 'package:murya/helpers.dart';
 import 'package:responsive_framework/responsive_framework.dart' show ResponsiveBreakpoints;
 
 //kButtonMinWidth
@@ -230,9 +233,8 @@ class _AppXButtonState extends State<AppXButton> {
   }
 
   double _resolveMaxWidth(BuildContext context) {
-    return widget.maxWidth ??
-        ResponsiveBreakpoints.of(context).breakpoints.elementAtOrNull(1)?.start ??
-        AppBreakpoints.mobile;
+    return widget.maxWidth ?? double.infinity;
+    ResponsiveBreakpoints.of(context).breakpoints.elementAtOrNull(1)?.start ?? AppBreakpoints.mobile;
   }
 
   @override
@@ -577,6 +579,45 @@ class _ButtonBody extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class AppXCloseButton extends StatelessWidget {
+  final String destination;
+  const AppXCloseButton({super.key, this.destination = AppRoutes.landing});
+
+  @override
+  Widget build(BuildContext context) {
+    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    return SizedBox(
+      width: ctaHeight,
+      height: ctaHeight,
+      child: AppXButton(
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+            return;
+          }
+          navigateToPath(context, to: destination);
+        },
+        isLoading: false,
+        // leftIconPath: AppIcons.searchBarCloseIconPath,
+        removePaddings: true,
+        leftIcon: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SvgPicture.asset(
+            AppIcons.searchBarCloseIconPath,
+            width: 16,
+            height: 16,
+          ),
+        ),
+        shadowColor: AppColors.borderMedium,
+        bgColor: AppColors.backgroundColor,
+        borderColor: AppColors.borderMedium,
+        hoverColor: AppColors.backgroundColor,
+        onPressedColor: AppColors.backgroundColor,
       ),
     );
   }

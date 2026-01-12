@@ -11,6 +11,8 @@ import 'package:murya/screens/dashboard/dashboard.dart';
 import 'package:murya/screens/ressources/resources.dart';
 import 'package:murya/screens/ressources/viewers/viewer_handler.dart';
 import 'package:murya/screens/search/search.dart';
+import 'package:murya/screens/authentication/authentication.dart';
+import 'package:murya/screens/profile/profile.dart';
 
 class AppRoutes {
   static const String landing = '/landing';
@@ -67,6 +69,10 @@ const List<String> routesWithoutHeader = [
 
 List<BeamLocation<RouteInformationSerializable<dynamic>>> beamLocations = [
   LandingLocation(),
+  LoginLocation(),
+  RegisterLocation(),
+  ForgotPasswordLocation(),
+  ProfileLocation(),
   DashboardLocation(),
   MainSearchLocation(),
   JobDetailsLocation(),

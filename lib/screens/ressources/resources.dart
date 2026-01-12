@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/blocs/modules/resources/resources_bloc.dart';
+import 'package:murya/components/app_button.dart';
 import 'package:murya/components/popup.dart';
 import 'package:murya/components/score.dart';
 import 'package:murya/components/skeletonizer.dart';

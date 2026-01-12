@@ -25,19 +25,10 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
       builder: (context, state) {
         return Column(
           children: [
-            Row(
+            const Row(
               children: [
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    navigateToPath(context, to: AppRoutes.landing);
-                  },
-                  child: SvgPicture.asset(
-                    AppIcons.searchBarCloseIconPath,
-                    width: mobileCTAHeight,
-                    height: mobileCTAHeight,
-                  ),
-                ),
+                Spacer(),
+                AppXCloseButton(),
               ],
             ),
             AppSpacing.groupMarginBox,
@@ -69,12 +60,10 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text:
-                                  AppLocalizations.of(context).section_articles,
+                              text: AppLocalizations.of(context).section_articles,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
-                                fontSize:
-                                    theme.textTheme.headlineSmall?.fontSize,
+                                fontSize: theme.textTheme.headlineSmall?.fontSize,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -93,12 +82,10 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                         children: [
                           RichText(
                             text: TextSpan(
-                              text:
-                                  AppLocalizations.of(context).section_podcasts,
+                              text: AppLocalizations.of(context).section_podcasts,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
-                                fontSize:
-                                    theme.textTheme.headlineSmall?.fontSize,
+                                fontSize: theme.textTheme.headlineSmall?.fontSize,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -121,8 +108,7 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                               text: AppLocalizations.of(context).section_videos,
                               style: GoogleFonts.anton(
                                 color: AppColors.textPrimary,
-                                fontSize:
-                                    theme.textTheme.headlineSmall?.fontSize,
+                                fontSize: theme.textTheme.headlineSmall?.fontSize,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
