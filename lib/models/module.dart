@@ -311,6 +311,7 @@ class Module {
               )
             ],
           ).then((value) {
+            if (context.mounted != true) return;
             if (value == true) {
               final jobId = context.read<JobBloc>().jobs.firstOrNull?.id!;
               if (jobId != null) {
