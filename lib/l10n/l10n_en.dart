@@ -17,14 +17,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get landing_page_title => 'Landing Page';
+  String get landing_page_title => 'Home page';
 
   @override
-  String get landing_first_title => 'Grow your career';
+  String get landing_first_title => 'Paths';
 
   @override
   String get landing_first_subtitle =>
-      'Create your account, explore and progress. It\'s free with no hidden fees.';
+      'Create your account, explore, and improve. It\'s free with no hidden fees.';
 
   @override
   String get landing_first_button1 => 'Sign up';
@@ -33,14 +33,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landing_first_button2 => 'Log in';
 
   @override
-  String get landing_second_title => 'Measure your skills';
+  String get landing_second_title => 'Skills';
 
   @override
   String get landing_second_subtitle =>
-      'Choose your job and get started. Short questions, concrete progress.';
+      'Choose your job and get started. Short questions, real progress.';
 
   @override
-  String get landing_second_button => 'Discover';
+  String get landing_second_button => 'Improve';
 
   @override
   String get footer_language_english => '🇬🇧 English';
@@ -61,20 +61,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get footer_accessibility => 'Accessibility';
 
   @override
-  String get footer_copyright => '© 2025 Murya SAS';
+  String get footer_copyright => '2025 Murya SAS';
 
   @override
-  String get search_placeholder => 'Search for skills and professions';
+  String get search_placeholder => 'Search for skills and jobs';
 
   @override
-  String get user_ressources_module_title => 'Customize your resources';
+  String get user_ressources_module_title => 'Resources';
 
   @override
   String get user_ressources_module_subtitle =>
       'Murya content generation is instant';
 
   @override
-  String get user_ressources_module_button => 'Collect';
+  String get user_ressources_module_button => 'Customize';
 
   @override
   String searchNoResults(String query) {
@@ -82,15 +82,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get evaluateSkills => 'Evaluate Skills';
+  String get evaluateSkills => 'Assess skills';
 
   @override
   String evaluateSkillsAvailableIn(String time) {
-    return 'Next evaluation available in $time';
+    return 'Next assessment - $time';
   }
 
   @override
-  String get skillsDiagramTitle => 'Diagram';
+  String get skillsDiagramTitle => 'Chart';
 
   @override
   String get skillLevel_easy => 'Junior';
@@ -109,9 +109,9 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count competencies',
-      one: '1 competency',
-      zero: 'No competencies',
+      other: '$count skills',
+      one: '1 skill',
+      zero: 'No skills',
     );
     return '$_temp0';
   }
@@ -124,12 +124,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String discover_job_profile(String jobTitle) {
-    return 'Discover the skills profile for the $jobTitle job!';
+    return 'Discover the skills profile for the job $jobTitle!';
   }
 
   @override
   String job_profile_page_title(String jobTitle) {
-    return 'Murya - Skills Profile: $jobTitle';
+    return 'Murya - Skills profile: $jobTitle';
   }
 
   @override
@@ -137,14 +137,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String discover_cf_profile(String cfTitle) {
-    return 'Discover the skills profile for the $cfTitle competency family!';
+    return 'Discover the skills profile for the skill family $cfTitle!';
   }
 
   @override
-  String get hard_skill => 'Hard Skill';
+  String get hard_skill => 'Hard skill';
 
   @override
-  String get soft_skill => 'Soft Skill';
+  String get soft_skill => 'Soft skill';
 
   @override
   String get easy => 'Easy';
@@ -159,19 +159,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expert => 'Expert';
 
   @override
-  String get consult => 'Consult';
+  String get consult => 'View';
 
   @override
   String get ranking_per_day => 'Today';
 
   @override
-  String get ranking_per_week => 'This Week';
+  String get ranking_per_week => 'This week';
 
   @override
-  String get ranking_per_month => 'This Month';
+  String get ranking_per_month => 'This month';
 
   @override
-  String get ranking => 'Ranking';
+  String get ranking => 'Leaderboard';
 
   @override
   String get popup_job_selection_title => 'Choose your job';
@@ -181,21 +181,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get popup_job_selection_technician_subtitle =>
-      'Protect critical infrastructures. Become a sought-after expert.';
+      'Protect critical infrastructure. Become a highly sought-after expert.';
 
   @override
   String get popup_job_selection_continue_button => 'Continue';
 
   @override
   String get popup_job_selection_other_expertise_label =>
-      'Looking for another expertise?';
+      'Aiming for another expertise?';
 
   @override
   String get popup_job_selection_search_hint =>
-      'Ex: Developer, Product Manager...';
+      'e.g.: Developer, Product Manager...';
 
   @override
-  String get resourceViewerPageTitle => 'ResourceViewer Page';
+  String get resourceViewerPageTitle => 'Resource Viewer Page';
 
   @override
   String get unsupportedResourceType => 'Unsupported resource type';
@@ -207,7 +207,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mainSearchTitle => 'Main Search';
 
   @override
-  String get mediaLibrary => 'Media Library';
+  String get mediaLibrary => 'Media library';
 
   @override
   String get summary => 'Summary';
@@ -216,19 +216,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get article => 'Article';
 
   @override
-  String get quiz_ready_to_evaluate => 'Ready to evaluate yourself?';
+  String get quiz_ready_to_evaluate => 'Ready to assess yourself?';
 
   @override
   String get quiz_start_description_1 =>
-      'You are about to start the questionnaire for the Product Manager job.';
+      'You\'re about to start the Product Manager questionnaire.';
 
   @override
   String get quiz_start_description_2 =>
-      'It consists of 10 multiple-choice questions.';
+      'It includes 10 multiple-choice questions.';
 
   @override
   String get quiz_start_description_3 =>
-      'Your answers will help create your personalized resource.';
+      'Your answers will be used to create your personalized resource.';
 
   @override
   String get quiz_start_advice =>
@@ -246,7 +246,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quiz_verify => 'Check';
 
   @override
-  String get quiz_completed_title => 'Evaluation completed!';
+  String get quiz_completed_title => 'Assessment complete!';
 
   @override
   String get quiz_completed_subtitle =>
@@ -254,10 +254,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quiz_completed_description =>
-      'The skills diagram is updated and you can create the perfect resource to keep progressing.';
+      'The skills chart has been updated and you can create the perfect resource to keep improving.';
 
   @override
-  String get quiz_see_my_space => 'See my space';
+  String get quiz_see_my_space => 'Go to my space';
 
   @override
   String get sampleResource => 'Sample Resource';
@@ -275,14 +275,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resourceLabelSingular_default => 'a resource';
 
   @override
-  String get popup_validate => 'Validate';
+  String get popup_validate => 'Confirm';
 
   @override
   String get popup_unlock_resource_title => 'Unlock your resource?';
 
   @override
   String get popup_unlock_resource_description =>
-      'Use your points to generate your personalized article. Murya AI will instantly adapt it to your answers of the day.';
+      'Use your points to generate your personalized article. Murya\'s AI will instantly adapt it to your answers for the day.';
 
   @override
   String get cost_creation_label => 'Creation cost';
@@ -302,7 +302,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loading_analyzing_answers =>
-      'We are analyzing your 10 answers to write a unique article, perfectly adapted to the skills you need to strengthen.';
+      'We\'re analyzing your 10 answers to write a unique article, perfectly tailored to the skills you need to strengthen.';
 
   @override
   String create_resource_button(String resourceLabel) {
@@ -325,13 +325,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get section_podcasts => 'Podcasts';
 
   @override
-  String get quiz_daily_performance => 'Your daily performance';
+  String get quiz_daily_performance => 'Your performance today';
 
   @override
   String get quiz_good_answers => 'Correct answers';
 
   @override
-  String get quiz_answers_to_review => 'Answers to Review';
+  String get quiz_answers_to_review => 'Answers to review';
 
   @override
   String get quiz_reward => 'Reward';

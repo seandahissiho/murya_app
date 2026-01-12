@@ -10,15 +10,15 @@
       }
     }
   },
-  "landing_page_title": "Landing Page",
+  "landing_page_title": "Home page",
   "@landing_page_title": {
     "description": "Title of the landing page"
   },
-  "landing_first_title": "Grow your career",
+  "landing_first_title": "Paths",
   "@landing_first_title": {
     "description": "Title of the first box on the landing page"
   },
-  "landing_first_subtitle": "Create your account, explore and progress. It''s free with no hidden fees.",
+  "landing_first_subtitle": "Create your account, explore, and improve. It''s free with no hidden fees.",
   "@landing_first_subtitle": {
     "description": "Subtitle of the first box on the landing page"
   },
@@ -30,78 +30,78 @@
   "@landing_first_button2": {
     "description": "Text of the second button in the first box"
   },
-  "landing_second_title": "Measure your skills",
+  "landing_second_title": "Skills",
   "@landing_second_title": {
     "description": "Title of the second box on the landing page"
   },
-  "landing_second_subtitle": "Choose your job and get started. Short questions, concrete progress.",
+  "landing_second_subtitle": "Choose your job and get started. Short questions, real progress.",
   "@landing_second_subtitle": {
     "description": "Subtitle of the second box on the landing page"
   },
-  "landing_second_button": "Discover",
+  "landing_second_button": "Improve",
   "@landing_second_button": {
     "description": "Text of the button in the second box"
   },
   "footer_language_english": "🇬🇧 English",
   "@footer_language_english": {
-    "description": "Label for switching the language to English"
+    "description": "Label to switch language to English"
   },
   "footer_language_french": "🇫🇷 Français",
   "@footer_language_french": {
-    "description": "Label for switching the language to French"
+    "description": "Label to switch language to French"
   },
   "footer_legal_mentions": "Legal notice",
   "@footer_legal_mentions": {
-    "description": "Link to the legal notice page"
+    "description": "Link to the legal notice"
   },
   "footer_privacy_policy": "Privacy policy",
   "@footer_privacy_policy": {
-    "description": "Link to the privacy policy page"
+    "description": "Link to the privacy policy"
   },
   "footer_cookie_settings": "Cookie settings",
   "@footer_cookie_settings": {
-    "description": "Link to the cookie settings page"
+    "description": "Link to cookie settings"
   },
   "footer_accessibility": "Accessibility",
   "@footer_accessibility": {
     "description": "Link to the accessibility page"
   },
-  "footer_copyright": "© 2025 Murya SAS",
+  "footer_copyright": "2025 Murya SAS",
   "@footer_copyright": {
-    "description": "Copyright notice displayed in the footer"
+    "description": "Copyright text shown in the footer"
   },
-  "search_placeholder": "Search for skills and professions",
+  "search_placeholder": "Search for skills and jobs",
   "@search_placeholder": {
-    "description": "Placeholder text for the search bar on the landing page"
+    "description": "Placeholder text for the search bar"
   },
-  "user_ressources_module_title": "Customize your resources",
+  "user_ressources_module_title": "Resources",
   "@user_ressources_module_title": {
-    "description": "Title of the user resources module"
+    "description": "Title of the user's resources module"
   },
   "user_ressources_module_subtitle": "Murya content generation is instant",
   "@user_ressources_module_subtitle": {
-    "description": "Subtitle of the user resources module"
+    "description": "Subtitle of the user's resources module"
   },
-  "user_ressources_module_button": "Collect",
+  "user_ressources_module_button": "Customize",
   "@user_ressources_module_button": {
-    "description": "Text of the button in the user resources module"
+    "description": "Button text in the user's resources module"
   },
   "searchNoResults": "No results found for \"{query}\".",
   "@searchNoResults": {
-    "description": "Message displayed when no search results are found",
+    "description": "Message shown when search returns no results",
     "placeholders": {
       "query": {
         "type": "String"
       }
     }
   },
-  "evaluateSkills": "Evaluate Skills",
+  "evaluateSkills": "Assess skills",
   "@evaluateSkills": {
-    "description": "Button to evaluate skills"
+    "description": "Button to assess skills"
   },
-  "evaluateSkillsAvailableIn": "Next evaluation available in {time}",
+  "evaluateSkillsAvailableIn": "Next assessment - {time}",
   "@evaluateSkillsAvailableIn": {
-    "description": "Indicates the time remaining until the next skills evaluation",
+    "description": "Indicates the remaining time until the next skill assessment",
     "placeholders": {
       "time": {
         "type": "String",
@@ -109,29 +109,29 @@
       }
     }
   },
-  "skillsDiagramTitle": "Diagram",
+  "skillsDiagramTitle": "Chart",
   "@skillsDiagramTitle": {
-    "description": "Title of the skills diagram"
+    "description": "Title of the skills chart"
   },
   "skillLevel_easy": "Junior",
   "@skillLevel_easy": {
-    "description": "Label for easy skill level"
+    "description": "Easy skill level"
   },
   "skillLevel_medium": "Intermediate",
   "@skillLevel_medium": {
-    "description": "Label for medium skill level"
+    "description": "Medium skill level"
   },
   "skillLevel_hard": "Senior",
   "@skillLevel_hard": {
-    "description": "Label for hard skill level"
+    "description": "Hard skill level"
   },
   "skillLevel_expert": "Expert",
   "@skillLevel_expert": {
-    "description": "Label for expert skill level"
+    "description": "Expert skill level"
   },
-  "competencies_count": "{count, plural, =0 {No competencies} =1 {1 competency} other {{count} competencies}}",
+  "competencies_count": "{count, plural, =0 {No skills} =1 {1 skill} other {{count} skills}}",
   "@competencies_count": {
-    "description": "Number of competencies available",
+    "description": "Shows the number of skills with plural handling",
     "placeholders": {
       "count": {
         "type": "int"
@@ -140,15 +140,15 @@
   },
   "show_more": "Show more",
   "@show_more": {
-    "description": "Text for the 'Show More' button"
+    "description": "Text for the 'Show more' button"
   },
   "show_less": "Show less",
   "@show_less": {
-    "description": "Text for the 'Show Less' button"
+    "description": "Text for the 'Show less' button"
   },
-  "discover_job_profile": "Discover the skills profile for the {jobTitle} job!",
+  "discover_job_profile": "Discover the skills profile for the job {jobTitle}!",
   "@discover_job_profile": {
-    "description": "Text inviting the user to view a job's skills profile",
+    "description": "Text encouraging the user to discover a job's skills profile",
     "placeholders": {
       "jobTitle": {
         "type": "String",
@@ -156,9 +156,9 @@
       }
     }
   },
-  "job_profile_page_title": "Murya - Skills Profile: {jobTitle}",
+  "job_profile_page_title": "Murya - Skills profile: {jobTitle}",
   "@job_profile_page_title": {
-    "description": "Title of the job skills profile page",
+    "description": "Title of a job's skills profile page",
     "placeholders": {
       "jobTitle": {
         "type": "String",
@@ -168,34 +168,34 @@
   },
   "link_copied": "Link copied to clipboard",
   "@link_copied": {
-    "description": "Notification that the link has been copied to the clipboard"
+    "description": "Message shown when the link is copied to the clipboard"
   },
-  "discover_cf_profile": "Discover the skills profile for the {cfTitle} competency family!",
+  "discover_cf_profile": "Discover the skills profile for the skill family {cfTitle}!",
   "@discover_cf_profile": {
-    "description": "Text inviting the user to view a competency family's skills profile",
+    "description": "Text encouraging the user to discover a skill family's skills profile",
     "placeholders": {
       "cfTitle": {
         "type": "String",
-        "example": "Software Development"
+        "example": "Mobile Development"
       }
     }
   },
-  "hard_skill": "Hard Skill",
-  "soft_skill": "Soft Skill",
+  "hard_skill": "Hard skill",
+  "soft_skill": "Soft skill",
   "easy": "Easy",
   "medium": "Medium",
   "hard": "Hard",
   "expert": "Expert",
-  "consult": "Consult",
+  "consult": "View",
   "@consult": {
-    "description": "Button to consult or view more details"
+    "description": "Text for the 'View' button"
   },
   "ranking_per_day": "Today",
-  "ranking_per_week": "This Week",
-  "ranking_per_month": "This Month",
-  "ranking": "Ranking",
+  "ranking_per_week": "This week",
+  "ranking_per_month": "This month",
+  "ranking": "Leaderboard",
   "@ranking": {
-    "description": "Label for ranking"
+    "description": "Title for the leaderboard section"
   },
   "popup_job_selection_title": "Choose your job",
   "@popup_job_selection_title": {
@@ -203,25 +203,25 @@
   },
   "popup_job_selection_technician_title": "Cybersecurity Technician",
   "@popup_job_selection_technician_title": {
-    "description": "Title of the cybersecurity technician job in the popup"
+    "description": "Job title for cybersecurity technician in the popup"
   },
-  "popup_job_selection_technician_subtitle": "Protect critical infrastructures. Become a sought-after expert.",
+  "popup_job_selection_technician_subtitle": "Protect critical infrastructure. Become a highly sought-after expert.",
   "@popup_job_selection_technician_subtitle": {
-    "description": "Subtitle of the cybersecurity technician job in the popup"
+    "description": "Job subtitle for cybersecurity technician in the popup"
   },
   "popup_job_selection_continue_button": "Continue",
   "@popup_job_selection_continue_button": {
-    "description": "Text of the continue button in the job selection popup"
+    "description": "Text of the Continue button in the job selection popup"
   },
-  "popup_job_selection_other_expertise_label": "Looking for another expertise?",
+  "popup_job_selection_other_expertise_label": "Aiming for another expertise?",
   "@popup_job_selection_other_expertise_label": {
     "description": "Label for the other expertise section in the popup"
   },
-  "popup_job_selection_search_hint": "Ex: Developer, Product Manager...",
+  "popup_job_selection_search_hint": "e.g.: Developer, Product Manager...",
   "@popup_job_selection_search_hint": {
-    "description": "Hint text for the other expertise search in the popup"
+    "description": "Hint text for searching other expertise in the popup"
   },
-  "resourceViewerPageTitle": "ResourceViewer Page",
+  "resourceViewerPageTitle": "Resource Viewer Page",
   "@resourceViewerPageTitle": {
     "description": "Title of the resource viewer page"
   },
@@ -231,39 +231,39 @@
   },
   "homeScreenTitle": "Home",
   "@homeScreenTitle": {
-    "description": "Title for the Home screen"
+    "description": "Title of the home screen"
   },
   "mainSearchTitle": "Main Search",
   "@mainSearchTitle": {
-    "description": "Title for the Main Search screen"
+    "description": "Title of the main search screen"
   },
-  "mediaLibrary": "Media Library",
+  "mediaLibrary": "Media library",
   "@mediaLibrary": {
     "description": "Label for the media library"
   },
   "summary": "Summary",
   "@summary": {
-    "description": "Label for the Table of Contents/Summary"
+    "description": "Label for the summary"
   },
   "article": "Article",
   "@article": {
     "description": "Label for the Article section"
   },
-  "quiz_ready_to_evaluate": "Ready to evaluate yourself?",
+  "quiz_ready_to_evaluate": "Ready to assess yourself?",
   "@quiz_ready_to_evaluate": {
-    "description": "Popup title before starting the quiz"
+    "description": "Title of the popup before starting the quiz"
   },
-  "quiz_start_description_1": "You are about to start the questionnaire for the Product Manager job.",
+  "quiz_start_description_1": "You''re about to start the Product Manager questionnaire.",
   "@quiz_start_description_1": {
-    "description": "First line of quiz start description"
+    "description": "First line of the quiz start description"
   },
-  "quiz_start_description_2": "It consists of 10 multiple-choice questions.",
+  "quiz_start_description_2": "It includes 10 multiple-choice questions.",
   "@quiz_start_description_2": {
-    "description": "Second line of quiz start description"
+    "description": "Second line of the quiz start description"
   },
-  "quiz_start_description_3": "Your answers will help create your personalized resource.",
+  "quiz_start_description_3": "Your answers will be used to create your personalized resource.",
   "@quiz_start_description_3": {
-    "description": "Third line of quiz start description"
+    "description": "Third line of the quiz start description"
   },
   "quiz_start_advice": "Tip: Answer instinctively for a more accurate analysis. It takes less than 5 minutes!",
   "@quiz_start_advice": {
@@ -275,31 +275,31 @@
   },
   "quiz_question_counter": "Question {current}/{total}",
   "@quiz_question_counter": {
-    "description": "Counter for current question",
+    "description": "Counter for the current question",
     "placeholders": {
-        "current": { "type": "int" },
-        "total": { "type": "int" }
+      "current": { "type": "int" },
+      "total": { "type": "int" }
     }
   },
   "quiz_verify": "Check",
   "@quiz_verify": {
-    "description": "Button to verify the answer"
+    "description": "Button to check the answer"
   },
-  "quiz_completed_title": "Evaluation completed!",
+  "quiz_completed_title": "Assessment complete!",
   "@quiz_completed_title": {
-    "description": "Title when quiz is finished"
+    "description": "Title shown when the quiz is finished"
   },
   "quiz_completed_subtitle": "Well done, your 10 answers have been analyzed!",
   "@quiz_completed_subtitle": {
-    "description": "Subtitle when quiz is finished"
+    "description": "Subtitle shown when the quiz is finished"
   },
-  "quiz_completed_description": "The skills diagram is updated and you can create the perfect resource to keep progressing.",
+  "quiz_completed_description": "The skills chart has been updated and you can create the perfect resource to keep improving.",
   "@quiz_completed_description": {
-    "description": "Description when quiz is finished"
+    "description": "Description shown when the quiz is finished"
   },
-  "quiz_see_my_space": "See my space",
+  "quiz_see_my_space": "Go to my space",
   "@quiz_see_my_space": {
-    "description": "Button to go to user space after quiz"
+    "description": "Button to access the user space after the quiz"
   },
   "sampleResource": "Sample Resource",
   "@sampleResource": {
@@ -313,43 +313,43 @@
   "@resourceLabelSingular_podcast": { "description": "Singular label for podcast" },
   "resourceLabelSingular_default": "a resource",
   "@resourceLabelSingular_default": { "description": "Singular label for generic resource" },
-  "popup_validate": "Validate",
-  "@popup_validate": { "description": "Validate button text" },
+  "popup_validate": "Confirm",
+  "@popup_validate": { "description": "Text of the confirm button" },
   "popup_unlock_resource_title": "Unlock your resource?",
-  "@popup_unlock_resource_title": { "description": "Title for unlock resource popup" },
-  "popup_unlock_resource_description": "Use your points to generate your personalized article. Murya AI will instantly adapt it to your answers of the day.",
-  "@popup_unlock_resource_description": { "description": "Description for unlock resource popup" },
+  "@popup_unlock_resource_title": { "description": "Title of the unlock popup" },
+  "popup_unlock_resource_description": "Use your points to generate your personalized article. Murya''s AI will instantly adapt it to your answers for the day.",
+  "@popup_unlock_resource_description": { "description": "Description of the unlock popup" },
   "cost_creation_label": "Creation cost",
-  "@cost_creation_label": { "description": "Label for creation cost" },
+  "@cost_creation_label": { "description": "Label for the creation cost" },
   "cost_current_balance_label": "Your current balance",
-  "@cost_current_balance_label": { "description": "Label for current balance" },
+  "@cost_current_balance_label": { "description": "Label for the current balance" },
   "cost_remaining_balance_label": "Your remaining balance (after creation)",
-  "@cost_remaining_balance_label": { "description": "Label for remaining balance" },
+  "@cost_remaining_balance_label": { "description": "Label for the remaining balance" },
   "loading_creating_resource": "Creating your resource...",
   "@loading_creating_resource": { "description": "Loading text during creation" },
   "loading_murya_working": "Murya is working!",
   "@loading_murya_working": { "description": "Loading title during creation" },
-  "loading_analyzing_answers": "We are analyzing your 10 answers to write a unique article, perfectly adapted to the skills you need to strengthen.",
+  "loading_analyzing_answers": "We''re analyzing your 10 answers to write a unique article, perfectly tailored to the skills you need to strengthen.",
   "@loading_analyzing_answers": { "description": "Loading description during creation" },
   "create_resource_button": "Create {resourceLabel}",
   "@create_resource_button": {
-    "description": "Button text to create a resource",
+    "description": "Text of the button to create a resource",
     "placeholders": {
-        "resourceLabel": { "type": "String" }
+      "resourceLabel": { "type": "String" }
     }
   },
   "resourcesPageTitle": "Resources Page",
   "@resourcesPageTitle": { "description": "Title for the resources page" },
   "page_title_resources": "Resources",
-  "@page_title_resources": { "description": "Heading for resources screen" },
+  "@page_title_resources": { "description": "Header for the resources screen" },
   "section_articles": "Articles",
   "@section_articles": { "description": "Section header for articles" },
   "section_videos": "Videos",
   "@section_videos": { "description": "Section header for videos" },
   "section_podcasts": "Podcasts",
   "@section_podcasts": { "description": "Section header for podcasts" },
-  "quiz_daily_performance": "Your daily performance",
+  "quiz_daily_performance": "Your performance today",
   "quiz_good_answers": "Correct answers",
-  "quiz_answers_to_review": "Answers to Review",
+  "quiz_answers_to_review": "Answers to review",
   "quiz_reward": "Reward"
 }

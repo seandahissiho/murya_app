@@ -20,7 +20,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get landing_page_title => 'Page d’accueil';
 
   @override
-  String get landing_first_title => 'Développez votre carrière';
+  String get landing_first_title => 'Parcours';
 
   @override
   String get landing_first_subtitle =>
@@ -33,14 +33,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get landing_first_button2 => 'Connexion';
 
   @override
-  String get landing_second_title => 'Mesurez vos compétences';
+  String get landing_second_title => 'Compétences';
 
   @override
   String get landing_second_subtitle =>
       'Choisissez votre métier et lancez-vous. Des questions courtes, des progrès concrets.';
 
   @override
-  String get landing_second_button => 'Découvrir';
+  String get landing_second_button => 'Perfectionner';
 
   @override
   String get footer_language_english => '🇬🇧 English';
@@ -67,14 +67,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get search_placeholder => 'Rechercher des compétences et des métiers';
 
   @override
-  String get user_ressources_module_title => 'Personnalisez vos ressources';
+  String get user_ressources_module_title => 'Ressources';
 
   @override
   String get user_ressources_module_subtitle =>
       'La génération des contenus de Murya est instantanée';
 
   @override
-  String get user_ressources_module_button => 'Collecter';
+  String get user_ressources_module_button => 'Personnaliser';
 
   @override
   String searchNoResults(String query) {

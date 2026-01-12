@@ -14,7 +14,7 @@
   "@landing_page_title": {
     "description": "Titre de la page d'atterrissage"
   },
-  "landing_first_title": "Développez votre carrière",
+  "landing_first_title": "Parcours",
   "@landing_first_title": {
     "description": "Titre de la première boîte sur la page d'atterrissage"
   },
@@ -30,7 +30,7 @@
   "@landing_first_button2": {
     "description": "Texte du second bouton de la première boîte"
   },
-  "landing_second_title": "Mesurez vos compétences",
+  "landing_second_title": "Compétences",
   "@landing_second_title": {
     "description": "Titre de la deuxième boîte sur la page d'atterrissage"
   },
@@ -38,7 +38,7 @@
   "@landing_second_subtitle": {
     "description": "Sous-titre de la deuxième boîte sur la page d'atterrissage"
   },
-  "landing_second_button": "Découvrir",
+  "landing_second_button": "Perfectionner",
   "@landing_second_button": {
     "description": "Texte du bouton de la deuxième boîte"
   },
@@ -74,7 +74,7 @@
   "@search_placeholder": {
     "description": "Texte d'espace réservé pour la barre de recherche"
   },
-  "user_ressources_module_title": "Personnalisez vos ressources",
+  "user_ressources_module_title": "Ressources",
   "@user_ressources_module_title": {
     "description": "Titre du module des ressources de l'utilisateur"
   },
@@ -82,7 +82,7 @@
   "@user_ressources_module_subtitle": {
     "description": "Sous-titre du module des ressources de l'utilisateur"
   },
-  "user_ressources_module_button": "Collecter",
+  "user_ressources_module_button": "Personnaliser",
   "@user_ressources_module_button": {
     "description": "Texte du bouton dans le module des ressources de l'utilisateur"
   },
