@@ -1,23 +1,21 @@
 part of 'authentication.dart';
 
-class TabletLoginScreen extends StatelessWidget {
-  const TabletLoginScreen({super.key});
+class TabletAuthenticationScreen extends StatelessWidget {
+  final AuthenticationTab initialTab;
+
+  const TabletAuthenticationScreen({super.key, required this.initialTab});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Login Screen'),
-    );
-  }
-}
-
-class TabletRegisterScreen extends StatelessWidget {
-  const TabletRegisterScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Register Screen'),
+    return DefaultTabController(
+      length: 2,
+      initialIndex: _tabIndex(initialTab),
+      child: const SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [],
+        ),
+      ),
     );
   }
 }

@@ -240,7 +240,8 @@ class Module {
             return;
           }
           final user = profileState.user;
-          final hasEmail = (user.email ?? '').isNotEmpty;
+          if (!context.mounted) return;
+          const hasEmail = true; //(user.email ?? '').isNotEmpty;
           navigateToPath(context, to: hasEmail ? AppRoutes.profile : AppRoutes.login);
         };
       case 'job':

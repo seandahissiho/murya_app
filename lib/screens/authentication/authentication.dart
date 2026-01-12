@@ -8,6 +8,13 @@ import 'package:murya/screens/base.dart';
 part '_authentication_mobile.dart';
 part '_authentication_tablet+.dart';
 
+enum AuthenticationTab {
+  login,
+  register,
+}
+
+int _tabIndex(AuthenticationTab tab) => tab == AuthenticationTab.login ? 0 : 1;
+
 class LoginLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.login];
@@ -19,7 +26,7 @@ class LoginLocation extends BeamLocation<RouteInformationSerializable<dynamic>> 
       BeamPage(
         key: ValueKey('login-page-$languageCode'),
         title: 'Login',
-        child: const LoginScreen(),
+        child: const AuthenticationScreen(initialTab: AuthenticationTab.login),
       ),
     ];
   }
@@ -36,7 +43,7 @@ class RegisterLocation extends BeamLocation<RouteInformationSerializable<dynamic
       BeamPage(
         key: ValueKey('register-page-$languageCode'),
         title: 'Register',
-        child: const RegisterScreen(),
+        child: const AuthenticationScreen(initialTab: AuthenticationTab.register),
       ),
     ];
   }
@@ -59,28 +66,17 @@ class ForgotPasswordLocation extends BeamLocation<RouteInformationSerializable<d
   }
 }
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class AuthenticationScreen extends StatelessWidget {
+  final AuthenticationTab initialTab;
+
+  const AuthenticationScreen({super.key, required this.initialTab});
 
   @override
   Widget build(BuildContext context) {
-    return const BaseScreen(
-      mobileScreen: MobileLoginScreen(),
-      tabletScreen: TabletLoginScreen(),
-      desktopScreen: TabletLoginScreen(),
-    );
-  }
-}
-
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const BaseScreen(
-      mobileScreen: MobileRegisterScreen(),
-      tabletScreen: TabletRegisterScreen(),
-      desktopScreen: TabletRegisterScreen(),
+    return BaseScreen(
+      mobileScreen: MobileAuthenticationScreen(initialTab: initialTab),
+      tabletScreen: TabletAuthenticationScreen(initialTab: initialTab),
+      desktopScreen: TabletAuthenticationScreen(initialTab: initialTab),
     );
   }
 }
