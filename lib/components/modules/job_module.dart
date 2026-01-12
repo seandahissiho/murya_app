@@ -63,42 +63,49 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
             setState(() {});
           },
           builder: (context, state) {
-            return AnimatedSwitcher(
-              duration: const Duration(milliseconds: 2500),
-              switchInCurve: Curves.easeIn,
-              switchOutCurve: Curves.easeOut,
-              transitionBuilder: (child, animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: child,
-                );
-              },
-              child: state.userCurrentJob != null
-                  ? AppModuleWidget(
-                      key: ValueKey('job-module-${widget.module.id}-loaded'),
-                      module: widget.module,
-                      onCardTap: () {
-                        navigateToPath(
-                          context,
-                          to: AppRoutes.jobDetails.replaceAll(':id', state.userCurrentJob!.jobId!),
-                        );
-                      },
-                      content: JobModuleContent(userJob: state.userCurrentJob!),
-                      onSizeChanged: widget.onSizeChanged,
-                      dragHandle: widget.dragHandle,
-                      tileKey: widget.tileKey,
-                      cardMargin: widget.cardMargin,
-                    )
-                  : AppModuleWidget(
-                      key: ValueKey('job-module-${widget.module.id}-empty'),
-                      module: widget.module,
-                      // backgroundImage: AppImages.homeBox2Path,
-                      content: null,
-                      onSizeChanged: widget.onSizeChanged,
-                      dragHandle: widget.dragHandle,
-                      tileKey: widget.tileKey,
-                      cardMargin: widget.cardMargin,
-                    ),
+            return Container(
+              key: widget.tileKey,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 2500),
+                switchInCurve: Curves.easeIn,
+                switchOutCurve: Curves.easeOut,
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                },
+                child: state.userCurrentJob != null
+                    ? AppModuleWidget(
+                        key: ValueKey('job-module-${widget.module.id}-loaded'),
+                        module: widget.module,
+                        onCardTap: () {
+                          navigateToPath(
+                            context,
+                            to: AppRoutes.jobDetails.replaceAll(':id', state.userCurrentJob!.jobId!),
+                          );
+                        },
+                        content: JobModuleContent(userJob: state.userCurrentJob!),
+                        onSizeChanged: widget.onSizeChanged,
+                        dragHandle: widget.dragHandle,
+                        cardMargin: widget.cardMargin,
+                      )
+                    : AppModuleWidget(
+                        key: ValueKey('job-module-${widget.module.id}-empty'),
+                        module: widget.module,
+                        onCardTap: () {
+                          navigateToPath(
+                            context,
+                            to: AppRoutes.jobDetails.replaceAll(':id', state.userCurrentJob!.jobId!),
+                          );
+                        },
+                        // backgroundImage: AppImages.homeBox2Path,
+                        content: JobModuleContent(userJob: state.userCurrentJob ?? UserJob.empty()),
+                        onSizeChanged: widget.onSizeChanged,
+                        dragHandle: widget.dragHandle,
+                        cardMargin: widget.cardMargin,
+                      ),
+              ),
             );
           },
         );
@@ -127,7 +134,7 @@ class _JobModuleContentState extends State<JobModuleContent> {
   @override
   void initState() {
     _userJob = widget.userJob;
-    _job = _userJob.job!;
+    _job = _userJob.job ?? Job.empty();
     context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
     _checkQuizAvailability();
     super.initState();
