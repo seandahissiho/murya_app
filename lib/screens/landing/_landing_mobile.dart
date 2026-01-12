@@ -73,7 +73,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                       footerHey +
                       AppSpacing.pageMargin +
                       MediaQuery.of(context).padding.bottom;
-                  if (mainBodyHey > 2 * size_1H) {
+                  if (mainBodyHey > 4 * size_1H) {
                     mainBodyHeight = 0;
                   }
                   log('MaxHeight: ${constraints.maxHeight}, mainBodyHey: $mainBodyHey, footerHey: $footerHey');
