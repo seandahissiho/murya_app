@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
+import 'package:murya/config/app_config.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/device_id_service.dart';
 import 'package:murya/repositories/app.repository.dart';
@@ -19,6 +20,7 @@ part 'authentication_state.dart';
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   late final NotificationBloc notificationBloc;
   late final AuthenticationRepository authenticationRepository;
+  late final JobRepository jobRepository;
   Timer? timer;
   BuildContext context;
 
@@ -66,6 +68,25 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
     notificationBloc = BlocProvider.of<NotificationBloc>(context);
     authenticationRepository = RepositoryProvider.of<AuthenticationRepository>(context);
+    jobRepository = RepositoryProvider.of<JobRepository>(context);
+  }
+
+  Future<bool> _setDefaultCurrentJob() async {
+    final jobId = AppConfig.defaultJobId;
+    if (jobId.isEmpty) {
+      return false;
+    }
+    const maxAttempts = 2;
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      final result = await jobRepository.setUserCurrentJob(jobId);
+      if (!result.isError && result.data != null) {
+        return true;
+      }
+      if (attempt < maxAttempts) {
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
+    }
+    return false;
   }
 
   FutureOr<void> _onTryAutoLogin(TryAutoLogin event, Emitter<AuthenticationState> emit) async {
@@ -80,13 +101,21 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         },
       );
       if (tempResult.isError) {
+        await _onTempRegisterEvent(TempRegisterEvent(deviceId: deviceId), emit);
         _initialized = true;
-        await unAuthenticate(emit);
+        if (_token.isEmpty) {
+          await unAuthenticate(emit);
+        }
         return;
       }
       _token = tempResult.data!.$1;
       // _user = tempResult.data!.$3;
       updateRepositories(tempResult.data!.$1);
+      final jobSet = await _setDefaultCurrentJob();
+      if (!jobSet) {
+        await unAuthenticate(emit);
+        return;
+      }
       _initialized = true;
       emit(const Authenticated(
         // user: _user,
@@ -98,6 +127,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       _token = result.data!.$1;
       // _user = result.data!.$3;
       updateRepositories(result.data!.$1);
+      final jobSet = await _setDefaultCurrentJob();
+      if (!jobSet) {
+        await unAuthenticate(emit);
+        return;
+      }
       _initialized = true;
       emit(Authenticated(
         // user: _user,
@@ -120,6 +154,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     _token = result.data!.$1;
     // _user = result.data!.$3;
     updateRepositories(_token);
+    final jobSet = await _setDefaultCurrentJob();
+    if (!jobSet) {
+      await unAuthenticate(emit);
+      return;
+    }
     notificationBloc.add(SuccessNotificationEvent(message: 'Connexion réussie.'));
     emit(const Authenticated(
       // user: _user,
@@ -232,6 +271,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     _token = result.data!.$1;
     // _user = result.data!.$3;
     updateRepositories(_token);
+    final jobSet = await _setDefaultCurrentJob();
+    if (!jobSet) {
+      await unAuthenticate(emit);
+      return;
+    }
     await Future.delayed(const Duration(milliseconds: 500));
     // notificationBloc.add(SuccessNotificationEvent(message: 'Connexion réussie.'));
     emit(const Authenticated(justLoggedIn: false));
@@ -251,6 +295,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     _token = result.data!.$1;
     // _user = result.data!.$3;
     updateRepositories(_token);
+    final jobSet = await _setDefaultCurrentJob();
+    if (!jobSet) {
+      await unAuthenticate(emit);
+      return;
+    }
     notificationBloc.add(SuccessNotificationEvent(message: 'Inscription réussie.'));
     emit(const Authenticated(justLoggedIn: true));
   }

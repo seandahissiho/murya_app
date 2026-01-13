@@ -58,10 +58,14 @@ final class SignOutEvent extends AuthenticationEvent {
 final class TempRegisterEvent extends AuthenticationEvent {
   late final String deviceId;
 
-  TempRegisterEvent() {
+  TempRegisterEvent({String? deviceId}) {
+    if (deviceId != null) {
+      this.deviceId = deviceId;
+      return;
+    }
     final deviceIdService = DeviceIdService();
     deviceIdService.getUniqueDeviceId().then((id) {
-      deviceId = id;
+      this.deviceId = id;
     });
   }
 

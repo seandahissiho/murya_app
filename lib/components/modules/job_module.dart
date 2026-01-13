@@ -1,15 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
-import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/modules/app_module.dart';
 import 'package:murya/components/score.dart';
@@ -19,6 +14,7 @@ import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
+import 'package:murya/models/job_kiviat.dart';
 import 'package:murya/models/module.dart';
 import 'package:murya/models/user_job_competency_profile.dart';
 import 'package:murya/screens/job_details/job_details.dart';
@@ -44,15 +40,25 @@ class JobModuleWidget extends StatefulWidget {
 }
 
 class _JobModuleWidgetState extends State<JobModuleWidget> {
+  UserJob _userJob = UserJob();
+  Duration? nextQuizAvailableIn;
+  Timer? _countdownTimer;
+  Job _job = Job.empty();
+  int _detailsLevel = 0;
+  UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
+
   @override
   void initState() {
-    log("JobModuleWidget initState");
     context.read<JobBloc>().add(LoadUserCurrentJob(context: context));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final bool isMobile = DeviceHelper.isMobile(context);
+    final locale = AppLocalizations.of(context);
+    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
     return BlocConsumer<ModulesBloc, ModulesState>(
       listener: (context, state) {
         setState(() {});
@@ -60,9 +66,19 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
       builder: (context, state) {
         return BlocConsumer<JobBloc, JobState>(
           listener: (context, state) {
+            if (state is UserJobDetailsLoaded) {
+              _userJob = state.userJob;
+              _job = _userJob.job!;
+              context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
+              _checkQuizAvailability();
+            }
+            if (state is UserJobCompetencyProfileLoaded) {
+              _userJobCompetencyProfile = state.profile;
+            }
             setState(() {});
           },
           builder: (context, state) {
+            final UserJob userCurrentJob = state.userCurrentJob ?? UserJob.empty();
             return Container(
               key: widget.tileKey,
               child: AnimatedSwitcher(
@@ -75,190 +91,44 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                     child: child,
                   );
                 },
-                child: state.userCurrentJob != null
-                    ? AppModuleWidget(
-                        key: ValueKey('job-module-${widget.module.id}-loaded'),
-                        module: widget.module,
-                        onCardTap: () {
-                          navigateToPath(
-                            context,
-                            to: AppRoutes.jobDetails.replaceAll(':id', state.userCurrentJob!.jobId!),
-                          );
-                        },
-                        content: JobModuleContent(userJob: state.userCurrentJob!),
-                        onSizeChanged: widget.onSizeChanged,
-                        dragHandle: widget.dragHandle,
-                        cardMargin: widget.cardMargin,
-                      )
-                    : AppModuleWidget(
-                        key: ValueKey('job-module-${widget.module.id}-empty'),
-                        module: widget.module,
-                        onCardTap: () {
-                          navigateToPath(
-                            context,
-                            to: AppRoutes.jobDetails.replaceAll(':id', state.userCurrentJob!.jobId!),
-                          );
-                        },
-                        // backgroundImage: AppImages.homeBox2Path,
-                        content: JobModuleContent(userJob: state.userCurrentJob ?? UserJob.empty()),
-                        onSizeChanged: widget.onSizeChanged,
-                        dragHandle: widget.dragHandle,
-                        cardMargin: widget.cardMargin,
-                      ),
+                child: AppModuleWidget(
+                  key: ValueKey('job-module-${widget.module.id}-empty'),
+                  module: widget.module,
+                  onCardTap: () {
+                    navigateToPath(
+                      context,
+                      to: AppRoutes.jobDetails.replaceAll(':id', userCurrentJob.jobId!),
+                    );
+                  },
+                  hasData: state.userCurrentJob != null,
+                  titleContent: userCurrentJob.job?.title ?? '',
+                  subtitleContent: ScoreWidget(value: context.read<ProfileBloc>().user.diamonds),
+                  bodyContent: SizedBox(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: _diagramBuilder(locale, theme, options),
+                  ),
+                  footerContent: AppXButton(
+                    shrinkWrap: false,
+                    onPressed: () {
+                      if (nextQuizAvailableIn != null) return;
+                      navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', userCurrentJob.jobId!));
+                    },
+                    isLoading: false,
+                    text: nextQuizAvailableIn == null
+                        ? locale.evaluateSkills
+                        : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
+                    disabled: nextQuizAvailableIn != null,
+                  ),
+                  onSizeChanged: widget.onSizeChanged,
+                  dragHandle: widget.dragHandle,
+                  cardMargin: widget.cardMargin,
+                ),
               ),
             );
           },
         );
       },
-    );
-  }
-}
-
-class JobModuleContent extends StatefulWidget {
-  final UserJob userJob;
-
-  const JobModuleContent({super.key, required this.userJob});
-
-  @override
-  State<JobModuleContent> createState() => _JobModuleContentState();
-}
-
-class _JobModuleContentState extends State<JobModuleContent> {
-  UserJob _userJob = UserJob();
-  Duration? nextQuizAvailableIn;
-  Timer? _countdownTimer;
-  Job _job = Job.empty();
-  int _detailsLevel = 0;
-  UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
-
-  @override
-  void initState() {
-    _userJob = widget.userJob;
-    _job = _userJob.job ?? Job.empty();
-    context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
-    _checkQuizAvailability();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final bool isMobile = DeviceHelper.isMobile(context);
-    final locale = AppLocalizations.of(context);
-    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
-
-    return BlocListener<AppBloc, AppState>(
-      listener: (context, state) {
-        // Reload profile when language changes
-        context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
-      },
-      listenWhen: (previous, current) => previous.language.code != current.language.code,
-      child: BlocConsumer<JobBloc, JobState>(
-        listener: (context, state) {
-          log("JobModuleContent JobBloc listener: $state");
-          if (state is UserJobDetailsLoaded) {
-            _userJob = state.userJob;
-            _job = _userJob.job!;
-            // context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: _userJob.jobId!));
-            context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
-            context.read<ResourcesBloc>().add(LoadResources(userJobId: _userJob.id!));
-            _checkQuizAvailability();
-          }
-          if (state is UserJobCompetencyProfileLoaded) {
-            _userJobCompetencyProfile = state.profile;
-          }
-          setState(() {});
-        },
-        builder: (context, state) {
-          return LayoutBuilder(builder: (context, constraints) {
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Expanded(
-                  flex: 1000,
-                  child: InkWell(
-                    onTap: () {
-                      navigateToPath(
-                        context,
-                        to: AppRoutes.jobDetails.replaceAll(':id', _userJob.jobId!),
-                      );
-                    },
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                width: constraints.maxWidth * 0.95,
-                                child: AutoSizeText(
-                                  _userJob.job?.title ?? '',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.anton(
-                                    color: AppColors.textInverted,
-                                    fontSize: isMobile
-                                        ? theme.textTheme.headlineSmall!.fontSize!
-                                        : theme.textTheme.displaySmall!.fontSize!,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                  minFontSize: theme.textTheme.bodyLarge!.fontSize!,
-                                ),
-                              ),
-                            ),
-                            AppSpacing.groupMarginBox,
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                right: AppSpacing.elementMargin,
-                                top: AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
-                              ),
-                              child: ScoreWidget(
-                                  value: context.read<ProfileBloc>().user.diamonds, textColor: AppColors.textInverted),
-                            ),
-                          ],
-                        ),
-                        AppSpacing.groupMarginBox,
-                        Expanded(flex: 2, child: _diagramBuilder(locale, theme, options)),
-                      ],
-                    ),
-                  ),
-                ),
-                if (constraints.maxHeight >= 163 + (isMobile ? 0 : 36)) ...[
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      AppSpacing.groupMarginBox,
-                      AppXButton(
-                        shrinkWrap: false,
-                        onPressed: () {
-                          log("Evaluate Skills button pressed");
-                          if (nextQuizAvailableIn != null) return;
-                          navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _userJob.jobId!));
-                        },
-                        isLoading: false,
-                        text: nextQuizAvailableIn == null
-                            ? locale.evaluateSkills
-                            : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
-                        disabled: nextQuizAvailableIn != null,
-                        borderColor: AppColors.whiteSwatch,
-                        bgColor: AppColors.whiteSwatch,
-                        fgColor: AppColors.primaryDefault,
-                        // disabledColor: AppColors.primaryDisabled,
-                      ),
-                    ],
-                  ),
-                ],
-              ],
-            );
-          });
-        },
-      ),
     );
   }
 
@@ -308,16 +178,22 @@ class _JobModuleContentState extends State<JobModuleContent> {
   _diagramBuilder(AppLocalizations locale, ThemeData theme, List<String> options) {
     return Center(
       child: LayoutBuilder(builder: (context, constraints) {
+        final AppModuleType moduleType = widget.module.boxType;
+        final bool isMobile = DeviceHelper.isMobile(context);
+        final bool smallHeight = moduleType == AppModuleType.type1 || moduleType == AppModuleType.type1_2 || isMobile;
         return SizedBox(
           height: constraints.maxWidth,
           width: constraints.maxWidth,
           child: Center(
             child: InteractiveRoundedRadarChart(
               labels: _userJobCompetencyProfile.competencyFamilies.map((cf) => cf.name).toList(),
-              defaultValues: _userJobCompetencyProfile.kiviatValues,
+              defaultValues: _userJobCompetencyProfile.kiviatValues.isEmpty
+                  ? _job.kiviatValues(JobProgressionLevel.JUNIOR)
+                  : _userJobCompetencyProfile.kiviatValues,
               userValues: _userJobCompetencyProfile.kiviatValues,
               labelBgColor: AppColors.whiteSwatch,
               labelTextColor: AppColors.primaryDefault,
+              hideTexts: smallHeight,
             ),
           ),
         );

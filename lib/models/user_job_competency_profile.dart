@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/job_kiviat.dart';
@@ -41,7 +39,6 @@ class UserJobCompetencyProfile {
     //             (kiviatList as List<dynamic>).map((k) => JobKiviat.fromJson(k as Map<String, dynamic>)).toList())
     //         .toList()
     //     : null;
-    log('kiviats parsed: ${kiviats != null ? kiviats.length : 'null'}');
     return UserJobCompetencyProfile(
       userJobId: userJobId,
       job: job,

@@ -153,7 +153,6 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                                         right = AppSpacing.pageMargin;
                                       }
 
-                                      log('Building module at index $i, concat: $concat2');
                                       return Padding(
                                         padding: EdgeInsets.only(
                                           left: left,
@@ -222,7 +221,6 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
     if (footerContext != null) {
       final box = footerContext.findRenderObject() as RenderBox;
       footerHey = box.size.height;
-      debugPrint('Footer height: $footerHey');
       setState(() {});
     }
     setState(() {});
