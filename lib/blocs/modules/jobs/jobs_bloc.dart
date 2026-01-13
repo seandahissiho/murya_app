@@ -71,7 +71,6 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     if (cachedResult.data != null) {
       _userCurrentJob = cachedResult.data;
       emit(UserJobDetailsLoaded(userJob: _userCurrentJob!, userCurrentJob: _userCurrentJob));
-      return;
     }
     if (event.context.mounted == false) return;
 

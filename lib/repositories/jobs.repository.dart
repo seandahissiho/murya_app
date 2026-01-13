@@ -90,6 +90,22 @@ class JobRepository extends BaseRepository {
     return Result.success(null, null);
   }
 
+  Future<Result<UserJob?>> setUserCurrentJob(String jobId) async {
+    return AppResponse.execute(
+      action: () async {
+        final response = await api.dio.post('/userJobs/current/$jobId');
+
+        if (response.data["data"] != null) {
+          await cacheService.save('user_current_job', response.data["data"]);
+        }
+
+        final UserJob? job = response.data["data"] != null ? UserJob.fromJson(response.data["data"]) : null;
+        return job;
+      },
+      parentFunctionName: 'JobRepository -> setUserCurrentJob',
+    );
+  }
+
   // getUserJobDetails
   Future<Result<UserJob>> getUserJobDetails(String jobId) async {
     return AppResponse.execute(

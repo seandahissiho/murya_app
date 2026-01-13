@@ -140,7 +140,6 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                                           (i > 1 && concats.contains(i - 2));
                                       double left = isFirstOfRow ? 0 : AppSpacing.elementMargin / 2;
 
-                                      log('Building module at index $i, concat: ${concatRow || concatColumn}');
                                       return Padding(
                                         padding: EdgeInsets.only(
                                           left: left,
@@ -215,7 +214,6 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
     if (footerContext != null) {
       final box = footerContext.findRenderObject() as RenderBox;
       footerHey = box.size.height;
-      debugPrint('Footer height: $footerHey');
       setState(() {});
     }
     setState(() {});

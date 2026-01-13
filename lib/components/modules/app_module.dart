@@ -16,6 +16,11 @@ import 'package:murya/models/module.dart';
 class AppModuleWidget extends StatefulWidget {
   final Module module;
   final VoidCallback? onCardTap;
+  final bool hasData;
+  final String? titleContent;
+  final Widget? subtitleContent;
+  final Widget? bodyContent;
+  final Widget? footerContent;
   final Widget? content;
   final String? backgroundImage;
   final Widget? dragHandle;
@@ -36,6 +41,11 @@ class AppModuleWidget extends StatefulWidget {
     super.key,
     required this.module,
     this.onCardTap,
+    this.hasData = false,
+    this.titleContent,
+    this.subtitleContent,
+    this.bodyContent,
+    this.footerContent,
     this.content,
     // this.title = '',
     // this.subtitle = '',
@@ -143,9 +153,9 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     final ThemeData theme = Theme.of(context);
     final appSize = AppSize(context);
     final bool isMobile = DeviceHelper.isMobile(context);
-    final VoidCallback? primaryAction = widget.module.button1OnPressed(context);
-    final VoidCallback? secondaryAction = widget.module.button2OnPressed(context);
-    final VoidCallback? cardTapAction = widget.onCardTap ?? primaryAction;
+    // final VoidCallback? primaryAction = widget.module.button1OnPressed(context);
+    // final VoidCallback? secondaryAction = widget.module.button2OnPressed(context);
+    // final VoidCallback? cardTapAction = widget.onCardTap ?? primaryAction;
 
     return Container(
       key: widget.tileKey,
@@ -184,34 +194,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
               children: [
                 Padding(
                   padding: getBoxPaddingForModuleType(context, widget.module.boxType, appSize, isMobile),
-                  child: widget.content ??
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          final bool isCompactHeight = constraints.maxHeight < (isMobile ? 110 : 160);
-                          final int titleMaxLines = isCompactHeight ? 1 : 2;
-                          final double titleMinFontSize = isCompactHeight
-                              ? (theme.textTheme.bodySmall?.fontSize ?? 12)
-                              : theme.textTheme.bodyLarge!.fontSize!;
-                          final double subtitleGap = isCompactHeight ? AppSpacing.tinyMargin : AppSpacing.elementMargin;
-                          return Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: getBoxContentWidgets(
-                              context,
-                              widget.module,
-                              titleMaxLines,
-                              titleMinFontSize,
-                              subtitleGap,
-                              primaryAction,
-                              secondaryAction,
-                              isMobile,
-                              cardTapAction,
-                              constraints,
-                            ),
-                          );
-                        },
-                      ),
+                  child: widget.hasData == false ? _defaultContent() : _buildContent(),
                 ),
                 Positioned(
                   top: 0,
@@ -420,6 +403,44 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     );
   }
 
+  List<Widget> getBoxContentDefaultWidgets(
+    BuildContext context,
+    Module module,
+    int titleMaxLines,
+    double titleMinFontSize,
+    double subtitleGap,
+    VoidCallback? primaryAction,
+    VoidCallback? secondaryAction,
+    bool isMobile,
+    VoidCallback? cardTapAction,
+    BoxConstraints constraints,
+  ) {
+    if (isMobile) {
+      return mobileBoxDefaultContentWidgets(
+        context,
+        module,
+        titleMaxLines,
+        titleMinFontSize,
+        subtitleGap,
+        primaryAction,
+        secondaryAction,
+        cardTapAction,
+        constraints,
+      );
+    }
+    return tabletAndAboveBoxDefaultContentWidgets(
+      context,
+      module,
+      titleMaxLines,
+      titleMinFontSize,
+      subtitleGap,
+      primaryAction,
+      secondaryAction,
+      cardTapAction,
+      constraints,
+    );
+  }
+
   List<Widget> getBoxContentWidgets(
     BuildContext context,
     Module module,
@@ -456,6 +477,115 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       cardTapAction,
       constraints,
     );
+  }
+
+  List<Widget> mobileBoxDefaultContentWidgets(
+    BuildContext context,
+    Module module,
+    int titleMaxLines,
+    double titleMinFontSize,
+    double subtitleGap,
+    VoidCallback? primaryAction,
+    VoidCallback? secondaryAction,
+    cardTapAction,
+    BoxConstraints constraints,
+  ) {
+    final ThemeData theme = Theme.of(context);
+    return [
+      Expanded(
+        child: InkWell(
+          onTap: cardTapAction,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (showTitleOnMobile(module)) ...[
+                Flexible(
+                  child: SizedBox(
+                    width: constraints.maxWidth,
+                    child: AutoSizeText(
+                      widget.module.title(context),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.anton(
+                        color: AppColors.textPrimary,
+                        fontSize: theme.textTheme.headlineSmall!.fontSize!,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      minFontSize: titleMinFontSize,
+                    ),
+                  ),
+                ),
+              ],
+              if (showSubtitleOnMobile(module)) ...[
+                SizedBox(height: subtitleGap),
+                SizedBox(
+                  width: constraints.maxWidth,
+                  child: Text(
+                    widget.module.subtitle(context),
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.inter(
+                      color: AppColors.textPrimary,
+                      fontSize: theme.textTheme.bodyMedium!.fontSize,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+      if (showButtonsOnMobile(widget.module))
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSpacing.groupMarginBox,
+            ConstrainedBox(
+              constraints: const BoxConstraints(
+                  // maxWidth: size_1W,
+                  ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                // runSpacing: AppSpacing.elementMargin,
+                // spacing: AppSpacing.elementMargin,
+                children: [
+                  if (widget.module.button1Text(context) != null) ...[
+                    Flexible(
+                      child: AppXButton(
+                        shrinkWrap: false,
+                        onPressed: primaryAction,
+                        isLoading: false,
+                        text: widget.module.button1Text(context) ?? '',
+                        // borderColor: AppColors.whiteSwatch,
+                        // bgColor: AppColors.whiteSwatch,
+                        // fgColor: AppColors.primaryDefault,
+                      ),
+                    ),
+                  ],
+                  if (widget.module.button2Text(context) != null && showSecondButtonOnMobile(module)) ...[
+                    AppSpacing.groupMarginBox,
+                    Flexible(
+                      child: AppXButton(
+                        shrinkWrap: false,
+                        onPressed: secondaryAction,
+                        isLoading: false,
+                        text: widget.module.button2Text(context) ?? '',
+                        // bgColor: Colors.transparent,
+                        // borderColor: AppColors.whiteSwatch,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+    ];
   }
 
   List<Widget> mobileBoxContentWidgets(
@@ -567,7 +697,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     ];
   }
 
-  List<Widget> tabletAndAboveBoxContentWidgets(
+  List<Widget> tabletAndAboveBoxDefaultContentWidgets(
     BuildContext context,
     Module module,
     int titleMaxLines,
@@ -675,6 +805,300 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     ];
   }
 
+  List<Widget> tabletAndAboveBoxContentWidgets(
+    BuildContext context,
+    Module module,
+    int titleMaxLines,
+    double titleMinFontSize,
+    double subtitleGap,
+    VoidCallback? primaryAction,
+    VoidCallback? secondaryAction,
+    cardTapAction,
+    BoxConstraints constraints,
+  ) {
+    final ThemeData theme = Theme.of(context);
+    if (module.boxType == AppModuleType.type2_2) {
+      return tabletAndAboveBoxContentWidgetsFor2_2(
+        context,
+        module,
+        titleMaxLines,
+        titleMinFontSize,
+        subtitleGap,
+        primaryAction,
+        secondaryAction,
+        cardTapAction,
+        constraints,
+      );
+    } else if (module.boxType == AppModuleType.type2_1) {
+      return tabletAndAboveBoxContentWidgetsFor2_1(
+        context,
+        module,
+        titleMaxLines,
+        titleMinFontSize,
+        subtitleGap,
+        primaryAction,
+        secondaryAction,
+        cardTapAction,
+        constraints,
+      );
+    } else if (module.boxType == AppModuleType.type1_2) {
+      return tabletAndAboveBoxContentWidgetsFor1_2(
+        context,
+        module,
+        titleMaxLines,
+        titleMinFontSize,
+        subtitleGap,
+        primaryAction,
+        secondaryAction,
+        cardTapAction,
+        constraints,
+      );
+    }
+    return [
+      if (showTitleOnTabletAndAbove(module)) ...[
+        SizedBox(
+          width: constraints.maxWidth,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  widget.module.title(context),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.anton(
+                    color: AppColors.textPrimary,
+                    fontSize: theme.textTheme.displaySmall!.fontSize!,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  minFontSize: titleMinFontSize,
+                ),
+              ),
+              widget.subtitleContent!,
+            ],
+          ),
+        ),
+      ],
+      Expanded(
+        child: (showSubtitleOnTabletAndAbove(module))
+            ? SizedBox(
+                width: constraints.maxWidth,
+                child: widget.bodyContent,
+              )
+            : const SizedBox.shrink(),
+      ),
+    ];
+  }
+
+  List<Widget> tabletAndAboveBoxContentWidgetsFor2_2(
+    BuildContext context,
+    Module module,
+    int titleMaxLines,
+    double titleMinFontSize,
+    double subtitleGap,
+    VoidCallback? primaryAction,
+    VoidCallback? secondaryAction,
+    cardTapAction,
+    BoxConstraints constraints,
+  ) {
+    final ThemeData theme = Theme.of(context);
+    return [
+      if (showTitleOnTabletAndAbove(module)) ...[
+        SizedBox(
+          width: constraints.maxWidth,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  widget.module.title(context),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.anton(
+                    color: AppColors.textPrimary,
+                    fontSize: theme.textTheme.displaySmall!.fontSize!,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  minFontSize: titleMinFontSize,
+                ),
+              ),
+              widget.subtitleContent!,
+            ],
+          ),
+        ),
+        AppSpacing.groupMarginBox,
+      ],
+      Expanded(
+        child: (showSubtitleOnTabletAndAbove(module))
+            ? SizedBox(
+                width: constraints.maxWidth,
+                child: widget.bodyContent,
+              )
+            : const SizedBox.shrink(),
+      ),
+      if (showButtonsOnTabletAndAbove(widget.module))
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSpacing.groupMarginBox,
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                if (widget.module.button1Text(context) != null) ...[
+                  Flexible(child: widget.footerContent!),
+                ],
+              ],
+            ),
+          ],
+        ),
+    ];
+  }
+
+  List<Widget> tabletAndAboveBoxContentWidgetsFor2_1(
+    BuildContext context,
+    Module module,
+    int titleMaxLines,
+    double titleMinFontSize,
+    double subtitleGap,
+    VoidCallback? primaryAction,
+    VoidCallback? secondaryAction,
+    cardTapAction,
+    BoxConstraints constraints,
+  ) {
+    final ThemeData theme = Theme.of(context);
+    return [
+      if (showTitleOnTabletAndAbove(module)) ...[
+        SizedBox(
+          width: constraints.maxWidth,
+          child: AutoSizeText(
+            widget.module.title(context),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.anton(
+              color: AppColors.textPrimary,
+              fontSize: theme.textTheme.displaySmall!.fontSize!,
+              fontWeight: FontWeight.w700,
+            ),
+            minFontSize: titleMinFontSize,
+          ),
+        ),
+        SizedBox(height: subtitleGap),
+        widget.subtitleContent!,
+        AppSpacing.groupMarginBox,
+      ],
+      Expanded(
+        child: (showSubtitleOnTabletAndAbove(module))
+            ? SizedBox(
+                width: constraints.maxWidth,
+                height: 200,
+                child: widget.bodyContent,
+              )
+            : const SizedBox.shrink(),
+      ),
+      if (showButtonsOnTabletAndAbove(widget.module))
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSpacing.groupMarginBox,
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                if (widget.module.button1Text(context) != null) ...[
+                  Flexible(child: widget.footerContent!),
+                ],
+              ],
+            ),
+          ],
+        ),
+    ];
+  }
+
+  List<Widget> tabletAndAboveBoxContentWidgetsFor1_2(
+    BuildContext context,
+    Module module,
+    int titleMaxLines,
+    double titleMinFontSize,
+    double subtitleGap,
+    VoidCallback? primaryAction,
+    VoidCallback? secondaryAction,
+    cardTapAction,
+    BoxConstraints constraints,
+  ) {
+    final ThemeData theme = Theme.of(context);
+    return [
+      Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(
+              flex: 50,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (showTitleOnTabletAndAbove(module)) ...[
+                    SizedBox(
+                      width: constraints.maxWidth,
+                      child: AutoSizeText(
+                        widget.module.title(context),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.anton(
+                          color: AppColors.textPrimary,
+                          fontSize: theme.textTheme.displaySmall!.fontSize!,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        minFontSize: titleMinFontSize,
+                      ),
+                    ),
+                    SizedBox(height: subtitleGap),
+                    widget.subtitleContent!,
+                    AppSpacing.groupMarginBox,
+                  ],
+                  const Spacer(),
+                  if (showButtonsOnTabletAndAbove(widget.module))
+                    Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppSpacing.groupMarginBox,
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            if (widget.module.button1Text(context) != null) ...[
+                              Flexible(child: widget.footerContent!),
+                            ],
+                          ],
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            ),
+            AppSpacing.containerInsideMarginBox,
+            Expanded(
+              flex: 50,
+              child: (showSubtitleOnTabletAndAbove(module))
+                  ? SizedBox(
+                      width: constraints.maxWidth,
+                      height: double.infinity,
+                      child: widget.bodyContent,
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        ),
+      ),
+    ];
+  }
+
   showTitleOnMobile(Module module) {
     if (module.boxType == AppModuleType.type2_2) return true;
     if (module.boxType == AppModuleType.type2_1) return true;
@@ -701,7 +1125,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     if (module.boxType == AppModuleType.type2_2) return true;
     if (module.boxType == AppModuleType.type2_1) return true;
     if (module.boxType == AppModuleType.type1_2) return true;
-    if (module.boxType == AppModuleType.type1) return false;
+    if (module.boxType == AppModuleType.type1) return widget.hasData;
   }
 
   showButtonsOnMobile(Module module) {
@@ -730,6 +1154,78 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     if (module.boxType == AppModuleType.type2_1) return true;
     if (module.boxType == AppModuleType.type1_2) return true;
     if (module.boxType == AppModuleType.type1) return false;
+  }
+
+  _buildContent() {
+    final ThemeData theme = Theme.of(context);
+    final bool isMobile = DeviceHelper.isMobile(context);
+    final VoidCallback? primaryAction = widget.module.button1OnPressed(context);
+    final VoidCallback? secondaryAction = widget.module.button2OnPressed(context);
+    final VoidCallback? cardTapAction = widget.onCardTap ?? primaryAction;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool isCompactHeight = constraints.maxHeight < (isMobile ? 110 : 160);
+        final int titleMaxLines = isCompactHeight ? 1 : 2;
+        final double titleMinFontSize =
+            isCompactHeight ? (theme.textTheme.bodySmall?.fontSize ?? 12) : theme.textTheme.bodyLarge!.fontSize!;
+        final double subtitleGap = isCompactHeight ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin;
+        return InkWell(
+          onTap: cardTapAction,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: getBoxContentWidgets(
+              context,
+              widget.module,
+              titleMaxLines,
+              titleMinFontSize,
+              subtitleGap,
+              primaryAction,
+              secondaryAction,
+              isMobile,
+              cardTapAction,
+              constraints,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _defaultContent() {
+    final ThemeData theme = Theme.of(context);
+    final bool isMobile = DeviceHelper.isMobile(context);
+    final VoidCallback? primaryAction = widget.module.button1OnPressed(context);
+    final VoidCallback? secondaryAction = widget.module.button2OnPressed(context);
+    final VoidCallback? cardTapAction = widget.onCardTap ?? primaryAction;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool isCompactHeight = constraints.maxHeight < (isMobile ? 110 : 160);
+        final int titleMaxLines = isCompactHeight ? 1 : 2;
+        final double titleMinFontSize =
+            isCompactHeight ? (theme.textTheme.bodySmall?.fontSize ?? 12) : theme.textTheme.bodyLarge!.fontSize!;
+        final double subtitleGap = isCompactHeight ? AppSpacing.tinyMargin : AppSpacing.elementMargin;
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: getBoxContentDefaultWidgets(
+            context,
+            widget.module,
+            titleMaxLines,
+            titleMinFontSize,
+            subtitleGap,
+            primaryAction,
+            secondaryAction,
+            isMobile,
+            cardTapAction,
+            constraints,
+          ),
+        );
+      },
+    );
   }
 }
 

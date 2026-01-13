@@ -235,6 +235,7 @@ class InteractiveRoundedRadarChart extends StatefulWidget {
   final Color labelBgColor;
   // labelTextColor
   final Color labelTextColor;
+  final bool hideTexts;
 
   const InteractiveRoundedRadarChart({
     Key? key,
@@ -245,6 +246,7 @@ class InteractiveRoundedRadarChart extends StatefulWidget {
     this.cornerRadius = 3.0,
     this.labelBgColor = AppColors.primaryDefault,
     this.labelTextColor = AppColors.textInverted,
+    this.hideTexts = false,
   }) : super(key: key);
 
   @override
@@ -307,9 +309,10 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
     return LayoutBuilder(builder: (context, c) {
       final side = math.min(c.maxWidth, c.maxHeight);
 
-      return SizedBox(
+      return Container(
         width: side,
         height: side,
+        color: Colors.yellow,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
@@ -333,7 +336,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
                   child: CustomPaint(
                     size: Size.square(side),
                     painter: _RoundedRadarPainter(
-                      labels: widget.labels,
+                      labels: widget.hideTexts ? [] : widget.labels,
                       defaultValues: widget.defaultValues,
                       userValues: widget.userValues,
                       maxValue: widget.maxValue,
