@@ -100,7 +100,7 @@ class Resource {
     final String? userJobId = json['userJobId'] as String?;
     final String? title = json['title'] as String?;
     final String? description = json['description'] as String?;
-    final String? url = json['url'] as String?;
+    final String? url = json['url'] ?? json['mediaUrl'] as String?;
     final String? typeString = json['type'] as String?;
     final ResourceType type = typeString != null
         ? ResourceType.values.firstWhere(
@@ -108,12 +108,8 @@ class Resource {
             orElse: () => ResourceType.article,
           )
         : ResourceType.article;
-    final DateTime? createdAt = json['createdAt'] != null
-        ? DateTime.parse(json['createdAt'] as String)
-        : null;
-    final DateTime? updatedAt = json['updatedAt'] != null
-        ? DateTime.parse(json['updatedAt'] as String)
-        : null;
+    final DateTime? createdAt = json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null;
+    final DateTime? updatedAt = json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null;
     final String? content = json['content'] as String?;
 
     return Resource(

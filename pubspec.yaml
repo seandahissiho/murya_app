@@ -88,6 +88,8 @@ dependencies:
   flutter_markdown_plus: ^1.0.5
   markdown_widget: ^2.3.2+8
   scroll_to_index: ^3.0.1
+  video_player: ^2.8.3
+  youtube_player_flutter: ^9.1.1
 #  vector_math: ^2.1.4  # or whatever minimum fl_chart needs
 
 dev_dependencies:
@@ -158,4 +160,3 @@ flutter_launcher_icons:
     image_path: "assets/Logo_V1.png"
     background_color: "#ffffff"
     theme_color: "#ffffff"
-

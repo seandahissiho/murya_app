@@ -201,6 +201,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unsupportedResourceType => 'Unsupported resource type';
 
   @override
+  String get videoViewerMissingUrl => 'Video URL is missing';
+
+  @override
+  String get videoViewerInvalidUrl => 'Video URL must use https';
+
+  @override
+  String get videoViewerLoadFailed => 'Unable to load video';
+
+  @override
   String get homeScreenTitle => 'Home';
 
   @override

@@ -229,6 +229,18 @@
   "@unsupportedResourceType": {
     "description": "Error message for unsupported resource types"
   },
+  "videoViewerMissingUrl": "Video URL is missing",
+  "@videoViewerMissingUrl": {
+    "description": "Error message when a video resource has no URL"
+  },
+  "videoViewerInvalidUrl": "Video URL must use https",
+  "@videoViewerInvalidUrl": {
+    "description": "Error message when a video URL is not https"
+  },
+  "videoViewerLoadFailed": "Unable to load video",
+  "@videoViewerLoadFailed": {
+    "description": "Error message when a video fails to load"
+  },
   "homeScreenTitle": "Home",
   "@homeScreenTitle": {
     "description": "Title of the home screen"

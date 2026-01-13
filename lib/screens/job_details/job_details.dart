@@ -385,7 +385,13 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
 
     for (int i = 0; i < n; i++) {
       final Offset dir = fit.dir(i);
-      final Offset anchor = fit.point(i, 0.98 * (2.3 / 3.0));
+      final double defaultV = widget.defaultValues[i];
+      final double userV = (widget.userValues.isNotEmpty && i < widget.userValues.length)
+          ? widget.userValues[i]
+          : 0.0;
+      final double maxV = math.max(defaultV, userV).clamp(0.0, widget.maxValue);
+      final double t = (widget.maxValue <= 0) ? 0.0 : (maxV / widget.maxValue);
+      final Offset anchor = fit.point(i, t);
       final Offset pos = Offset(anchor.dx + dir.dx * out, anchor.dy + dir.dy * out);
 
       tp.text = TextSpan(
