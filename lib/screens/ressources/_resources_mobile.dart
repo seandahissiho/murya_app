@@ -71,12 +71,10 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(resources: [
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                      ], type: ResourceType.article),
+                      ResourcesCarousel(
+                        resources: context.read<ResourcesBloc>().articles,
+                        type: ResourceType.article,
+                      ),
                       AppSpacing.containerInsideMarginBox,
                       Row(
                         children: [
@@ -93,12 +91,10 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(resources: [
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                      ], type: ResourceType.podcast),
+                      ResourcesCarousel(
+                        resources: context.read<ResourcesBloc>().podcasts,
+                        type: ResourceType.podcast,
+                      ),
                       AppSpacing.containerInsideMarginBox,
                       // Videos Section
                       Row(
@@ -116,12 +112,10 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                         ],
                       ),
                       AppSpacing.groupMarginBox,
-                      ResourcesCarousel(resources: [
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                        Resource.empty(),
-                      ], type: ResourceType.video),
+                      ResourcesCarousel(
+                        resources: context.read<ResourcesBloc>().videos,
+                        type: ResourceType.video,
+                      ),
                     ],
                   ),
                 ),

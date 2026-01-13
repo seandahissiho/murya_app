@@ -17,6 +17,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
   late final StreamSubscription<JobState> _jobSubscription;
   late final AuthenticationBloc _authenticationBloc;
   late final StreamSubscription<AuthenticationState> _authSubscription;
+  final Set<String> _loadingResourceIds = {};
 
   final List<Resource> _articles = [
     Resource.empty(),
@@ -87,7 +88,56 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
   }
 
   FutureOr<void> _onLoadResourceDetails(
-      LoadResourceDetails event, Emitter<ResourcesState> emit) async {}
+      LoadResourceDetails event, Emitter<ResourcesState> emit) async {
+    if (event.resourceId.isEmpty) {
+      return;
+    }
+
+    if (_loadingResourceIds.contains(event.resourceId)) {
+      return;
+    }
+    _loadingResourceIds.add(event.resourceId);
+
+    final existing = _findResourceById(event.resourceId);
+    if (existing != null) {
+      emit(ResourceDetailsLoaded(resource: existing));
+      _loadingResourceIds.remove(event.resourceId);
+      return;
+    }
+
+    final userJobId = jobBloc.state.userCurrentJob?.id;
+    if (userJobId == null || userJobId.isEmpty) {
+      _loadingResourceIds.remove(event.resourceId);
+      return;
+    }
+
+    final cachedResult =
+        await resourceRepository.fetchResourcesCached(userJobId);
+    if (cachedResult.data != null && cachedResult.data!.isNotEmpty) {
+      _replaceResources(cachedResult.data!);
+      final cachedResource = _findResourceById(event.resourceId);
+      if (cachedResource != null) {
+        emit(ResourceDetailsLoaded(resource: cachedResource));
+        _loadingResourceIds.remove(event.resourceId);
+        return;
+      }
+    }
+
+    final result = await resourceRepository.fetchResources(userJobId);
+    if (result.isError || result.data == null) {
+      _loadingResourceIds.remove(event.resourceId);
+      return;
+    }
+
+    final resources = result.data!;
+    _replaceResources(resources);
+
+    final resource = _findResourceById(event.resourceId);
+    if (resource != null) {
+      emit(ResourceDetailsLoaded(resource: resource));
+    }
+    _loadingResourceIds.remove(event.resourceId);
+  }
 
   FutureOr<void> _onLoadResources(
       LoadResources event, Emitter<ResourcesState> emit) async {
@@ -106,25 +156,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
       // Since we don't want to clear and look empty
       // we might just want to replace...
       // For now let's just clear and add like normal flow
-      _articles.clear();
-      _videos.clear();
-      _podcasts.clear();
-
-      for (var resource in resources) {
-        switch (resource.type) {
-          case ResourceType.article:
-            _articles.add(resource);
-            break;
-          case ResourceType.video:
-            _videos.add(resource);
-            break;
-          case ResourceType.podcast:
-            _podcasts.add(resource);
-            break;
-          default:
-            _articles.add(resource);
-        }
-      }
+      _replaceResources(resources);
       emit(ResourcesLoaded(resources: resources));
     }
 
@@ -139,6 +171,20 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
     final resources = result.data!;
 
+    _replaceResources(resources);
+    emit(ResourcesLoaded(resources: resources));
+  }
+
+  Resource? _findResourceById(String resourceId) {
+    for (final resource in [..._articles, ..._videos, ..._podcasts]) {
+      if (resource.id == resourceId) {
+        return resource;
+      }
+    }
+    return null;
+  }
+
+  void _replaceResources(List<Resource> resources) {
     _articles.clear();
     _videos.clear();
     _podcasts.clear();
@@ -158,6 +204,5 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
           _articles.add(resource);
       }
     }
-    emit(ResourcesLoaded(resources: resources));
   }
 }

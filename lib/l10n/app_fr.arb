@@ -229,6 +229,18 @@
   "@unsupportedResourceType": {
     "description": "Message d'erreur pour les types de ressources non supportés"
   },
+  "videoViewerMissingUrl": "L''URL de la vidéo est manquante",
+  "@videoViewerMissingUrl": {
+    "description": "Message d'erreur quand une ressource vidéo n'a pas d'URL"
+  },
+  "videoViewerInvalidUrl": "L''URL de la vidéo doit utiliser https",
+  "@videoViewerInvalidUrl": {
+    "description": "Message d'erreur quand l'URL vidéo n'est pas en https"
+  },
+  "videoViewerLoadFailed": "Impossible de charger la vidéo",
+  "@videoViewerLoadFailed": {
+    "description": "Message d'erreur quand une vidéo ne peut pas être chargée"
+  },
   "homeScreenTitle": "Accueil",
   "@homeScreenTitle": {
     "description": "Titre de l'écran d'accueil"
