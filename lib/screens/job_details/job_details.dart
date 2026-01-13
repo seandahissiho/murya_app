@@ -306,65 +306,62 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
     return LayoutBuilder(builder: (context, c) {
       final Size size = Size(c.maxWidth, c.maxHeight);
 
-      return ColoredBox(
-        color: Colors.yellow,
-        child: SizedBox.expand(
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              // Pointer detector to feed local positions
-              Positioned.fill(
-                child: Listener(
-                  onPointerHover: (e) => _updateHover(size, e.localPosition),
-                  onPointerDown: (e) => _updateHover(size, e.localPosition),
-                  onPointerMove: (e) => _updateHover(size, e.localPosition),
-                  onPointerUp: (_) => _clearHover(),
-                  onPointerCancel: (_) => _clearHover(),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onLongPressStart: (details) => _updateHover(size, details.localPosition),
-                    onLongPressMoveUpdate: (details) => _updateHover(size, details.localPosition),
-                    onLongPressEnd: (_) => _clearHover(),
-                    // onTapDown: (details) => _updateHover(size, details.localPosition),
-                    child: MouseRegion(
-                      opaque: false,
-                      onHover: (e) => _updateHover(size, e.localPosition),
-                      onExit: (_) => _clearHover(),
-                      child: CustomPaint(
-                        painter: _RoundedRadarPainter(
-                          labels: const [],
-                          defaultValues: widget.defaultValues,
-                          userValues: widget.userValues,
-                          maxValue: widget.maxValue,
-                          cornerRadius: widget.cornerRadius,
-                          highlightIndex: _activeIndex,
-                          labelBgColor: widget.labelBgColor,
-                          labelTextColor: widget.labelTextColor,
-                          // highlight active point
-                          highlightColor: Theme.of(context).colorScheme.primary,
-                        ),
-                        child: const SizedBox.expand(),
+      return SizedBox.expand(
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Pointer detector to feed local positions
+            Positioned.fill(
+              child: Listener(
+                onPointerHover: (e) => _updateHover(size, e.localPosition),
+                onPointerDown: (e) => _updateHover(size, e.localPosition),
+                onPointerMove: (e) => _updateHover(size, e.localPosition),
+                onPointerUp: (_) => _clearHover(),
+                onPointerCancel: (_) => _clearHover(),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onLongPressStart: (details) => _updateHover(size, details.localPosition),
+                  onLongPressMoveUpdate: (details) => _updateHover(size, details.localPosition),
+                  onLongPressEnd: (_) => _clearHover(),
+                  // onTapDown: (details) => _updateHover(size, details.localPosition),
+                  child: MouseRegion(
+                    opaque: false,
+                    onHover: (e) => _updateHover(size, e.localPosition),
+                    onExit: (_) => _clearHover(),
+                    child: CustomPaint(
+                      painter: _RoundedRadarPainter(
+                        labels: const [],
+                        defaultValues: widget.defaultValues,
+                        userValues: widget.userValues,
+                        maxValue: widget.maxValue,
+                        cornerRadius: widget.cornerRadius,
+                        highlightIndex: _activeIndex,
+                        labelBgColor: widget.labelBgColor,
+                        labelTextColor: widget.labelTextColor,
+                        // highlight active point
+                        highlightColor: Theme.of(context).colorScheme.primary,
                       ),
+                      child: const SizedBox.expand(),
                     ),
                   ),
                 ),
               ),
+            ),
 
-              if (!widget.hideTexts) ..._buildLabelChips(size),
+            if (!widget.hideTexts) ..._buildLabelChips(size),
 
-              // Tooltip
-              if (_activeIndex != null && _tooltipPos != null)
-                Positioned(
-                  left: _tooltipPos!.dx,
-                  top: _tooltipPos!.dy,
-                  child: _ValueTooltip(
-                    value: widget.defaultValues[_activeIndex!],
-                    // nudge the tooltip so it doesn’t cover the dot
-                    offset: const Offset(10, -10),
-                  ),
+            // Tooltip
+            if (_activeIndex != null && _tooltipPos != null)
+              Positioned(
+                left: _tooltipPos!.dx,
+                top: _tooltipPos!.dy,
+                child: _ValueTooltip(
+                  value: widget.defaultValues[_activeIndex!],
+                  // nudge the tooltip so it doesn’t cover the dot
+                  offset: const Offset(10, -10),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       );
     });
@@ -388,7 +385,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
 
     for (int i = 0; i < n; i++) {
       final Offset dir = fit.dir(i);
-      final Offset anchor = fit.point(i, 0.98 * (1.80 / 3.0));
+      final Offset anchor = fit.point(i, 0.98 * (2.3 / 3.0));
       final Offset pos = Offset(anchor.dx + dir.dx * out, anchor.dy + dir.dy * out);
 
       tp.text = TextSpan(
@@ -403,25 +400,34 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
 
       final double w = tp.width + padX * 2;
       final double h = tp.height + padY * 2;
-      final double left = pos.dx + (dir.dx >= 0 ? gap : -w - gap);
-      final double top = pos.dy + (dir.dy >= 0 ? gap : -h - gap);
+      final double angle = math.atan2(dir.dy, dir.dx);
+      final bool isTopCenter = (angle + (math.pi / 2)).abs() < (math.pi / 12);
+      final bool isTopLeft = angle < -math.pi / 2;
+      final bool isTopRight = angle > -math.pi / 2 && angle < 0;
+      final double left = isTopCenter ? (pos.dx - w / 2) : (pos.dx + (dir.dx >= 0 ? gap : -w - gap));
+      final double top = isTopCenter ? (pos.dy - h - gap) : (pos.dy + (dir.dy >= 0 ? gap : -h - gap));
+      final double rotation = isTopLeft ? (-0 * math.pi / 180) : (isTopRight ? (0 * math.pi / 180) : 0.0);
 
       children.add(Positioned(
         left: left,
         top: top,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: widget.labelBgColor,
-            borderRadius: BorderRadius.circular(radius),
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: padX, vertical: padY),
-            child: Text(
-              widget.labels[i],
-              style: TextStyle(
-                color: widget.labelTextColor,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+        child: Transform.rotate(
+          angle: rotation,
+          alignment: Alignment.center,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: widget.labelBgColor,
+              borderRadius: BorderRadius.circular(radius),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: padX, vertical: padY),
+              child: Text(
+                widget.labels[i],
+                style: TextStyle(
+                  color: widget.labelTextColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
