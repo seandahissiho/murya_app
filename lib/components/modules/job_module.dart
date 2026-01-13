@@ -187,12 +187,10 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
           child: Center(
             child: InteractiveRoundedRadarChart(
               labels: _userJobCompetencyProfile.competencyFamilies.map((cf) => cf.name).toList(),
-              defaultValues: _userJobCompetencyProfile.kiviatValues.isEmpty
-                  ? _job.kiviatValues(JobProgressionLevel.JUNIOR)
-                  : _userJobCompetencyProfile.kiviatValues,
+              defaultValues: _job.kiviatValues(JobProgressionLevel.JUNIOR),
               userValues: _userJobCompetencyProfile.kiviatValues,
-              labelBgColor: AppColors.whiteSwatch,
-              labelTextColor: AppColors.primaryDefault,
+              // labelBgColor: AppColors.whiteSwatch,
+              // labelTextColor: AppColors.primaryDefault,
               hideTexts: smallHeight,
             ),
           ),
