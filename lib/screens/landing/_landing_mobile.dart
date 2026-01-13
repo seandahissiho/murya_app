@@ -207,7 +207,6 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
     if (context != null) {
       final box = context.findRenderObject() as RenderBox;
       mainBodyHey = box.size.height;
-      debugPrint('Wrap height: $mainBodyHey');
       setState(() {});
     }
     final footerContext = _footerWrapKey.currentContext;

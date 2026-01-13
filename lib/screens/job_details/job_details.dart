@@ -260,15 +260,12 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
   // Computes the data-points exactly like the painter
   List<Offset> _computePoints(Size size, List<double> values) {
     final int n = values.length;
-    final Offset center = Offset(size.width / 2, size.height / 2);
-    final double radius = (size.width / 2) - 8.0; // small padding
-    final double step = 2 * math.pi / n;
+    if (n < 3) return [];
+    final fit = _RadarFit.compute(size, n);
 
     return List.generate(n, (i) {
       final double v = (values[i] / widget.maxValue).clamp(0.0, 1.0);
-      final double r = radius * v;
-      final double a = -math.pi / 2 + i * step;
-      return Offset(center.dx + r * math.cos(a), center.dy + r * math.sin(a));
+      return fit.point(i, v);
     });
   }
 
@@ -307,66 +304,132 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, c) {
-      final side = math.min(c.maxWidth, c.maxHeight);
+      final Size size = Size(c.maxWidth, c.maxHeight);
 
-      return Container(
-        width: side,
-        height: side,
+      return ColoredBox(
         color: Colors.yellow,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            // Pointer detector to feed local positions
-            Listener(
-              onPointerHover: (e) => _updateHover(Size.square(side), e.localPosition),
-              onPointerDown: (e) => _updateHover(Size.square(side), e.localPosition),
-              onPointerMove: (e) => _updateHover(Size.square(side), e.localPosition),
-              onPointerUp: (_) => _clearHover(),
-              onPointerCancel: (_) => _clearHover(),
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onLongPressStart: (details) => _updateHover(Size.square(side), details.localPosition),
-                onLongPressMoveUpdate: (details) => _updateHover(Size.square(side), details.localPosition),
-                onLongPressEnd: (_) => _clearHover(),
-                // onTapDown: (details) => _updateHover(Size.square(side), details.localPosition),
-                child: MouseRegion(
-                  opaque: false,
-                  onHover: (e) => _updateHover(Size.square(side), e.localPosition),
-                  onExit: (_) => _clearHover(),
-                  child: CustomPaint(
-                    size: Size.square(side),
-                    painter: _RoundedRadarPainter(
-                      labels: widget.hideTexts ? [] : widget.labels,
-                      defaultValues: widget.defaultValues,
-                      userValues: widget.userValues,
-                      maxValue: widget.maxValue,
-                      cornerRadius: widget.cornerRadius,
-                      highlightIndex: _activeIndex,
-                      labelBgColor: widget.labelBgColor,
-                      labelTextColor: widget.labelTextColor,
-                      // highlight active point
-                      highlightColor: Theme.of(context).colorScheme.primary,
+        child: SizedBox.expand(
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Pointer detector to feed local positions
+              Positioned.fill(
+                child: Listener(
+                  onPointerHover: (e) => _updateHover(size, e.localPosition),
+                  onPointerDown: (e) => _updateHover(size, e.localPosition),
+                  onPointerMove: (e) => _updateHover(size, e.localPosition),
+                  onPointerUp: (_) => _clearHover(),
+                  onPointerCancel: (_) => _clearHover(),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onLongPressStart: (details) => _updateHover(size, details.localPosition),
+                    onLongPressMoveUpdate: (details) => _updateHover(size, details.localPosition),
+                    onLongPressEnd: (_) => _clearHover(),
+                    // onTapDown: (details) => _updateHover(size, details.localPosition),
+                    child: MouseRegion(
+                      opaque: false,
+                      onHover: (e) => _updateHover(size, e.localPosition),
+                      onExit: (_) => _clearHover(),
+                      child: CustomPaint(
+                        painter: _RoundedRadarPainter(
+                          labels: const [],
+                          defaultValues: widget.defaultValues,
+                          userValues: widget.userValues,
+                          maxValue: widget.maxValue,
+                          cornerRadius: widget.cornerRadius,
+                          highlightIndex: _activeIndex,
+                          labelBgColor: widget.labelBgColor,
+                          labelTextColor: widget.labelTextColor,
+                          // highlight active point
+                          highlightColor: Theme.of(context).colorScheme.primary,
+                        ),
+                        child: const SizedBox.expand(),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
 
-            // Tooltip
-            if (_activeIndex != null && _tooltipPos != null)
-              Positioned(
-                left: _tooltipPos!.dx,
-                top: _tooltipPos!.dy,
-                child: _ValueTooltip(
-                  value: widget.defaultValues[_activeIndex!],
-                  // nudge the tooltip so it doesn’t cover the dot
-                  offset: const Offset(10, -10),
+              if (!widget.hideTexts) ..._buildLabelChips(size),
+
+              // Tooltip
+              if (_activeIndex != null && _tooltipPos != null)
+                Positioned(
+                  left: _tooltipPos!.dx,
+                  top: _tooltipPos!.dy,
+                  child: _ValueTooltip(
+                    value: widget.defaultValues[_activeIndex!],
+                    // nudge the tooltip so it doesn’t cover the dot
+                    offset: const Offset(10, -10),
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       );
     });
+  }
+
+  List<Widget> _buildLabelChips(Size size) {
+    final int n = widget.labels.length;
+    if (n == 0) return [];
+
+    final fit = _RadarFit.compute(size, n);
+    final double s = fit.s;
+
+    final double padX = 12.0 * s;
+    final double padY = 8.0 * s;
+    final double radius = 12.0 * s;
+    final double gap = (4.0 * s) * (2.0 / 3.0);
+    final double out = (5.0 * s) * (2.0 / 3.0);
+
+    final tp = TextPainter(textDirection: TextDirection.ltr);
+    final List<Widget> children = [];
+
+    for (int i = 0; i < n; i++) {
+      final Offset dir = fit.dir(i);
+      final Offset anchor = fit.point(i, 0.98 * (1.80 / 3.0));
+      final Offset pos = Offset(anchor.dx + dir.dx * out, anchor.dy + dir.dy * out);
+
+      tp.text = TextSpan(
+        text: widget.labels[i],
+        style: TextStyle(
+          color: widget.labelTextColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      );
+      tp.layout();
+
+      final double w = tp.width + padX * 2;
+      final double h = tp.height + padY * 2;
+      final double left = pos.dx + (dir.dx >= 0 ? gap : -w - gap);
+      final double top = pos.dy + (dir.dy >= 0 ? gap : -h - gap);
+
+      children.add(Positioned(
+        left: left,
+        top: top,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: widget.labelBgColor,
+            borderRadius: BorderRadius.circular(radius),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: padX, vertical: padY),
+            child: Text(
+              widget.labels[i],
+              style: TextStyle(
+                color: widget.labelTextColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ));
+    }
+
+    return children;
   }
 }
 
@@ -402,6 +465,65 @@ class _ValueTooltip extends StatelessWidget {
   }
 }
 
+class _RadarFit {
+  final List<Offset> dirs;
+  final double scale;
+  final Offset origin;
+  final double s;
+  final double ringStroke;
+
+  _RadarFit._(this.dirs, this.scale, this.origin, this.s, this.ringStroke);
+
+  factory _RadarFit.compute(Size size, int n) {
+    final double step = 2 * math.pi / n;
+
+    final List<Offset> dirs = List.generate(n, (i) {
+      final double a = -math.pi / 2 + i * step;
+      return Offset(math.cos(a), math.sin(a));
+    });
+
+    double minX = double.infinity;
+    double maxX = -double.infinity;
+    double minY = double.infinity;
+    double maxY = -double.infinity;
+
+    for (final d in dirs) {
+      if (d.dx < minX) minX = d.dx;
+      if (d.dx > maxX) maxX = d.dx;
+      if (d.dy < minY) minY = d.dy;
+      if (d.dy > maxY) maxY = d.dy;
+    }
+
+    final double widthFactor = maxX - minX;
+    final double heightFactor = maxY - minY;
+
+    double ringStroke = 0.0;
+    double scale = 0.0;
+    double s = 1.0;
+
+    for (int k = 0; k < 2; k++) {
+      final double aw = math.max(1.0, size.width - ringStroke);
+      final double ah = math.max(1.0, size.height - ringStroke);
+
+      scale = math.min(aw / widthFactor, ah / heightFactor);
+      s = (scale <= 0) ? 1.0 : (scale / 150.0);
+      ringStroke = 1.0 * s;
+    }
+
+    final double tx = (size.width - widthFactor * scale) / 2 - (minX * scale);
+    final double ty = (size.height - heightFactor * scale) / 2 - (minY * scale);
+
+    return _RadarFit._(dirs, scale, Offset(tx, ty), s, ringStroke);
+  }
+
+  Offset point(int i, double t) {
+    final Offset d = dirs[i];
+    return Offset(origin.dx + d.dx * scale * t, origin.dy + d.dy * scale * t);
+  }
+
+  Offset dir(int i) => dirs[i];
+}
+
 class _RoundedRadarPainter extends CustomPainter {
   final List<String> labels;
   final List<double> defaultValues;
@@ -430,35 +552,19 @@ class _RoundedRadarPainter extends CustomPainter {
     final int n = defaultValues.length;
     if (n < 3) return; // need 3+ axes
 
-    // Parent is square ⇒ width == height. Use (width / 2) minus padding.
-    const double edgePadding = AppSpacing.containerInsideMargin;
-    final Offset center = Offset(size.width / 2, size.height / 1.85);
-    final double radius = (size.width / 2) - edgePadding;
-
-    // Global angle step
-    final double angleStep = 2 * math.pi / n;
+    final fit = _RadarFit.compute(size, n);
 
     // Proportional styling scale (tweak the base divisor if you prefer)
-    final double s = (radius <= 0) ? 1.0 : (radius / 150.0);
+    final double s = fit.s;
 
     // Scaled cosmetics
-    final double ringStroke = 1.0 * s;
+    final double ringStroke = fit.ringStroke;
     final double dataStroke = 3.0 * s;
     final double dotRadius = 3.0 * s;
     final double dotBorderW = 1.50 * s;
-    final double labelPad = 30.0 * s;
-    final double leaderLen = 0.0 * s;
-    final double textPadX = 12.0 * s;
-    final double textPadY = 8.0 * s;
-    final double labelRadius = 12.0 * s;
     final double cornerR = cornerRadius * s;
 
     // Paints
-    final Paint gridPaint = Paint()
-      ..color = AppColors.borderLight
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = ringStroke;
-
     final Paint ringPaint = Paint()
       ..color = AppColors.borderMedium.withAlpha(150)
       ..style = PaintingStyle.stroke
@@ -467,31 +573,20 @@ class _RoundedRadarPainter extends CustomPainter {
     // 1) Concentric rounded polygons (use actual axis count)
     _drawConcentricRoundedPolygons(
       canvas: canvas,
-      center: center,
-      maxRadius: radius,
+      fit: fit,
       nSides: n,
-      cornerRadius: 16,
+      cornerRadius: 16 * s,
       paint: ringPaint,
     );
 
     // 2) Compute data polygon points (scaled by values/maxValue)
     final List<Offset> defaultPts = List.generate(n, (i) {
       final double val = (defaultValues[i] / maxValue).clamp(0.0, 1.0);
-      final double r = radius * val;
-      final double angle = -math.pi / 2 + (i * angleStep);
-      return Offset(
-        center.dx + r * math.cos(angle),
-        center.dy + r * math.sin(angle),
-      );
+      return fit.point(i, val);
     });
     final List<Offset> userPts = List.generate(n, (i) {
       final double val = (userValues.isNotEmpty ? (userValues[i] / maxValue).clamp(0.0, 1.0) : 0.0);
-      final double r = radius * val;
-      final double angle = -math.pi / 2 + (i * angleStep);
-      return Offset(
-        center.dx + r * math.cos(angle),
-        center.dy + r * math.sin(angle),
-      );
+      return fit.point(i, val);
     });
 
     // 3) Data shape (rounded)
@@ -543,24 +638,6 @@ class _RoundedRadarPainter extends CustomPainter {
         highlightColor: highlightColor,
       );
     }
-
-    // 5) Labels near data points with background and a short leader
-    _drawLabelsNearData(
-      canvas: canvas,
-      labels: labels,
-      values: defaultValues,
-      maxValue: maxValue,
-      center: center,
-      maxRadius: radius,
-      angleStep: angleStep,
-      axisPaint: gridPaint,
-      dotRadius: dotRadius,
-      labelPadding: labelPad + 0,
-      leaderLen: leaderLen,
-      textPadX: textPadX,
-      textPadY: textPadY,
-      bgRadius: labelRadius,
-    );
   }
 
   @override
@@ -579,24 +656,15 @@ class _RoundedRadarPainter extends CustomPainter {
 
   void _drawConcentricRoundedPolygons({
     required Canvas canvas,
-    required Offset center,
-    required double maxRadius,
+    required _RadarFit fit,
     required int nSides,
     required double cornerRadius,
     required Paint paint,
     int rings = 5,
   }) {
     for (int i = 1; i <= rings; i++) {
-      final double r = (maxRadius * i / rings);
-      final double angleStep = 2 * math.pi / nSides;
-
-      final List<Offset> ringPts = List.generate(nSides, (j) {
-        final double angle = -math.pi / 2 + (j * angleStep);
-        return Offset(
-          center.dx + r * math.cos(angle),
-          center.dy + r * math.sin(angle),
-        );
-      });
+      final double t = i / rings;
+      final List<Offset> ringPts = List.generate(nSides, (j) => fit.point(j, t));
 
       final Path ringPath = _buildRoundedPolygonPath(ringPts, cornerRadius);
       canvas.drawPath(ringPath, paint);
