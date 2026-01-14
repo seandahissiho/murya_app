@@ -172,8 +172,8 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                                       if (columnCursor >= maxColumns) {
                                         columnCursor = 0;
                                       }
-                                      double left = isFirstOfRow ? 0 : AppSpacing.containerInsideMarginSmall / 2;
-                                      double right = isLastOfRow ? 0 : AppSpacing.containerInsideMarginSmall / 2;
+                                      double left = isFirstOfRow ? 0 : AppSpacing.elementMargin / 2;
+                                      double right = isLastOfRow ? 0 : AppSpacing.elementMargin / 2;
                                       if (isFirstOfRow) {
                                         log("New row starting at index $i | module ${module.id}");
                                       }
@@ -189,21 +189,21 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                                         child: Column(
                                           children: [
                                             _test(module, i),
-                                            AppSpacing.containerInsideMarginSmallBox,
+                                            AppSpacing.elementMarginBox,
                                             if (concat2) ...[
                                               _test(nextModule!, i + 1),
-                                              AppSpacing.containerInsideMarginSmallBox,
+                                              AppSpacing.elementMarginBox,
                                             ],
                                             if (concat3) ...[
                                               Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   _test(nextModule!, i + 1),
-                                                  AppSpacing.containerInsideMarginSmallBox,
+                                                  AppSpacing.elementMarginBox,
                                                   _test(nextNextModule!, i + 2),
                                                 ],
                                               ),
-                                              AppSpacing.containerInsideMarginSmallBox,
+                                              AppSpacing.elementMarginBox,
                                             ],
                                           ],
                                         ),
