@@ -10,6 +10,7 @@ import 'package:murya/models/device_id_service.dart';
 import 'package:murya/repositories/app.repository.dart';
 import 'package:murya/repositories/authentication.repository.dart';
 import 'package:murya/repositories/jobs.repository.dart';
+import 'package:murya/repositories/modules.repository.dart';
 import 'package:murya/repositories/notifications.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
 import 'package:murya/repositories/quiz.repository.dart';
@@ -202,6 +203,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     RepositoryProvider.of<NotificationRepository>(context).updateDio(token, context);
     RepositoryProvider.of<ProfileRepository>(context).updateDio(token, context);
     RepositoryProvider.of<JobRepository>(context).updateDio(token, context);
+    RepositoryProvider.of<ModulesRepository>(context).updateDio(token, context);
     RepositoryProvider.of<QuizRepository>(context).updateDio(token, context);
   }
 

@@ -19,6 +19,7 @@ import 'package:murya/main_screen.dart';
 import 'package:murya/repositories/app.repository.dart';
 import 'package:murya/repositories/authentication.repository.dart';
 import 'package:murya/repositories/jobs.repository.dart';
+import 'package:murya/repositories/modules.repository.dart';
 import 'package:murya/repositories/notifications.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
 import 'package:murya/repositories/quiz.repository.dart';
@@ -94,6 +95,9 @@ List<RepositoryProvider> getRepositoryProviders(BuildContext context) {
     ),
     RepositoryProvider<JobRepository>(
       create: (BuildContext context) => JobRepository(),
+    ),
+    RepositoryProvider<ModulesRepository>(
+      create: (BuildContext context) => ModulesRepository(),
     ),
     RepositoryProvider<QuizRepository>(
       create: (BuildContext context) => QuizRepository(),

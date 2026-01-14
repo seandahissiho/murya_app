@@ -512,8 +512,8 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                   child: SizedBox(
                     width: constraints.maxWidth,
                     child: AutoSizeText(
-                      widget.module.title(context),
-                      maxLines: 1,
+                      widget.titleContent ?? widget.module.title(context),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.anton(
                         color: AppColors.textPrimary,
@@ -621,8 +621,8 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                   child: SizedBox(
                     width: constraints.maxWidth,
                     child: AutoSizeText(
-                      widget.module.title(context),
-                      maxLines: 1,
+                      widget.titleContent ?? widget.module.title(context),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.anton(
                         color: AppColors.textPrimary,
@@ -730,8 +730,8 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                   child: SizedBox(
                     width: constraints.maxWidth,
                     child: AutoSizeText(
-                      widget.module.title(context),
-                      maxLines: 1,
+                      widget.titleContent ?? widget.module.title(context),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.anton(
                         color: AppColors.textPrimary,
@@ -871,7 +871,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
             children: [
               Expanded(
                 child: AutoSizeText(
-                  widget.module.title(context),
+                  widget.titleContent ?? widget.module.title(context),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.anton(
@@ -920,8 +920,8 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
             children: [
               Expanded(
                 child: AutoSizeText(
-                  widget.module.title(context),
-                  maxLines: 1,
+                  widget.titleContent ?? widget.module.title(context),
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.anton(
                     color: AppColors.textPrimary,
@@ -982,8 +982,8 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         SizedBox(
           width: constraints.maxWidth,
           child: AutoSizeText(
-            widget.module.title(context),
-            maxLines: 1,
+            widget.titleContent ?? widget.module.title(context),
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.anton(
               color: AppColors.textPrimary,
@@ -1053,8 +1053,8 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                     SizedBox(
                       width: constraints.maxWidth,
                       child: AutoSizeText(
-                        widget.module.title(context),
-                        maxLines: 1,
+                        widget.titleContent ?? widget.module.title(context),
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.anton(
                           color: AppColors.textPrimary,
