@@ -889,10 +889,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       ],
       Expanded(
         child: (showSubtitleOnTabletAndAbove(module))
-            ? SizedBox(
-                width: constraints.maxWidth,
-                child: widget.bodyContent,
-              )
+            ? widget.bodyContent ?? const SizedBox.shrink()
             : const SizedBox.shrink(),
       ),
     ];
