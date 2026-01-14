@@ -437,7 +437,7 @@ abstract class AppLocalizations {
   /// Message d'erreur quand l'URL vidéo n'est pas en https
   ///
   /// In fr, this message translates to:
-  /// **'L\'\'URL de la vidéo doit utiliser https'**
+  /// **'L\'\'URL de la vidéo doit utiliser http ou https'**
   String get videoViewerInvalidUrl;
 
   /// Message d'erreur quand une vidéo ne peut pas être chargée
@@ -445,6 +445,24 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Impossible de charger la vidéo'**
   String get videoViewerLoadFailed;
+
+  /// Message d'erreur quand une ressource audio n'a pas d'URL
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'\'URL audio est manquante'**
+  String get audioViewerMissingUrl;
+
+  /// Message d'erreur quand l'URL audio n'est pas en https
+  ///
+  /// In fr, this message translates to:
+  /// **'L\'\'URL audio doit utiliser http ou https'**
+  String get audioViewerInvalidUrl;
+
+  /// Message d'erreur quand une ressource audio ne peut pas être chargée
+  ///
+  /// In fr, this message translates to:
+  /// **'Impossible de charger l\'\'audio'**
+  String get audioViewerLoadFailed;
 
   /// Titre de l'écran d'accueil
   ///

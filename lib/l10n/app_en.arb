@@ -233,13 +233,25 @@
   "@videoViewerMissingUrl": {
     "description": "Error message when a video resource has no URL"
   },
-  "videoViewerInvalidUrl": "Video URL must use https",
+  "videoViewerInvalidUrl": "Video URL must use http or https",
   "@videoViewerInvalidUrl": {
     "description": "Error message when a video URL is not https"
   },
   "videoViewerLoadFailed": "Unable to load video",
   "@videoViewerLoadFailed": {
     "description": "Error message when a video fails to load"
+  },
+  "audioViewerMissingUrl": "Audio URL is missing",
+  "@audioViewerMissingUrl": {
+    "description": "Error message when an audio resource has no URL"
+  },
+  "audioViewerInvalidUrl": "Audio URL must use http or https",
+  "@audioViewerInvalidUrl": {
+    "description": "Error message when an audio URL is not https"
+  },
+  "audioViewerLoadFailed": "Unable to load audio",
+  "@audioViewerLoadFailed": {
+    "description": "Error message when an audio resource fails to load"
   },
   "homeScreenTitle": "Home",
   "@homeScreenTitle": {

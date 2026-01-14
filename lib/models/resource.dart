@@ -74,11 +74,13 @@ class Resource {
   final String? title;
   final String? description;
   final String? url;
+  final String? thumbnailUrl;
   final ResourceType? type;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final Author? author;
   final String? content;
+  final Map<String, dynamic>? metadata;
 
   Resource({
     this.id,
@@ -87,11 +89,13 @@ class Resource {
     this.title,
     this.description,
     this.url,
+    this.thumbnailUrl,
     this.type,
     this.createdAt,
     this.updatedAt,
     this.author,
     this.content,
+    this.metadata,
   });
 
   factory Resource.fromJson(Map<String, dynamic> json) {
@@ -101,6 +105,8 @@ class Resource {
     final String? title = json['title'] as String?;
     final String? description = json['description'] as String?;
     final String? url = json['url'] ?? json['mediaUrl'] as String?;
+    final String? thumbnailUrl =
+        json['thumbnailUrl'] as String? ?? json['thumbnail_url'] as String? ?? json['thumbnail'] as String?;
     final String? typeString = json['type'] as String?;
     final ResourceType type = typeString != null
         ? ResourceType.values.firstWhere(
@@ -108,9 +114,14 @@ class Resource {
             orElse: () => ResourceType.article,
           )
         : ResourceType.article;
-    final DateTime? createdAt = json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null;
-    final DateTime? updatedAt = json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null;
+    final DateTime? createdAt =
+        json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null;
+    final DateTime? updatedAt =
+        json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null;
     final String? content = json['content'] as String?;
+    final dynamic metadataJson = json['metadata'];
+    final Map<String, dynamic>? metadata =
+        metadataJson is Map ? metadataJson.cast<String, dynamic>() : null;
 
     return Resource(
       id: id,
@@ -119,11 +130,24 @@ class Resource {
       title: title,
       description: description,
       url: url,
+      thumbnailUrl: thumbnailUrl,
       type: type,
       createdAt: createdAt,
       updatedAt: updatedAt,
       content: content,
+      metadata: metadata,
     );
+  }
+
+  String? get effectiveThumbnailUrl {
+    final metadataThumbnail = metadata?['thumbnailUrl'] ?? metadata?['thumbnail_url'] ?? metadata?['thumbnail'];
+    if (metadataThumbnail is String && metadataThumbnail.isNotEmpty) {
+      return metadataThumbnail;
+    }
+    if (thumbnailUrl != null && thumbnailUrl!.isNotEmpty) {
+      return thumbnailUrl;
+    }
+    return null;
   }
 
   ResourceSummary get summary => ResourceSummary(sections: []);

@@ -204,10 +204,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoViewerMissingUrl => 'Video URL is missing';
 
   @override
-  String get videoViewerInvalidUrl => 'Video URL must use https';
+  String get videoViewerInvalidUrl => 'Video URL must use http or https';
 
   @override
   String get videoViewerLoadFailed => 'Unable to load video';
+
+  @override
+  String get audioViewerMissingUrl => 'Audio URL is missing';
+
+  @override
+  String get audioViewerInvalidUrl => 'Audio URL must use http or https';
+
+  @override
+  String get audioViewerLoadFailed => 'Unable to load audio';
 
   @override
   String get homeScreenTitle => 'Home';

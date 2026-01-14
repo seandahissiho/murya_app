@@ -32,6 +32,17 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
     });
   }
 
+  int _moduleColSpan(Module module) {
+    switch (module.boxType) {
+      case AppModuleType.type1_2:
+      case AppModuleType.type2_2:
+        return 2;
+      case AppModuleType.type1:
+      case AppModuleType.type2_1:
+        return 1;
+    }
+  }
+
   double get size_1H {
     final AppSize appSize = AppSize(context);
     final screenHeight = appSize.screenHeight;
@@ -79,6 +90,9 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                   if (mainBodyHey > 2 * size_1H) {
                     mainBodyHeight = 0;
                   }
+
+                  const int maxColumns = 3;
+                  int columnCursor = 0;
 
                   return Stack(
                     children: [
@@ -144,38 +158,52 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                                         concats.add(i + 1);
                                         concats.add(i + 2);
                                       }
-                                      bool isFirstOfRow = i == 0 ||
-                                          (i > 0 && concats.contains(i - 1)) ||
-                                          (i > 1 && concats.contains(i - 2));
-                                      double left = isFirstOfRow ? AppSpacing.pageMargin : AppSpacing.groupMargin / 2;
-                                      double right = AppSpacing.groupMargin / 2;
-                                      if (i == state.modules.length - 1) {
-                                        right = AppSpacing.pageMargin;
+                                      final int lastIndex = state.modules.length - 1;
+                                      final int span = _moduleColSpan(module);
+                                      if (columnCursor + span > maxColumns) {
+                                        columnCursor = 0;
+                                      }
+                                      final bool isFirstOfRow = columnCursor == 0;
+                                      final bool isLastVisibleGroup = i == lastIndex ||
+                                          (concat2 && i + 1 == lastIndex) ||
+                                          (concat3 && i + 2 == lastIndex);
+                                      final bool isLastOfRow = columnCursor + span >= maxColumns || isLastVisibleGroup;
+                                      columnCursor += span;
+                                      if (columnCursor >= maxColumns) {
+                                        columnCursor = 0;
+                                      }
+                                      double left = isFirstOfRow ? 0 : AppSpacing.containerInsideMarginSmall / 2;
+                                      double right = isLastOfRow ? 0 : AppSpacing.containerInsideMarginSmall / 2;
+                                      if (isFirstOfRow) {
+                                        log("New row starting at index $i | module ${module.id}");
+                                      }
+                                      if (isLastOfRow) {
+                                        log("Row ending at index $i | module ${module.id}");
                                       }
 
                                       return Padding(
                                         padding: EdgeInsets.only(
                                           left: left,
-                                          right: AppSpacing.groupMargin,
+                                          right: right,
                                         ),
                                         child: Column(
                                           children: [
                                             _test(module, i),
-                                            AppSpacing.groupMarginBox,
+                                            AppSpacing.containerInsideMarginSmallBox,
                                             if (concat2) ...[
                                               _test(nextModule!, i + 1),
-                                              AppSpacing.groupMarginBox,
+                                              AppSpacing.containerInsideMarginSmallBox,
                                             ],
                                             if (concat3) ...[
                                               Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   _test(nextModule!, i + 1),
-                                                  AppSpacing.groupMarginBox,
+                                                  AppSpacing.containerInsideMarginSmallBox,
                                                   _test(nextNextModule!, i + 2),
                                                 ],
                                               ),
-                                              AppSpacing.groupMarginBox,
+                                              AppSpacing.containerInsideMarginSmallBox,
                                             ],
                                           ],
                                         ),

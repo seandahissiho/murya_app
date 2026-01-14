@@ -2,6 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:just_audio/just_audio.dart' as just_audio;
 import 'package:markdown_widget/markdown_widget.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/resources/resources_bloc.dart';
