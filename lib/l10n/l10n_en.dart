@@ -20,7 +20,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landing_page_title => 'Home page';
 
   @override
-  String get landing_first_title => 'Paths';
+  String get landing_first_title => 'Journey';
 
   @override
   String get landing_first_subtitle =>
@@ -353,4 +353,81 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quiz_reward => 'Reward';
+
+  @override
+  String get parcoursPageTitle => 'Journey';
+
+  @override
+  String get parcoursTab_profile => 'Profile';
+
+  @override
+  String get parcoursTab_objectives => 'Goals';
+
+  @override
+  String get parcoursTab_rewards => 'Rewards';
+
+  @override
+  String get parcoursTab_settings => 'Settings';
+
+  @override
+  String parcoursRanking_peopleCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people',
+      one: '1 person',
+      zero: '0 people',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get parcoursRanking_header_experience => 'Experience';
+
+  @override
+  String get parcoursRanking_header_answeredQuestions => 'Answered questions';
+
+  @override
+  String get parcoursRanking_header_performance => 'Performance';
+
+  @override
+  String get parcoursRanking_status_pending => 'Pending';
+
+  @override
+  String get parcoursObjective_inProgress => 'Goal in progress';
+
+  @override
+  String get parcoursObjective_finalizePositioningPath =>
+      'Complete the positioning journey';
+
+  @override
+  String get parcoursRewards_possibleTitle => 'Possible rewards';
+
+  @override
+  String get parcoursRewards_seeAll => 'See all';
+
+  @override
+  String get rewardItem_francofoliesLaRochelle =>
+      'Les Francofolies de La Rochelle';
+
+  @override
+  String get rewardItem_futuroscope => 'Futuroscope';
+
+  @override
+  String get rewardItem_cinemaTicket => 'Movie ticket';
+
+  @override
+  String get parcoursRecentActivities_title => 'Recent activity';
+
+  @override
+  String get inviteFriends_title => 'Invite friends';
+
+  @override
+  String get inviteFriends_description =>
+      'Tell your friends that learning with Murya is simple, smart, and rewarding.';
+
+  @override
+  String inviteFriends_bonus(int amount) {
+    return 'Invite them and earn $amount 💎 as soon as they sign up.';
+  }
 }
