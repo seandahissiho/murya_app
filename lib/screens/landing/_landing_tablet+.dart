@@ -328,8 +328,8 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
 
   _getTileForModule(Module module, {Widget? dragHandle, GlobalKey? tileKey}) {
     const cardMargin = EdgeInsets.zero;
-    switch (module.id) {
-      case 'account':
+    switch (module.slug) {
+      case 'leaderboard':
         return AccountModuleWidget(
           module: module,
           onSizeChanged: onSizeChanged,
@@ -337,7 +337,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           tileKey: tileKey,
           cardMargin: cardMargin,
         );
-      case 'job':
+      case 'daily-quiz':
         return JobModuleWidget(
           module: module,
           onSizeChanged: onSizeChanged,
@@ -345,7 +345,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           tileKey: tileKey,
           cardMargin: cardMargin,
         );
-      case 'ressources':
+      case 'learning-resources':
         return RessourcesModuleWidget(
           module: module,
           onSizeChanged: onSizeChanged,
@@ -354,6 +354,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
           cardMargin: cardMargin,
         );
       default:
+        return Container();
         return AppModuleWidget(
           key: ValueKey('module-${module.id}'),
           module: module,

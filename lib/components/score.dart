@@ -72,3 +72,55 @@ class ScoreWidget extends StatelessWidget {
     );
   }
 }
+
+class GoalWidget extends StatelessWidget {
+  final int value;
+  final bool compact;
+  final Color textColor;
+
+  const GoalWidget({
+    super.key,
+    required this.value,
+    this.compact = false,
+    this.textColor = AppColors.primaryDefault,
+  });
+
+  TextStyle? _style(bool isMobile, ThemeData theme) {
+    return isMobile
+        ? (!compact
+            ? theme.textTheme.labelLarge?.copyWith(height: 0.0, color: textColor)
+            : theme.textTheme.labelLarge?.copyWith(height: 0.0, color: textColor))
+        : (!compact
+            ? theme.textTheme.displayMedium?.copyWith(height: 1.0, color: textColor)
+            : theme.textTheme.labelLarge?.copyWith(height: 0.0, color: textColor));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isMobile = DeviceHelper.isMobile(context);
+    final iconSize = isMobile ? mobileCTAHeight / (compact ? 2.5 : 2) : tabletAndAboveCTAHeight / (compact ? 2.5 : 2);
+    return Row(
+      children: [
+        Container(
+          height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 1.5,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.tinyMargin,
+          ),
+          child: Center(
+            child: Text(
+              '$value%',
+              style: _style(isMobile, theme),
+            ),
+          ),
+        ),
+        AppSpacing.tinyMarginBox,
+        Icon(
+          Icons.gps_fixed_outlined,
+          size: iconSize,
+          color: AppColors.primaryFocus,
+        ),
+      ],
+    );
+  }
+}

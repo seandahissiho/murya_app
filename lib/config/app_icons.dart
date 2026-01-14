@@ -74,4 +74,5 @@ class AppImages {
   static const String homeBox7Path = '$basePath/b20766b828020a92530a96c36caa89c6672a469d.jpg';
   static const String CFCardBackgroundPath = '$basePath/93d4152ff0431e91e55321d66f736559248e055a.webp';
   static const String starsPath = '$basePath/vecteezy_stars_3.png';
+  static const String avatarPlaceholder = '$basePath/148211565.png';
 }

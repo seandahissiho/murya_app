@@ -15,6 +15,68 @@ import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
 
+enum ModuleStatus {
+  active,
+  inactive,
+  archived,
+}
+
+extension ModuleStatusExtension on ModuleStatus {
+  String get value {
+    switch (this) {
+      case ModuleStatus.active:
+        return "ACTIVE";
+      case ModuleStatus.inactive:
+        return "INACTIVE";
+      case ModuleStatus.archived:
+        return "ARCHIVED";
+    }
+  }
+
+  static ModuleStatus? fromValue(String? value) {
+    switch (value) {
+      case "ACTIVE":
+        return ModuleStatus.active;
+      case "INACTIVE":
+        return ModuleStatus.inactive;
+      case "ARCHIVED":
+        return ModuleStatus.archived;
+    }
+    return null;
+  }
+}
+
+enum ModuleVisibility {
+  public,
+  private,
+  restricted,
+}
+
+extension ModuleVisibilityExtension on ModuleVisibility {
+  String get value {
+    switch (this) {
+      case ModuleVisibility.public:
+        return "PUBLIC";
+      case ModuleVisibility.private:
+        return "PRIVATE";
+      case ModuleVisibility.restricted:
+        return "RESTRICTED";
+    }
+  }
+
+  static ModuleVisibility? fromValue(String? value) {
+    switch (value) {
+      case "PUBLIC":
+        return ModuleVisibility.public;
+      case "PRIVATE":
+        return ModuleVisibility.private;
+      case "RESTRICTED":
+        return ModuleVisibility.restricted;
+    }
+    return null;
+  }
+}
+
 enum AppModuleType {
   // One cell
   type1,
@@ -128,6 +190,14 @@ extension AppModuleTypeExtension on AppModuleType {
 
 class Module {
   final String? id;
+  final String? slug;
+  final String? name;
+  final String? description;
+  final ModuleStatus? status;
+  final ModuleVisibility? visibility;
+  final bool defaultOnLanding;
+  final String? createdAt;
+  final String? updatedAt;
   final AppModuleType boxType;
 
   // final Pair<int, int> topLeftPosition;
@@ -135,6 +205,14 @@ class Module {
 
   Module({
     required this.id,
+    this.slug,
+    this.name,
+    this.description,
+    this.status,
+    this.visibility,
+    this.defaultOnLanding = false,
+    this.createdAt,
+    this.updatedAt,
     this.boxType = AppModuleType.type2_2,
     required this.index,
   });
@@ -143,40 +221,75 @@ class Module {
   factory Module.fromJson(Map<String, dynamic> json) {
     return Module(
       id: json['id'],
+      slug: json['slug'],
+      name: json['name'],
+      description: json['description'],
+      status: ModuleStatusExtension.fromValue(json['status']),
+      visibility: ModuleVisibilityExtension.fromValue(json['visibility']),
+      defaultOnLanding: json['defaultOnLanding'] == true,
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
       boxType: AppModuleType.values.firstWhere(
         (e) => e.name == json['boxType'],
         orElse: () => AppModuleType.type2_2,
       ),
-      index: json['index'],
+      index: json['index'] ?? 0,
+    );
+  }
+
+  factory Module.fromApiJson(Map<String, dynamic> json) {
+    return Module(
+      id: json['id'],
+      slug: json['slug'],
+      name: json['name'],
+      description: json['description'],
+      status: ModuleStatusExtension.fromValue(json['status']),
+      visibility: ModuleVisibilityExtension.fromValue(json['visibility']),
+      defaultOnLanding: json['defaultOnLanding'] == true,
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+      index: json['order'] ?? json['index'] ?? 0,
     );
   }
 
   String title(BuildContext context) {
     final locale = AppLocalizations.of(context);
 
-    switch (id) {
-      case 'account':
+    switch (slug) {
+      case 'leaderboard':
         return locale.landing_first_title;
-      case 'job':
+      case 'daily-quiz':
         return locale.landing_second_title;
-      case 'ressources':
+      case 'learning-resources':
         return locale.user_ressources_module_title;
       default:
-        return "";
+        if (name != null && name!.isNotEmpty) {
+          return name!;
+        }
+        if (slug != null && slug!.isNotEmpty) {
+          return slug!;
+        }
+        return id ?? "";
     }
   }
 
   String subtitle(BuildContext context) {
     final locale = AppLocalizations.of(context);
 
-    switch (id) {
-      case 'account':
+    switch (slug) {
+      case 'leaderboard':
         return locale.landing_first_subtitle;
-      case 'job':
+      case 'daily-quiz':
         return locale.landing_second_subtitle;
-      case 'ressources':
+      case 'learning-resources':
         return locale.user_ressources_module_subtitle;
       default:
+        if (description != null && description!.isNotEmpty) {
+          return description!;
+        }
+        if (slug != null && slug!.isNotEmpty && slug != name) {
+          return slug!;
+        }
         return "";
     }
   }
@@ -184,12 +297,12 @@ class Module {
   String? button1Text(BuildContext context) {
     final locale = AppLocalizations.of(context);
 
-    switch (id) {
-      case 'account':
+    switch (slug) {
+      case 'leaderboard':
         return locale.landing_first_button1;
-      case 'job':
+      case 'daily-quiz':
         return locale.landing_second_button;
-      case 'ressources':
+      case 'learning-resources':
         return locale.user_ressources_module_button;
       default:
         return null;
@@ -199,13 +312,13 @@ class Module {
   String? button2Text(BuildContext context) {
     final locale = AppLocalizations.of(context);
 
-    switch (id) {
-      case 'account':
+    switch (slug) {
+      case 'leaderboard':
         return null;
         return locale.landing_first_button2;
-      case 'job':
+      case 'daily-quiz':
         return null;
-      case 'ressources':
+      case 'learning-resources':
         return null;
       default:
         return null;
@@ -213,8 +326,8 @@ class Module {
   }
 
   VoidCallback? button1OnPressed(BuildContext context) {
-    switch (id) {
-      case 'account':
+    switch (slug) {
+      case 'leaderboard':
         return () async {
           final authBloc = context.read<AuthenticationBloc>();
           final profileBloc = context.read<ProfileBloc>();
@@ -244,7 +357,7 @@ class Module {
           const hasEmail = true; //(user.email ?? '').isNotEmpty;
           navigateToPath(context, to: hasEmail ? AppRoutes.profile : AppRoutes.login);
         };
-      case 'job':
+      case 'daily-quiz':
         return () {
           final theme = Theme.of(context);
           final locale = AppLocalizations.of(context);
@@ -349,7 +462,7 @@ class Module {
             }
           });
         };
-      case 'ressources':
+      case 'learning-resources':
         return () {
           navigateToPath(context, to: AppRoutes.userRessourcesModule);
         };
@@ -359,14 +472,14 @@ class Module {
   }
 
   VoidCallback? button2OnPressed(BuildContext context) {
-    switch (id) {
-      case 'account':
+    switch (slug) {
+      case 'leaderboard':
         return () {
           navigateToPath(context, to: AppRoutes.login);
         };
-      case 'job':
+      case 'daily-quiz':
         return null;
-      case 'ressources':
+      case 'learning-resources':
         return null;
       default:
         return null;
@@ -382,6 +495,20 @@ class Module {
     };
   }
 
+  Map<String, dynamic> toApiJson() {
+    return {
+      'id': id,
+      'slug': slug,
+      'name': name,
+      'description': description,
+      'status': status?.value,
+      'visibility': visibility?.value,
+      'defaultOnLanding': defaultOnLanding,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+    };
+  }
+
   nextBoxType() {
     const types = AppModuleType.values;
     final currentIndex = types.indexOf(boxType);
@@ -392,11 +519,27 @@ class Module {
   // copyWith
   Module copyWith({
     String? id,
+    String? slug,
+    String? name,
+    String? description,
+    ModuleStatus? status,
+    ModuleVisibility? visibility,
+    bool? defaultOnLanding,
+    String? createdAt,
+    String? updatedAt,
     AppModuleType? boxType,
     int? index,
   }) {
     return Module(
       id: id ?? this.id,
+      slug: slug ?? this.slug,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      status: status ?? this.status,
+      visibility: visibility ?? this.visibility,
+      defaultOnLanding: defaultOnLanding ?? this.defaultOnLanding,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       boxType: boxType ?? this.boxType,
       index: index ?? this.index,
     );
@@ -459,7 +602,7 @@ class ModuleBuilder {
 // }
 //
 // Widget getById(String id) {
-//   switch (id) {
+//   switch (slug) {
 //     case 'account':
 //       return accountModule();
 //     case 'job':

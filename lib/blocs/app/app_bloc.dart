@@ -8,6 +8,7 @@ import 'package:murya/models/country.dart';
 import 'package:murya/repositories/app.repository.dart';
 import 'package:murya/repositories/authentication.repository.dart';
 import 'package:murya/repositories/jobs.repository.dart';
+import 'package:murya/repositories/modules.repository.dart';
 import 'package:murya/repositories/notifications.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
 import 'package:provider/provider.dart';
@@ -139,6 +140,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     RepositoryProvider.of<ProfileRepository>(event.context).updateLanguage(_appLanguage.code);
     // jobs repository
     RepositoryProvider.of<JobRepository>(event.context).updateLanguage(_appLanguage.code);
+    RepositoryProvider.of<ModulesRepository>(event.context).updateLanguage(_appLanguage.code);
 
     emit(AppRouteChanged(
       oldRoute: state.oldRoute,

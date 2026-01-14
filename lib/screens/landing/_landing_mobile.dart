@@ -263,7 +263,6 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
       // We drag by passing the source index as "data"
       onWillAcceptWithDetails: (_) => true,
       onAcceptWithDetails: (fromIndex) {
-        if (i <= 2) return;
         if (fromIndex.data != i) {
           context.read<ModulesBloc>().add(ReorderModules(from: fromIndex.data, to: i));
         }
@@ -294,7 +293,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
   _getTileForModule(Module module, {Widget? dragHandle, GlobalKey? tileKey}) {
     const cardMargin = EdgeInsets.zero;
     switch (module.id) {
-      case 'account':
+      case 'leaderboard':
         return AccountModuleWidget(
           // key: ValueKey('module-${module.id}'),
           module: module,
@@ -303,7 +302,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           tileKey: tileKey,
           cardMargin: cardMargin,
         );
-      case 'job':
+      case 'daily-quiz':
         return JobModuleWidget(
           key: ValueKey('module-${module.id}'),
           module: module,
@@ -312,7 +311,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           tileKey: tileKey,
           cardMargin: cardMargin,
         );
-      case 'ressources':
+      case 'learning-resources':
         return RessourcesModuleWidget(
           // key: ValueKey('module-${module.id}'),
           module: module,
