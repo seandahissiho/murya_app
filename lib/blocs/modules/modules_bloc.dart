@@ -154,6 +154,32 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
         index: 2,
         boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
       ),
+      // // fake modules for testing
+      // Module(
+      //   id: "module_1",
+      //   index: 3,
+      //   boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
+      // ),
+      // Module(
+      //   id: "module_2",
+      //   index: 4,
+      //   boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
+      // ),
+      // Module(
+      //   id: "module_3",
+      //   index: 5,
+      //   boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
+      // ),
+      // Module(
+      //   id: "module_4",
+      //   index: 6,
+      //   boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
+      // ),
+      // Module(
+      //   id: "module_5",
+      //   index: 7,
+      //   boxType: isMobile ? AppModuleType.type2_2 : AppModuleType.type2_1,
+      // ),
     ];
   }
 
@@ -180,10 +206,7 @@ class ModulesBloc extends Bloc<ModulesEvent, ModulesState> {
     final raw = data['modules'];
     if (raw is! List) return null;
     try {
-      final modules = raw
-          .whereType<Map>()
-          .map((item) => Module.fromJson(Map<String, dynamic>.from(item)))
-          .toList();
+      final modules = raw.whereType<Map>().map((item) => Module.fromJson(Map<String, dynamic>.from(item))).toList();
       if (modules.isEmpty) return null;
       return _normalizeModules(modules, ctx);
     } catch (_) {
