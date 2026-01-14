@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,7 +74,7 @@ class _RessourcesModuleWidgetState extends State<RessourcesModuleWidget> {
                 iconColor: AppColors.primaryDefault,
                 isLandingPage: true,
               ),
-              bodyContent: _resourcesStack(latestResources),
+              bodyContent: _resourcesStack(latestResources, widget.module),
               footerContent: AppXButton(
                 shrinkWrap: false,
                 onPressed: widget.module.button1OnPressed(context),
@@ -109,126 +111,211 @@ class _RessourcesStackedResources extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (resources.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (resources.isEmpty) return const SizedBox.shrink();
+
     return LayoutBuilder(
-      builder: (context, _) {
+      builder: (context, constraints) {
         final theme = Theme.of(context);
         final bool isMobile = DeviceHelper.isMobile(context);
-        final double offset = isMobile ? 10 : 14;
-        final List<Resource> orderedResources = resources.reversed.toList();
+
+        // ✅ Offset “stack” comme l’image : léger décalage bas + droite
+        final double offsetBase = isMobile ? 10 : 14;
+        final double offset = offsetBase * _stackScale(constraints, isMobile);
+
+        // ✅ Important : on dessine d’abord les cartes du fond, puis celle du dessus
+        final orderedResources = resources.reversed.toList();
+        final topIndex = orderedResources.length - 1;
+
         return Stack(
+          clipBehavior: Clip.none, // ✅ pour voir dépasser les cartes derrière
           children: List.generate(orderedResources.length, (index) {
-            final resource = orderedResources[index];
-            final double inset = offset * index;
-            return Positioned(
-              top: inset,
-              left: inset,
-              right: inset,
-              bottom: inset,
-              child: _ResourceCard(resource: resource, theme: theme),
+            final orderedResources = resources.reversed.toList();
+            final int maxDepth = orderedResources.length - 1;
+
+            return Stack(
+              clipBehavior: Clip.none,
+              children: List.generate(orderedResources.length, (index) {
+                final resource = orderedResources[index];
+
+                // ✅ depth = 0 => carte du dessus (pas décalée)
+                // ✅ depth augmente => cartes derrière (de + en + décalées)
+                final int depth = maxDepth - index;
+
+                final bool isTopCard = depth == 0;
+
+                final double dx = offset * depth;
+                final double dy = offset * depth;
+
+                return Positioned.fill(
+                  child: Transform.translate(
+                    offset: Offset(dx, dy),
+                    child: _ResourceCard(
+                      resource: resource,
+                      theme: theme,
+                      isTopCard: isTopCard,
+                    ),
+                  ),
+                );
+              }),
             );
           }),
         );
       },
     );
   }
+
+  double _stackScale(BoxConstraints constraints, bool isMobile) {
+    final double baseSize = isMobile ? 160 : 220;
+    final double effectiveSize = math.min(constraints.maxHeight, constraints.maxWidth);
+    if (effectiveSize <= 0) return 1.0;
+    return math.min(1.0, effectiveSize / baseSize);
+  }
 }
 
 class _ResourceCard extends StatelessWidget {
   final Resource resource;
   final ThemeData theme;
+  final bool isTopCard;
 
-  const _ResourceCard({required this.resource, required this.theme});
+  const _ResourceCard({
+    required this.resource,
+    required this.theme,
+    required this.isTopCard,
+  });
 
   @override
   Widget build(BuildContext context) {
     final thumbnailUrl = resource.effectiveThumbnailUrl;
-    return Container(
-      decoration: const BoxDecoration(
-        borderRadius: AppRadius.borderRadius28,
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: _thumbnailBackground(thumbnailUrl),
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double scale = _contentScale(constraints);
+        final double padding = (18.0 * scale).clamp(12.0, 22.0);
+        final double smallGap = (10.0 * scale).clamp(6.0, 14.0);
+
+        final double titleFontSize = (28.0 * scale).clamp(16.0, 32.0);
+        final double dateFontSize = (14.0 * scale).clamp(12.0, 16.0);
+
+        final Color borderColor = AppColors.whiteSwatch;
+
+        final double borderWidth = isTopCard ? 2.0 : 2.0;
+
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: AppRadius.borderRadius28,
+            border: Border.all(color: borderColor, width: borderWidth),
           ),
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AppColors.primaryDefault.withOpacity(0.05),
-                    AppColors.primaryDefault.withOpacity(0.8),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
+          clipBehavior: Clip.antiAlias,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(26.0)),
+            child: Stack(
               children: [
-                Flexible(
-                  flex: 3,
-                  child: AutoSizeText(
-                    resource.title ?? '',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: AppColors.textInverted,
-                      fontSize: theme.textTheme.displayMedium?.fontSize,
-                      height: 0,
+                // Background image (pixelisée dans ton screenshot => normal)
+                Positioned.fill(child: _thumbnailBackground(thumbnailUrl)),
+
+                // Dark gradient overlay (pour lisibilité texte)
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.05),
+                          Colors.black.withOpacity(0.55),
+                        ],
+                      ),
                     ),
-                    minFontSize: 16,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
                   ),
                 ),
-                AppSpacing.containerInsideMarginSmallBox,
-                Flexible(
-                  child: AutoSizeText(
-                    resource.createdAt?.formattedDate ?? '',
-                    style: theme.textTheme.labelLarge?.copyWith(color: AppColors.textInverted),
-                    minFontSize: 12,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
+
+                // // ✅ Top strip jaune (visible uniquement sur la carte du dessus)
+                // if (isTopCard)
+                //   Positioned(
+                //     top: 0,
+                //     left: 0,
+                //     right: 0,
+                //     height: (12.0 * scale).clamp(8.0, 14.0),
+                //     child: DecoratedBox(
+                //       decoration: BoxDecoration(
+                //         color: borderColor,
+                //         borderRadius: const BorderRadius.only(
+                //           topLeft: Radius.circular(28),
+                //           topRight: Radius.circular(28),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+
+                // Content bottom-left
+                Padding(
+                  padding: EdgeInsets.all(padding),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AutoSizeText(
+                        resource.title ?? '',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: AppColors.textInverted,
+                          fontSize: titleFontSize,
+                          fontWeight: FontWeight.w900,
+                          height: 1.05, // ✅ important (ton "height: 0" cassait tout)
+                        ),
+                        minFontSize: 14,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: smallGap),
+                      AutoSizeText(
+                        resource.createdAt?.formattedDate ?? '',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: AppColors.textInverted,
+                          fontSize: dateFontSize,
+                          fontWeight: FontWeight.w600,
+                          height: 1.0,
+                        ),
+                        minFontSize: 10,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
+  }
+
+  double _contentScale(BoxConstraints constraints) {
+    // Plus la card est petite, plus on réduit padding/fonts
+    final h = constraints.maxHeight;
+    if (h <= 0) return 1.0;
+    return math.min(1.0, h / 220.0);
   }
 }
 
 Widget _thumbnailBackground(String? url) {
-  if (!url.isNotEmptyOrNull) {
+  if (url == null || url.trim().isEmpty) {
     return const DecoratedBox(
       decoration: BoxDecoration(color: AppColors.primaryDefault),
     );
   }
 
   return Image.network(
-    url!,
+    url,
     fit: BoxFit.cover,
-    errorBuilder: (context, error, stackTrace) {
+    errorBuilder: (_, __, ___) {
       return const DecoratedBox(
         decoration: BoxDecoration(color: AppColors.primaryDefault),
       );
     },
     loadingBuilder: (context, child, loadingProgress) {
-      if (loadingProgress == null) {
-        return child;
-      }
+      if (loadingProgress == null) return child;
       return const DecoratedBox(
         decoration: BoxDecoration(color: AppColors.primaryDefault),
       );
@@ -236,6 +323,22 @@ Widget _thumbnailBackground(String? url) {
   );
 }
 
-Widget _resourcesStack(List<Resource> resources) {
-  return RessourcesModuleContent(resources: resources);
+Widget _resourcesStack(List<Resource> resources, Module module) {
+  return LayoutBuilder(builder: (context, constraints) {
+    return Center(
+      child: SizedBox(
+        height: constraints.maxHeight,
+        width: constraints.maxHeight,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: module.boxType == AppModuleType.type1 ? 0 : 12.0,
+            bottom: module.boxType == AppModuleType.type1 ? 20 : 40.0,
+            left: module.boxType == AppModuleType.type1 ? 0 : 8.0,
+            right: module.boxType == AppModuleType.type1 ? 20 : 40.0,
+          ),
+          child: RessourcesModuleContent(resources: resources),
+        ),
+      ),
+    );
+  });
 }

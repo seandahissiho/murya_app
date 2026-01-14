@@ -117,7 +117,7 @@ class AccountBodyContent extends StatelessWidget {
       builder: (context, constraints) {
         final double scale = _contentScale(constraints);
         final double nameFontSize = _nameFontSize(scale);
-        final double nameMinFontSize = math.min(10.0, nameFontSize);
+        final double nameMinFontSize = _alignToStep(math.min(10.0, nameFontSize));
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -138,6 +138,7 @@ class AccountBodyContent extends StatelessWidget {
                     ),
                     maxLines: 1,
                     minFontSize: nameMinFontSize,
+                    stepGranularity: 1,
                   ),
                 ],
               ],
@@ -153,10 +154,12 @@ class AccountBodyContent extends StatelessWidget {
                   ),
                   maxLines: 1,
                   minFontSize: nameMinFontSize,
+                  stepGranularity: 1,
                 ),
               ),
             _bottomSpacer(scale),
             Flexible(
+              flex: 8,
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -165,7 +168,7 @@ class AccountBodyContent extends StatelessWidget {
                 ),
                 padding: EdgeInsets.all(AppSpacing.containerInsideMargin * scale),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: module.boxType == AppModuleType.type1_2 ? MainAxisSize.max : MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -182,10 +185,10 @@ class AccountBodyContent extends StatelessWidget {
                         'Compléter le parcours de positionnement',
                         style: theme.textTheme.labelLarge!.copyWith(
                           color: AppColors.textPrimary,
-                          fontSize: 16 * scale,
+                          fontSize: math.max(16 * scale, 2),
                         ),
-                        maxFontSize: 16 * scale,
-                        minFontSize: 10 * scale,
+                        maxFontSize: math.max(16 * scale, 2),
+                        minFontSize: math.max(10 * scale, 2),
                         maxLines: 2,
                       ),
                     ),
@@ -255,6 +258,9 @@ class AccountBodyContent extends StatelessWidget {
   }
 
   Widget _bottomSpacer(double scale) {
+    if (module.boxType == AppModuleType.type1 || module.boxType == AppModuleType.type1_2) {
+      return const Spacer();
+    }
     return SizedBox(height: _baseBottomSpacer() * scale);
   }
 
@@ -299,6 +305,13 @@ class AccountBodyContent extends StatelessWidget {
       return 48;
     }
     return 32;
+  }
+
+  double _alignToStep(double value, {double step = 1}) {
+    if (step <= 0) {
+      return value;
+    }
+    return (value / step).round() * step;
   }
 }
 

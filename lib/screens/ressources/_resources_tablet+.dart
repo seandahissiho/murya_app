@@ -21,13 +21,12 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
       builder: (context, state) {
         return Column(
           children: [
-            // const Row(
-            //   children: [
-            //     Spacer(),
-            //     AppXCloseButton(),
-            //   ],
-            // ),
-            // AppSpacing.groupMarginBox,
+            const Row(
+              children: [
+                Spacer(),
+                AppXCloseButton(),
+              ],
+            ),
             Row(
               children: [
                 RichText(
@@ -40,8 +39,6 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                     ),
                   ),
                 ),
-                const Spacer(),
-                const AppXCloseButton(),
               ],
             ),
             AppSpacing.sectionMarginBox,

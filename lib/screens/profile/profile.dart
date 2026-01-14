@@ -1,8 +1,14 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
 import 'package:murya/blocs/app/app_bloc.dart';
+import 'package:murya/blocs/modules/profile/profile_bloc.dart';
+import 'package:murya/components/app_button.dart';
+import 'package:murya/components/skeletonizer.dart';
+import 'package:murya/config/DS.dart';
 import 'package:murya/config/routes.dart';
+import 'package:murya/l10n/l10n.dart';
 import 'package:murya/screens/base.dart';
 
 part '_profile_mobile.dart';
