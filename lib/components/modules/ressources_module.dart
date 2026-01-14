@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
@@ -170,24 +171,31 @@ class _ResourceCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  resource.title ?? '',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: AppColors.textInverted,
-                    fontSize: theme.textTheme.displayMedium?.fontSize,
-                    height: 0,
+                Flexible(
+                  flex: 3,
+                  child: AutoSizeText(
+                    resource.title ?? '',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: AppColors.textInverted,
+                      fontSize: theme.textTheme.displayMedium?.fontSize,
+                      height: 0,
+                    ),
+                    minFontSize: 16,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
                 ),
                 AppSpacing.containerInsideMarginSmallBox,
-                Text(
-                  resource.createdAt?.formattedDate ?? '',
-                  style: theme.textTheme.labelLarge?.copyWith(color: AppColors.textInverted),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
+                Flexible(
+                  child: AutoSizeText(
+                    resource.createdAt?.formattedDate ?? '',
+                    style: theme.textTheme.labelLarge?.copyWith(color: AppColors.textInverted),
+                    minFontSize: 12,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                  ),
                 ),
               ],
             ),

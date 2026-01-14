@@ -100,7 +100,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       }
       // log("AppSizeWidthTabletAndAbove: ${appSize.screenWidth}");
       final double calculatedSize =
-          (appSize.screenWidth - sideMargins * AppSpacing.pageMargin) / 3 - AppSpacing.containerInsideMarginSmall / 1.5;
+          (appSize.screenWidth - sideMargins * AppSpacing.pageMargin) / 3 - AppSpacing.elementMargin / 1.5;
       return calculatedSize;
     }
   }
