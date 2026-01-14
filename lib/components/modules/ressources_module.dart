@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/components/app_button.dart';
-import 'package:murya/components/favorites.dart';
 import 'package:murya/components/modules/app_module.dart';
+import 'package:murya/components/score.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
@@ -67,7 +67,11 @@ class _RessourcesModuleWidgetState extends State<RessourcesModuleWidget> {
               },
               hasData: latestResources.isNotEmpty,
               titleContent: widget.module.title(context),
-              subtitleContent: FavoritesWidget(value: validResources.length),
+              subtitleContent: FavoritesWidget(
+                value: validResources.length,
+                iconColor: AppColors.primaryDefault,
+                isLandingPage: true,
+              ),
               bodyContent: _resourcesStack(latestResources),
               footerContent: AppXButton(
                 shrinkWrap: false,

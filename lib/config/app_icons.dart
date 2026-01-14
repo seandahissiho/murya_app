@@ -42,7 +42,13 @@ class AppIcons {
   static const String exitIconPath = '$basePath/exit_icon.svg';
 
   // diamond.svg
-  static const String diamondIconPath = '$basePath/diamond.svg';
+  static const String diamondIconPath = '$basePath/diamond-blank.svg';
+
+  // Star.svg
+  static const String starIconPath = '$basePath/Star.svg';
+
+  // target-goal.svg
+  static const String targetGoalIconPath = '$basePath/target-goal.svg';
 
   //addResourceIconPath
   static const String addResourceIconPath = '$basePath/add_ressources.svg';
