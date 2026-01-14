@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -106,84 +108,120 @@ class AccountBodyContent extends StatelessWidget {
     final String rawName = '$firstName $lastName'.trim();
     final String fullName = rawName.isNotEmpty ? rawName : 'Prénom Nom';
     final String? photoUrl = user.photoURL;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: module.boxType != AppModuleType.type1 && module.boxType != AppModuleType.type1_2
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double scale = _contentScale(constraints);
+        final double nameFontSize = _nameFontSize(scale);
+        final double nameMinFontSize = math.min(10.0, nameFontSize);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _AvatarPhoto(photoUrl: photoUrl, module: module),
-            if (module.boxType == AppModuleType.type1 || module.boxType == AppModuleType.type1_2) ...[
-              AppSpacing.groupMarginBox,
-              AutoSizeText(
-                fullName,
-                style: GoogleFonts.anton(
-                  fontSize: _nameFontSize(),
-                  color: AppColors.textPrimary,
+            Row(
+              mainAxisAlignment: module.boxType != AppModuleType.type1 && module.boxType != AppModuleType.type1_2
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                _AvatarPhoto(photoUrl: photoUrl, module: module, scale: scale),
+                if (module.boxType == AppModuleType.type1 || module.boxType == AppModuleType.type1_2) ...[
+                  SizedBox(height: AppSpacing.groupMargin * scale, width: AppSpacing.groupMargin * scale),
+                  AutoSizeText(
+                    fullName,
+                    style: GoogleFonts.anton(
+                      fontSize: nameFontSize,
+                      color: AppColors.textPrimary,
+                    ),
+                    maxLines: 1,
+                    minFontSize: nameMinFontSize,
+                  ),
+                ],
+              ],
+            ),
+            _upperSpacer(scale),
+            if (module.boxType != AppModuleType.type1 && module.boxType != AppModuleType.type1_2)
+              Center(
+                child: AutoSizeText(
+                  fullName,
+                  style: GoogleFonts.anton(
+                    fontSize: nameFontSize,
+                    color: AppColors.textPrimary,
+                  ),
+                  maxLines: 1,
+                  minFontSize: nameMinFontSize,
                 ),
-                maxLines: 1,
-                minFontSize: 10,
               ),
-            ],
+            _bottomSpacer(scale),
+            Expanded(
+              flex: 3,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.errorDefault),
+                  borderRadius: AppRadius.tiny,
+                ),
+              ),
+            ),
           ],
-        ),
-        _upperSpacer(),
-        if (module.boxType != AppModuleType.type1 && module.boxType != AppModuleType.type1_2)
-          Center(
-            child: AutoSizeText(
-              fullName,
-              style: GoogleFonts.anton(
-                fontSize: _nameFontSize(),
-                color: AppColors.textPrimary,
-              ),
-              maxLines: 1,
-              minFontSize: 10,
-            ),
-          ),
-        _bottomSpacer(),
-        Expanded(
-          flex: 3,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.errorDefault),
-              borderRadius: AppRadius.tiny,
-            ),
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 
-  _upperSpacer() {
-    if (module.boxType == AppModuleType.type2_2) {
-      return const SizedBox(height: 32);
+  double _contentScale(BoxConstraints constraints) {
+    final double nonFlexHeight = _baseNonFlexHeight();
+    if (nonFlexHeight <= 0) {
+      return 1.0;
     }
-    if (module.boxType == AppModuleType.type2_1) {
-      return const SizedBox(height: 16);
-    }
-    if (module.boxType == AppModuleType.type1_2) {
-      return const SizedBox(height: 4);
-    }
-    return const SizedBox(height: 4);
+    return math.min(1.0, constraints.maxHeight / nonFlexHeight);
   }
 
-  _bottomSpacer() {
-    if (module.boxType == AppModuleType.type2_2) {
-      return const SizedBox(height: 32);
-    }
-    if (module.boxType == AppModuleType.type2_1) {
-      return const SizedBox(height: 16);
-    }
-    if (module.boxType == AppModuleType.type1_2) {
-      return const SizedBox(height: 4);
-    }
-    return const SizedBox(height: 4);
+  double _baseNonFlexHeight() {
+    final bool inlineName = module.boxType == AppModuleType.type1 || module.boxType == AppModuleType.type1_2;
+    final double avatarHeight = _baseAvatarHeight();
+    final double nameHeight = _baseNameFontSize() + 4;
+    final double rowHeight = inlineName ? math.max(avatarHeight, nameHeight) : avatarHeight;
+    final double extraNameHeight = inlineName ? 0 : nameHeight;
+    return rowHeight + _baseUpperSpacer() + extraNameHeight + _baseBottomSpacer() + 15;
   }
 
-  _nameFontSize() {
+  Widget _upperSpacer(double scale) {
+    return SizedBox(height: _baseUpperSpacer() * scale);
+  }
+
+  double _baseUpperSpacer() {
+    if (module.boxType == AppModuleType.type2_2) {
+      return 32;
+    }
+    if (module.boxType == AppModuleType.type2_1) {
+      return 16;
+    }
+    if (module.boxType == AppModuleType.type1_2) {
+      return 4;
+    }
+    return 4;
+  }
+
+  Widget _bottomSpacer(double scale) {
+    return SizedBox(height: _baseBottomSpacer() * scale);
+  }
+
+  double _baseBottomSpacer() {
+    if (module.boxType == AppModuleType.type2_2) {
+      return 32;
+    }
+    if (module.boxType == AppModuleType.type2_1) {
+      return 16;
+    }
+    if (module.boxType == AppModuleType.type1_2) {
+      return 4;
+    }
+    return 4;
+  }
+
+  double _nameFontSize(double scale) {
+    return _baseNameFontSize() * scale;
+  }
+
+  double _baseNameFontSize() {
     if (module.boxType == AppModuleType.type2_2) {
       return 28.0;
     }
@@ -195,13 +233,31 @@ class AccountBodyContent extends StatelessWidget {
     }
     return 16.0;
   }
+
+  double _baseAvatarHeight() {
+    if (module.boxType == AppModuleType.type2_2) {
+      return 131;
+    }
+    if (module.boxType == AppModuleType.type2_1) {
+      return 124;
+    }
+    if (module.boxType == AppModuleType.type1_2) {
+      return 48;
+    }
+    return 32;
+  }
 }
 
 class _AvatarPhoto extends StatelessWidget {
   final String? photoUrl;
   final Module module;
+  final double scale;
 
-  const _AvatarPhoto({required this.photoUrl, required this.module});
+  const _AvatarPhoto({
+    required this.photoUrl,
+    required this.module,
+    required this.scale,
+  });
 
   double _avatarHeight(BoxConstraints constraints) {
     if (module.boxType == AppModuleType.type2_2) {
@@ -220,7 +276,7 @@ class _AvatarPhoto extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: LayoutBuilder(builder: (context, constraints) {
-        final double size = _avatarHeight(constraints);
+        final double size = _avatarHeight(constraints) * scale;
         if (photoUrl == null || photoUrl!.isEmpty) {
           return CircleAvatar(
             radius: size / 2,
