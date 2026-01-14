@@ -233,13 +233,25 @@
   "@videoViewerMissingUrl": {
     "description": "Message d'erreur quand une ressource vidéo n'a pas d'URL"
   },
-  "videoViewerInvalidUrl": "L''URL de la vidéo doit utiliser https",
+  "videoViewerInvalidUrl": "L''URL de la vidéo doit utiliser http ou https",
   "@videoViewerInvalidUrl": {
     "description": "Message d'erreur quand l'URL vidéo n'est pas en https"
   },
   "videoViewerLoadFailed": "Impossible de charger la vidéo",
   "@videoViewerLoadFailed": {
     "description": "Message d'erreur quand une vidéo ne peut pas être chargée"
+  },
+  "audioViewerMissingUrl": "L''URL audio est manquante",
+  "@audioViewerMissingUrl": {
+    "description": "Message d'erreur quand une ressource audio n'a pas d'URL"
+  },
+  "audioViewerInvalidUrl": "L''URL audio doit utiliser http ou https",
+  "@audioViewerInvalidUrl": {
+    "description": "Message d'erreur quand l'URL audio n'est pas en https"
+  },
+  "audioViewerLoadFailed": "Impossible de charger l''audio",
+  "@audioViewerLoadFailed": {
+    "description": "Message d'erreur quand une ressource audio ne peut pas être chargée"
   },
   "homeScreenTitle": "Accueil",
   "@homeScreenTitle": {

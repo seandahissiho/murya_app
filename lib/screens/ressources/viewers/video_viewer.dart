@@ -52,7 +52,8 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
     }
 
     final uri = Uri.tryParse(url);
-    if (uri == null || uri.scheme.toLowerCase() != 'https') {
+    final scheme = uri?.scheme.toLowerCase();
+    if (uri == null || (scheme != 'http' && scheme != 'https')) {
       setState(() {
         _error = _VideoViewerError.invalidUrl;
       });

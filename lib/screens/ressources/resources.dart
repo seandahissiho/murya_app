@@ -264,6 +264,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
             );
           }
           final resource = widget.resources[index - 1];
+          final thumbnailUrl = resource.effectiveThumbnailUrl;
           return InkWell(
             onTap: () {
               if (resource.id.isNotEmptyOrNull) {
@@ -280,30 +281,55 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
             child: Container(
               margin: const EdgeInsets.only(right: AppSpacing.groupMargin),
               decoration: const BoxDecoration(
-                color: AppColors.primaryDefault,
                 borderRadius: AppRadius.borderRadius28,
               ),
-              padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              clipBehavior: Clip.antiAlias,
+              child: Stack(
                 children: [
-                  Text(
-                    resource.title ?? '',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                        color: AppColors.textInverted, fontSize: theme.textTheme.displayMedium?.fontSize, height: 0),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
+                  Positioned.fill(
+                    child: _thumbnailBackground(thumbnailUrl),
                   ),
-                  AppSpacing.containerInsideMarginSmallBox,
-                  Text(
-                    resource.createdAt?.formattedDate ?? '',
-                    style: theme.textTheme.labelLarge?.copyWith(color: AppColors.textInverted),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColors.primaryDefault.withOpacity(0.05),
+                            AppColors.primaryDefault.withOpacity(0.8),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          resource.title ?? '',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                              color: AppColors.textInverted,
+                              fontSize: theme.textTheme.displayMedium?.fontSize,
+                              height: 0),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                        AppSpacing.containerInsideMarginSmallBox,
+                        Text(
+                          resource.createdAt?.formattedDate ?? '',
+                          style: theme.textTheme.labelLarge?.copyWith(color: AppColors.textInverted),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -311,6 +337,32 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
           );
         },
       ),
+    );
+  }
+
+  Widget _thumbnailBackground(String? url) {
+    if (!url.isNotEmptyOrNull) {
+      return const DecoratedBox(
+        decoration: BoxDecoration(color: AppColors.primaryDefault),
+      );
+    }
+
+    return Image.network(
+      url!,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return const DecoratedBox(
+          decoration: BoxDecoration(color: AppColors.primaryDefault),
+        );
+      },
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) {
+          return child;
+        }
+        return const DecoratedBox(
+          decoration: BoxDecoration(color: AppColors.primaryDefault),
+        );
+      },
     );
   }
 

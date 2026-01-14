@@ -88,12 +88,19 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
 
   double get size_1W {
     final AppSize appSize = AppSize(context);
+    final deviceType = DeviceHelper.getDeviceType(context);
     // log("AppSizeWidth: ${appSize.screenWidth - AppSpacing.pageMargin * 6}");
-    if (DeviceHelper.isMobile(context)) {
+    if (deviceType == DeviceType.mobile) {
       final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 2) / 2;
       return calculatedSize;
     } else {
-      final double calculatedSize = (appSize.screenWidth - AppSpacing.pageMargin * 6) / 3.11;
+      int sideMargins = 4;
+      if (deviceType != DeviceType.desktop && deviceType != DeviceType.tablet) {
+        sideMargins = 6;
+      }
+      // log("AppSizeWidthTabletAndAbove: ${appSize.screenWidth}");
+      final double calculatedSize =
+          (appSize.screenWidth - sideMargins * AppSpacing.pageMargin) / 3 - AppSpacing.containerInsideMarginSmall / 1.5;
       return calculatedSize;
     }
   }
@@ -122,13 +129,13 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       case AppModuleType.type1:
       // Two rows, One Col
       case AppModuleType.type2_1:
-        return size_1W - AppSpacing.groupMargin;
+        return size_1W - AppSpacing.elementMargin;
 
       // One row, Two Cols
       case AppModuleType.type1_2:
       // Two rows, Two Cols
       case AppModuleType.type2_2:
-        return size_1W * 2 - AppSpacing.groupMargin;
+        return size_1W * 2 - AppSpacing.elementMargin;
     }
   }
 
