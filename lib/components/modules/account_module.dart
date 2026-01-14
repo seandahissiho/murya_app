@@ -65,7 +65,11 @@ class _AccountModuleWidgetState extends State<AccountModuleWidget> {
                 module: widget.module,
                 hasData: true,
                 titleContent: widget.module.title(context),
-                subtitleContent: hasData ? GoalWidget(value: _goalValue(user)) : const GoalWidget(value: 0),
+                subtitleContent: GoalWidget(
+                  value: hasData ? _goalValue(user) : 0,
+                  iconColor: AppColors.primaryDefault,
+                  isLandingPage: true,
+                ),
                 bodyContent: AccountBodyContent(
                   user: user,
                   module: widget.module,
@@ -103,6 +107,7 @@ class AccountBodyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
     final String firstName = user.firstName ?? '';
     final String lastName = user.lastName ?? '';
     final String rawName = '$firstName $lastName'.trim();
@@ -151,12 +156,61 @@ class AccountBodyContent extends StatelessWidget {
                 ),
               ),
             _bottomSpacer(scale),
-            Expanded(
-              flex: 3,
+            Flexible(
               child: Container(
+                width: double.infinity,
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.errorDefault),
-                  borderRadius: AppRadius.tiny,
+                  border: Border.all(color: AppColors.borderMedium),
+                  borderRadius: AppRadius.small,
+                ),
+                padding: EdgeInsets.all(AppSpacing.containerInsideMargin * scale),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Objectif en cours',
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        color: AppColors.textSecondary,
+                        fontSize: 14 * scale,
+                      ),
+                    ),
+                    AppSpacing.tinyMarginBox,
+                    Flexible(
+                      child: AutoSizeText(
+                        'Compléter le parcours de positionnement',
+                        style: theme.textTheme.labelLarge!.copyWith(
+                          color: AppColors.textPrimary,
+                          fontSize: 16 * scale,
+                        ),
+                        maxFontSize: 16 * scale,
+                        minFontSize: 10 * scale,
+                        maxLines: 2,
+                      ),
+                    ),
+                    AppSpacing.groupMarginBox,
+                    // Progress bar
+                    Stack(
+                      children: [
+                        Container(
+                          height: 16 * scale,
+                          decoration: BoxDecoration(
+                            color: AppColors.borderLight,
+                            borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                          ),
+                        ),
+                        Container(
+                          height: 16 * scale,
+                          width: (constraints.maxWidth - 2 * AppSpacing.containerInsideMargin * scale) * 0.02,
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryFocus,
+                            borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),

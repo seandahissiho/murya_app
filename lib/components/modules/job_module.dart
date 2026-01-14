@@ -102,7 +102,11 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                   },
                   hasData: state.userCurrentJob != null,
                   titleContent: userCurrentJob.job?.title ?? '',
-                  subtitleContent: ScoreWidget(value: context.read<ProfileBloc>().user.diamonds),
+                  subtitleContent: ScoreWidget(
+                    value: context.read<ProfileBloc>().user.diamonds,
+                    iconColor: AppColors.primaryDefault,
+                    isLandingPage: true,
+                  ),
                   bodyContent: SizedBox(
                     width: double.infinity,
                     height: double.infinity,
