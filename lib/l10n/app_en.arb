@@ -14,7 +14,7 @@
   "@landing_page_title": {
     "description": "Title of the landing page"
   },
-  "landing_first_title": "Paths",
+  "landing_first_title": "Journey",
   "@landing_first_title": {
     "description": "Title of the first box on the landing page"
   },
@@ -375,5 +375,103 @@
   "quiz_daily_performance": "Your performance today",
   "quiz_good_answers": "Correct answers",
   "quiz_answers_to_review": "Answers to review",
-  "quiz_reward": "Reward"
+  "quiz_reward": "Reward",
+  "parcoursPageTitle": "Journey",
+  "@parcoursPageTitle": {
+    "description": "Main title of the Journey page"
+  },
+
+  "parcoursTab_profile": "Profile",
+  "@parcoursTab_profile": {
+    "description": "Profile tab on the Journey page"
+  },
+  "parcoursTab_objectives": "Goals",
+  "@parcoursTab_objectives": {
+    "description": "Goals tab on the Journey page"
+  },
+  "parcoursTab_rewards": "Rewards",
+  "@parcoursTab_rewards": {
+    "description": "Rewards tab on the Journey page"
+  },
+  "parcoursTab_settings": "Settings",
+  "@parcoursTab_settings": {
+    "description": "Settings tab on the Journey page"
+  },
+
+  "parcoursRanking_peopleCount": "{count, plural, =0 {0 people} =1 {1 person} other {{count} people}}",
+  "@parcoursRanking_peopleCount": {
+    "description": "Label showing the number of people in the Journey ranking table",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "parcoursRanking_header_experience": "Experience",
+  "@parcoursRanking_header_experience": {
+    "description": "Experience column header in the Journey ranking table"
+  },
+  "parcoursRanking_header_answeredQuestions": "Answered questions",
+  "@parcoursRanking_header_answeredQuestions": {
+    "description": "Answered questions column header in the Journey ranking table"
+  },
+  "parcoursRanking_header_performance": "Performance",
+  "@parcoursRanking_header_performance": {
+    "description": "Performance column header in the Journey ranking table"
+  },
+
+  "parcoursRanking_status_pending": "Pending",
+  "@parcoursRanking_status_pending": {
+    "description": "Status badge when the user has not answered yet"
+  },
+
+  "parcoursObjective_inProgress": "Goal in progress",
+  "@parcoursObjective_inProgress": {
+    "description": "Title of the goal-in-progress block (right column)"
+  },
+  "parcoursObjective_finalizePositioningPath": "Complete the positioning journey",
+  "@parcoursObjective_finalizePositioningPath": {
+    "description": "Goal text displayed on the Journey page"
+  },
+
+  "parcoursRewards_possibleTitle": "Possible rewards",
+  "@parcoursRewards_possibleTitle": {
+    "description": "Title of the Possible rewards block (right column)"
+  },
+  "parcoursRewards_seeAll": "See all",
+  "@parcoursRewards_seeAll": {
+    "description": "Link/Button to view all rewards"
+  },
+
+  "rewardItem_francofoliesLaRochelle": "Les Francofolies de La Rochelle",
+  "@rewardItem_francofoliesLaRochelle": {
+    "description": "Name of a possible reward"
+  },
+  "rewardItem_futuroscope": "Futuroscope",
+  "@rewardItem_futuroscope": {
+    "description": "Name of a possible reward"
+  },
+  "rewardItem_cinemaTicket": "Movie ticket",
+  "@rewardItem_cinemaTicket": {
+    "description": "Name of a possible reward"
+  },
+
+  "parcoursRecentActivities_title": "Recent activity",
+  "@parcoursRecentActivities_title": {
+    "description": "Title of the Recent activity block"
+  },
+
+  "inviteFriends_title": "Invite friends",
+  "@inviteFriends_title": {
+    "description": "Title of the Invite friends module"
+  },
+  "inviteFriends_description": "Tell your friends that learning with Murya is simple, smart, and rewarding.",
+  "@inviteFriends_description": {
+    "description": "Description text in the Invite friends module"
+  },
+  "inviteFriends_bonus": "Invite them and earn {amount} 💎 as soon as they sign up.",
+  "@inviteFriends_bonus": {
+    "description": "Referral bonus text (points/diamonds)",
+    "placeholders": {
+      "amount": { "type": "int", "example": "1000" }
+    }
+  }
 }

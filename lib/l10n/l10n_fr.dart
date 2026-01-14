@@ -356,4 +356,81 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get quiz_reward => 'Récompense';
+
+  @override
+  String get parcoursPageTitle => 'Parcours';
+
+  @override
+  String get parcoursTab_profile => 'Profil';
+
+  @override
+  String get parcoursTab_objectives => 'Objectifs';
+
+  @override
+  String get parcoursTab_rewards => 'Récompenses';
+
+  @override
+  String get parcoursTab_settings => 'Paramètres';
+
+  @override
+  String parcoursRanking_peopleCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count personnes',
+      one: '1 personne',
+      zero: '0 personne',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get parcoursRanking_header_experience => 'Expérience';
+
+  @override
+  String get parcoursRanking_header_answeredQuestions => 'Question répondu';
+
+  @override
+  String get parcoursRanking_header_performance => 'Performance';
+
+  @override
+  String get parcoursRanking_status_pending => 'En attente';
+
+  @override
+  String get parcoursObjective_inProgress => 'Objectif en cours';
+
+  @override
+  String get parcoursObjective_finalizePositioningPath =>
+      'Finaliser le parcours de positionnement';
+
+  @override
+  String get parcoursRewards_possibleTitle => 'Récompenses possibles';
+
+  @override
+  String get parcoursRewards_seeAll => 'Voir tout';
+
+  @override
+  String get rewardItem_francofoliesLaRochelle =>
+      'Les francofolies de La Rochelle';
+
+  @override
+  String get rewardItem_futuroscope => 'Futuroscope';
+
+  @override
+  String get rewardItem_cinemaTicket => 'Place de cinéma';
+
+  @override
+  String get parcoursRecentActivities_title => 'Activités récentes';
+
+  @override
+  String get inviteFriends_title => 'Inviter des amis';
+
+  @override
+  String get inviteFriends_description =>
+      'Dis à tes amis quapprendre avec Murya, cest simple, intelligent et récompensé.';
+
+  @override
+  String inviteFriends_bonus(int amount) {
+    return 'Invite-les et gagne $amount 💎 dès leur inscription.';
+  }
 }

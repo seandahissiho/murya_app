@@ -301,8 +301,12 @@
   "@quiz_question_counter": {
     "description": "Compteur de la question actuelle",
     "placeholders": {
-        "current": { "type": "int" },
-        "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "quiz_verify": "Vérifier",
@@ -330,50 +334,183 @@
     "description": "Titre par défaut pour une ressource exemple"
   },
   "resourceLabelSingular_article": "un article",
-  "@resourceLabelSingular_article": { "description": "Libellé singulier pour article" },
+  "@resourceLabelSingular_article": {
+    "description": "Libellé singulier pour article"
+  },
   "resourceLabelSingular_video": "une vidéo",
-  "@resourceLabelSingular_video": { "description": "Libellé singulier pour vidéo" },
+  "@resourceLabelSingular_video": {
+    "description": "Libellé singulier pour vidéo"
+  },
   "resourceLabelSingular_podcast": "un podcast",
-  "@resourceLabelSingular_podcast": { "description": "Libellé singulier pour podcast" },
+  "@resourceLabelSingular_podcast": {
+    "description": "Libellé singulier pour podcast"
+  },
   "resourceLabelSingular_default": "une ressource",
-  "@resourceLabelSingular_default": { "description": "Libellé singulier pour ressource générique" },
+  "@resourceLabelSingular_default": {
+    "description": "Libellé singulier pour ressource générique"
+  },
   "popup_validate": "Valider",
-  "@popup_validate": { "description": "Texte du bouton valider" },
+  "@popup_validate": {
+    "description": "Texte du bouton valider"
+  },
   "popup_unlock_resource_title": "Débloquer votre ressource ?",
-  "@popup_unlock_resource_title": { "description": "Titre du popup de déblocage" },
+  "@popup_unlock_resource_title": {
+    "description": "Titre du popup de déblocage"
+  },
   "popup_unlock_resource_description": "Utilisez vos points pour générer votre article personnalisé. L'IA de Murya l'adaptera instantanément à vos réponses du jour.",
-  "@popup_unlock_resource_description": { "description": "Description du popup de déblocage" },
+  "@popup_unlock_resource_description": {
+    "description": "Description du popup de déblocage"
+  },
   "cost_creation_label": "Coût de la création",
-  "@cost_creation_label": { "description": "Libellé du coût de création" },
+  "@cost_creation_label": {
+    "description": "Libellé du coût de création"
+  },
   "cost_current_balance_label": "Votre solde actuel",
-  "@cost_current_balance_label": { "description": "Libellé du solde actuel" },
+  "@cost_current_balance_label": {
+    "description": "Libellé du solde actuel"
+  },
   "cost_remaining_balance_label": "Votre solde restant (après création)",
-  "@cost_remaining_balance_label": { "description": "Libellé du solde restant" },
+  "@cost_remaining_balance_label": {
+    "description": "Libellé du solde restant"
+  },
   "loading_creating_resource": "Création de votre ressource...",
-  "@loading_creating_resource": { "description": "Texte de chargement pendant la création" },
+  "@loading_creating_resource": {
+    "description": "Texte de chargement pendant la création"
+  },
   "loading_murya_working": "Murya est au travail !",
-  "@loading_murya_working": { "description": "Titre de chargement pendant la création" },
+  "@loading_murya_working": {
+    "description": "Titre de chargement pendant la création"
+  },
   "loading_analyzing_answers": "Nous analysons vos 10 réponses pour rédiger un article unique, parfaitement adapté aux compétences que vous devez renforcer.",
-  "@loading_analyzing_answers": { "description": "Description de chargement pendant la création" },
+  "@loading_analyzing_answers": {
+    "description": "Description de chargement pendant la création"
+  },
   "create_resource_button": "Créer {resourceLabel}",
   "@create_resource_button": {
     "description": "Texte du bouton pour créer une ressource",
     "placeholders": {
-        "resourceLabel": { "type": "String" }
+      "resourceLabel": {
+        "type": "String"
+      }
     }
   },
   "resourcesPageTitle": "Page Ressources",
-  "@resourcesPageTitle": { "description": "Titre pour la page des ressources" },
+  "@resourcesPageTitle": {
+    "description": "Titre pour la page des ressources"
+  },
   "page_title_resources": "Ressources",
-  "@page_title_resources": { "description": "En-tête pour l'écran des ressources" },
+  "@page_title_resources": {
+    "description": "En-tête pour l'écran des ressources"
+  },
   "section_articles": "Articles",
-  "@section_articles": { "description": "En-tête de section pour les articles" },
+  "@section_articles": {
+    "description": "En-tête de section pour les articles"
+  },
   "section_videos": "Vidéos",
-  "@section_videos": { "description": "En-tête de section pour les vidéos" },
+  "@section_videos": {
+    "description": "En-tête de section pour les vidéos"
+  },
   "section_podcasts": "Podcasts",
-  "@section_podcasts": { "description": "En-tête de section pour les podcasts" },
+  "@section_podcasts": {
+    "description": "En-tête de section pour les podcasts"
+  },
   "quiz_daily_performance": "Votre performance du jour",
   "quiz_good_answers": "Bonnes réponses",
   "quiz_answers_to_review": "Réponses à revoir",
   "quiz_reward": "Récompense",
+  "parcoursPageTitle": "Parcours",
+  "@parcoursPageTitle": {
+    "description": "Titre principal de la page Parcours"
+  },
+  "parcoursTab_profile": "Profil",
+  "@parcoursTab_profile": {
+    "description": "Onglet Profil dans la page Parcours"
+  },
+  "parcoursTab_objectives": "Objectifs",
+  "@parcoursTab_objectives": {
+    "description": "Onglet Objectifs dans la page Parcours"
+  },
+  "parcoursTab_rewards": "Récompenses",
+  "@parcoursTab_rewards": {
+    "description": "Onglet Récompenses dans la page Parcours"
+  },
+  "parcoursTab_settings": "Paramètres",
+  "@parcoursTab_settings": {
+    "description": "Onglet Paramètres dans la page Parcours"
+  },
+  "parcoursRanking_peopleCount": "{count, plural, =0 {0 personne} =1 {1 personne} other {{count} personnes}}",
+  "@parcoursRanking_peopleCount": {
+    "description": "Label du nombre de personnes dans le classement Parcours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "parcoursRanking_header_experience": "Expérience",
+  "@parcoursRanking_header_experience": {
+    "description": "En-tête de colonne Expérience dans le tableau de classement Parcours"
+  },
+  "parcoursRanking_header_answeredQuestions": "Question répondu",
+  "@parcoursRanking_header_answeredQuestions": {
+    "description": "En-tête de colonne Questions répondues dans le tableau de classement Parcours"
+  },
+  "parcoursRanking_header_performance": "Performance",
+  "@parcoursRanking_header_performance": {
+    "description": "En-tête de colonne Performance dans le tableau de classement Parcours"
+  },
+  "parcoursRanking_status_pending": "En attente",
+  "@parcoursRanking_status_pending": {
+    "description": "Badge de statut quand l'utilisateur n'a pas encore répondu au questionnaire"
+  },
+  "parcoursObjective_inProgress": "Objectif en cours",
+  "@parcoursObjective_inProgress": {
+    "description": "Titre du bloc objectif en cours (colonne droite)"
+  },
+  "parcoursObjective_finalizePositioningPath": "Finaliser le parcours de positionnement",
+  "@parcoursObjective_finalizePositioningPath": {
+    "description": "Texte de l'objectif affiché sur la page Parcours"
+  },
+  "parcoursRewards_possibleTitle": "Récompenses possibles",
+  "@parcoursRewards_possibleTitle": {
+    "description": "Titre du bloc Récompenses possibles (colonne droite)"
+  },
+  "parcoursRewards_seeAll": "Voir tout",
+  "@parcoursRewards_seeAll": {
+    "description": "Lien/Bouton pour afficher toutes les récompenses"
+  },
+  "rewardItem_francofoliesLaRochelle": "Les francofolies de La Rochelle",
+  "@rewardItem_francofoliesLaRochelle": {
+    "description": "Nom d'une récompense possible"
+  },
+  "rewardItem_futuroscope": "Futuroscope",
+  "@rewardItem_futuroscope": {
+    "description": "Nom d'une récompense possible"
+  },
+  "rewardItem_cinemaTicket": "Place de cinéma",
+  "@rewardItem_cinemaTicket": {
+    "description": "Nom d'une récompense possible"
+  },
+  "parcoursRecentActivities_title": "Activités récentes",
+  "@parcoursRecentActivities_title": {
+    "description": "Titre du bloc Activités récentes"
+  },
+  "inviteFriends_title": "Inviter des amis",
+  "@inviteFriends_title": {
+    "description": "Titre du module d'invitation d'amis"
+  },
+  "inviteFriends_description": "Dis à tes amis qu'apprendre avec Murya, c'est simple, intelligent et récompensé.",
+  "@inviteFriends_description": {
+    "description": "Texte descriptif du module d'invitation d'amis"
+  },
+  "inviteFriends_bonus": "Invite-les et gagne {amount} 💎 dès leur inscription.",
+  "@inviteFriends_bonus": {
+    "description": "Texte du bonus de parrainage (points/diamants)",
+    "placeholders": {
+      "amount": {
+        "type": "int",
+        "example": "1000"
+      }
+    }
+  }
 }

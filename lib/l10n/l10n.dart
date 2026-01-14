@@ -709,6 +709,132 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Récompense'**
   String get quiz_reward;
+
+  /// Titre principal de la page Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'Parcours'**
+  String get parcoursPageTitle;
+
+  /// Onglet Profil dans la page Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil'**
+  String get parcoursTab_profile;
+
+  /// Onglet Objectifs dans la page Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'Objectifs'**
+  String get parcoursTab_objectives;
+
+  /// Onglet Récompenses dans la page Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'Récompenses'**
+  String get parcoursTab_rewards;
+
+  /// Onglet Paramètres dans la page Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres'**
+  String get parcoursTab_settings;
+
+  /// Label du nombre de personnes dans le classement Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0 {0 personne} =1 {1 personne} other {{count} personnes}}'**
+  String parcoursRanking_peopleCount(int count);
+
+  /// En-tête de colonne Expérience dans le tableau de classement Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'Expérience'**
+  String get parcoursRanking_header_experience;
+
+  /// En-tête de colonne Questions répondues dans le tableau de classement Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'Question répondu'**
+  String get parcoursRanking_header_answeredQuestions;
+
+  /// En-tête de colonne Performance dans le tableau de classement Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'Performance'**
+  String get parcoursRanking_header_performance;
+
+  /// Badge de statut quand l'utilisateur n'a pas encore répondu au questionnaire
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get parcoursRanking_status_pending;
+
+  /// Titre du bloc objectif en cours (colonne droite)
+  ///
+  /// In fr, this message translates to:
+  /// **'Objectif en cours'**
+  String get parcoursObjective_inProgress;
+
+  /// Texte de l'objectif affiché sur la page Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'Finaliser le parcours de positionnement'**
+  String get parcoursObjective_finalizePositioningPath;
+
+  /// Titre du bloc Récompenses possibles (colonne droite)
+  ///
+  /// In fr, this message translates to:
+  /// **'Récompenses possibles'**
+  String get parcoursRewards_possibleTitle;
+
+  /// Lien/Bouton pour afficher toutes les récompenses
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir tout'**
+  String get parcoursRewards_seeAll;
+
+  /// Nom d'une récompense possible
+  ///
+  /// In fr, this message translates to:
+  /// **'Les francofolies de La Rochelle'**
+  String get rewardItem_francofoliesLaRochelle;
+
+  /// Nom d'une récompense possible
+  ///
+  /// In fr, this message translates to:
+  /// **'Futuroscope'**
+  String get rewardItem_futuroscope;
+
+  /// Nom d'une récompense possible
+  ///
+  /// In fr, this message translates to:
+  /// **'Place de cinéma'**
+  String get rewardItem_cinemaTicket;
+
+  /// Titre du bloc Activités récentes
+  ///
+  /// In fr, this message translates to:
+  /// **'Activités récentes'**
+  String get parcoursRecentActivities_title;
+
+  /// Titre du module d'invitation d'amis
+  ///
+  /// In fr, this message translates to:
+  /// **'Inviter des amis'**
+  String get inviteFriends_title;
+
+  /// Texte descriptif du module d'invitation d'amis
+  ///
+  /// In fr, this message translates to:
+  /// **'Dis à tes amis qu\'apprendre avec Murya, c\'est simple, intelligent et récompensé.'**
+  String get inviteFriends_description;
+
+  /// Texte du bonus de parrainage (points/diamants)
+  ///
+  /// In fr, this message translates to:
+  /// **'Invite-les et gagne {amount} 💎 dès leur inscription.'**
+  String inviteFriends_bonus(int amount);
 }
 
 class _AppLocalizationsDelegate

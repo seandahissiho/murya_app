@@ -561,12 +561,23 @@ class _ButtonBody extends StatelessWidget {
         child: Stack(
           children: [
             Center(
-              child: Row(
-                mainAxisSize: shrinkWrap ? MainAxisSize.min : MainAxisSize.max,
-                mainAxisAlignment: horizontalAlignment,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: children,
-              ),
+              child: shrinkWrap
+                  ? FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: horizontalAlignment,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: children,
+                      ),
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: horizontalAlignment,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: children,
+                    ),
             ),
             if (disabled)
               Positioned.fill(
