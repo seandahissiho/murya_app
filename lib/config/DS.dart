@@ -1092,23 +1092,24 @@ class AppScrollbarThemeData {
 }
 
 class AppTabBarTheme {
-  static Decoration indicator = BoxDecoration(
+  static Decoration indicator = const BoxDecoration(
     color: Colors.transparent,
     border: Border(
       bottom: BorderSide(
-        color: AppColors.primary.shade600,
+        color: AppColors.primaryFocus,
         width: 3,
       ),
     ),
   );
-  static Color indicatorColor = AppColors.primary.shade600;
+
+  static Color indicatorColor = AppColors.primaryFocus;
   static TabBarIndicatorSize indicatorSize = TabBarIndicatorSize.tab;
 
   static Color dividerColor = Colors.transparent;
   static double dividerHeight = 3;
 
-  static Color labelColor = AppColors.primary.shade600;
-  static Color unselectedLabelColor = AppColors.primary;
+  static Color labelColor = AppColors.primaryFocus;
+  static Color unselectedLabelColor = AppColors.primaryDefault;
   static EdgeInsetsGeometry labelPadding = const EdgeInsets.only(
     left: AppSpacing.groupMargin,
     right: AppSpacing.groupMargin,
@@ -1135,11 +1136,11 @@ class AppTabBarTheme {
 
   static TabBarThemeData buildTheme(ThemeData themeData, BuildContext context) {
     return themeData.tabBarTheme.copyWith(
-      labelStyle: themeData.textTheme.labelSmall?.copyWith(
-        color: AppColors.primary,
+      labelStyle: themeData.textTheme.labelLarge?.copyWith(
+        color: AppColors.primaryFocus,
       ),
-      unselectedLabelStyle: themeData.textTheme.labelSmall?.copyWith(
-        color: AppColors.primary.shade900,
+      unselectedLabelStyle: themeData.textTheme.labelLarge?.copyWith(
+        color: AppColors.primaryDefault,
       ),
     );
   }
