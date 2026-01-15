@@ -48,6 +48,7 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
       },
     );
   }
+
   /*
   SingleChildScrollView(
                 child: AppSkeletonizer(
@@ -71,9 +72,6 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
             height: 50,
             child: TabBar(
               isScrollable: true,
-              labelColor: AppColors.primaryDefault,
-              unselectedLabelColor: AppColors.textSecondary,
-              indicatorColor: AppColors.primaryDefault,
               tabs: [
                 Tab(text: AppLocalizations.of(context).parcoursTab_profile),
                 Tab(text: AppLocalizations.of(context).parcoursTab_objectives),
@@ -82,8 +80,8 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
               ],
             ),
           ),
-          AppSpacing.elementMarginBox,
-          Expanded(
+          const SizedBox(height: 32),
+          const Expanded(
             child: TabBarView(
               children: [
                 TabletJourneyInfoTab(),
@@ -111,7 +109,97 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final AppLocalizations locale = AppLocalizations.of(context);
-    return const Placeholder();
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Container(
+            color: Colors.blue,
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryDefault,
+                      borderRadius: AppRadius.small,
+                      border: Border.all(color: AppColors.borderLight),
+                    ),
+                  ),
+                ),
+                AppSpacing.groupMarginBox,
+                Container(
+                  constraints: const BoxConstraints(
+                    minHeight: 100,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryDefault,
+                    borderRadius: AppRadius.small,
+                    border: Border.all(color: AppColors.borderLight),
+                  ),
+                ),
+                const Spacer(),
+              ],
+            ),
+          ),
+        ),
+        AppSpacing.groupMarginBox,
+        Expanded(
+          flex: 1,
+          child: Container(
+            color: Colors.red,
+            height: double.maxFinite,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    constraints: const BoxConstraints(
+                      minHeight: 100,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryDefault,
+                      borderRadius: AppRadius.small,
+                      border: Border.all(color: AppColors.borderLight),
+                    ),
+                  ),
+                  AppSpacing.groupMarginBox,
+                  Container(
+                    constraints: const BoxConstraints(
+                      minHeight: 100,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryDefault,
+                      borderRadius: AppRadius.small,
+                      border: Border.all(color: AppColors.borderLight),
+                    ),
+                  ),
+                  AppSpacing.groupMarginBox,
+                  Container(
+                    constraints: const BoxConstraints(minHeight: 100, maxHeight: 500),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryDefault,
+                      borderRadius: AppRadius.small,
+                      border: Border.all(color: AppColors.borderLight),
+                    ),
+                  ),
+                  AppSpacing.groupMarginBox,
+                  Container(
+                    constraints: const BoxConstraints(minHeight: 100, maxHeight: 500),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryDefault,
+                      borderRadius: AppRadius.small,
+                      border: Border.all(color: AppColors.borderLight),
+                    ),
+                  ),
+                  AppSpacing.groupMarginBox,
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -119,12 +207,10 @@ class TabletJourneyObjectivesTab extends StatefulWidget {
   const TabletJourneyObjectivesTab({super.key});
 
   @override
-  State<TabletJourneyObjectivesTab> createState() =>
-      _TabletJourneyObjectivesTabState();
+  State<TabletJourneyObjectivesTab> createState() => _TabletJourneyObjectivesTabState();
 }
 
-class _TabletJourneyObjectivesTabState
-    extends State<TabletJourneyObjectivesTab> {
+class _TabletJourneyObjectivesTabState extends State<TabletJourneyObjectivesTab> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -137,8 +223,7 @@ class TabletJourneyRewardsTab extends StatefulWidget {
   const TabletJourneyRewardsTab({super.key});
 
   @override
-  State<TabletJourneyRewardsTab> createState() =>
-      _TabletJourneyRewardsTabState();
+  State<TabletJourneyRewardsTab> createState() => _TabletJourneyRewardsTabState();
 }
 
 class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
@@ -154,8 +239,7 @@ class TabletJourneySettingsTab extends StatefulWidget {
   const TabletJourneySettingsTab({super.key});
 
   @override
-  State<TabletJourneySettingsTab> createState() =>
-      _TabletJourneySettingsTabState();
+  State<TabletJourneySettingsTab> createState() => _TabletJourneySettingsTabState();
 }
 
 class _TabletJourneySettingsTabState extends State<TabletJourneySettingsTab> {
