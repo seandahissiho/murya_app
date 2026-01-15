@@ -11,6 +11,7 @@ import 'package:murya/components/modules/app_module.dart';
 import 'package:murya/components/score.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
+import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/module.dart';
 
@@ -108,6 +109,7 @@ class AccountBodyContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final locale = AppLocalizations.of(context);
     final String firstName = user.firstName ?? '';
     final String lastName = user.lastName ?? '';
     final String rawName = '$firstName $lastName'.trim();
@@ -173,7 +175,7 @@ class AccountBodyContent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Objectif en cours',
+                      locale.parcoursObjective_inProgress,
                       style: theme.textTheme.bodyMedium!.copyWith(
                         color: AppColors.textSecondary,
                         fontSize: 14 * scale,
