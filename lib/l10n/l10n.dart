@@ -230,6 +230,12 @@ abstract class AppLocalizations {
   /// **'Aucun résultat trouvé pour \"{query}\".'**
   String searchNoResults(String query);
 
+  /// No description provided for @landingSkillButtonText.
+  ///
+  /// In fr, this message translates to:
+  /// **'Perfectionner'**
+  String get landingSkillButtonText;
+
   /// Bouton pour évaluer les compétences
   ///
   /// In fr, this message translates to:
@@ -835,6 +841,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Invite-les et gagne {amount} 💎 dès leur inscription.'**
   String inviteFriends_bonus(int amount);
+
+  /// Placeholder pour le nom d'utilisateur anonyme
+  ///
+  /// In fr, this message translates to:
+  /// **'Prénom Nom'**
+  String get user_anonymous_placeholder;
 }
 
 class _AppLocalizationsDelegate

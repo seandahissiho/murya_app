@@ -95,6 +95,7 @@
       }
     }
   },
+  "landingSkillButtonText": "Perfectionner",
   "evaluateSkills": "Évaluer les compétences",
   "@evaluateSkills": {
     "description": "Bouton pour évaluer les compétences"
@@ -512,5 +513,9 @@
         "example": "1000"
       }
     }
+  },
+  "user_anonymous_placeholder": "Prénom Nom",
+  "@user_anonymous_placeholder": {
+    "description": "Placeholder pour le nom d'utilisateur anonyme"
   }
 }

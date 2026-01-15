@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
-import 'package:murya/components/app_button.dart';
+import 'package:murya/components/dropdown.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/custom_classes.dart';
-import 'package:murya/config/routes.dart';
-import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/localization/locale_controller.dart';
 import 'package:murya/models/country.dart';
@@ -15,6 +13,7 @@ import 'package:provider/provider.dart';
 
 class AppFooter extends StatelessWidget {
   final bool isLanding;
+
   const AppFooter({super.key, this.isLanding = false});
 
   @override
@@ -69,9 +68,23 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              AppXButton(
-                onPressed: () {
-                  final value = state.language.code == 'fr' ? 'en' : 'fr';
+              AppXDropdown(
+                key: const Key('language-dropdown'),
+                shrinkWrap: true,
+                controller: TextEditingController(text: state.language.code != 'fr' ? '🇬🇧 English' : '🇫🇷 Français'),
+                // DropdownMenuEntry
+                items: const [
+                  DropdownMenuEntry(
+                    value: 'fr',
+                    label: '🇫🇷 Français',
+                  ),
+                  DropdownMenuEntry(
+                    value: 'en',
+                    label: '🇬🇧 English',
+                  ),
+                ],
+                onSelected: (value) {
+                  if (value == null) return;
                   final locale = Locale(value);
                   localeProvider.set(locale);
                   // onLocaleChange(context);
@@ -82,13 +95,6 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                         ),
                       );
                 },
-                isLoading: false,
-                // leftIconPath: state.language.code == 'fr' ? AppIcons.enLanguageIconPath : AppIcons.frLanguageIconPath,
-                text: state.language.code == 'fr' ? '🇬🇧 English' : '🇫🇷 Français',
-                borderColor: AppColors.primary,
-                bgColor: Colors.transparent,
-                fgColor: AppColors.primary,
-                onPressedColor: AppColors.primary.withAlpha(50),
               ),
               AppSpacing.groupMarginBox,
               TextWithLinks(
@@ -97,25 +103,25 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                       text: '${local.footer_legal_mentions} · ',
                       isLink: true,
                       onTap: () {
-                        navigateToPath(context, to: AppRoutes.legalMentions);
+                        // navigateToPath(context, to: AppRoutes.legalMentions);
                       }),
                   TextLink(
                       text: '${local.footer_privacy_policy} · ',
                       isLink: true,
                       onTap: () {
-                        navigateToPath(context, to: AppRoutes.privacyPolicy);
+                        // navigateToPath(context, to: AppRoutes.privacyPolicy);
                       }),
                   TextLink(
                       text: '${local.footer_cookie_settings} · ',
                       isLink: true,
                       onTap: () {
-                        navigateToPath(context, to: AppRoutes.cookieSettings);
+                        // navigateToPath(context, to: AppRoutes.cookieSettings);
                       }),
                   TextLink(
                       text: local.footer_accessibility,
                       isLink: true,
                       onTap: () {
-                        navigateToPath(context, to: AppRoutes.accessibility);
+                        // navigateToPath(context, to: AppRoutes.accessibility);
                       }),
                 ],
                 textStyleText: GoogleFonts.inter(
@@ -172,9 +178,23 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              AppXButton(
-                onPressed: () {
-                  final value = state.language.code == 'fr' ? 'en' : 'fr';
+              AppXDropdown(
+                key: const Key('language-dropdown'),
+                shrinkWrap: true,
+                controller: TextEditingController(text: state.language.code != 'fr' ? '🇬🇧 English' : '🇫🇷 Français'),
+                // DropdownMenuEntry
+                items: const [
+                  DropdownMenuEntry(
+                    value: 'fr',
+                    label: '🇫🇷 Français',
+                  ),
+                  DropdownMenuEntry(
+                    value: 'en',
+                    label: '🇬🇧 English',
+                  ),
+                ],
+                onSelected: (value) {
+                  if (value == null) return;
                   final locale = Locale(value);
                   localeProvider.set(locale);
                   // onLocaleChange(context);
@@ -185,14 +205,6 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
                         ),
                       );
                 },
-                isLoading: false,
-                shrinkWrap: true,
-                // leftIconPath: state.language.code == 'fr' ? AppIcons.enLanguageIconPath : AppIcons.frLanguageIconPath,
-                text: state.language.code == 'fr' ? '🇬🇧 English' : '🇫🇷 Français',
-                // borderColor: AppColors.primary,
-                // bgColor: Colors.transparent,
-                // fgColor: AppColors.primary,
-                onPressedColor: AppColors.primary.withAlpha(50),
               ),
               AppSpacing.groupMarginBox,
               TextWithLinks(
@@ -201,25 +213,25 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
                       text: '${local.footer_legal_mentions} · ',
                       isLink: true,
                       onTap: () {
-                        navigateToPath(context, to: AppRoutes.legalMentions);
+                        // navigateToPath(context, to: AppRoutes.legalMentions);
                       }),
                   TextLink(
                       text: '${local.footer_privacy_policy} · ',
                       isLink: true,
                       onTap: () {
-                        navigateToPath(context, to: AppRoutes.privacyPolicy);
+                        // navigateToPath(context, to: AppRoutes.privacyPolicy);
                       }),
                   TextLink(
                       text: '${local.footer_cookie_settings} · ',
                       isLink: true,
                       onTap: () {
-                        navigateToPath(context, to: AppRoutes.cookieSettings);
+                        // navigateToPath(context, to: AppRoutes.cookieSettings);
                       }),
                   TextLink(
                       text: local.footer_accessibility,
                       isLink: true,
                       onTap: () {
-                        navigateToPath(context, to: AppRoutes.accessibility);
+                        // navigateToPath(context, to: AppRoutes.accessibility);
                       }),
                 ],
                 textStyleText: GoogleFonts.inter(
