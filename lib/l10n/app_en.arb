@@ -95,6 +95,7 @@
       }
     }
   },
+  "landingSkillButtonText": "Improve",
   "evaluateSkills": "Assess skills",
   "@evaluateSkills": {
     "description": "Button to assess skills"
@@ -473,5 +474,9 @@
     "placeholders": {
       "amount": { "type": "int", "example": "1000" }
     }
+  },
+  "user_anonymous_placeholder": "Firstname Lastname",
+  "@user_anonymous_placeholder": {
+    "description": "Placeholder for anonymous user name"
   }
 }

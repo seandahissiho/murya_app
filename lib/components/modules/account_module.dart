@@ -113,7 +113,7 @@ class AccountBodyContent extends StatelessWidget {
     final String firstName = user.firstName ?? '';
     final String lastName = user.lastName ?? '';
     final String rawName = '$firstName $lastName'.trim();
-    final String fullName = rawName.isNotEmpty ? rawName : 'Prénom Nom';
+    final String fullName = rawName.isNotEmpty ? rawName : locale.user_anonymous_placeholder;
     final String? photoUrl = user.photoURL;
     return LayoutBuilder(
       builder: (context, constraints) {

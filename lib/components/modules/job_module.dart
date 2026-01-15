@@ -101,7 +101,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                     );
                   },
                   hasData: state.userCurrentJob != null,
-                  titleContent: userCurrentJob.job?.title ?? '',
+                  // titleContent: userCurrentJob.job?.title ?? '',
                   subtitleContent: ScoreWidget(
                     value: context.read<ProfileBloc>().user.diamonds,
                     iconColor: AppColors.primaryDefault,
@@ -115,14 +115,16 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                   footerContent: AppXButton(
                     shrinkWrap: false,
                     onPressed: () {
-                      if (nextQuizAvailableIn != null) return;
-                      navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', userCurrentJob.jobId!));
+                      // if (nextQuizAvailableIn != null) return;
+                      // navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', userCurrentJob.jobId!));
+                      navigateToPath(
+                        context,
+                        to: AppRoutes.jobDetails.replaceAll(':id', userCurrentJob.jobId!),
+                      );
                     },
                     isLoading: false,
-                    text: nextQuizAvailableIn == null
-                        ? locale.evaluateSkills
-                        : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
-                    disabled: nextQuizAvailableIn != null,
+                    text: locale.landingSkillButtonText,
+                    // disabled: nextQuizAvailableIn != null,
                   ),
                   onSizeChanged: widget.onSizeChanged,
                   dragHandle: widget.dragHandle,

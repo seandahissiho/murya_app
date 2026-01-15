@@ -82,6 +82,9 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get landingSkillButtonText => 'Perfectionner';
+
+  @override
   String get evaluateSkills => 'Évaluer les compétences';
 
   @override
@@ -433,4 +436,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String inviteFriends_bonus(int amount) {
     return 'Invite-les et gagne $amount 💎 dès leur inscription.';
   }
+
+  @override
+  String get user_anonymous_placeholder => 'Prénom Nom';
 }
