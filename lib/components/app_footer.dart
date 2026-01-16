@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/components/dropdown.dart';
 import 'package:murya/config/DS.dart';
+import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/localization/locale_controller.dart';
@@ -71,16 +73,18 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
               AppXDropdown(
                 key: const Key('language-dropdown'),
                 shrinkWrap: true,
-                controller: TextEditingController(text: state.language.code != 'fr' ? '🇬🇧 English' : '🇫🇷 Français'),
+                controller: TextEditingController(text: state.language.code != 'fr' ? 'English' : 'Français'),
                 // DropdownMenuEntry
-                items: const [
+                items: [
                   DropdownMenuEntry(
                     value: 'fr',
-                    label: '🇫🇷 Français',
+                    label: 'Français',
+                    leadingIcon: SvgPicture.asset(AppIcons.frLanguageIconPath),
                   ),
                   DropdownMenuEntry(
                     value: 'en',
-                    label: '🇬🇧 English',
+                    label: 'English',
+                    leadingIcon: SvgPicture.asset(AppIcons.enLanguageIconPath),
                   ),
                 ],
                 onSelected: (value) {
@@ -179,18 +183,22 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               AppXDropdown(
-                key: const Key('language-dropdown'),
                 shrinkWrap: true,
-                controller: TextEditingController(text: state.language.code != 'fr' ? '🇬🇧 English' : '🇫🇷 Français'),
-                // DropdownMenuEntry
-                items: const [
+                leftIconPath: state.language.code != 'fr' ? AppIcons.enLanguageIconPath : AppIcons.frLanguageIconPath,
+                // leftIcon: SvgPicture.asset(
+                //     state.language.code != 'fr' ? AppIcons.enLanguageIconPath : AppIcons.frLanguageIconPath),
+                // maxDropdownWidth: 110,
+                controller: TextEditingController(text: state.language.code != 'fr' ? 'English' : 'Français'),
+                items: [
                   DropdownMenuEntry(
                     value: 'fr',
-                    label: '🇫🇷 Français',
+                    label: 'Français',
+                    leadingIcon: SvgPicture.asset(AppIcons.frLanguageIconPath),
                   ),
                   DropdownMenuEntry(
                     value: 'en',
-                    label: '🇬🇧 English',
+                    label: 'English',
+                    leadingIcon: SvgPicture.asset(AppIcons.enLanguageIconPath),
                   ),
                 ],
                 onSelected: (value) {

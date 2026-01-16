@@ -3,7 +3,6 @@ import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
 import 'package:expandable_text/expandable_text.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 // import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +29,6 @@ import 'package:murya/models/app_user.dart';
 import 'package:murya/models/job_kiviat.dart';
 import 'package:murya/models/user_job_competency_profile.dart';
 import 'package:murya/screens/base.dart';
-import 'package:murya/utilities/share_utils.dart';
 
 part '_job_details_mobile.dart';
 part '_job_details_tablet+.dart';
@@ -66,7 +64,7 @@ class JobDetailsScreen extends StatelessWidget {
 }
 
 class CFCard extends StatefulWidget {
-  final Job job;
+  final AppJob job;
   final CompetencyFamily family;
 
   const CFCard({super.key, required this.job, required this.family});
@@ -386,9 +384,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
     for (int i = 0; i < n; i++) {
       final Offset dir = fit.dir(i);
       final double defaultV = widget.defaultValues[i];
-      final double userV = (widget.userValues.isNotEmpty && i < widget.userValues.length)
-          ? widget.userValues[i]
-          : 0.0;
+      final double userV = (widget.userValues.isNotEmpty && i < widget.userValues.length) ? widget.userValues[i] : 0.0;
       final double maxV = math.max(defaultV, userV).clamp(0.0, widget.maxValue);
       final double t = (widget.maxValue <= 0) ? 0.0 : (maxV / widget.maxValue);
       final Offset anchor = fit.point(i, t);

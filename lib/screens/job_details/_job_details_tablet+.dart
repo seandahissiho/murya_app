@@ -8,7 +8,7 @@ class TabletJobDetailsScreen extends StatefulWidget {
 }
 
 class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
-  Job _job = Job.empty();
+  AppJob? _job;
   JobProgressionLevel _detailsLevel = JobProgressionLevel.JUNIOR;
   UserJob _userJob = UserJob.empty();
   UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
@@ -26,7 +26,6 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
       context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: jobId));
       context.read<ProfileBloc>().add(ProfileLoadEvent(notifyIfNotFound: false));
       context.read<JobBloc>().add(LoadUserJobDetails(context: context, jobId: jobId));
-      context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: jobId));
       _checkQuizAvailability();
     });
   }
@@ -61,13 +60,14 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
           }
           if (state is UserJobDetailsLoaded) {
             _userJob = state.userJob;
+            context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.id!));
             _checkQuizAvailability();
           }
           setState(() {});
         },
         builder: (context, state) {
           return AppSkeletonizer(
-            enabled: _job.id.isEmptyOrNull,
+            enabled: _job?.id.isEmptyOrNull ?? false,
             child: LayoutBuilder(builder: (context, bigConstraints) {
               return SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
@@ -173,39 +173,39 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                           Flexible(
                                             child: RichText(
                                               text: TextSpan(
-                                                text: _job.title,
+                                                text: _job?.title,
                                                 style: GoogleFonts.anton(
                                                   color: AppColors.textPrimary,
                                                   fontSize: theme.textTheme.headlineLarge?.fontSize,
                                                   fontWeight: FontWeight.w700,
                                                 ),
                                                 children: [
-                                                  WidgetSpan(
-                                                    alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
-                                                      child: GestureDetector(
-                                                        onTap: () async {
-                                                          await ShareUtils.shareContent(
-                                                            text: locale.discover_job_profile(_job.title),
-                                                            url: ShareUtils.generateJobDetailsLink(_job.id!),
-                                                            subject: locale.job_profile_page_title(_job.title),
-                                                          );
-                                                          if (kIsWeb && mounted && context.mounted) {
-                                                            // On web, there's a good chance we just copied to clipboard
-                                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                              SnackBar(content: Text(locale.link_copied)),
-                                                            );
-                                                          }
-                                                        },
-                                                        child: Icon(
-                                                          Icons.ios_share,
-                                                          size: theme.textTheme.displayLarge!.fontSize! / 1.75,
-                                                          color: AppColors.primaryDefault,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
+                                                  // WidgetSpan(
+                                                  //   alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                                                  //   child: Padding(
+                                                  //     padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
+                                                  //     child: GestureDetector(
+                                                  //       onTap: () async {
+                                                  //         await ShareUtils.shareContent(
+                                                  //           text: locale.discover_job_profile(_job.title),
+                                                  //           url: ShareUtils.generateJobDetailsLink(_job.id!),
+                                                  //           subject: locale.job_profile_page_title(_job.title),
+                                                  //         );
+                                                  //         if (kIsWeb && mounted && context.mounted) {
+                                                  //           // On web, there's a good chance we just copied to clipboard
+                                                  //           ScaffoldMessenger.of(context).showSnackBar(
+                                                  //             SnackBar(content: Text(locale.link_copied)),
+                                                  //           );
+                                                  //         }
+                                                  //       },
+                                                  //       child: Icon(
+                                                  //         Icons.ios_share,
+                                                  //         size: theme.textTheme.displayLarge!.fontSize! / 1.75,
+                                                  //         color: AppColors.primaryDefault,
+                                                  //       ),
+                                                  //     ),
+                                                  //   ),
+                                                  // ),
                                                 ],
                                               ),
                                               textAlign: TextAlign.start,
@@ -225,7 +225,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                       AppXButton(
                                         onPressed: () {
                                           navigateToPath(context,
-                                              to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!));
+                                              to: AppRoutes.jobEvaluation.replaceAll(':id', _job!.id!));
                                         },
                                         isLoading: false,
                                         disabled: nextQuizAvailableIn != null,
@@ -237,7 +237,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                       AppSpacing.containerInsideMarginBox,
                                       Expanded(
                                         child: MarkdownWidget(
-                                          data: _job.description,
+                                          data: _job?.description ?? '',
                                         ),
                                       ),
                                     ],
@@ -252,9 +252,9 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                         children: [
                                           _diagramBuilder(locale, theme, options),
                                           if (_userJob.isNotEmpty &&
-                                              _job.id.isNotEmptyOrNull &&
-                                              _userJob.jobId == _job.id &&
-                                              _userJob.completedQuizzes > -1) ...[
+                                              (_job?.id.isNotEmptyOrNull ?? false) &&
+                                              _userJob.jobId == _job?.id &&
+                                              _userJob.completedQuizzes > 0) ...[
                                             AppSpacing.groupMarginBox,
                                             _rankingBuilder(locale, theme),
                                           ],
@@ -297,8 +297,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
 
   List<Widget> familiesBuilder() {
     final List<Widget> widgets = [];
-    for (final family in _job.competenciesFamilies) {
-      widgets.add(CFCard(job: _job, family: family));
+    for (final family in (_job?.competenciesFamilies ?? [])) {
+      widgets.add(CFCard(job: _job ?? Job.empty(), family: family));
       widgets.add(AppSpacing.groupMarginBox);
     }
     return widgets;
@@ -366,8 +366,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
               height: constraints.maxWidth,
               width: constraints.maxWidth,
               child: InteractiveRoundedRadarChart(
-                labels: _job.competenciesFamilies.map((cf) => cf.name).toList(),
-                defaultValues: _job.kiviatValues(_detailsLevel),
+                labels: _job?.competenciesFamilies.map((cf) => cf.name).toList() ?? [],
+                defaultValues: _job?.kiviatValues(_detailsLevel) ?? [],
                 userValues: _userJobCompetencyProfile.kiviatValues,
               ),
             ),
@@ -391,7 +391,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
             SizedBox(
               width: constraints.maxWidth,
               height: constraints.maxWidth / (1.618 * 1.5),
-              child: RankingChart(jobId: _job.id!),
+              child: RankingChart(jobId: _job?.id! ?? ''),
             )
           ],
         ),

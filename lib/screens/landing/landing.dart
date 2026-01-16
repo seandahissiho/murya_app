@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
-import 'package:blobs/blobs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
@@ -20,27 +19,24 @@ import 'package:murya/config/routes.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/landing_module.dart';
 import 'package:murya/models/module.dart';
-import 'package:murya/helpers.dart';
 import 'package:murya/screens/app_bar/app_bar.dart';
 import 'package:murya/screens/base.dart';
 
 part '_landing_mobile.dart';
 part '_landing_tablet+.dart';
 
-class LandingLocation
-    extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class LandingLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.landing];
 
   @override
-  List<BeamPage> buildPages(
-      BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
-      BeamPage(
-        key: ValueKey('landing-page-$languageCode'),
+      const BeamPage(
+        key: ValueKey('landing-page'),
         title: 'Landing Page',
-        child: const LandingScreen(),
+        child: LandingScreen(),
       ),
     ];
   }
@@ -98,64 +94,72 @@ class AddModuleButton extends StatelessWidget {
             ? AppSpacing.pageMargin + MediaQuery.of(context).padding.bottom
             : AppSpacing.pageMargin + AppSpacing.sectionMargin,
       ),
-      child: Blob.animatedRandom(
-        size: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 27,
-        edgesCount: 8,
-        minGrowth: 3,
-        duration: const Duration(milliseconds: 1000),
-        loop: true,
-        styles: BlobStyles(
-          // color: Colors.red,
-          gradient: const LinearGradient(
-            colors: _colors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ).createShader(const Rect.fromLTRB(0, 0, 85, 85)),
-          fillType: BlobFillType.fill,
-          strokeWidth: 3,
+      child: AppXButton(
+        height: tabletAndAboveCTAHeight,
+        leftIcon: const Icon(
+          Icons.add,
+          color: AppColors.textInverted,
         ),
-        child: Center(
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: InkWell(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (_) => const LandingCustomizationDialog(),
-                );
-              },
-              child: Container(
-                width:
-                    (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
-                height:
-                    (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
-                margin: const EdgeInsets.only(top: 10, left: 10),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: _colors,
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                padding: const EdgeInsets.all(2),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black,
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: AppColors.textInverted,
-                    size: 32,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+        shrinkWrap: true,
+        onPressed: () {},
+        isLoading: false,
       ),
+      // child: Blob.animatedRandom(
+      //   size: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 27,
+      //   edgesCount: 8,
+      //   minGrowth: 3,
+      //   duration: const Duration(milliseconds: 1000),
+      //   loop: true,
+      //   styles: BlobStyles(
+      //     // color: Colors.red,
+      //     gradient: const LinearGradient(
+      //       colors: _colors,
+      //       begin: Alignment.topLeft,
+      //       end: Alignment.bottomRight,
+      //     ).createShader(const Rect.fromLTRB(0, 0, 85, 85)),
+      //     fillType: BlobFillType.fill,
+      //     strokeWidth: 3,
+      //   ),
+      //   child: Center(
+      //     child: MouseRegion(
+      //       cursor: SystemMouseCursors.click,
+      //       child: InkWell(
+      //         onTap: () {
+      //           showDialog(
+      //             context: context,
+      //             barrierDismissible: true,
+      //             builder: (_) => const LandingCustomizationDialog(),
+      //           );
+      //         },
+      //         child: Container(
+      //           width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
+      //           height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
+      //           margin: const EdgeInsets.only(top: 10, left: 10),
+      //           decoration: const BoxDecoration(
+      //             shape: BoxShape.circle,
+      //             gradient: LinearGradient(
+      //               colors: _colors,
+      //               begin: Alignment.topLeft,
+      //               end: Alignment.bottomRight,
+      //             ),
+      //           ),
+      //           padding: const EdgeInsets.all(2),
+      //           child: Container(
+      //             decoration: const BoxDecoration(
+      //               shape: BoxShape.circle,
+      //               color: Colors.black,
+      //             ),
+      //             child: const Icon(
+      //               Icons.add,
+      //               color: AppColors.textInverted,
+      //               size: 32,
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // ),
     );
   }
 }
@@ -195,8 +199,8 @@ class LandingCustomizationDialog extends StatelessWidget {
                   ],
                 ),
                 AppSpacing.groupMarginBox,
-                  Text(
-                    'Organisez vos modules, ajoutez-en de nouveaux, ou retirez ceux qui ne sont pas obligatoires.',
+                Text(
+                  'Organisez vos modules, ajoutez-en de nouveaux, ou retirez ceux qui ne sont pas obligatoires.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -387,7 +391,7 @@ class ModuleCatalogDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                    'Catalogue des modules',
+                      'Catalogue des modules',
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             color: AppColors.primary.shade900,
                           ),
@@ -558,8 +562,12 @@ class LandingAuditDialog extends StatelessWidget {
                           child: Row(
                             children: [
                               Icon(
-                                event.action == LandingAction.remove ? Icons.remove_circle_outline : Icons.add_circle_outline,
-                                color: event.action == LandingAction.remove ? AppColors.errorDefault : AppStatusColors.normal,
+                                event.action == LandingAction.remove
+                                    ? Icons.remove_circle_outline
+                                    : Icons.add_circle_outline,
+                                color: event.action == LandingAction.remove
+                                    ? AppColors.errorDefault
+                                    : AppStatusColors.normal,
                               ),
                               AppSpacing.elementMarginBox,
                               Expanded(
