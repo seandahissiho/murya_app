@@ -352,7 +352,7 @@ class AppColors {
 class AppElevatedButtonStyle {
   static WidgetStateProperty<Color> foregroundColor = WidgetStateProperty.resolveWith<Color>((states) {
     if (states.contains(WidgetState.disabled)) {
-      return AppButtonColors.primaryTextDisabled;
+      return AppButtonColors.secondaryTextDefault;
     }
     return AppButtonColors.primaryTextDefault;
   });

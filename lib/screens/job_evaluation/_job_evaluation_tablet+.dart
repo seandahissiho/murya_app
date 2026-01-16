@@ -154,6 +154,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final localizations = AppLocalizations.of(context);
+    final deviceType = DeviceHelper.getDeviceType(context);
     return BlocConsumer<QuizBloc, QuizState>(
       listener: (context, state) {
         if (state is QuizLoaded) {
@@ -259,183 +260,198 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
               flex: 4,
               child: Center(
                 child: Container(
-                  constraints: const BoxConstraints(
-                    maxWidth: 534 + 795 - 111,
+                  // color: Colors.black38,
+                  constraints: BoxConstraints(
+                    maxWidth: _getMaxWidthForQuestionCard(deviceType),
                     minHeight: 400,
                     maxHeight: 534,
                   ),
                   child: Stack(
                     children: [
-                      LayoutBuilder(builder: (context, bigConstraints) {
-                        return Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Text(
-                                    localizations.quiz_question_counter(
-                                        currentQuestionIndex + 1, quiz.questionResponses.length),
-                                    style: theme.textTheme.labelLarge,
-                                  ),
-                                  AppSpacing.groupMarginBox,
-                                  Expanded(
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                        minWidth: bigConstraints.maxWidth,
-                                        minHeight: bigConstraints.maxWidth / 1.618,
-                                        maxWidth: bigConstraints.maxWidth,
-                                        maxHeight: bigConstraints.maxWidth,
+                      LayoutBuilder(
+                        builder: (context, bigConstraints) {
+                          return Row(
+                            children: [
+                              // Expanded(
+                              //   child: Column(
+                              //     crossAxisAlignment: CrossAxisAlignment.start,
+                              //     mainAxisAlignment: MainAxisAlignment.start,
+                              //     mainAxisSize: MainAxisSize.max,
+                              //     children: [
+                              //       Text(
+                              //         localizations.quiz_question_counter(
+                              //             currentQuestionIndex + 1, quiz.questionResponses.length),
+                              //         style: theme.textTheme.labelLarge,
+                              //       ),
+                              //       AppSpacing.groupMarginBox,
+                              //       Expanded(
+                              //         child: Container(
+                              //           constraints: BoxConstraints(
+                              //             minWidth: bigConstraints.maxWidth,
+                              //             minHeight: bigConstraints.maxWidth / 1.618,
+                              //             maxWidth: bigConstraints.maxWidth,
+                              //             maxHeight: bigConstraints.maxWidth,
+                              //           ),
+                              //           decoration: const BoxDecoration(
+                              //             color: AppColors.primaryDefault,
+                              //             borderRadius: AppRadius.borderRadius20,
+                              //             image: DecorationImage(
+                              //               image: AssetImage(AppImages.CFCardBackgroundPath),
+                              //               fit: BoxFit.cover,
+                              //             ),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
+                              // AppSpacing.sectionMarginBox,
+                              Expanded(
+                                child: LayoutBuilder(builder: (context, constraints) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Text(
+                                        localizations.quiz_question_counter(
+                                            currentQuestionIndex + 1, quiz.questionResponses.length),
+                                        style: theme.textTheme.labelLarge,
                                       ),
-                                      decoration: const BoxDecoration(
-                                        color: AppColors.primaryDefault,
-                                        borderRadius: AppRadius.borderRadius20,
-                                        image: DecorationImage(
-                                          image: AssetImage(AppImages.CFCardBackgroundPath),
-                                          fit: BoxFit.cover,
+                                      AppSpacing.groupMarginBox,
+                                      // AppSpacing.groupMarginBox,
+                                      Expanded(
+                                        child: AutoSizeText(
+                                          (currentQuestion?.question.text ?? ''),
+                                          style: theme.textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600),
+                                          maxLines: 5,
+                                          textAlign: TextAlign.start,
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            AppSpacing.sectionMarginBox,
-                            Expanded(
-                              child: LayoutBuilder(builder: (context, constraints) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    AppSpacing.groupMarginBox,
-                                    AutoSizeText(
-                                      currentQuestion?.question.text ?? '',
-                                      style: theme.textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600),
-                                      maxLines: 3,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    AppSpacing.sectionMarginBox,
-                                    Container(
-                                      constraints: BoxConstraints(
-                                        maxWidth: constraints.maxWidth,
-                                        maxHeight: constraints.maxWidth / (1.618 * 1.25),
-                                      ),
-                                      child: LayoutBuilder(builder: (context, constraints) {
-                                        return Wrap(
-                                          spacing: AppSpacing.elementMargin,
-                                          runSpacing: AppSpacing.groupMargin,
-                                          children: List.generate(4, (index) {
-                                            return GestureDetector(
-                                              onTap: () {
-                                                if (locked) return;
-                                                if (displayCorrectIndex != -1) {
-                                                  // already showing correct answer, do nothing
-                                                  return;
-                                                }
-                                                if (showVerificationState != index) {
-                                                  showVerificationState = index;
-                                                  setState(() {});
-                                                } else {}
-                                              },
-                                              onDoubleTap: () {
-                                                if (locked) return;
-                                                showVerificationState = index;
-                                                showCorrectAnswer();
-                                              },
-                                              child: RotationTransition(
-                                                turns: (indexToRotate == index)
-                                                    ? Tween(begin: 1.0, end: 0.99).animate(
-                                                        CurvedAnimation(
-                                                          parent: AnimationController(
-                                                            vsync: this,
-                                                            duration: const Duration(milliseconds: 250),
-                                                          )..forward(),
-                                                          curve: Curves.easeInOut,
-                                                        ),
-                                                      )
-                                                    : const AlwaysStoppedAnimation(0),
-                                                child: Card(
-                                                  elevation: 2,
-                                                  shadowColor: AppColors.borderMedium,
-                                                  margin: EdgeInsetsGeometry.zero,
-                                                  shape: const RoundedRectangleBorder(
-                                                    borderRadius: AppRadius.borderRadius20,
-                                                  ),
-                                                  child: Stack(
-                                                    children: [
-                                                      _card(constraints, index, theme, type: "normal"),
-                                                      if (showVerificationState == index &&
-                                                          displayCorrectIndex == -1) ...[
-                                                        Positioned.fill(
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                              color: AppColors.backgroundCard.withValues(alpha: .65),
-                                                              borderRadius: AppRadius.borderRadius20,
+                                      AppSpacing.sectionMarginBox,
+                                      Center(
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                            maxWidth: constraints.maxWidth,
+                                            maxHeight: constraints.maxWidth / (1.618 * 1.25),
+                                          ),
+                                          child: LayoutBuilder(builder: (context, constraints) {
+                                            return Wrap(
+                                              spacing: AppSpacing.elementMargin,
+                                              runSpacing: AppSpacing.groupMargin,
+                                              children: List.generate(4, (index) {
+                                                return GestureDetector(
+                                                  onTap: () {
+                                                    if (locked) return;
+                                                    if (displayCorrectIndex != -1) {
+                                                      // already showing correct answer, do nothing
+                                                      return;
+                                                    }
+                                                    if (showVerificationState != index) {
+                                                      showVerificationState = index;
+                                                      setState(() {});
+                                                    } else {}
+                                                  },
+                                                  onDoubleTap: () {
+                                                    if (locked) return;
+                                                    showVerificationState = index;
+                                                    showCorrectAnswer();
+                                                  },
+                                                  child: RotationTransition(
+                                                    turns: (indexToRotate == index)
+                                                        ? Tween(begin: 1.0, end: 0.99).animate(
+                                                            CurvedAnimation(
+                                                              parent: AnimationController(
+                                                                vsync: this,
+                                                                duration: const Duration(milliseconds: 250),
+                                                              )..forward(),
+                                                              curve: Curves.easeInOut,
                                                             ),
-                                                          ),
-                                                        ),
-                                                        Positioned.fill(
-                                                          child: LayoutBuilder(builder: (context, constraints) {
-                                                            return Container(
-                                                              decoration: BoxDecoration(
-                                                                color: AppColors.primaryFocus.withValues(alpha: .15),
-                                                                borderRadius: AppRadius.borderRadius20,
-                                                                border: Border.all(
-                                                                  color: AppColors.primaryFocus,
-                                                                  width: 2,
+                                                          )
+                                                        : const AlwaysStoppedAnimation(0),
+                                                    child: Card(
+                                                      elevation: 2,
+                                                      shadowColor: AppColors.borderMedium,
+                                                      margin: EdgeInsetsGeometry.zero,
+                                                      shape: const RoundedRectangleBorder(
+                                                        borderRadius: AppRadius.borderRadius20,
+                                                      ),
+                                                      child: Stack(
+                                                        children: [
+                                                          _card(constraints, index, theme, type: "normal"),
+                                                          if (showVerificationState == index &&
+                                                              displayCorrectIndex == -1) ...[
+                                                            Positioned.fill(
+                                                              child: Container(
+                                                                decoration: BoxDecoration(
+                                                                  color:
+                                                                      AppColors.backgroundCard.withValues(alpha: .65),
+                                                                  borderRadius: AppRadius.borderRadius20,
                                                                 ),
                                                               ),
-                                                              child: Center(
-                                                                child: Padding(
-                                                                  padding:
-                                                                      EdgeInsets.only(top: constraints.maxHeight / 3),
-                                                                  child: AppXButton(
-                                                                    onPressed: () {
-                                                                      showCorrectAnswer();
-                                                                    },
-                                                                    isLoading: false,
-                                                                    text: localizations.quiz_verify,
+                                                            ),
+                                                            Positioned.fill(
+                                                              child: LayoutBuilder(builder: (context, constraints) {
+                                                                return Container(
+                                                                  decoration: BoxDecoration(
+                                                                    color:
+                                                                        AppColors.primaryFocus.withValues(alpha: .15),
+                                                                    borderRadius: AppRadius.borderRadius20,
+                                                                    border: Border.all(
+                                                                      color: AppColors.primaryFocus,
+                                                                      width: 2,
+                                                                    ),
                                                                   ),
+                                                                  child: Center(
+                                                                    child: Padding(
+                                                                      padding: EdgeInsets.only(
+                                                                          top: constraints.maxHeight / 3),
+                                                                      child: AppXButton(
+                                                                        onPressed: () {
+                                                                          showCorrectAnswer();
+                                                                        },
+                                                                        isLoading: false,
+                                                                        text: localizations.quiz_verify,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }),
+                                                            ),
+                                                          ],
+                                                          if (displayCorrectIndex != -1) ...[
+                                                            Positioned.fill(
+                                                              child: Container(
+                                                                decoration: const BoxDecoration(
+                                                                  color: Colors.transparent,
+                                                                  borderRadius: AppRadius.borderRadius20,
                                                                 ),
                                                               ),
-                                                            );
-                                                          }),
-                                                        ),
-                                                      ],
-                                                      if (displayCorrectIndex != -1) ...[
-                                                        Positioned.fill(
-                                                          child: Container(
-                                                            decoration: const BoxDecoration(
-                                                              color: Colors.transparent,
-                                                              borderRadius: AppRadius.borderRadius20,
                                                             ),
-                                                          ),
-                                                        ),
-                                                        if (displayCorrectIndex == index)
-                                                          _card(constraints, index, theme, type: "correct"),
-                                                        if (displayCorrectIndex != index &&
-                                                            showVerificationState == index)
-                                                          _card(constraints, index, theme, type: "error"),
-                                                      ]
-                                                    ],
+                                                            if (displayCorrectIndex == index)
+                                                              _card(constraints, index, theme, type: "correct"),
+                                                            if (displayCorrectIndex != index &&
+                                                                showVerificationState == index)
+                                                              _card(constraints, index, theme, type: "error"),
+                                                          ]
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
+                                                );
+                                              }),
                                             );
                                           }),
-                                        );
-                                      }),
-                                    )
-                                  ],
-                                );
-                              }),
-                            )
-                          ],
-                        );
-                      }),
+                                        ),
+                                      )
+                                    ],
+                                  );
+                                }),
+                              )
+                            ],
+                          );
+                        },
+                      ),
                       if (currentQuestion == null)
                         Positioned.fill(
                           child: Container(
@@ -839,7 +855,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     });
   }
 
-  _card(dynamic constraints, int index, dynamic theme, {required String type}) {
+  _card(BoxConstraints constraints, int index, ThemeData theme, {required String type}) {
     if (index == indexToRotate) {
       log("Rotating index: $indexToRotate");
     }
@@ -871,6 +887,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const Spacer(),
           Container(
             decoration: BoxDecoration(
               color: type == 'normal'
@@ -903,19 +920,20 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
               textAlign: TextAlign.center,
             ),
           ),
-          AppSpacing.tinyTinyMarginBox,
           Expanded(
+            flex: 10,
             child: Center(
               child: AutoSizeText(
-                (currentQuestion?.responses.elementAtOrNull(index)?.text ?? '\n\n\n'),
-                style: theme.textTheme.labelMedium,
+                (currentQuestion?.responses.elementAtOrNull(index)?.text ?? '\n\n\n') * 1,
+                style: theme.textTheme.labelLarge,
                 textAlign: TextAlign.center,
-                maxLines: 4,
+                maxLines: 8,
                 minFontSize: theme.textTheme.bodySmall!.fontSize! - 2,
-                maxFontSize: theme.textTheme.bodyMedium!.fontSize!,
+                maxFontSize: theme.textTheme.labelLarge!.fontSize!,
               ),
             ),
           ),
+          const Spacer(),
         ],
       ),
     );
@@ -1078,5 +1096,12 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         ),
       ],
     );
+  }
+
+  double _getMaxWidthForQuestionCard(DeviceType deviceType) {
+    if (deviceType == DeviceType.mobile) return 344;
+    if (deviceType == DeviceType.tablet) return 644;
+    return 744;
+    return 534 + 795 - 111;
   }
 }
