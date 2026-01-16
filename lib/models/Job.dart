@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/l10n/l10n.dart';
@@ -97,7 +95,6 @@ class Job extends AppJob {
 
   @override
   List<double> kiviatValues(JobProgressionLevel level) {
-    // log('Getting kiviat values for level: ${level.name}');
     return kiviats.whereOrEmpty((k) => k.level == level.name).map((k) => k.value.toDouble()).toList();
   }
 
@@ -175,8 +172,6 @@ class JobFamily extends AppJob {
   });
 
   factory JobFamily.fromJson(familyJson) {
-    log('Parsing JobFamily from JSON');
-
     final id = familyJson['id'];
     final title = familyJson['name'] ?? familyJson['title'];
     final slug = familyJson['slug'] ?? '';

@@ -198,9 +198,9 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
           quizLoaded = true;
           currentQuestionIndex = -1;
         }
-        if (state is QuizSaved) {
-          navigateToPath(context, to: AppRoutes.landing);
-        }
+        // if (state is QuizSaved) {
+        //   navigateToPath(context, to: AppRoutes.landing);
+        // }
         setState(() {});
       },
       builder: (context, state) {
@@ -865,7 +865,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         ],
       ).then((value) {
         if (!mounted) return;
-        navigateToPath(context, to: AppRoutes.landing);
+        navigateToPath(context, to: AppRoutes.userRessourcesModule);
       });
 
       // navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
@@ -881,7 +881,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     indexToRotate = -1;
     locked = false;
     setState(() {});
-    // restartTimer();
+    restartTimer();
   }
 
   void _listener(status) {
@@ -956,9 +956,6 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   }
 
   _card(BoxConstraints constraints, int index, ThemeData theme, {required String type}) {
-    if (index == indexToRotate) {
-      log("Rotating index: $indexToRotate");
-    }
     return Container(
       height: constraints.maxHeight / 2 - AppSpacing.elementMargin / 2,
       width: constraints.maxWidth / 2 - AppSpacing.elementMargin / 2,

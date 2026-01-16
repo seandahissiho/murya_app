@@ -77,8 +77,6 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                   if (mainBodyHey > 4 * size_1H) {
                     mainBodyHeight = 0;
                   }
-                  log('MaxHeight: ${constraints.maxHeight}, mainBodyHey: $mainBodyHey, footerHey: $footerHey');
-                  log('Max Width: ${constraints.maxWidth}');
                   return Stack(
                     children: [
                       CustomScrollView(

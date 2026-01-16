@@ -174,12 +174,6 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                                       }
                                       double left = isFirstOfRow ? 0 : AppSpacing.elementMargin / 2;
                                       double right = isLastOfRow ? 0 : AppSpacing.elementMargin / 2;
-                                      if (isFirstOfRow) {
-                                        log("New row starting at index $i | module ${module.id}");
-                                      }
-                                      if (isLastOfRow) {
-                                        log("Row ending at index $i | module ${module.id}");
-                                      }
 
                                       return Padding(
                                         padding: EdgeInsets.only(

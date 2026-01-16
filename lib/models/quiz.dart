@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart' show listEquals, mapEquals;
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/Job.dart';
@@ -37,9 +35,8 @@ class Quiz {
 
   factory Quiz.fromJson(Map<String, dynamic> json) {
     final id = json['id'] as String?;
-    final list = json['questions'];
-    log("Quiz.fromJson: id=$id, questions count=${(list as List?)?.length ?? 0}");
-    List<QuestionResponses> questionResponses = (list ?? [])
+    final rawList = (json['questions'] as List?) ?? const [];
+    final questionResponses = rawList
         .map((e) => QuestionResponses.fromJson(
               Map<String, dynamic>.from(e as Map),
             ))
@@ -140,7 +137,6 @@ class QuestionResponses {
   int get correctResponseIndex => responses.indexWhere((r) => r.isCorrect);
 
   QuizResponse? toQuizResponse({required int selectedResponseIndex, required int timeLeftInSeconds}) {
-    log('Finding response for selectedResponseIndex: $selectedResponseIndex');
     final result = responses.firstWhereOrNull((r) => r.index == selectedResponseIndex);
 
     return result == null
