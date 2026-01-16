@@ -16,6 +16,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   bool started = false;
   final List<QuizResponse> answers = [];
   List<int> pointsPerQuestion = [];
+  int _currentStreak = 0;
 
   // Adjust to whatever per-question time you need.
   static const _total = Duration(seconds: 30);
@@ -152,7 +153,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     super.dispose();
   }
 
-  void _playConfetti() {
+  void _playConfetti({required int pointsEarned}) {
     if (!_confettiLoaded) return;
 
     setState(() => _showConfetti = true);
@@ -169,7 +170,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
     Future.delayed(pointsDisplayDuration, () {
       if (!mounted) return;
       setState(() {
-        totalPoints += (currentQuestion?.question.points ?? 0) + timeLeftInSeconds;
+        totalPoints += pointsEarned;
       });
     });
 
@@ -893,6 +894,17 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   void showCorrectAnswer() {
     final correctIndex = currentQuestion?.correctResponseIndex ?? -1;
     final bool isCorrect = (showVerificationState != -1 && showVerificationState == correctIndex);
+    if (isCorrect) {
+      _currentStreak += 1;
+    } else {
+      _currentStreak = 0;
+    }
+    final int questionScore = _scoreForQuestion(
+      qr: currentQuestion!,
+      isCorrect: isCorrect,
+      timeLeftInSeconds: timeLeftInSeconds,
+      streakCount: _currentStreak,
+    );
     displayCorrectIndex = currentQuestion?.correctResponseIndex ?? -1;
     indexToRotate = displayCorrectIndex;
     pauseTimer();
@@ -901,7 +913,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
 
     if (isCorrect) {
       HapticFeedback.lightImpact(); // petit feeling console
-      _playConfetti();
+      _playConfetti(pointsEarned: questionScore);
     }
 
     Future.delayed(const Duration(milliseconds: 2500), () {
@@ -911,14 +923,36 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
             timeLeftInSeconds: timeLeftInSeconds,
           ) ??
           QuizResponse.empty());
-      if (answers.last.isCorrect) {
-        pointsPerQuestion.add((currentQuestion?.question.points ?? 0) + timeLeftInSeconds);
-      } else {
-        pointsPerQuestion.add(0);
-      }
+      pointsPerQuestion.add(questionScore);
       setState(() {});
       moveToNextQuestion();
     });
+  }
+
+  int _scoreForQuestion({
+    required QuestionResponses qr,
+    required bool isCorrect,
+    required int timeLeftInSeconds,
+    required int streakCount,
+  }) {
+    if (!isCorrect) return 0;
+    final int basePoints = qr.question.points;
+    final int timeBonus = timeLeftInSeconds < 0 ? 0 : timeLeftInSeconds;
+    final int streakBonus = _streakBonusForCount(streakCount);
+    return basePoints + timeBonus + streakBonus;
+  }
+
+  int _streakBonusForCount(int streakCount) {
+    if (streakCount <= 1) return 0;
+    if (streakCount == 2) return 20;
+    if (streakCount == 3) return 50;
+    if (streakCount == 4) return 90;
+    if (streakCount == 5) return 140;
+    if (streakCount == 6) return 200;
+    if (streakCount == 7) return 270;
+    if (streakCount == 8) return 350;
+    if (streakCount == 9) return 440;
+    return 540;
   }
 
   _card(BoxConstraints constraints, int index, ThemeData theme, {required String type}) {
