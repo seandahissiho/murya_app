@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:murya/models/Job.dart';
 
 enum JobProgressionLevel {
@@ -37,7 +35,6 @@ class JobKiviat {
   });
 
   factory JobKiviat.fromJson(Map<String, dynamic> json) {
-    log('JobKiviat.fromJson');
     return JobKiviat(
       id: json['id'] as String,
       jobId: json['jobId'] as String?,
