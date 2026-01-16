@@ -91,6 +91,8 @@ dependencies:
   video_player: ^2.10.1
   youtube_player_flutter: ^9.1.3
   just_audio: ^0.9.36
+  lottie: ^3.3.1
+  animated_flip_counter: ^0.3.4
 #  flutter_inappwebview: ^6.1.5
 #  vector_math: ^2.1.4  # or whatever minimum fl_chart needs
 
@@ -124,6 +126,7 @@ flutter:
     - assets/
     - assets/icons/
     - assets/images/
+    - assets/lotties/
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
