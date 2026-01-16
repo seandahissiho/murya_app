@@ -1,10 +1,11 @@
+import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 
-class ScoreWidget extends StatelessWidget {
+class ScoreWidget extends StatefulWidget {
   final int value;
   final bool compact;
   final Color textColor;
@@ -22,59 +23,207 @@ class ScoreWidget extends StatelessWidget {
     this.isReward = false,
   });
 
-  TextStyle? _style(isMobile, theme) {
-    if (isLandingPage) return _landingPageStyle(isMobile, theme, textColor);
+  @override
+  State<ScoreWidget> createState() => _ScoreWidgetState();
+}
 
-    if (isReward) {
+class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStateMixin {
+  late final AnimationController _popCtrl;
+  late final Animation<double> _scale;
+
+  int _lastValue = 0;
+  int? _delta;
+  bool _flash = false;
+  int _animStamp = 0;
+
+  TextStyle? _style(bool isMobile, ThemeData theme) {
+    if (widget.isLandingPage) return _landingPageStyle(isMobile, theme, widget.textColor);
+
+    if (widget.isReward) {
       return isMobile
-          ? theme.textTheme.labelLarge?.copyWith(height: 0.0, color: textColor, fontWeight: FontWeight.bold)
+          ? theme.textTheme.labelLarge?.copyWith(
+              height: 0.0,
+              color: widget.textColor,
+              fontWeight: FontWeight.bold,
+            )
           : GoogleFonts.anton(
-              textStyle:
-                  theme.textTheme.displayLarge?.copyWith(height: 1.0, color: textColor, fontWeight: FontWeight.bold));
+              textStyle: theme.textTheme.displayLarge?.copyWith(
+                height: 1.0,
+                color: widget.textColor,
+                fontWeight: FontWeight.bold,
+              ),
+            );
     }
 
     return isMobile
-        ? (!compact
-            ? theme.textTheme.labelLarge?.copyWith(height: 0.0, color: textColor)
-            : theme.textTheme.labelLarge?.copyWith(height: 0.0, color: textColor))
-        : (!compact
-            ? theme.textTheme.displayMedium?.copyWith(height: 1.0, color: textColor)
-            : theme.textTheme.labelLarge?.copyWith(height: 0.0, color: textColor));
+        ? theme.textTheme.labelLarge?.copyWith(height: 0.0, color: widget.textColor)
+        : (!widget.compact
+            ? theme.textTheme.displayMedium?.copyWith(height: 1.0, color: widget.textColor)
+            : theme.textTheme.labelLarge?.copyWith(height: 0.0, color: widget.textColor));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _lastValue = widget.value;
+
+    _popCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+      reverseDuration: const Duration(milliseconds: 170),
+    );
+
+    _scale = Tween<double>(begin: 1.0, end: 1.12).animate(
+      CurvedAnimation(parent: _popCtrl, curve: Curves.easeOutBack),
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant ScoreWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final diff = widget.value - _lastValue;
+    _lastValue = widget.value;
+
+    // ✅ On anime uniquement quand ça monte (effet "score up")
+    if (diff > 0 && !widget.isReward) {
+      _triggerGain(diff);
+    }
+  }
+
+  void _triggerGain(int diff) {
+    final stamp = ++_animStamp;
+
+    setState(() {
+      _delta = diff;
+      _flash = true;
+    });
+
+    _popCtrl.forward(from: 0).then((_) => _popCtrl.reverse());
+
+    Future.delayed(const Duration(milliseconds: 220), () {
+      if (!mounted || stamp != _animStamp) return;
+      setState(() => _flash = false);
+    });
+
+    Future.delayed(const Duration(milliseconds: 850), () {
+      if (!mounted || stamp != _animStamp) return;
+      setState(() => _delta = null);
+    });
+  }
+
+  @override
+  void dispose() {
+    _popCtrl.dispose(); // ✅ toujours avant super.dispose() :contentReference[oaicite:2]{index=2}
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isMobile = DeviceHelper.isMobile(context);
-    return Row(
-      children: [
-        Container(
-          height: isReward ? null : (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 1.5,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.tinyMargin,
+    final style = _style(isMobile, theme);
+
+    final double iconSize = isMobile
+        ? mobileCTAHeight / (widget.compact ? 2.5 : 2)
+        : tabletAndAboveCTAHeight / (widget.compact ? 2.5 : 2) * (widget.isReward ? 1.75 : 1);
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 160),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: _flash ? widget.iconColor.withOpacity(0.10) : Colors.transparent,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // ✅ SCORE + ICON
+          Row(
+            children: [
+              Container(
+                height: widget.isReward ? null : (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 1.5,
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.tinyMargin),
+                child: Center(
+                  child: ScaleTransition(
+                    scale: _scale,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (widget.isReward) ...[
+                          Text("+ ", style: style),
+                        ],
+                        AnimatedFlipCounter(
+                          value: widget.value,
+                          duration: const Duration(milliseconds: 420),
+                          curve: Curves.easeOutCubic,
+                          textStyle: style,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              AppSpacing.tinyMarginBox,
+              ScaleTransition(
+                scale: _scale,
+                child: SvgPicture.asset(
+                  AppIcons.diamondIconPath,
+                  width: iconSize,
+                  height: iconSize,
+                  colorFilter: ColorFilter.mode(widget.iconColor, BlendMode.srcIn),
+                ),
+              ),
+            ],
           ),
-          child: Center(
-            child: Text(
-              "${isReward ? "+ " : ""}$value",
-              style: _style(isMobile, theme),
+
+          // ✅ +X FLOATING (effet arcade)
+          Positioned(
+            right: -6,
+            top: -18,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 520),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              transitionBuilder: (child, anim) {
+                final slide = Tween<Offset>(
+                  begin: const Offset(0, 0.6),
+                  end: const Offset(0, -0.35),
+                ).animate(anim);
+
+                return FadeTransition(
+                  opacity: anim,
+                  child: SlideTransition(position: slide, child: child),
+                );
+              },
+              child: (_delta != null)
+                  ? Container(
+                      key: ValueKey(_delta),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: widget.iconColor,
+                        borderRadius: BorderRadius.circular(999),
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.iconColor.withOpacity(0.40),
+                            blurRadius: 12,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        "+$_delta",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    )
+                  : const SizedBox(key: ValueKey("empty")),
             ),
           ),
-        ),
-        AppSpacing.tinyMarginBox,
-        SvgPicture.asset(
-          AppIcons.diamondIconPath,
-          width: isMobile
-              ? mobileCTAHeight / (compact ? 2.5 : 2)
-              : tabletAndAboveCTAHeight / (compact ? 2.5 : 2) * (isReward ? 1.75 : 1),
-          height: isMobile
-              ? mobileCTAHeight / (compact ? 2.5 : 2)
-              : tabletAndAboveCTAHeight / (compact ? 2.5 : 2) * (isReward ? 1.75 : 1),
-          colorFilter: ColorFilter.mode(
-            iconColor,
-            BlendMode.srcIn,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
