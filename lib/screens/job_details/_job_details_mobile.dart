@@ -8,7 +8,7 @@ class MobileJobDetailsScreen extends StatefulWidget {
 }
 
 class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
-  Job _job = Job.empty();
+  AppJob _job = Job.empty();
   UserJob _userJob = UserJob.empty();
   UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
   User _user = User.empty();
@@ -26,7 +26,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
       context.read<ProfileBloc>().add(ProfileLoadEvent(notifyIfNotFound: false));
       context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: jobId));
       context.read<JobBloc>().add(LoadUserJobDetails(context: context, jobId: jobId));
-      context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: jobId));
+      // context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: jobId));
     });
   }
 
@@ -60,6 +60,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
           }
           if (state is UserJobDetailsLoaded) {
             _userJob = state.userJob;
+            context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.id!));
             final DateTime now = DateTime.now();
             final DateTime? lastQuizAt = _userJob.lastQuizAt;
             if (lastQuizAt == null) {

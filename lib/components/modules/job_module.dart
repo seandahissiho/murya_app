@@ -43,7 +43,8 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
   UserJob _userJob = UserJob();
   Duration? nextQuizAvailableIn;
   Timer? _countdownTimer;
-  Job _job = Job.empty();
+  Job? _job;
+  JobFamily? _jobFamily;
   int _detailsLevel = 0;
   UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
 
@@ -68,8 +69,13 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
           listener: (context, state) {
             if (state is UserJobDetailsLoaded) {
               _userJob = state.userJob;
-              _job = _userJob.job!;
-              context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.jobId!));
+              if (state.userJob.jobFamily != null) {
+                _jobFamily = state.userJob.jobFamily!;
+              } else {
+                _jobFamily = JobFamily.empty();
+                _job = _userJob.job!;
+              }
+              context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.id!));
               _checkQuizAvailability();
             }
             if (state is UserJobCompetencyProfileLoaded) {
@@ -104,7 +110,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                   // titleContent: userCurrentJob.job?.title ?? '',
                   subtitleContent: ScoreWidget(
                     value: context.read<ProfileBloc>().user.diamonds,
-                    iconColor: AppColors.primaryDefault,
+                    // iconColor: AppColors.primaryDefault,
                     isLandingPage: true,
                   ),
                   bodyContent: SizedBox(
@@ -119,7 +125,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                       // navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', userCurrentJob.jobId!));
                       navigateToPath(
                         context,
-                        to: AppRoutes.jobDetails.replaceAll(':id', userCurrentJob.jobId!),
+                        to: AppRoutes.jobDetails.replaceAll(':id', userCurrentJob.jobId ?? userCurrentJob.jobFamilyId!),
                       );
                     },
                     isLoading: false,
@@ -193,7 +199,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
           child: Center(
             child: InteractiveRoundedRadarChart(
               labels: _userJobCompetencyProfile.competencyFamilies.map((cf) => cf.name).toList(),
-              defaultValues: _job.kiviatValues(JobProgressionLevel.JUNIOR),
+              defaultValues: (_job ?? _jobFamily ?? Job.empty()).kiviatValues(JobProgressionLevel.JUNIOR),
               userValues: _userJobCompetencyProfile.kiviatValues,
               // labelBgColor: AppColors.whiteSwatch,
               // labelTextColor: AppColors.primaryDefault,

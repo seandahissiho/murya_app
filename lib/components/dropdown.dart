@@ -90,6 +90,10 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final bool isMobile = DeviceHelper.isMobile(context);
+    final double? shrinkWrapWidth = _calculateShrinkWrapWidth(
+      theme,
+      Directionality.of(context),
+    );
 
     return SizedBox(
       height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
@@ -118,16 +122,23 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                     // Disable the item to prevent default tap behavior
                     child: Container(
                       color: Colors.transparent,
-                      width: widget.maxDropdownWidth ??
-                          theme.inputDecorationTheme.constraints?.maxWidth ??
-                          double.infinity,
+                      // width: (widget.maxDropdownWidth ??
+                      //     theme.inputDecorationTheme.constraints?.maxWidth ??
+                      //     double.infinity),
                       constraints: BoxConstraints(
-                        minWidth: widget.maxDropdownWidth ??
-                            theme.inputDecorationTheme.constraints?.maxWidth ??
-                            double.infinity,
-                        maxWidth: widget.maxDropdownWidth ??
-                            theme.inputDecorationTheme.constraints?.maxWidth ??
-                            double.infinity,
+                        minWidth: widget.shrinkWrap
+                            ? (shrinkWrapWidth ?? 10)
+                            : widget.maxDropdownWidth ??
+                                theme.inputDecorationTheme.constraints?.maxWidth ??
+                                double.infinity,
+                        maxWidth: widget.shrinkWrap
+                            ? (shrinkWrapWidth ??
+                                widget.maxDropdownWidth ??
+                                theme.inputDecorationTheme.constraints?.maxWidth ??
+                                double.infinity)
+                            : widget.maxDropdownWidth ??
+                                theme.inputDecorationTheme.constraints?.maxWidth ??
+                                double.infinity,
                         maxHeight: widget.maxDropdownHeight ?? double.infinity,
                       ),
                       child: Scrollbar(
@@ -212,9 +223,14 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                                       ),
                                     ),
                                   ),
-                                  width: widget.maxDropdownWidth ??
-                                      theme.inputDecorationTheme.constraints?.maxWidth ??
-                                      double.infinity,
+                                  width: widget.shrinkWrap
+                                      ? (shrinkWrapWidth ??
+                                          widget.maxDropdownWidth ??
+                                          theme.inputDecorationTheme.constraints?.maxWidth ??
+                                          double.infinity)
+                                      : widget.maxDropdownWidth ??
+                                          theme.inputDecorationTheme.constraints?.maxWidth ??
+                                          double.infinity,
                                   height: itemHeight,
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: AppSpacing.tinyMargin,
@@ -223,6 +239,17 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
+                                      if (item.leadingIcon != null) ...[
+                                        SizedBox(
+                                          width: 16,
+                                          height: 16,
+                                          child: FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: item.leadingIcon!,
+                                          ),
+                                        ),
+                                        const SizedBox(width: AppSpacing.elementMargin),
+                                      ],
                                       Flexible(
                                         child: Text(
                                           item.label,
@@ -328,6 +355,10 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                                   (widget.shrinkWrap || !hasBoundedWidth) ? MainAxisSize.min : MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
+                                if (widget.leftIcon != null || widget.leftIconPath != null) ...[
+                                  widget.leftIcon ?? SvgPicture.asset(widget.leftIconPath!),
+                                  const SizedBox(width: AppSpacing.elementMargin),
+                                ],
                                 if (widget.shrinkWrap || !hasBoundedWidth) textWidget else Expanded(child: textWidget),
                                 if (widget.shrinkWrap) AppSpacing.elementMarginBox,
                                 if (!widget.shrinkWrap) const SizedBox(width: AppSpacing.elementMargin),
@@ -353,6 +384,42 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
             );
           }),
     );
+  }
+
+  double? _calculateShrinkWrapWidth(ThemeData theme, TextDirection textDirection) {
+    if (!widget.shrinkWrap || widget.items.isEmpty) {
+      return null;
+    }
+
+    final TextStyle? textStyle = theme.textTheme.bodyMedium?.copyWith(
+      color: AppColors.primary.shade900,
+    );
+    double maxWidth = 0;
+
+    for (final item in widget.items) {
+      final TextPainter painter = TextPainter(
+        text: TextSpan(
+          text: item.label,
+          style: textStyle,
+        ),
+        textDirection: textDirection,
+        maxLines: 1,
+      )..layout();
+
+      double itemWidth = painter.width + (AppSpacing.tinyMargin * 2.5);
+      if (item.leadingIcon != null) {
+        itemWidth += 14 + AppSpacing.elementMargin;
+      }
+      if (itemWidth > maxWidth) {
+        maxWidth = itemWidth;
+      }
+    }
+
+    if (widget.maxDropdownWidth != null) {
+      maxWidth = maxWidth.clamp(0, widget.maxDropdownWidth!);
+    }
+
+    return maxWidth == 0 ? null : maxWidth;
   }
 
   _dropdownIcon(BuildContext context) {

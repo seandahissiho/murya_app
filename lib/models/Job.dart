@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/l10n/l10n.dart';
@@ -5,42 +7,64 @@ import 'package:murya/main.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/job_kiviat.dart';
 import 'package:murya/models/quiz.dart';
+import 'package:murya/models/resource.dart';
 
-class Job {
+sealed class AppJob {
   final String? id;
   final String title;
+  final String slug;
   final String description;
+  final List<Competency> competencies;
+  final List<CompetencyFamily> competenciesFamilies;
+  final List<CompetencyFamily> competenciesSubFamilies;
+  final List<JobKiviat> kiviats;
+
+  AppJob({
+    required this.id,
+    required this.title,
+    required this.slug,
+    required this.description,
+    required this.competencies,
+    required this.competenciesFamilies,
+    required this.competenciesSubFamilies,
+    required this.kiviats,
+  });
+
+  kiviatValues(JobProgressionLevel level) {}
+
+  competenciesPerFamily(CompetencyFamily family) {}
+}
+
+class Job extends AppJob {
   final int popularity;
   final Color backgroundColor;
   final Color foregroundColor;
   final Color textColor;
   final Color overlayColor;
   final String imagePath;
-  final List<Competency> competencies;
-  final List<CompetencyFamily> competenciesFamilies;
-  final List<CompetencyFamily> competenciesSubFamilies;
-  final List<JobKiviat> kiviats;
 
   Job({
-    required this.id,
-    required this.title,
-    required this.description,
+    required super.id,
+    required super.title,
+    required super.slug,
+    required super.description,
     this.popularity = 0,
     this.backgroundColor = const Color(0xFFFFFFFF),
     this.foregroundColor = const Color(0xFFFFFFFF),
     this.textColor = const Color(0xFFFFFFFF),
     this.overlayColor = const Color(0xFFFFFFFF),
     this.imagePath = '',
-    this.competencies = const [],
-    this.competenciesFamilies = const [],
-    this.competenciesSubFamilies = const [],
-    this.kiviats = const [],
+    super.competencies = const [],
+    super.competenciesFamilies = const [],
+    super.competenciesSubFamilies = const [],
+    super.kiviats = const [],
   });
 
   factory Job.fromJson(jobJson) {
     final job = Job(
       id: jobJson['id'],
       title: jobJson['title'],
+      slug: jobJson['slug'] ?? '',
       description: jobJson['description'] ?? '',
       popularity: jobJson['popularity'] ?? 0,
       backgroundColor:
@@ -71,6 +95,7 @@ class Job {
     return job;
   }
 
+  @override
   List<double> kiviatValues(JobProgressionLevel level) {
     // log('Getting kiviat values for level: ${level.name}');
     return kiviats.whereOrEmpty((k) => k.level == level.name).map((k) => k.value.toDouble()).toList();
@@ -96,9 +121,15 @@ class Job {
 
   static Job empty() {
     return Job(
-        id: '', title: FAKER.lorem.word(), description: '', competencies: List.generate(20, (_) => Competency.empty()));
+      id: '',
+      title: FAKER.lorem.word(),
+      slug: '',
+      description: '',
+      competencies: List.generate(20, (_) => Competency.empty()),
+    );
   }
 
+  @override
   competenciesPerFamily(CompetencyFamily family) {
     return competencies.where((comp) => comp.families != null && comp.families!.contains(family)).toList();
   }
@@ -121,29 +152,102 @@ class Job {
   }
 }
 
-// model UserJob {
-// id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-// userId           String        @db.Uuid
-// jobId            String        @db.Uuid
-// status           UserJobStatus @default(TARGET)
-// // Optional: manual level or seniority (1–5 for example)
-// level            Level         @default(EASY)
-// note             String?       @db.Text
-// // Aggregated ressources for fast dashboards (optional but useful)
-// totalScore       Int           @default(0) // sum of all quiz totalScore
-// maxScoreSum      Int           @default(0) // sum of all quiz maxScore
-// completedQuizzes Int           @default(0)
-// lastQuizAt       DateTime?     @db.Timestamp(0)
-// createdAt        DateTime      @default(now()) @db.Timestamp(0)
-// updatedAt        DateTime      @default(now()) @updatedAt @db.Timestamp(0)
-// user             User          @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-// job              Job           @relation(fields: [jobId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-// quizzes          UserQuiz[]
-//
-// @@unique([userId, jobId], map: "unique_user_job")
-// @@index([userId], map: "idx_user_job_user")
-// @@index([jobId], map: "idx_user_job_job")
-// }
+class JobFamily extends AppJob {
+  // final String? id;
+  // final String title;
+  // final String? description;
+  final List<Job> jobs;
+  final List<Resource> resources;
+
+  // final List<JobKiviat> kiviats;
+
+  JobFamily({
+    required super.id,
+    required super.title,
+    required super.slug,
+    required super.description,
+    this.jobs = const [],
+    this.resources = const [],
+    super.kiviats = const [],
+    required super.competencies,
+    required super.competenciesFamilies,
+    required super.competenciesSubFamilies,
+  });
+
+  factory JobFamily.fromJson(familyJson) {
+    log('Parsing JobFamily from JSON');
+
+    final id = familyJson['id'];
+    final title = familyJson['name'] ?? familyJson['title'];
+    final slug = familyJson['slug'] ?? '';
+    final description = familyJson['description'] ?? '';
+
+    final jobs = familyJson['jobs'] != null
+        ? (familyJson['jobs'] as List).map((jobJson) => Job.fromJson(jobJson)).toList()
+        : <Job>[];
+
+    final resources = familyJson['learningResources'] != null
+        ? (familyJson['learningResources'] as List).map((resJson) => Resource.fromJson(resJson)).toList()
+        : <Resource>[];
+
+    final kiviats = familyJson['kiviats'] != null
+        ? (familyJson['kiviats'] as List).map((kiviatJson) => JobKiviat.fromJson(kiviatJson)).toList()
+        : <JobKiviat>[];
+
+    final competencies = familyJson['competencies'] != null
+        ? (familyJson['competencies'] as List).map((compJson) => Competency.fromJson(compJson)).toList()
+        : <Competency>[];
+
+    final competenciesFamilies = familyJson['competenciesFamilies'] != null
+        ? (familyJson['competenciesFamilies'] as List)
+            .map((familyJson) => CompetencyFamily.fromJson(familyJson))
+            .toList()
+        : <CompetencyFamily>[];
+
+    final competenciesSubFamilies = familyJson['competenciesSubfamilies'] != null
+        ? (familyJson['competenciesSubfamilies'] as List)
+            .map((familyJson) => CompetencyFamily.fromJson(familyJson))
+            .toList()
+        : <CompetencyFamily>[];
+
+    return JobFamily(
+      id: id,
+      title: title,
+      slug: slug,
+      description: description,
+      jobs: jobs,
+      resources: resources,
+      kiviats: kiviats,
+      competencies: competencies,
+      competenciesFamilies: competenciesFamilies,
+      competenciesSubFamilies: competenciesSubFamilies,
+    );
+  }
+
+  static JobFamily empty() {
+    return JobFamily(
+      id: '',
+      title: FAKER.lorem.words(1).join(' '),
+      slug: '',
+      description: '',
+      jobs: [],
+      resources: [],
+      competencies: [],
+      competenciesFamilies: [],
+      competenciesSubFamilies: [],
+    );
+  }
+
+  @override
+  List<double> kiviatValues(JobProgressionLevel level) {
+    return kiviats.whereOrEmpty((k) => k.level == level.name).map((k) => k.value.toDouble()).toList();
+  }
+
+  @override
+  competenciesPerFamily(CompetencyFamily family) {
+    return competencies.where((comp) => comp.families != null && comp.families!.contains(family)).toList();
+  }
+}
 
 enum UserJobStatus { target, current, past }
 
@@ -151,6 +255,7 @@ class UserJob {
   final String? id;
   final String? userId;
   final String? jobId;
+  final String? jobFamilyId;
   final UserJobStatus? status;
   final Level level;
   final String? note;
@@ -161,12 +266,14 @@ class UserJob {
 
   final User? user;
   final Job? job;
+  final JobFamily? jobFamily;
   final List<Quiz>? quizzes; // Placeholder for UserQuiz list
 
   UserJob({
     this.id,
     this.userId,
     this.jobId,
+    this.jobFamilyId,
     this.status,
     this.level = Level.beginner,
     this.note,
@@ -176,28 +283,51 @@ class UserJob {
     this.lastQuizAt,
     this.user,
     this.job,
+    this.jobFamily,
     this.quizzes,
   });
 
   factory UserJob.fromJson(userJobJson) {
+    final id = userJobJson['id'];
+    final userId = userJobJson['userId'];
+    final jobId = userJobJson['jobId'];
+    final job = userJobJson['job'] != null ? Job.fromJson(userJobJson['job']) : null;
+    final jobFamilyId = userJobJson['jobFamilyId'];
+    final jobFamily = userJobJson['jobFamily'] != null ? JobFamily.fromJson(userJobJson['jobFamily']) : null;
+
+    final statusString = userJobJson['status'];
+    final status = statusString != null
+        ? UserJobStatus.values.firstWhere(
+            (e) => e.toString().split('.').last.toLowerCase() == statusString.toLowerCase(),
+            orElse: () => UserJobStatus.target,
+          )
+        : null;
+
+    final levelString = userJobJson['level'];
+    final level = levelString != null ? LevelExtension.fromString(levelString) : Level.beginner;
+
+    final note = userJobJson['note'];
+    final totalScore = userJobJson['totalScore'] ?? 0;
+    final maxScoreSum = userJobJson['maxScoreSum'] ?? 0;
+    final completedQuizzes = userJobJson['completedQuizzes'] ?? 0;
+
+    final lastQuizAtString = userJobJson['lastQuizAt'];
+    final lastQuizAt = lastQuizAtString != null ? DateTime.parse(lastQuizAtString) : null;
+
     return UserJob(
-      id: userJobJson['id'],
-      userId: userJobJson['userId'],
-      jobId: userJobJson['jobId'],
-      job: userJobJson['job'] != null ? Job.fromJson(userJobJson['job']) : null,
-      status: userJobJson['status'] != null
-          ? UserJobStatus.values.firstWhere(
-              (e) => e.toString().split('.').last.toLowerCase() == userJobJson['status'].toLowerCase(),
-              orElse: () => UserJobStatus.target,
-            )
-          : null,
-      level: userJobJson['level'] != null ? LevelExtension.fromString(userJobJson['level']) : Level.beginner,
-      note: userJobJson['note'],
-      totalScore: userJobJson['totalScore'] ?? 0,
-      maxScoreSum: userJobJson['maxScoreSum'] ?? 0,
-      completedQuizzes: userJobJson['completedQuizzes'] ?? 0,
-      lastQuizAt: userJobJson['lastQuizAt'] != null ? DateTime.parse(userJobJson['lastQuizAt']) : null,
-      // user and job parsing can be added here if needed
+      id: id,
+      userId: userId,
+      jobId: jobId,
+      job: job,
+      jobFamilyId: jobFamilyId,
+      jobFamily: jobFamily,
+      status: status,
+      level: level,
+      note: note,
+      totalScore: totalScore,
+      maxScoreSum: maxScoreSum,
+      completedQuizzes: completedQuizzes,
+      lastQuizAt: lastQuizAt,
     );
   }
 

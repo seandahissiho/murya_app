@@ -31,13 +31,21 @@ class JobRepository extends BaseRepository {
     );
   }
 
-  Future<Result<Job>> getJobDetails(String jobId) async {
+  Future<Result<AppJob>> getJobDetails(String jobId) async {
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/jobs/$jobId/');
 
         if (response.data["data"] != null) {
           await cacheService.save('job_details_$jobId', response.data["data"]);
+        }
+        final data = response.data["data"];
+        if (data['scope'] == 'JOB_FAMILY') {
+          final JobFamily jobFamily = JobFamily.fromJson(data);
+          return jobFamily;
+        } else {
+          final Job job = Job.fromJson(data);
+          return job;
         }
 
         final Job job = Job.fromJson(response.data["data"]);
@@ -137,7 +145,7 @@ class JobRepository extends BaseRepository {
   }
 
   // getCFDetails
-  Future<Result<(CompetencyFamily, Job)>> getCFDetails(String jobId, String cfId) async {
+  Future<Result<(CompetencyFamily, AppJob)>> getCFDetails(String jobId, String cfId) async {
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/jobs/$jobId/competency_families/$cfId/');
@@ -149,8 +157,16 @@ class JobRepository extends BaseRepository {
         final familyJson = response.data["data"]['family'];
         familyJson['competencies'] = response.data["data"]['competencies'];
         final CompetencyFamily cfamily = CompetencyFamily.fromJson(familyJson);
-        final Job job = Job.fromJson(response.data["data"]['job']);
-        return (cfamily, job);
+        final data = response.data["data"];
+        if (data['scope'] == 'JOB_FAMILY') {
+          final JobFamily jobFamily = JobFamily.fromJson(data['jobFamily']);
+          return (cfamily, jobFamily);
+        } else {
+          final Job job = Job.fromJson(data['job']);
+          return (cfamily, job);
+        }
+        // final Job job = Job.fromJson(response.data["data"]['job']);
+        // return (cfamily, job);
       },
       parentFunctionName: 'JobRepository -> getCFDetails',
     );

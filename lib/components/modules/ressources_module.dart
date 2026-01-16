@@ -71,7 +71,7 @@ class _RessourcesModuleWidgetState extends State<RessourcesModuleWidget> {
               titleContent: widget.module.title(context),
               subtitleContent: FavoritesWidget(
                 value: validResources.length,
-                iconColor: AppColors.primaryDefault,
+                // iconColor: AppColors.primaryDefault,
                 isLandingPage: true,
               ),
               bodyContent: _resourcesStack(latestResources, widget.module),

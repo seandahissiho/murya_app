@@ -23,7 +23,7 @@ final class JobsSearchResults extends JobState {
 }
 
 final class JobDetailsLoaded extends JobState {
-  final Job job;
+  final AppJob job;
 
   const JobDetailsLoaded({required this.job, required super.userCurrentJob});
 }
@@ -48,7 +48,7 @@ final class UserJobCompetencyProfileLoaded extends JobState {
 
 final class CFDetailsLoaded extends JobState {
   final CompetencyFamily cfamily;
-  final Job job;
+  final AppJob job;
 
   const CFDetailsLoaded({required this.cfamily, required this.job, required super.userCurrentJob});
 }

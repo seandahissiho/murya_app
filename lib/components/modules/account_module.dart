@@ -68,7 +68,7 @@ class _AccountModuleWidgetState extends State<AccountModuleWidget> {
                 titleContent: widget.module.title(context),
                 subtitleContent: GoalWidget(
                   value: hasData ? _goalValue(user) : 0,
-                  iconColor: AppColors.primaryDefault,
+                  // iconColor: AppColors.primaryDefault,
                   isLandingPage: true,
                 ),
                 bodyContent: AccountBodyContent(

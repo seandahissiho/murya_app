@@ -9,7 +9,7 @@ class MobileCfDetailsScreen extends StatefulWidget {
 
 class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
   CompetencyFamily _cf = CompetencyFamily.empty();
-  Job _job = Job.empty();
+  AppJob _job = Job.empty();
   late final jobId;
   late final cfId;
 

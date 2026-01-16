@@ -30,10 +30,10 @@ class AppIcons {
   static const String clearIconPath = '$basePath/close.svg';
 
   // enLanguageIconPath
-  static const String enLanguageIconPath = '$basePath/flag_us.svg';
+  static const String enLanguageIconPath = '$basePath/GB.svg';
 
   // frLanguageIconPath
-  static const String frLanguageIconPath = '$basePath/flag_fr.svg';
+  static const String frLanguageIconPath = '$basePath/FR.svg';
 
   // smiling_icon.svg
   static const String smilingIconPath = '$basePath/smiling_icon.svg';
