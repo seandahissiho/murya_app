@@ -306,7 +306,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
 
       return SizedBox.expand(
         child: Stack(
-          clipBehavior: Clip.none,
+          clipBehavior: Clip.hardEdge,
           children: [
             // Pointer detector to feed local positions
             Positioned.fill(
@@ -366,6 +366,8 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
   }
 
   List<Widget> _buildLabelChips(Size size) {
+    double _clamp(double v, double min, double max) => math.max(min, math.min(v, max));
+
     final int n = widget.labels.length;
     if (n == 0) return [];
 
@@ -377,6 +379,13 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
     final double radius = 12.0 * s;
     final double gap = (4.0 * s) * (2.0 / 3.0);
     final double out = (5.0 * s) * (2.0 / 3.0);
+    final double safePad = 10.0 * s;
+    final Rect safe = Rect.fromLTWH(
+      safePad,
+      safePad,
+      size.width - safePad * 2,
+      size.height - safePad * 2,
+    );
 
     final tp = TextPainter(textDirection: TextDirection.ltr);
     final List<Widget> children = [];
@@ -395,7 +404,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
         style: TextStyle(
           color: widget.labelTextColor,
           fontSize: 14,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.bold,
         ),
       );
       tp.layout();
@@ -411,14 +420,14 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
       final double rotation = isTopLeft ? (-0 * math.pi / 180) : (isTopRight ? (0 * math.pi / 180) : 0.0);
 
       children.add(Positioned(
-        left: left,
-        top: top,
+        left: _clamp(left, safe.left, safe.right - w),
+        top: _clamp(top, safe.top, safe.bottom - h),
         child: Transform.rotate(
           angle: rotation,
           alignment: Alignment.center,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: widget.labelBgColor,
+              color: widget.labelBgColor.withValues(alpha: 0.75),
               borderRadius: BorderRadius.circular(radius),
             ),
             child: Padding(
@@ -428,7 +437,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
                 style: TextStyle(
                   color: widget.labelTextColor,
                   fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -767,7 +776,7 @@ class _RoundedRadarPainter extends CustomPainter {
         style: TextStyle(
           color: labelTextColor,
           fontSize: 14,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.bold,
         ),
       );
       tp.layout();

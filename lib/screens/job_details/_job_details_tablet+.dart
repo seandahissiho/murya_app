@@ -253,7 +253,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                           _diagramBuilder(locale, theme, options),
                                           if (_userJob.isNotEmpty &&
                                               (_job?.id.isNotEmptyOrNull ?? false) &&
-                                              _userJob.jobId == _job?.id &&
+                                              (_userJob.jobId == _job?.id || _userJob.jobFamilyId == _job?.id) &&
                                               _userJob.completedQuizzes > 0) ...[
                                             AppSpacing.groupMarginBox,
                                             _rankingBuilder(locale, theme),

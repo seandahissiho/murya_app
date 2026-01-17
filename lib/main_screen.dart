@@ -8,10 +8,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
+import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/models/app_user.dart';
+import 'package:murya/realtime/realtime_coordinator.dart';
+import 'package:murya/realtime/sse_service.dart';
+import 'package:murya/repositories/authentication.repository.dart';
 
 class AppScaffold extends StatefulWidget {
   const AppScaffold({super.key});
@@ -22,6 +26,7 @@ class AppScaffold extends StatefulWidget {
 
 class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
   final _beamerKey = GlobalKey<BeamerState>();
+  late final RealtimeCoordinator _realtimeCoordinator;
   final beamerDelegate = BeamerDelegate(
     initialPath: AppRoutes.landing, // Define the initial path
     transitionDelegate: const NoAnimationTransitionDelegate(),
@@ -59,6 +64,28 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
   void initState() {
     context.read<AuthenticationBloc>().updateRepositoriesContext(context);
     context.read<NotificationBloc>().updateContext(context);
+    final authRepository = RepositoryProvider.of<AuthenticationRepository>(context);
+    _realtimeCoordinator = RealtimeCoordinator(
+      context: context,
+      sseService: SseService(
+        tokenProvider: () async {
+          final cached = await authRepository.getCachedAccessToken();
+          if (cached != null && cached.isNotEmpty) {
+            return cached;
+          }
+          final result = await authRepository.getToken();
+          if (result.isError) {
+            return null;
+          }
+          return result.data?.$1;
+        },
+      ),
+      authenticationBloc: context.read<AuthenticationBloc>(),
+      profileBloc: context.read<ProfileBloc>(),
+      resourcesBloc: context.read<ResourcesBloc>(),
+      notificationBloc: context.read<NotificationBloc>(),
+    );
+    _realtimeCoordinator.start();
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -83,6 +110,7 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
   @override
   void dispose() {
     beamerDelegate.removeListener(_setStateListener);
+    _realtimeCoordinator.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
