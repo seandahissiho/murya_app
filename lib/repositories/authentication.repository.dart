@@ -100,7 +100,15 @@ class AuthenticationRepository extends BaseRepository {
 
   Future<void> deleteToken() async {
     await prefs.remove("refresh_token");
+    await prefs.remove("access_token");
     await CacheService().clear();
+  }
+
+  Future<String?> getCachedAccessToken() async {
+    while (!initialized) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    return prefs.getString("access_token");
   }
 
   Future<Result<bool>> signOut() async {
