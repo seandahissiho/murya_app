@@ -20,6 +20,12 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
   final Uuid _uuid = const Uuid();
 
   RewardsBloc({required this.context}) : super(RewardsState.initial()) {
+    on<RewardsEvent>((event, emit) {
+      emit(RewardsLoading.from(
+        state,
+        rewardsLoading: true,
+      ));
+    });
     on<LoadRewardsEvent>(_onLoadRewards);
     on<LoadRewardDetailsEvent>(_onLoadRewardDetails);
     on<LoadRewardPurchasesEvent>(_onLoadRewardPurchases);
@@ -44,7 +50,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
-    emit(state.copyWith(
+    emit(RewardsCatalogLoading.from(
+      state,
       rewardsLoading: true,
       rewardsError: null,
     ));
@@ -58,7 +65,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     );
 
     if (result.isError) {
-      emit(state.copyWith(
+      emit(RewardsCatalogError.from(
+        state,
         rewardsLoading: false,
         rewardsError: result.error ?? "Une erreur est survenue",
       ));
@@ -66,7 +74,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     }
 
     final catalog = result.data ?? RewardCatalog.empty();
-    emit(state.copyWith(
+    emit(RewardsCatalogLoaded.from(
+      state,
       rewards: catalog.items,
       rewardsPage: catalog.page,
       rewardsLimit: catalog.limit,
@@ -80,19 +89,22 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
-    emit(state.copyWith(
+    emit(RewardDetailsLoading.from(
+      state,
       rewardDetailsLoading: true,
       rewardDetailsError: null,
     ));
     final result = await rewardsRepository.getRewardById(event.rewardId);
     if (result.isError) {
-      emit(state.copyWith(
+      emit(RewardDetailsError.from(
+        state,
         rewardDetailsLoading: false,
         rewardDetailsError: result.error ?? "Une erreur est survenue",
       ));
       return;
     }
-    emit(state.copyWith(
+    emit(RewardDetailsLoaded.from(
+      state,
       rewardDetails: result.data,
       rewardDetailsLoading: false,
       rewardDetailsError: null,
@@ -103,7 +115,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
-    emit(state.copyWith(
+    emit(RewardPurchasesLoading.from(
+      state,
       purchasesLoading: true,
       purchasesError: null,
     ));
@@ -114,7 +127,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     );
 
     if (result.isError) {
-      emit(state.copyWith(
+      emit(RewardPurchasesError.from(
+        state,
         purchasesLoading: false,
         purchasesError: result.error ?? "Une erreur est survenue",
       ));
@@ -122,7 +136,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     }
 
     final purchases = result.data ?? RewardPurchaseList.empty();
-    emit(state.copyWith(
+    emit(RewardPurchasesLoaded.from(
+      state,
       purchases: purchases.items,
       purchasesPage: purchases.page,
       purchasesLimit: purchases.limit,
@@ -132,24 +147,26 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     ));
   }
 
-  FutureOr<void> _onLoadRewardPurchaseDetails(
-      LoadRewardPurchaseDetailsEvent event, Emitter<RewardsState> emit) async {
+  FutureOr<void> _onLoadRewardPurchaseDetails(LoadRewardPurchaseDetailsEvent event, Emitter<RewardsState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
-    emit(state.copyWith(
+    emit(RewardPurchaseDetailsLoading.from(
+      state,
       purchaseDetailsLoading: true,
       purchaseDetailsError: null,
     ));
     final result = await rewardsRepository.getPurchaseById(event.purchaseId);
     if (result.isError) {
-      emit(state.copyWith(
+      emit(RewardPurchaseDetailsError.from(
+        state,
         purchaseDetailsLoading: false,
         purchaseDetailsError: result.error ?? "Une erreur est survenue",
       ));
       return;
     }
-    emit(state.copyWith(
+    emit(RewardPurchaseDetailsLoaded.from(
+      state,
       purchaseDetails: result.data,
       purchaseDetailsLoading: false,
       purchaseDetailsError: null,
@@ -163,7 +180,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     if (state.purchaseSubmitting) {
       return;
     }
-    emit(state.copyWith(
+    emit(RewardPurchaseSubmitting.from(
+      state,
       purchaseSubmitting: true,
       purchaseError: null,
     ));
@@ -176,7 +194,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     );
 
     if (result.isError) {
-      emit(state.copyWith(
+      emit(RewardPurchaseError.from(
+        state,
         purchaseSubmitting: false,
         purchaseError: result.error ?? "Une erreur est survenue",
       ));
@@ -189,7 +208,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       ...state.purchases,
     ];
 
-    emit(state.copyWith(
+    emit(RewardPurchaseSuccess.from(
+      state,
       purchaseSubmitting: false,
       purchaseError: null,
       lastPurchase: payload?.purchase,
@@ -204,28 +224,31 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
-    emit(state.copyWith(
+    emit(RewardsWalletLoading.from(
+      state,
       walletLoading: true,
       walletError: null,
     ));
     final result = await rewardsRepository.getWallet();
     if (result.isError) {
-      emit(state.copyWith(
+      emit(RewardsWalletError.from(
+        state,
         walletLoading: false,
         walletError: result.error ?? "Une erreur est survenue",
       ));
       return;
     }
-    emit(state.copyWith(
+    emit(RewardsWalletLoaded.from(
+      state,
       wallet: result.data ?? Wallet.empty(),
       walletLoading: false,
       walletError: null,
     ));
   }
 
-  FutureOr<void> _onClearPurchaseFeedback(
-      ClearRewardPurchaseFeedbackEvent event, Emitter<RewardsState> emit) async {
-    emit(state.copyWith(
+  FutureOr<void> _onClearPurchaseFeedback(ClearRewardPurchaseFeedbackEvent event, Emitter<RewardsState> emit) async {
+    emit(RewardPurchaseFeedbackCleared.from(
+      state,
       purchaseError: null,
       lastPurchase: null,
     ));
