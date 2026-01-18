@@ -45,7 +45,7 @@ class TextSize {
     double titleSmall = 32.0;
 
     // Subheading
-    double displayMedium = 28.0;
+    double displayMedium = 20.0;
 
     // Body 1 Regular Bold
     double labelLarge = 16.0;
