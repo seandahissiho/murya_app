@@ -62,7 +62,7 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
 class UserListBox extends StatelessWidget {
   const UserListBox({super.key});
 
-  static const double _userRowHeight = 82;
+  static const double _userRowHeight = 80;
 
   String _formatDate(DateTime? date) {
     if (date == null) return '-';
@@ -90,7 +90,7 @@ class UserListBox extends StatelessWidget {
           child: isLoading && users.isEmpty
               ? const Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
+                  // physics: const NeverScrollableScrollPhysics(),
                   child: Table(
                     columnWidths: const {
                       0: FlexColumnWidth(.125),
@@ -551,7 +551,7 @@ class PossibleRewardsBox extends StatelessWidget {
         kind: RewardKind.cinema,
         city: "Poitiers",
         imageUrl:
-            "https://demturkishbookstore.com/cdn/shop/articles/15-movies-set-in-turkey_5cef7069-aa9a-4cd1-adc0-fcf4d19203bf.jpg?v=1760451648&width=13020",
+            "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/15-movies-set-in-turkey_5cef7069-aa9a-4cd1-adc0-fcf4d19203bf.webp?alt=media&token=cb74c199-be90-40f6-b0ca-fae56cf55fd7",
         remainingPlaces: 5,
         costDiamonds: 200,
         address: RewardAddress(
@@ -567,7 +567,8 @@ class PossibleRewardsBox extends StatelessWidget {
         title: "Le Confort Moderne",
         kind: RewardKind.concertHall,
         city: "Poitiers",
-        imageUrl: "https://images.lanouvellerepublique.fr/image/upload/t_1020w/f_auto/5a35cb1c459a45014e8b45b5.jpg",
+        imageUrl:
+            "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/tap-poitiers.webp?alt=media&token=adeabe1c-2064-4642-9c82-25eb45f8388f",
         remainingPlaces: 5,
         costDiamonds: 350,
         address: RewardAddress(
@@ -583,7 +584,8 @@ class PossibleRewardsBox extends StatelessWidget {
         title: "Théâtre Auditorium",
         kind: RewardKind.theatre,
         city: "Poitiers",
-        imageUrl: "https://www.okvoyage.com/wp-content/uploads/2021/03/tap-poitiers.jpg",
+        imageUrl:
+            "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/5a35cb1c459a45014e8b45b5.webp?alt=media&token=5c3fb9c4-9fb1-4a9c-8e7c-9a7786d195f5",
         remainingPlaces: 5,
         costDiamonds: 400,
         address: RewardAddress(
@@ -599,7 +601,8 @@ class PossibleRewardsBox extends StatelessWidget {
         title: "PB86",
         kind: RewardKind.sportsMatch,
         city: "Poitiers",
-        imageUrl: "https://www.pb86.fr/wp-content/uploads/2022/09/arena-futuroscope-poitiers-basket.jpg",
+        imageUrl:
+            "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/arena-futuroscope-poitiers-basket.jpg?alt=media&token=74c5e006-21d5-4407-9405-d88433da02b6",
         remainingPlaces: 5,
         costDiamonds: 250,
         address: RewardAddress(
@@ -616,7 +619,7 @@ class PossibleRewardsBox extends StatelessWidget {
         kind: RewardKind.themePark,
         city: "Poitiers",
         imageUrl:
-            "https://aws-tiqets-cdn.imgix.net/images/content/9485c939acd9496783a80d3473b0cad8.jpg?auto=format%2Ccompress&dpr=2&fit=crop&h=360&q=30&w=1200",
+            "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/9485c939acd9496783a80d3473b0cad8.avif?alt=media&token=7295f9ba-0829-44c8-a07c-4bc74900d578",
         remainingPlaces: 5,
         costDiamonds: 500,
         address: RewardAddress(
@@ -651,14 +654,19 @@ class PossibleRewardsBox extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Récompenses possibles",
-                style: GoogleFonts.anton(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w400,
-                  height: 44 / 28,
-                  letterSpacing: -0.56,
-                  color: AppButtonColors.secondaryTextDefault,
+              Flexible(
+                child: AutoSizeText(
+                  "Récompenses possibles",
+                  style: GoogleFonts.anton(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w400,
+                    height: 44 / 28,
+                    letterSpacing: -0.56,
+                    color: AppButtonColors.secondaryTextDefault,
+                  ),
+                  maxFontSize: 28,
+                  minFontSize: 14,
+                  maxLines: 1,
                 ),
               ),
               AppXButton(
@@ -726,7 +734,7 @@ class _RewardListItemState extends State<RewardListItem> {
       return MouseRegion(
         cursor: SystemMouseCursors.click,
         onEnter: (event) {
-          _isHovering = true;
+          // _isHovering = true;
           setState(() {});
         },
         onExit: (event) {

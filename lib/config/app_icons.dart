@@ -68,6 +68,9 @@ class AppIcons {
 
   // chevronDownPixel
   static const String chevronDownPixelPath = '$basePath/chevron_down_pixel.svg';
+
+  // fireIconPath
+  static const String fireIconPath = '$basePath/fire.svg';
 }
 
 class AppImages {

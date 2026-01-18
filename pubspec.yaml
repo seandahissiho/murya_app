@@ -1,5 +1,5 @@
 name: murya
-description: "Murya: Reveal your potential. The ultimate app for career growth and competency tracking."
+description: "Murya : revelez votre potentiel. L'application ultime pour la progression de carriere et le suivi des competences."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

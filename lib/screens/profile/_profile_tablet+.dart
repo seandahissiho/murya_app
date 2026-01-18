@@ -83,6 +83,7 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
           const SizedBox(height: 32),
           const Expanded(
             child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
               children: [
                 TabletJourneyInfoTab(),
                 TabletJourneyObjectivesTab(),
