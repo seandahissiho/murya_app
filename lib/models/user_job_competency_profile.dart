@@ -78,12 +78,12 @@ class UserJobCompetencyProfile {
   List<double> get kiviatValues {
     if (kiviats == null) return [];
     Map<String, double> valuePerFamily = {};
-    for (var kiviat in (kiviats ?? [])) {
-      for (var k in kiviat) {
+    for (List<JobKiviat> kiviat in (kiviats ?? [])) {
+      for (JobKiviat k in kiviat) {
         if (valuePerFamily.containsKey(k.competenciesFamilyId)) {
-          valuePerFamily[k.competenciesFamilyId] = k.value + valuePerFamily[k.competenciesFamilyId]!;
+          valuePerFamily[k.competenciesFamilyId] = k.radarScore0to5 + valuePerFamily[k.competenciesFamilyId]!;
         } else {
-          valuePerFamily[k.competenciesFamilyId] = k.value;
+          valuePerFamily[k.competenciesFamilyId] = k.radarScore0to5;
         }
       }
     }
@@ -91,7 +91,7 @@ class UserJobCompetencyProfile {
       valuePerFamily[key] = value / (kiviats?.length ?? 1);
     });
     return valuePerFamily.values.map((v) {
-      if (v < 0.5) return 1.0;
+      // if (v < 0.5) return 1.0;
       if (v > 5.0) return 5.0;
       return v;
     }).toList();

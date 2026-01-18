@@ -8,6 +8,8 @@ import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/quiz.dart';
+import 'package:murya/models/quiz_result.dart';
+import 'package:murya/repositories/base.repository.dart';
 import 'package:murya/repositories/quiz.repository.dart';
 
 part 'quiz_event.dart';
@@ -44,10 +46,11 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
   }
 
   Future<void> _onSaveQuizResults(SaveQuizResults event, Emitter<QuizState> emit) async {
+    Result<UserQuizResult?>? result;
     if (authBloc.state.isAuthenticated) {
       // Here you would typically save the quiz results to a repository or database
       // For this example, we'll just simulate a successful save operation
-      final result = await quizRepository.saveQuizResult(event);
+      result = await quizRepository.saveQuizResult(event);
       // notificationBloc.add(SuccessNotificationEvent(
       //   message: "Quiz results saved successfully!",
       // ));
@@ -58,16 +61,23 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
       while (!authBloc.state.isAuthenticated) {
         await Future.delayed(const Duration(milliseconds: 100));
       }
-      final result = await quizRepository.saveQuizResult(event);
+      result = await quizRepository.saveQuizResult(event);
       // notificationBloc.add(SuccessNotificationEvent(
       //   message: "Quiz results saved successfully!",
       // ));
+    }
+    if (result == null || result.isError) {
+      notificationBloc.add(ErrorNotificationEvent(
+        message: result?.error,
+      ));
+      emit(QuizError(message: result?.error ?? "Une erreur est survenue"));
+      return;
     }
     await Future.delayed(const Duration(milliseconds: 150));
     if (event.context.mounted) {
       event.context.read<JobBloc>().add(LoadUserCurrentJob(context: event.context));
     }
-    emit(QuizSaved());
+    emit(QuizSaved(result: result.data));
     profileBloc.add(ProfileLoadEvent());
   }
 

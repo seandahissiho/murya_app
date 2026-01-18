@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
@@ -60,7 +59,9 @@ class RealtimeCoordinator {
   }
 
   void _handleEvent(SseEvent event) {
-    debugPrint('Realtime event: ${event.type}');
+    if (event.type != 'ping') {
+      debugPrint('Realtime event: ${event.type}');
+    }
     switch (event.type) {
       case 'progress.updated':
         final userId = event.data['userId'];

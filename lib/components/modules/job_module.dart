@@ -193,14 +193,22 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
         final AppModuleType moduleType = widget.module.boxType;
         final bool isMobile = DeviceHelper.isMobile(context);
         final bool smallHeight = moduleType == AppModuleType.type1 || moduleType == AppModuleType.type1_2 || isMobile;
+        final List<CompetencyFamily> families = _userJob.kiviats.isNotEmpty
+            ? _userJob.kiviats
+                .map((kiviat) => kiviat.competenciesFamily)
+                .whereType<CompetencyFamily>()
+                .toList()
+            : (_job ?? _jobFamily ?? Job.empty()).competenciesFamilies.isNotEmpty
+                ? (_job ?? _jobFamily ?? Job.empty()).competenciesFamilies
+                : _userJobCompetencyProfile.competencyFamilies;
         return SizedBox(
           height: constraints.maxWidth,
           width: constraints.maxWidth,
           child: Center(
             child: InteractiveRoundedRadarChart(
-              labels: _userJobCompetencyProfile.competencyFamilies.map((cf) => cf.name).toList(),
+              labels: families.map((cf) => cf.name).toList(),
               defaultValues: (_job ?? _jobFamily ?? Job.empty()).kiviatValues(JobProgressionLevel.JUNIOR),
-              userValues: _userJobCompetencyProfile.kiviatValues,
+              userValues: _userJob.kiviatValues(families),
               // labelBgColor: AppColors.whiteSwatch,
               // labelTextColor: AppColors.primaryDefault,
               hideTexts: smallHeight,

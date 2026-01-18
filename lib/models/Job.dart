@@ -95,7 +95,7 @@ class Job extends AppJob {
 
   @override
   List<double> kiviatValues(JobProgressionLevel level) {
-    return kiviats.whereOrEmpty((k) => k.level == level.name).map((k) => k.value.toDouble()).toList();
+    return kiviats.whereOrEmpty((k) => k.level == level.name).map((k) => k.radarScore0to5).toList();
   }
 
   // List<CompetencyFamily> get competenciesFamilies {
@@ -235,7 +235,7 @@ class JobFamily extends AppJob {
 
   @override
   List<double> kiviatValues(JobProgressionLevel level) {
-    return kiviats.whereOrEmpty((k) => k.level == level.name).map((k) => k.value.toDouble()).toList();
+    return kiviats.whereOrEmpty((k) => k.level == level.name).map((k) => k.radarScore0to5).toList();
   }
 
   @override
@@ -258,6 +258,7 @@ class UserJob {
   final int maxScoreSum;
   final int completedQuizzes;
   final DateTime? lastQuizAt;
+  final List<JobKiviat> kiviats;
 
   final User? user;
   final Job? job;
@@ -276,6 +277,7 @@ class UserJob {
     this.maxScoreSum = 0,
     this.completedQuizzes = 0,
     this.lastQuizAt,
+    this.kiviats = const [],
     this.user,
     this.job,
     this.jobFamily,
@@ -308,6 +310,9 @@ class UserJob {
 
     final lastQuizAtString = userJobJson['lastQuizAt'];
     final lastQuizAt = lastQuizAtString != null ? DateTime.parse(lastQuizAtString) : null;
+    final kiviats = userJobJson['kiviats'] != null
+        ? (userJobJson['kiviats'] as List).map((kiviatJson) => JobKiviat.fromJson(kiviatJson)).toList()
+        : <JobKiviat>[];
 
     return UserJob(
       id: id,
@@ -323,10 +328,30 @@ class UserJob {
       maxScoreSum: maxScoreSum,
       completedQuizzes: completedQuizzes,
       lastQuizAt: lastQuizAt,
+      kiviats: kiviats,
     );
   }
 
+  List<double> kiviatValues(List<CompetencyFamily> families, {String? level}) {
+    if (kiviats.isEmpty || families.isEmpty) return [];
+    final Map<String, List<double>> valuesPerFamily = {};
+    for (final kiviat in kiviats) {
+      if (level != null && kiviat.level != level) continue;
+      valuesPerFamily.putIfAbsent(kiviat.competenciesFamilyId, () => <double>[]).add(kiviat.radarScore0to5);
+    }
+    return families.map((family) {
+      final values = valuesPerFamily[family.id] ?? const <double>[];
+      if (values.isEmpty) return 0.0;
+      final avg = values.reduce((a, b) => a + b) / values.length;
+      return avg > 5.0 ? 5.0 : avg;
+    }).toList();
+  }
+
   get isNotEmpty => id != null && id!.isNotEmpty;
+
+  List<double> get kiviatsValues {
+    return kiviats.map((k) => k.radarScore0to5).toList();
+  }
 
   Map<String, dynamic> toJson() {
     return {

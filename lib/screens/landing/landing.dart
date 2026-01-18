@@ -42,17 +42,30 @@ class LandingLocation extends BeamLocation<RouteInformationSerializable<dynamic>
   }
 }
 
-class LandingScreen extends StatelessWidget {
+class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
+
+  @override
+  State<LandingScreen> createState() => _LandingScreenState();
+}
+
+class _LandingScreenState extends State<LandingScreen> {
+  @override
+  void initState() {
+    context.read<ModulesBloc>().add(LoadCatalogModules(force: true));
+    context.read<ModulesBloc>().add(LoadLandingModules(force: true));
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AppBloc, AppState>(
-      listenWhen: (previous, current) => previous.language.code != current.language.code,
+      listenWhen: (previous, current) =>
+          previous.language.code != current.language.code || previous.newRoute != current.newRoute,
       listener: (context, state) {
+        log('LandingScreen: Reloading modules for ${state.newRoute} (${state.language.code}).');
         if (!state.newRoute.startsWith(AppRoutes.landing)) return;
-        context.read<ModulesBloc>().add(LoadCatalogModules(force: true));
-        context.read<ModulesBloc>().add(LoadLandingModules(force: true));
       },
       child: const BaseScreen(
         mobileScreen: MobileLandingScreen(),

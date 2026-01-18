@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:murya/repositories/base.repository.dart';
 
 import 'sse_event.dart';
@@ -96,10 +95,7 @@ class SseService {
       _log('SSE connected.');
       _startStaleTimer();
 
-      _lineSubscription = response.stream
-          .transform(utf8.decoder)
-          .transform(const LineSplitter())
-          .listen(
+      _lineSubscription = response.stream.transform(utf8.decoder).transform(const LineSplitter()).listen(
         _handleLine,
         onError: (error) {
           _log('SSE stream error: $error');
@@ -150,7 +146,7 @@ class SseService {
       _lastEventId = event.id;
     }
     _restartStaleTimer();
-    _log('SSE event: ${event.type}');
+    // _log('SSE event: ${event.type}');
     _controller.add(event);
   }
 
