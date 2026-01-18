@@ -11,6 +11,7 @@ import 'package:murya/repositories/jobs.repository.dart';
 import 'package:murya/repositories/modules.repository.dart';
 import 'package:murya/repositories/notifications.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
+import 'package:murya/repositories/rewards.repository.dart';
 import 'package:provider/provider.dart';
 
 part 'app_event.dart';
@@ -141,6 +142,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     // jobs repository
     RepositoryProvider.of<JobRepository>(event.context).updateLanguage(_appLanguage.code);
     RepositoryProvider.of<ModulesRepository>(event.context).updateLanguage(_appLanguage.code);
+    RepositoryProvider.of<RewardsRepository>(event.context).updateLanguage(_appLanguage.code);
 
     emit(AppRouteChanged(
       oldRoute: state.oldRoute,
