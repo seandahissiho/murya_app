@@ -232,6 +232,7 @@ class QuizResponse {
   final int index;
   final int realIndex;
   final int timeLeftAfterAnswer;
+  final String? freeTextAnswer;
 
   QuizResponse({
     required this.id,
@@ -242,6 +243,7 @@ class QuizResponse {
     required this.index,
     required this.realIndex,
     required this.timeLeftAfterAnswer,
+    this.freeTextAnswer,
   });
 
   factory QuizResponse.fromJson(Map<String, dynamic> json) {
@@ -254,6 +256,7 @@ class QuizResponse {
       index: (json['index'] as num).toInt(),
       realIndex: (json['index'] as num).toInt(),
       timeLeftAfterAnswer: 0,
+      freeTextAnswer: json['freeTextAnswer'] as String?,
     );
   }
 
@@ -264,6 +267,7 @@ class QuizResponse {
         'metadata': metadata,
         'isCorrect': isCorrect,
         'index': realIndex,
+        'freeTextAnswer': freeTextAnswer,
       };
 
   @override
@@ -277,14 +281,14 @@ class QuizResponse {
         other.isCorrect == isCorrect &&
         other.index == index &&
         other.realIndex == realIndex &&
-        other.timeLeftAfterAnswer == timeLeftAfterAnswer;
+        other.timeLeftAfterAnswer == timeLeftAfterAnswer &&
+        other.freeTextAnswer == freeTextAnswer;
   }
 
   @override
   int get hashCode =>
-      Object.hash(id, questionId, text, _mapHash(metadata), isCorrect, index, realIndex, timeLeftAfterAnswer);
-
-  String? get freeTextAnswer => null;
+      Object.hash(id, questionId, text, _mapHash(metadata), isCorrect, index, realIndex, timeLeftAfterAnswer,
+          freeTextAnswer);
 
   static empty() {
     return QuizResponse(id: '', questionId: '', text: '', index: -1, realIndex: -1, timeLeftAfterAnswer: 0);

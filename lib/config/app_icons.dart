@@ -10,6 +10,8 @@ class AppIcons {
   static const String homeSearchIcon2Path = '$basePath/search_bar_icon.svg';
   static const String searchBarCloseIconPath = '$basePath/close.svg';
   static const String backButtonPath = '$basePath/back_button.svg';
+  // AvatarPlaceholder.svg
+  static const String avatarPlaceholderPath = '$basePath/AvatarPlaceholder.svg';
 
   //Group 106.svg
   static const String group106Path = '$basePath/Group 106.svg';

@@ -28,4 +28,8 @@ final class QuizCompleted extends QuizState {
 
 final class QuizSaving extends QuizState {}
 
-final class QuizSaved extends QuizState {}
+final class QuizSaved extends QuizState {
+  final UserQuizResult? result;
+
+  QuizSaved({required this.result});
+}

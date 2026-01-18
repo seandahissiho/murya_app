@@ -916,7 +916,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       _playConfetti(pointsEarned: questionScore);
     }
 
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    Future.delayed(const Duration(milliseconds: 25), () {
       if (!mounted) return;
       answers.add(currentQuestion!.toQuizResponse(
             selectedResponseIndex: showVerificationState,

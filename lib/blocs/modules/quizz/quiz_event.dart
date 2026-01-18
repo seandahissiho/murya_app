@@ -43,21 +43,29 @@ final class SaveQuizResults extends QuizEvent {
   //     responseIds?: string[]; // ids de QuizResponse sélectionnées
   // };
   List<Map<String, dynamic>> get dbResponses {
-    return responses
-        .whereOrEmpty((response) => response.id.isNotEmptyOrNull && response.questionId.isNotEmptyOrNull)
-        .map((response) {
-      final int availableTime = questions
-              .whereOrEmpty((question) => question.id.isNotEmptyOrNull)
-              .firstWhereOrNull((question) => question.id == response.questionId)
-              ?.timeLimitInSeconds ??
-          0;
-      final int timeToAnswer = availableTime - response.timeLeftAfterAnswer;
-      return {
-        'questionId': response.questionId,
-        // if (response.freeTextAnswer != null) 'freeTextAnswer': response.freeTextAnswer,
-        'responseIds': response.id.isNotEmptyOrNull ? [response.id] : [],
+    final Map<String, QuizResponse> responseByQuestionId = {
+      for (final response in responses.whereOrEmpty((response) => response.questionId.isNotEmptyOrNull))
+        response.questionId: response,
+    };
+
+    return questions.whereOrEmpty((question) => question.id.isNotEmptyOrNull).map((question) {
+      final QuizResponse? response = responseByQuestionId[question.id];
+      final int availableTime = question.timeLimitInSeconds;
+      final int timeLeft = response?.timeLeftAfterAnswer ?? 0;
+      final int timeToAnswer = (availableTime - timeLeft).clamp(0, availableTime).toInt();
+
+      final Map<String, dynamic> payload = {
+        'questionId': question.id,
         'timeToAnswer': timeToAnswer,
       };
+
+      if (question.type == QuizQuestionType.short_answer || question.type == QuizQuestionType.fill_in_the_blank) {
+        payload['freeTextAnswer'] = response?.freeTextAnswer ?? '';
+      } else {
+        payload['responseIds'] = response?.id.isNotEmptyOrNull == true ? [response!.id] : <String>[];
+      }
+
+      return payload;
     }).toList();
   }
 }

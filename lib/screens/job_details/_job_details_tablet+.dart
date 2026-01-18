@@ -228,7 +228,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                               to: AppRoutes.jobEvaluation.replaceAll(':id', _job!.id!));
                                         },
                                         isLoading: false,
-                                        disabled: nextQuizAvailableIn != null,
+                                        // disabled: nextQuizAvailableIn != null,
                                         text: nextQuizAvailableIn == null
                                             ? locale.evaluateSkills
                                             : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
@@ -368,7 +368,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
               child: InteractiveRoundedRadarChart(
                 labels: _job?.competenciesFamilies.map((cf) => cf.name).toList() ?? [],
                 defaultValues: _job?.kiviatValues(_detailsLevel) ?? [],
-                userValues: _userJobCompetencyProfile.kiviatValues,
+                userValues: _userJob.kiviatsValues,
               ),
             ),
           ],

@@ -135,3 +135,75 @@ class User {
     };
   }
 }
+
+//         firstName: 'Sébastien',
+//         lastName: 'Biney',
+//         diamonds: 3750,
+//         questionsAnswered: 20,
+//         performance: 75,
+//         sinceDate: DateTime(2025, 12, 3),
+class LeaderBoardUser {
+  final String id;
+  final String firstName;
+  final String lastName;
+  final String? profilePictureUrl;
+  final int diamonds;
+  final int questionsAnswered;
+  final double performance;
+  final DateTime? sinceDate;
+  final int rank;
+  final double percentage;
+  final int completedQuizzes;
+  final DateTime? lastQuizAt;
+
+  LeaderBoardUser({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    this.profilePictureUrl,
+    required this.diamonds,
+    required this.questionsAnswered,
+    required this.performance,
+    this.sinceDate,
+    required this.rank,
+    required this.percentage,
+    required this.completedQuizzes,
+    this.lastQuizAt,
+  });
+
+  static int _toInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    return int.tryParse(value.toString()) ?? 0;
+  }
+
+  static double _toDouble(dynamic value) {
+    if (value == null) return 0;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    return double.tryParse(value.toString()) ?? 0;
+  }
+
+  // fromJson factory
+  factory LeaderBoardUser.fromJson(Map<String, dynamic> json) {
+    final String firstName = (json['firstName'] ?? json['firstname'] ?? '').toString();
+    final String lastName = (json['lastName'] ?? json['lastname'] ?? '').toString();
+    final double performance = _toDouble(json['performance']);
+    final double percentage = json['percentage'] != null ? _toDouble(json['percentage']) : performance * 100;
+    return LeaderBoardUser(
+      id: (json['id'] ?? json['userId'] ?? '').toString(),
+      firstName: firstName,
+      lastName: lastName,
+      profilePictureUrl: json['profilePictureUrl']?.toString() ?? json['avatarURL']?.toString(),
+      diamonds: _toInt(json['diamonds']),
+      questionsAnswered: _toInt(json['questionsAnswered']),
+      performance: performance,
+      sinceDate: json['sinceDate'] != null ? DateTime.parse(json['sinceDate'] as String) : null,
+      rank: _toInt(json['rank']),
+      percentage: percentage,
+      completedQuizzes: _toInt(json['completedQuizzes']),
+      lastQuizAt: json['lastQuizAt'] != null ? DateTime.parse(json['lastQuizAt'] as String) : null,
+    );
+  }
+}

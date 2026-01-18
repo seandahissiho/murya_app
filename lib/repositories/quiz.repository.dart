@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:murya/blocs/modules/quizz/quiz_bloc.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/quiz.dart';
+import 'package:murya/models/quiz_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'base.repository.dart';
@@ -20,7 +21,7 @@ class QuizRepository extends BaseRepository {
     prefs = await SharedPreferences.getInstance();
   }
 
-  Future<Result<bool>> saveQuizResult(SaveQuizResults event) async {
+  Future<Result<UserQuizResult?>> saveQuizResult(SaveQuizResults event) async {
     return AppResponse.execute(
       action: () async {
         while (!initialized) {
@@ -34,7 +35,14 @@ class QuizRepository extends BaseRepository {
           },
         );
 
-        return response.statusCode == 200;
+        final data = response.data["data"];
+        if (data is Map<String, dynamic>) {
+          return UserQuizResult.fromJson(data);
+        }
+        if (data is Map) {
+          return UserQuizResult.fromJson(Map<String, dynamic>.from(data));
+        }
+        return null;
       },
       parentFunctionName: "QuizRepository.saveQuizResult",
     );

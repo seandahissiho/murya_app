@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:murya/config/app_icons.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/module.dart';
+import 'package:murya/models/quest.dart';
 
 class AccountModuleWidget extends StatefulWidget {
   final Module module;
@@ -100,126 +102,143 @@ class _AccountModuleWidgetState extends State<AccountModuleWidget> {
   }
 }
 
-class AccountBodyContent extends StatelessWidget {
+class AccountBodyContent extends StatefulWidget {
   final Module module;
   final User user;
 
   const AccountBodyContent({super.key, required this.user, required this.module});
 
   @override
+  State<AccountBodyContent> createState() => _AccountBodyContentState();
+}
+
+class _AccountBodyContentState extends State<AccountBodyContent> {
+  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final locale = AppLocalizations.of(context);
-    final String firstName = user.firstName ?? '';
-    final String lastName = user.lastName ?? '';
+    final String firstName = widget.user.firstName ?? '';
+    final String lastName = widget.user.lastName ?? '';
     final String rawName = '$firstName $lastName'.trim();
     final String fullName = rawName.isNotEmpty ? rawName : locale.user_anonymous_placeholder;
-    final String? photoUrl = user.photoURL;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double scale = _contentScale(constraints);
-        final double nameFontSize = _nameFontSize(scale);
-        final double nameMinFontSize = _alignToStep(math.min(10.0, nameFontSize));
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: module.boxType != AppModuleType.type1 && module.boxType != AppModuleType.type1_2
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
+    final String? photoUrl = widget.user.photoURL;
+    return BlocConsumer<ProfileBloc, ProfileState>(
+      listener: (context, state) {
+        setState(() {});
+      },
+      builder: (context, state) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final double scale = _contentScale(constraints);
+            final double nameFontSize = _nameFontSize(scale);
+            final double nameMinFontSize = _alignToStep(math.min(10.0, nameFontSize));
+            final questGroup = state.questGroups.groups.firstOrNull ?? const QuestGroup();
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _AvatarPhoto(photoUrl: photoUrl, module: module, scale: scale),
-                if (module.boxType == AppModuleType.type1 || module.boxType == AppModuleType.type1_2) ...[
-                  SizedBox(height: AppSpacing.groupMargin * scale, width: AppSpacing.groupMargin * scale),
-                  AutoSizeText(
-                    fullName,
-                    style: GoogleFonts.anton(
-                      fontSize: nameFontSize,
-                      color: AppColors.textPrimary,
-                    ),
-                    maxLines: 1,
-                    minFontSize: nameMinFontSize,
-                    stepGranularity: 1,
-                  ),
-                ],
-              ],
-            ),
-            _upperSpacer(scale),
-            if (module.boxType != AppModuleType.type1 && module.boxType != AppModuleType.type1_2)
-              Center(
-                child: AutoSizeText(
-                  fullName,
-                  style: GoogleFonts.anton(
-                    fontSize: nameFontSize,
-                    color: AppColors.textPrimary,
-                  ),
-                  maxLines: 1,
-                  minFontSize: nameMinFontSize,
-                  stepGranularity: 1,
-                ),
-              ),
-            _bottomSpacer(scale),
-            Flexible(
-              flex: 8,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.borderMedium),
-                  borderRadius: AppRadius.small,
-                ),
-                padding: EdgeInsets.all(AppSpacing.containerInsideMargin * scale),
-                child: Column(
-                  mainAxisSize: module.boxType == AppModuleType.type1_2 ? MainAxisSize.max : MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment:
+                      widget.module.boxType != AppModuleType.type1 && widget.module.boxType != AppModuleType.type1_2
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    Text(
-                      locale.parcoursObjective_inProgress,
-                      style: theme.textTheme.bodyMedium!.copyWith(
-                        color: AppColors.textSecondary,
-                        fontSize: 14 * scale,
-                      ),
-                    ),
-                    AppSpacing.tinyMarginBox,
-                    Flexible(
-                      child: AutoSizeText(
-                        'Compléter le parcours de positionnement',
-                        style: theme.textTheme.labelLarge!.copyWith(
+                    _AvatarPhoto(photoUrl: photoUrl, module: widget.module, scale: scale),
+                    if (widget.module.boxType == AppModuleType.type1 ||
+                        widget.module.boxType == AppModuleType.type1_2) ...[
+                      SizedBox(height: AppSpacing.groupMargin * scale, width: AppSpacing.groupMargin * scale),
+                      AutoSizeText(
+                        fullName,
+                        style: GoogleFonts.anton(
+                          fontSize: nameFontSize,
                           color: AppColors.textPrimary,
-                          fontSize: math.max(16 * scale, 2),
                         ),
-                        maxFontSize: math.max(16 * scale, 2),
-                        minFontSize: math.max(10 * scale, 2),
-                        maxLines: 2,
+                        maxLines: 1,
+                        minFontSize: nameMinFontSize,
+                        stepGranularity: 1,
                       ),
+                    ],
+                  ],
+                ),
+                _upperSpacer(scale),
+                if (widget.module.boxType != AppModuleType.type1 && widget.module.boxType != AppModuleType.type1_2)
+                  Center(
+                    child: AutoSizeText(
+                      fullName,
+                      style: GoogleFonts.anton(
+                        fontSize: nameFontSize,
+                        color: AppColors.textPrimary,
+                      ),
+                      maxLines: 1,
+                      minFontSize: nameMinFontSize,
+                      stepGranularity: 1,
                     ),
-                    AppSpacing.groupMarginBox,
-                    // Progress bar
-                    Stack(
+                  ),
+                _bottomSpacer(scale),
+                Flexible(
+                  flex: 8,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.borderMedium),
+                      borderRadius: AppRadius.small,
+                    ),
+                    padding: EdgeInsets.all(AppSpacing.containerInsideMargin * scale),
+                    child: Column(
+                      mainAxisSize:
+                          widget.module.boxType == AppModuleType.type1_2 ? MainAxisSize.max : MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          height: 16 * scale,
-                          decoration: BoxDecoration(
-                            color: AppColors.borderLight,
-                            borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                        Text(
+                          locale.parcoursObjective_inProgress,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            color: AppColors.textSecondary,
+                            fontSize: 14 * scale,
                           ),
                         ),
-                        Container(
-                          height: 16 * scale,
-                          width: (constraints.maxWidth - 2 * AppSpacing.containerInsideMargin * scale) * 0.02,
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryFocus,
-                            borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                        AppSpacing.tinyMarginBox,
+                        Flexible(
+                          child: AutoSizeText(
+                            (questGroup.group?.title).toString(),
+                            style: theme.textTheme.labelLarge!.copyWith(
+                              color: AppColors.textPrimary,
+                              fontSize: math.max(16 * scale, 2),
+                            ),
+                            maxFontSize: math.max(16 * scale, 2),
+                            minFontSize: math.max(10 * scale, 2),
+                            maxLines: 2,
                           ),
+                        ),
+                        AppSpacing.groupMarginBox,
+                        // Progress bar
+                        Stack(
+                          children: [
+                            Container(
+                              height: 16 * scale,
+                              decoration: BoxDecoration(
+                                color: AppColors.borderLight,
+                                borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                              ),
+                            ),
+                            Container(
+                              height: 16 * scale,
+                              width: (constraints.maxWidth - 2 * AppSpacing.containerInsideMargin * scale) *
+                                  (completionPercentage(questGroup)),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryFocus,
+                                borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         );
       },
     );
@@ -234,7 +253,8 @@ class AccountBodyContent extends StatelessWidget {
   }
 
   double _baseNonFlexHeight() {
-    final bool inlineName = module.boxType == AppModuleType.type1 || module.boxType == AppModuleType.type1_2;
+    final bool inlineName =
+        widget.module.boxType == AppModuleType.type1 || widget.module.boxType == AppModuleType.type1_2;
     final double avatarHeight = _baseAvatarHeight();
     final double nameHeight = _baseNameFontSize() + 4;
     final double rowHeight = inlineName ? math.max(avatarHeight, nameHeight) : avatarHeight;
@@ -247,33 +267,33 @@ class AccountBodyContent extends StatelessWidget {
   }
 
   double _baseUpperSpacer() {
-    if (module.boxType == AppModuleType.type2_2) {
+    if (widget.module.boxType == AppModuleType.type2_2) {
       return 32;
     }
-    if (module.boxType == AppModuleType.type2_1) {
+    if (widget.module.boxType == AppModuleType.type2_1) {
       return 16;
     }
-    if (module.boxType == AppModuleType.type1_2) {
+    if (widget.module.boxType == AppModuleType.type1_2) {
       return 4;
     }
     return 4;
   }
 
   Widget _bottomSpacer(double scale) {
-    if (module.boxType == AppModuleType.type1 || module.boxType == AppModuleType.type1_2) {
+    if (widget.module.boxType == AppModuleType.type1 || widget.module.boxType == AppModuleType.type1_2) {
       return const Spacer();
     }
     return SizedBox(height: _baseBottomSpacer() * scale);
   }
 
   double _baseBottomSpacer() {
-    if (module.boxType == AppModuleType.type2_2) {
+    if (widget.module.boxType == AppModuleType.type2_2) {
       return 32;
     }
-    if (module.boxType == AppModuleType.type2_1) {
+    if (widget.module.boxType == AppModuleType.type2_1) {
       return 16;
     }
-    if (module.boxType == AppModuleType.type1_2) {
+    if (widget.module.boxType == AppModuleType.type1_2) {
       return 4;
     }
     return 4;
@@ -284,26 +304,26 @@ class AccountBodyContent extends StatelessWidget {
   }
 
   double _baseNameFontSize() {
-    if (module.boxType == AppModuleType.type2_2) {
+    if (widget.module.boxType == AppModuleType.type2_2) {
       return 28.0;
     }
-    if (module.boxType == AppModuleType.type2_1) {
+    if (widget.module.boxType == AppModuleType.type2_1) {
       return 28.0;
     }
-    if (module.boxType == AppModuleType.type1_2) {
+    if (widget.module.boxType == AppModuleType.type1_2) {
       return 20.0;
     }
     return 16.0;
   }
 
   double _baseAvatarHeight() {
-    if (module.boxType == AppModuleType.type2_2) {
+    if (widget.module.boxType == AppModuleType.type2_2) {
       return 131;
     }
-    if (module.boxType == AppModuleType.type2_1) {
+    if (widget.module.boxType == AppModuleType.type2_1) {
       return 124;
     }
-    if (module.boxType == AppModuleType.type1_2) {
+    if (widget.module.boxType == AppModuleType.type1_2) {
       return 48;
     }
     return 32;
@@ -314,6 +334,13 @@ class AccountBodyContent extends StatelessWidget {
       return value;
     }
     return (value / step).round() * step;
+  }
+
+  completionPercentage(QuestGroup questGroup) {
+    if (questGroup.requiredCompleted == 0) {
+      return 0.025;
+    }
+    return questGroup.requiredCompleted / questGroup.requiredTotal;
   }
 }
 
@@ -350,8 +377,10 @@ class _AvatarPhoto extends StatelessWidget {
           return CircleAvatar(
             radius: size / 2,
             backgroundColor: AppColors.whiteSwatch,
-            backgroundImage: const AssetImage(
-              AppImages.avatarPlaceholder,
+            child: SvgPicture.asset(
+              AppIcons.avatarPlaceholderPath,
+              width: size,
+              height: size,
             ),
           );
         }
@@ -365,10 +394,10 @@ class _AvatarPhoto extends StatelessWidget {
               height: size,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                return Icon(
-                  Icons.person_outline,
-                  color: AppColors.textTertiary,
-                  size: size / 2,
+                return SvgPicture.asset(
+                  AppIcons.avatarPlaceholderPath,
+                  width: size,
+                  height: size,
                 );
               },
             ),

@@ -58,7 +58,11 @@ class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStat
     return isMobile
         ? theme.textTheme.labelLarge?.copyWith(height: 0.0, color: widget.textColor)
         : (!widget.compact
-            ? theme.textTheme.displayMedium?.copyWith(height: 1.0, color: widget.textColor)
+            ? theme.textTheme.displayMedium?.copyWith(
+                height: 1.0,
+                color: widget.textColor,
+                fontSize: 24,
+              )
             : theme.textTheme.labelLarge?.copyWith(height: 0.0, color: widget.textColor));
   }
 
@@ -125,8 +129,8 @@ class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStat
     final style = _style(isMobile, theme);
 
     final double iconSize = isMobile
-        ? mobileCTAHeight / (widget.compact ? 2.5 : 2)
-        : tabletAndAboveCTAHeight / (widget.compact ? 2.5 : 2) * (widget.isReward ? 1.75 : 1);
+        ? mobileCTAHeight / (widget.compact ? 2.5 : 1.5)
+        : tabletAndAboveCTAHeight / (widget.compact ? 2.5 : 1.5) * (widget.isReward ? 1.75 : 1);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 160),
