@@ -14,6 +14,7 @@ import 'package:murya/repositories/modules.repository.dart';
 import 'package:murya/repositories/notifications.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
 import 'package:murya/repositories/quiz.repository.dart';
+import 'package:murya/repositories/rewards.repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -205,6 +206,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     RepositoryProvider.of<JobRepository>(context).updateDio(token, context);
     RepositoryProvider.of<ModulesRepository>(context).updateDio(token, context);
     RepositoryProvider.of<QuizRepository>(context).updateDio(token, context);
+    RepositoryProvider.of<RewardsRepository>(context).updateDio(token, context);
   }
 
   void updateRepositoriesContext(BuildContext context) {
