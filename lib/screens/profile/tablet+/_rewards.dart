@@ -36,7 +36,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
             kind: RewardKind.cinema,
             city: "Poitiers",
             imageUrl:
-                "https://demturkishbookstore.com/cdn/shop/articles/15-movies-set-in-turkey_5cef7069-aa9a-4cd1-adc0-fcf4d19203bf.jpg?v=1760451648&width=13020",
+                "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/15-movies-set-in-turkey_5cef7069-aa9a-4cd1-adc0-fcf4d19203bf.webp?alt=media&token=cb74c199-be90-40f6-b0ca-fae56cf55fd7",
             remainingPlaces: 5,
             costDiamonds: 200,
             address: RewardAddress(
@@ -52,7 +52,8 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
             title: "Le Confort Moderne",
             kind: RewardKind.concertHall,
             city: "Poitiers",
-            imageUrl: "https://images.lanouvellerepublique.fr/image/upload/t_1020w/f_auto/5a35cb1c459a45014e8b45b5.jpg",
+            imageUrl:
+                "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/tap-poitiers.webp?alt=media&token=adeabe1c-2064-4642-9c82-25eb45f8388f",
             remainingPlaces: 5,
             costDiamonds: 350,
             address: RewardAddress(
@@ -68,7 +69,8 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
             title: "Théâtre Auditorium",
             kind: RewardKind.theatre,
             city: "Poitiers",
-            imageUrl: "https://www.okvoyage.com/wp-content/uploads/2021/03/tap-poitiers.jpg",
+            imageUrl:
+                "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/5a35cb1c459a45014e8b45b5.webp?alt=media&token=5c3fb9c4-9fb1-4a9c-8e7c-9a7786d195f5",
             remainingPlaces: 5,
             costDiamonds: 400,
             address: RewardAddress(
@@ -84,7 +86,8 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
             title: "PB86",
             kind: RewardKind.sportsMatch,
             city: "Poitiers",
-            imageUrl: "https://www.pb86.fr/wp-content/uploads/2022/09/arena-futuroscope-poitiers-basket.jpg",
+            imageUrl:
+                "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/arena-futuroscope-poitiers-basket.jpg?alt=media&token=74c5e006-21d5-4407-9405-d88433da02b6",
             remainingPlaces: 5,
             costDiamonds: 250,
             address: RewardAddress(
@@ -101,7 +104,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
             kind: RewardKind.themePark,
             city: "Poitiers",
             imageUrl:
-                "https://aws-tiqets-cdn.imgix.net/images/content/9485c939acd9496783a80d3473b0cad8.jpg?auto=format%2Ccompress&dpr=2&fit=crop&h=360&q=30&w=1200",
+                "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/9485c939acd9496783a80d3473b0cad8.avif?alt=media&token=7295f9ba-0829-44c8-a07c-4bc74900d578",
             remainingPlaces: 5,
             costDiamonds: 500,
             address: RewardAddress(
@@ -123,6 +126,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
               runSpacing: AppSpacing.textFieldMargin,
               children: rewards.map((reward) {
                 return Container(
+                  height: 325,
                   width: (constraints.maxWidth / 4) - 3 * AppSpacing.textFieldMargin,
                   constraints: const BoxConstraints(
                     maxWidth: 313,
@@ -140,20 +144,60 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.network(
-                          reward.imageUrl,
+                        SizedBox(
                           height: 140,
                           width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: AppColors.borderLight,
-                              height: 150,
-                              child: const Center(
-                                child: Icon(Icons.broken_image, color: AppColors.textSecondary),
+                          child: Stack(
+                            children: [
+                              Image.network(
+                                reward.imageUrl,
+                                height: 140,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: AppColors.borderLight,
+                                    height: 150,
+                                    child: const Center(
+                                      child: Icon(Icons.broken_image, color: AppColors.textSecondary),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
+                              Positioned(
+                                top: 16,
+                                right: 16,
+                                child: Container(
+                                  height: 24,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: const BoxDecoration(
+                                    borderRadius: AppRadius.tinyTiny,
+                                    // rgba(255, 214, 0, 1)
+                                    color: Color.fromRGBO(255, 214, 0, 0.85),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                        AppIcons.fireIconPath,
+                                        height: 16,
+                                        width: 16,
+                                      ),
+                                      AppSpacing.elementMarginBox,
+                                      Text(
+                                        "${reward.remainingPlaces} places restantes",
+                                        style: theme.textTheme.labelSmall?.copyWith(
+                                          color: AppColors.textPrimary,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         AppSpacing.textFieldMarginBox,
                         Padding(
@@ -161,6 +205,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                           child: Text(
                             reward.title,
                             style: theme.textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600),
+                            maxLines: 2,
                           ),
                         ),
                         Padding(
@@ -170,7 +215,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                             style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
                           ),
                         ),
-                        AppSpacing.sectionMarginBox,
+                        const Spacer(),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.textFieldMargin),
                           child: AppXButton(

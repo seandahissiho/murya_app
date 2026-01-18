@@ -183,7 +183,7 @@ class _AccountBodyContentState extends State<AccountBodyContent> {
                       border: Border.all(color: AppColors.borderMedium),
                       borderRadius: AppRadius.small,
                     ),
-                    padding: EdgeInsets.all(AppSpacing.containerInsideMargin * scale),
+                    padding: EdgeInsets.all(AppSpacing.containerInsideMargin * scale / 2),
                     child: Column(
                       mainAxisSize:
                           widget.module.boxType == AppModuleType.type1_2 ? MainAxisSize.max : MainAxisSize.min,
