@@ -10,6 +10,7 @@ import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
+import 'package:murya/blocs/modules/quests/quests_bloc.dart';
 import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/blocs/modules/rewards/rewards_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
@@ -56,6 +57,11 @@ List<BlocProvider> getBlocProviders(BuildContext context) {
     BlocProvider<ProfileBloc>(
       lazy: false,
       create: (BuildContext context) => ProfileBloc(context: context),
+    ),
+    // Quests Bloc
+    BlocProvider<QuestsBloc>(
+      lazy: false,
+      create: (BuildContext context) => QuestsBloc(context: context),
     ),
     // Job Bloc
     BlocProvider<JobBloc>(
