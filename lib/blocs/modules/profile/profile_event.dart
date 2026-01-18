@@ -50,6 +50,20 @@ final class ProfileLoadQuestGroupsEvent extends ProfileEvent {
   });
 }
 
+final class ProfileLoadQuestLineageEvent extends ProfileEvent {
+  final QuestScope scope;
+  final String? userJobId;
+  final String? timezone;
+  final bool notifyOnError;
+
+  ProfileLoadQuestLineageEvent({
+    required this.scope,
+    this.userJobId,
+    this.timezone,
+    this.notifyOnError = true,
+  });
+}
+
 enum QuestClaimType { user, userJob }
 
 final class ProfileClaimQuestEvent extends ProfileEvent {
