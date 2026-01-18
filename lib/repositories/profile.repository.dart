@@ -101,6 +101,30 @@ class ProfileRepository extends BaseRepository {
     );
   }
 
+  Future<Result<QuestLineage>> getQuestLineage({
+    required QuestScope scope,
+    String? timezone,
+    String? userJobId,
+  }) async {
+    if (scope == QuestScope.userJob && (userJobId == null || userJobId.isEmpty)) {
+      return Result.failure('userJobId is required for USER_JOB scope');
+    }
+    return AppResponse.execute(
+      action: () async {
+        final queryParameters = <String, dynamic>{
+          'scope': scope.apiValue,
+          if (timezone != null && timezone.isNotEmpty) 'timezone': timezone,
+          if (scope != QuestScope.user && userJobId != null && userJobId.isNotEmpty) 'userJobId': userJobId,
+        };
+        final Response response = await api.dio.get('/quests/lineage', queryParameters: queryParameters);
+        final data = response.data['data'] as Map<String, dynamic>? ?? const {};
+        return QuestLineage.fromJson(Map<String, dynamic>.from(data));
+      },
+      parentFunctionName: 'ProfileRepository.getQuestLineage',
+      errorResult: QuestLineage.empty(),
+    );
+  }
+
   Future<Result<QuestInstance>> claimUserJobQuest(String questId) async {
     return AppResponse.execute(
       action: () async {

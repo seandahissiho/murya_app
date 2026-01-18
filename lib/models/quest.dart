@@ -223,6 +223,69 @@ class QuestItem {
   }
 }
 
+class QuestLineageNode {
+  final QuestDefinition? definition;
+  final QuestInstance? instance;
+  final List<QuestReward> rewards;
+  final String? scope;
+  final bool locked;
+  final String? lockedReason;
+  final bool claimable;
+  final List<QuestLineageNode> children;
+
+  const QuestLineageNode({
+    this.definition,
+    this.instance,
+    this.rewards = const [],
+    this.scope,
+    this.locked = false,
+    this.lockedReason,
+    this.claimable = false,
+    this.children = const [],
+  });
+
+  factory QuestLineageNode.fromJson(Map<String, dynamic> json) {
+    return QuestLineageNode(
+      definition: json['definition'] is Map<String, dynamic>
+          ? QuestDefinition.fromJson(Map<String, dynamic>.from(json['definition'] as Map))
+          : null,
+      instance: json['instance'] is Map<String, dynamic>
+          ? QuestInstance.fromJson(Map<String, dynamic>.from(json['instance'] as Map))
+          : null,
+      rewards: _parseList(json['rewards'], (item) => QuestReward.fromJson(Map<String, dynamic>.from(item as Map))),
+      scope: json['scope'] as String?,
+      locked: json['locked'] as bool? ?? false,
+      lockedReason: json['lockedReason'] as String?,
+      claimable: json['claimable'] as bool? ?? false,
+      children: _parseList(
+        json['children'],
+        (item) => QuestLineageNode.fromJson(Map<String, dynamic>.from(item as Map)),
+      ),
+    );
+  }
+}
+
+class QuestLineage {
+  final String? userJobId;
+  final QuestLineageNode? main;
+
+  const QuestLineage({
+    this.userJobId,
+    this.main,
+  });
+
+  factory QuestLineage.fromJson(Map<String, dynamic> json) {
+    return QuestLineage(
+      userJobId: json['userJobId'] as String?,
+      main: json['main'] is Map<String, dynamic>
+          ? QuestLineageNode.fromJson(Map<String, dynamic>.from(json['main'] as Map))
+          : null,
+    );
+  }
+
+  static QuestLineage empty() => const QuestLineage();
+}
+
 class QuestGroupDefinition {
   final String? id;
   final String? code;

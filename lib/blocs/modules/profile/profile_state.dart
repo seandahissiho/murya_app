@@ -12,6 +12,12 @@ sealed class ProfileState {
   final String? questUserJobId;
   final String? questTimezone;
   final QuestScope? questScope;
+  final QuestLineage questLineage;
+  final bool questLineageLoading;
+  final String? questLineageError;
+  final String? questLineageUserJobId;
+  final String? questLineageTimezone;
+  final QuestScope? questLineageScope;
   final String? claimingQuestId;
   final List<LeaderBoardUser> leaderboardUsers;
   final bool leaderboardLoading;
@@ -32,6 +38,12 @@ sealed class ProfileState {
     this.questUserJobId,
     this.questTimezone,
     this.questScope,
+    this.questLineage = const QuestLineage(),
+    this.questLineageLoading = false,
+    this.questLineageError,
+    this.questLineageUserJobId,
+    this.questLineageTimezone,
+    this.questLineageScope,
     this.claimingQuestId,
     this.leaderboardUsers = const <LeaderBoardUser>[],
     this.leaderboardLoading = false,
@@ -61,6 +73,12 @@ final class ProfileLoading extends ProfileState {
     super.questUserJobId,
     super.questTimezone,
     super.questScope,
+    super.questLineage,
+    super.questLineageLoading,
+    super.questLineageError,
+    super.questLineageUserJobId,
+    super.questLineageTimezone,
+    super.questLineageScope,
     super.claimingQuestId,
     super.leaderboardUsers,
     super.leaderboardLoading,
@@ -86,6 +104,12 @@ final class ProfileLoaded extends ProfileState {
     super.questUserJobId,
     super.questTimezone,
     super.questScope,
+    super.questLineage,
+    super.questLineageLoading,
+    super.questLineageError,
+    super.questLineageUserJobId,
+    super.questLineageTimezone,
+    super.questLineageScope,
     super.claimingQuestId,
     super.leaderboardUsers,
     super.leaderboardLoading,
