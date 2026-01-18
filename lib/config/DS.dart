@@ -116,6 +116,9 @@ class AppSpacing {
 }
 
 class AppRadius {
+  // tinyTiny
+  static const double tinyTinyRadius = 4;
+  static const BorderRadius tinyTiny = BorderRadius.all(Radius.circular(tinyTinyRadius));
   static const double tinyRadius = 8;
   static const BorderRadius tiny = BorderRadius.all(Radius.circular(tinyRadius));
   static const double smallRadius = 12;

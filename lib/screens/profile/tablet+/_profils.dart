@@ -12,11 +12,11 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final AppLocalizations locale = AppLocalizations.of(context);
-    return Row(
+    return const Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const Expanded(
+        Expanded(
           flex: 2,
           child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -41,27 +41,13 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  const UserInfoBox(),
+                  UserInfoBox(),
                   AppSpacing.groupMarginBox,
-                  const QuestInfoBox(),
+                  QuestInfoBox(),
                   AppSpacing.groupMarginBox,
-                  Container(
-                    constraints: const BoxConstraints(minHeight: 100, maxHeight: 500),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryDefault,
-                      borderRadius: AppRadius.small,
-                      border: Border.all(color: AppColors.borderLight, width: 2),
-                    ),
-                  ),
+                  PossibleRewardsBox(),
                   AppSpacing.groupMarginBox,
-                  Container(
-                    constraints: const BoxConstraints(minHeight: 100, maxHeight: 500),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryDefault,
-                      borderRadius: AppRadius.small,
-                      border: Border.all(color: AppColors.borderLight, width: 2),
-                    ),
-                  ),
+                  RecentActivitiesBox(),
                   AppSpacing.groupMarginBox,
                 ],
               ),
@@ -118,7 +104,7 @@ class UserListBox extends StatelessWidget {
                       headers(theme),
                       ...users.map((user) {
                         final int index = users.indexOf(user) + 1;
-                        return userRow(user, theme, index, currentUserId: state.user.id);
+                        return userRow(user, theme, index, currentUserId: state.user.id, isLast: index == users.length);
                       }).toList(),
                     ],
                   ),
@@ -140,7 +126,6 @@ class UserListBox extends StatelessWidget {
     return TableRow(
       decoration: const BoxDecoration(
         border: Border(
-          top: BorderSide(color: AppColors.borderLight),
           bottom: BorderSide(color: AppColors.borderLight),
         ),
       ),
@@ -159,12 +144,12 @@ class UserListBox extends StatelessWidget {
     );
   }
 
-  TableRow userRow(LeaderBoardUser user, ThemeData theme, int index, {String? currentUserId}) {
+  TableRow userRow(LeaderBoardUser user, ThemeData theme, int index, {String? currentUserId, bool isLast = false}) {
     final int displayRank = user.rank > 0 ? user.rank : index;
     return TableRow(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColors.borderLight),
+          bottom: isLast ? BorderSide.none : const BorderSide(color: AppColors.borderLight),
         ),
       ),
       children: [
@@ -551,5 +536,307 @@ class QuestInfoBox extends StatelessWidget {
       return 0.025;
     }
     return questGroup.requiredCompleted / questGroup.requiredTotal;
+  }
+}
+
+class PossibleRewardsBox extends StatelessWidget {
+  const PossibleRewardsBox({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final demoRewards = <RewardItem>[
+      const RewardItem(
+        id: "reward_le_dietrich",
+        title: "Le Dietrich",
+        kind: RewardKind.cinema,
+        city: "Poitiers",
+        imageUrl: "https://picsum.photos/seed/dietrich/1200/600",
+        remainingPlaces: 5,
+        costDiamonds: 200,
+        address: RewardAddress(
+          line1: "34 Boulevard Chasseigne",
+          postalCode: "86000",
+          city: "Poitiers",
+          googleMapsUrl:
+              "https://www.google.com/maps/search/?api=1&query=34%20Boulevard%20Chasseigne%2C%2086000%20Poitiers%2C%20France",
+        ),
+      ),
+      const RewardItem(
+        id: "reward_confort_moderne",
+        title: "Le Confort Moderne",
+        kind: RewardKind.concertHall,
+        city: "Poitiers",
+        imageUrl: "https://picsum.photos/seed/concert/1200/600",
+        remainingPlaces: 5,
+        costDiamonds: 350,
+        address: RewardAddress(
+          line1: "185 Rue du Faubourg du Pont-Neuf",
+          postalCode: "86000",
+          city: "Poitiers",
+          googleMapsUrl:
+              "https://www.google.com/maps/search/?api=1&query=185%20Rue%20du%20Faubourg%20du%20Pont-Neuf%2C%2086000%20Poitiers%2C%20France",
+        ),
+      ),
+      const RewardItem(
+        id: "reward_theatre_auditorium",
+        title: "Théâtre Auditorium",
+        kind: RewardKind.theatre,
+        city: "Poitiers",
+        imageUrl: "https://picsum.photos/seed/theatre/1200/600",
+        remainingPlaces: 5,
+        costDiamonds: 400,
+        address: RewardAddress(
+          line1: "6 Rue de la Marne",
+          postalCode: "86000",
+          city: "Poitiers",
+          googleMapsUrl:
+              "https://www.google.com/maps/search/?api=1&query=6%20Rue%20de%20la%20Marne%2C%2086000%20Poitiers%2C%20France",
+        ),
+      ),
+      const RewardItem(
+        id: "reward_pb86",
+        title: "PB86",
+        kind: RewardKind.sportsMatch,
+        city: "Poitiers",
+        imageUrl: "https://picsum.photos/seed/basket/1200/600",
+        remainingPlaces: 5,
+        costDiamonds: 250,
+        address: RewardAddress(
+          line1: "Arena Futuroscope, Avenue du Futuroscope",
+          postalCode: "86360",
+          city: "Chasseneuil-du-Poitou",
+          googleMapsUrl:
+              "https://www.google.com/maps/search/?api=1&query=Arena%20Futuroscope%2C%20Avenue%20du%20Futuroscope%2C%2086360%20Chasseneuil-du-Poitou%2C%20France",
+        ),
+      ),
+      const RewardItem(
+        id: "reward_futuroscope",
+        title: "Futuroscope",
+        kind: RewardKind.themePark,
+        city: "Poitiers",
+        imageUrl: "https://picsum.photos/seed/futuroscope/1200/600",
+        remainingPlaces: 5,
+        costDiamonds: 500,
+        address: RewardAddress(
+          line1: "Avenue René Monory",
+          postalCode: "86360",
+          city: "Chasseneuil-du-Poitou",
+          googleMapsUrl:
+              "https://www.google.com/maps/search/?api=1&query=Avenue%20Ren%C3%A9%20Monory%2C%2086360%20Chasseneuil-du-Poitou%2C%20France",
+        ),
+      ),
+    ];
+
+    return Container(
+      constraints: const BoxConstraints(minHeight: 100, maxHeight: 500),
+      decoration: BoxDecoration(
+        // color: AppColors.primaryPressed,
+        borderRadius: AppRadius.small,
+        border: Border.all(color: AppColors.borderLight, width: 2),
+      ),
+      padding: const EdgeInsets.only(
+        top: AppSpacing.containerInsideMargin,
+        right: AppSpacing.containerInsideMargin,
+        left: AppSpacing.containerInsideMargin,
+        bottom: AppSpacing.containerInsideMarginSmall + AppSpacing.tinyMargin,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Récompenses possibles",
+                style: GoogleFonts.anton(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w400,
+                  height: 44 / 28,
+                  letterSpacing: -0.56,
+                  color: AppButtonColors.secondaryTextDefault,
+                ),
+              ),
+              AppXButton(
+                text: "Voir tout",
+                onPressed: () {
+                  // Switch to rewards tab
+                  DefaultTabController.of(context).animateTo(2);
+                },
+                fgColor: AppButtonColors.tertiaryTextDefault,
+                bgColor: Colors.transparent,
+                borderColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                onPressedColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+                isLoading: false,
+              ),
+            ],
+          ),
+          AppSpacing.textFieldMarginBox,
+          Flexible(
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: math.min(demoRewards.length, 3),
+              // itemExtent: 100,
+              itemBuilder: (context, index) {
+                final reward = demoRewards[index];
+                return Padding(
+                  padding: EdgeInsets.only(
+                    bottom: index == math.min(demoRewards.length, 3) - 1 ? 0 : AppSpacing.textFieldMargin,
+                  ),
+                  child: RewardListItem(reward: reward),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class RewardListItem extends StatefulWidget {
+  final RewardItem reward;
+
+  const RewardListItem({
+    super.key,
+    required this.reward,
+  });
+
+  @override
+  State<RewardListItem> createState() => _RewardListItemState();
+}
+
+class _RewardListItemState extends State<RewardListItem> {
+  bool _isHovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final locale = AppLocalizations.of(context);
+    final isMobile = DeviceHelper.isMobile(context);
+    return LayoutBuilder(builder: (context, constraints) {
+      return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (event) {
+          _isHovering = true;
+          setState(() {});
+        },
+        onExit: (event) {
+          _isHovering = false;
+          setState(() {});
+        },
+        child: GestureDetector(
+          onTap: () {},
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              // color: Colors.yellow,
+              color: AppColors.backgroundDefault,
+              border: Border.all(color: _isHovering ? AppColors.primaryHover : AppColors.borderLight, width: 2),
+              borderRadius: AppRadius.small,
+              boxShadow: [
+                BoxShadow(
+                  color: _isHovering ? AppColors.primaryHover : AppColors.secondaryHover,
+                  blurRadius: 1,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+              image: _isHovering
+                  ? const DecorationImage(
+                      image: AssetImage(AppImages.CFCardBackgroundPath),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                      opacity: 1,
+                    )
+                  : null,
+            ),
+            padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(
+                  width: constraints.maxWidth * 0.25,
+                  child: ClipRRect(
+                    borderRadius: AppRadius.tinyTiny,
+                    child: Image.network(
+                      widget.reward.imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: AppColors.borderLight,
+                          child: const Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                AppSpacing.groupMarginBox,
+                Expanded(
+                  flex: 100,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      AutoSizeText(
+                        widget.reward.title,
+                        maxLines: 1,
+                        maxFontSize: theme.textTheme.bodyLarge!.fontSize!,
+                        minFontSize: theme.textTheme.bodySmall!.fontSize!,
+                        style: GoogleFonts.inter(
+                          color: _isHovering ? AppColors.textInverted : AppColors.textPrimary,
+                          fontSize: isMobile
+                              ? theme.textTheme.displayMedium!.fontSize
+                              : theme.textTheme.headlineSmall!.fontSize,
+                          fontWeight: FontWeight.w600,
+                          // height: 1 / 3.8,
+                        ),
+                      ),
+                      AppSpacing.tinyTinyMarginBox,
+                      Text(
+                        "${widget.reward.kind.labelFr} • ${widget.reward.city}",
+                        style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
+                          color: _isHovering ? AppColors.textInverted : AppColors.textSecondary,
+                          // height: 1 / 2.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
+}
+
+class RecentActivitiesBox extends StatelessWidget {
+  const RecentActivitiesBox({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+    return Container(
+      constraints: const BoxConstraints(minHeight: 100, maxHeight: 500),
+      decoration: BoxDecoration(
+        color: AppColors.primaryDefault,
+        borderRadius: AppRadius.small,
+        border: Border.all(color: AppColors.borderLight, width: 2),
+      ),
+    );
   }
 }

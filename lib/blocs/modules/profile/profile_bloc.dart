@@ -7,6 +7,7 @@ import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/job_ranking.dart';
 import 'package:murya/models/quest.dart';
+import 'package:murya/models/reward.dart';
 import 'package:murya/repositories/jobs.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
 
@@ -284,32 +285,29 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   List<LeaderBoardUser> _mapLeaderboardUsers(JobRankings ranking) {
-    final users = ranking.rankings
-        .map((ranking) {
-          final String firstName = ranking.firstName ?? ranking.firstname ?? '';
-          final String lastName = ranking.lastName ?? ranking.lastname ?? '';
-          return LeaderBoardUser(
-            id: ranking.userId,
-            firstName: firstName,
-            lastName: lastName,
-            profilePictureUrl: ranking.profilePictureUrl,
-            diamonds: ranking.diamonds,
-            questionsAnswered: ranking.questionsAnswered,
-            performance: ranking.performance,
-            sinceDate: ranking.sinceDate,
-            rank: ranking.rank,
-            percentage: ranking.percentage,
-            completedQuizzes: ranking.completedQuizzes,
-            lastQuizAt: ranking.lastQuizAt,
-          );
-        })
-        .toList();
+    final users = ranking.rankings.map((ranking) {
+      final String firstName = ranking.firstName ?? ranking.firstname ?? '';
+      final String lastName = ranking.lastName ?? ranking.lastname ?? '';
+      return LeaderBoardUser(
+        id: ranking.userId,
+        firstName: firstName,
+        lastName: lastName,
+        profilePictureUrl: ranking.profilePictureUrl,
+        diamonds: ranking.diamonds,
+        questionsAnswered: ranking.questionsAnswered,
+        performance: ranking.performance,
+        sinceDate: ranking.sinceDate,
+        rank: ranking.rank,
+        percentage: ranking.percentage,
+        completedQuizzes: ranking.completedQuizzes,
+        lastQuizAt: ranking.lastQuizAt,
+      );
+    }).toList();
     users.sort((a, b) => a.rank.compareTo(b.rank));
     return users;
   }
 
-  FutureOr<void> _onProfileLoadLeaderboardEvent(
-      ProfileLoadLeaderboardEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> _onProfileLoadLeaderboardEvent(ProfileLoadLeaderboardEvent event, Emitter<ProfileState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
