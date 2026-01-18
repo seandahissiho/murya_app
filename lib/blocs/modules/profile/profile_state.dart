@@ -19,6 +19,7 @@ sealed class ProfileState {
   final String? leaderboardJobId;
   final DateTime? leaderboardFrom;
   final DateTime? leaderboardTo;
+  final List<RewardItem> rewards;
 
   const ProfileState({
     this.user = User.zero,
@@ -38,6 +39,7 @@ sealed class ProfileState {
     this.leaderboardJobId,
     this.leaderboardFrom,
     this.leaderboardTo,
+    this.rewards = const <RewardItem>[],
   });
 
   @override

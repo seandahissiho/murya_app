@@ -29,6 +29,7 @@ class AppXButton extends StatefulWidget {
     this.hoverColor,
     this.onPressedColor,
     this.disabledColor = AppColors.primaryDisabled,
+    this.elevation,
     this.shrinkWrap = true,
     this.borderLineWidth = 1,
     this.removePaddings = false,
@@ -61,6 +62,7 @@ class AppXButton extends StatefulWidget {
   final Color? hoverColor;
   final Color? onPressedColor;
   final Color? disabledColor;
+  final int? elevation;
   final bool shrinkWrap;
   final double borderLineWidth;
   final bool removePaddings;
