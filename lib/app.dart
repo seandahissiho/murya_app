@@ -58,11 +58,6 @@ List<BlocProvider> getBlocProviders(BuildContext context) {
       lazy: false,
       create: (BuildContext context) => ProfileBloc(context: context),
     ),
-    // Quests Bloc
-    BlocProvider<QuestsBloc>(
-      lazy: false,
-      create: (BuildContext context) => QuestsBloc(context: context),
-    ),
     // Job Bloc
     BlocProvider<JobBloc>(
       lazy: false,
@@ -86,6 +81,11 @@ List<BlocProvider> getBlocProviders(BuildContext context) {
     BlocProvider<RewardsBloc>(
       lazy: false,
       create: (BuildContext context) => RewardsBloc(context: context),
+    ),
+    // Quests Bloc
+    BlocProvider<QuestsBloc>(
+      lazy: false,
+      create: (BuildContext context) => QuestsBloc(context: context),
     ),
   ];
   return sharedBlocProviders;

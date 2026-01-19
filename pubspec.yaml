@@ -94,6 +94,7 @@ dependencies:
   just_audio: ^0.9.36
   lottie: ^3.3.1
   animated_flip_counter: ^0.3.4
+  graphview: ^1.5.1
 #  flutter_inappwebview: ^6.1.5
 #  vector_math: ^2.1.4  # or whatever minimum fl_chart needs
 
