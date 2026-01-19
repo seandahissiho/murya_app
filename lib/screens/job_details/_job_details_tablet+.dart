@@ -228,7 +228,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                               to: AppRoutes.jobEvaluation.replaceAll(':id', _job!.id!));
                                         },
                                         isLoading: false,
-                                        // disabled: nextQuizAvailableIn != null,
+                                        disabled: nextQuizAvailableIn != null,
                                         text: nextQuizAvailableIn == null
                                             ? locale.evaluateSkills
                                             : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
