@@ -55,7 +55,6 @@ class MobileAppFooter extends StatefulWidget {
 class _MobileAppFooterState extends State<MobileAppFooter> {
   @override
   Widget build(BuildContext context) {
-    final localeProvider = Provider.of<LocaleProvider>(context);
     final local = AppLocalizations.of(context);
     final theme = Theme.of(context);
     return BlocConsumer<AppBloc, AppState>(
@@ -74,6 +73,7 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                 key: const Key('language-dropdown'),
                 shrinkWrap: true,
                 controller: TextEditingController(text: state.language.code != 'fr' ? 'English' : 'Français'),
+                disabled: true,
                 // DropdownMenuEntry
                 items: [
                   DropdownMenuEntry(
@@ -87,18 +87,7 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                     leadingIcon: SvgPicture.asset(AppIcons.enLanguageIconPath),
                   ),
                 ],
-                onSelected: (value) {
-                  if (value == null) return;
-                  final locale = Locale(value);
-                  localeProvider.set(locale);
-                  // onLocaleChange(context);
-                  context.read<AppBloc>().add(
-                        AppChangeLanguage(
-                          language: state.language.code == 'fr' ? AppLanguage.english : AppLanguage.french,
-                          context: context,
-                        ),
-                      );
-                },
+                onSelected: null,
               ),
               AppSpacing.groupMarginBox,
               TextWithLinks(
@@ -166,7 +155,6 @@ class TabletAppFooter extends StatefulWidget {
 class _TabletAppFooterState extends State<TabletAppFooter> {
   @override
   Widget build(BuildContext context) {
-    final localeProvider = Provider.of<LocaleProvider>(context);
     final local = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
@@ -189,6 +177,7 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
                 //     state.language.code != 'fr' ? AppIcons.enLanguageIconPath : AppIcons.frLanguageIconPath),
                 // maxDropdownWidth: 110,
                 controller: TextEditingController(text: state.language.code != 'fr' ? 'English' : 'Français'),
+                disabled: true,
                 items: [
                   DropdownMenuEntry(
                     value: 'fr',
@@ -201,18 +190,7 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
                     leadingIcon: SvgPicture.asset(AppIcons.enLanguageIconPath),
                   ),
                 ],
-                onSelected: (value) {
-                  if (value == null) return;
-                  final locale = Locale(value);
-                  localeProvider.set(locale);
-                  // onLocaleChange(context);
-                  context.read<AppBloc>().add(
-                        AppChangeLanguage(
-                          language: state.language.code == 'fr' ? AppLanguage.english : AppLanguage.french,
-                          context: context,
-                        ),
-                      );
-                },
+                onSelected: null,
               ),
               AppSpacing.groupMarginBox,
               TextWithLinks(
