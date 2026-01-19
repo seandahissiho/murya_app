@@ -109,6 +109,9 @@ class AppResponse {
       //   maxFrames: 20,
       // );
       // debugPrint("\n\n\n");
+      if (error.response?.statusCode == 404) {
+        debugPrint("404 Not Found Error in $parentFunctionName: ${error.requestOptions.uri}");
+      }
       String? errorToDisplay = error.response?.statusCode == 404
           ? "Ressource non trouvée"
           : error.response?.statusCode == 500
