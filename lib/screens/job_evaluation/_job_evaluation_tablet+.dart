@@ -865,7 +865,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         ],
       ).then((value) {
         if (!mounted) return;
-        navigateToPath(context, to: AppRoutes.userRessourcesModule);
+        navigateToPath(context, to: AppRoutes.userRessourcesModule, data: {"openWaitingModal": true});
       });
 
       // navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
@@ -916,7 +916,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       _playConfetti(pointsEarned: questionScore);
     }
 
-    Future.delayed(const Duration(milliseconds: 25), () {
+    Future.delayed(const Duration(milliseconds: 2500), () {
       if (!mounted) return;
       answers.add(currentQuestion!.toQuizResponse(
             selectedResponseIndex: showVerificationState,

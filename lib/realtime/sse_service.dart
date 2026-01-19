@@ -30,6 +30,7 @@ class SseService {
   final SseParser _parser;
 
   final StreamController<SseEvent> _controller = StreamController<SseEvent>.broadcast();
+  final StreamController<bool> _statusController = StreamController<bool>.broadcast();
   StreamSubscription<String>? _lineSubscription;
   http.Client? _client;
   Timer? _reconnectTimer;
@@ -45,6 +46,7 @@ class SseService {
   String? _lastToken;
 
   Stream<SseEvent> get events => _controller.stream;
+  Stream<bool> get connectionStatus => _statusController.stream;
   bool get isConnected => _isConnected;
 
   Future<void> connect() async {
@@ -91,7 +93,7 @@ class SseService {
       }
 
       _retryAttempt = 0;
-      _isConnected = true;
+      _setConnectionStatus(true);
       _log('SSE connected.');
       _startStaleTimer();
 
@@ -197,10 +199,19 @@ class SseService {
     _lineSubscription = null;
     _client?.close();
     _client = null;
-    if (_isConnected) {
-      _isConnected = false;
+    final wasConnected = _isConnected;
+    _setConnectionStatus(false);
+    if (wasConnected) {
       _log('SSE disconnected.');
     }
+  }
+
+  void _setConnectionStatus(bool connected) {
+    if (_isConnected == connected) {
+      return;
+    }
+    _isConnected = connected;
+    _statusController.add(connected);
   }
 
   void _handleWebFallback() {

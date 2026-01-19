@@ -15,7 +15,6 @@ import 'package:murya/config/routes.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/realtime/realtime_coordinator.dart';
 import 'package:murya/realtime/sse_service.dart';
-import 'package:murya/repositories/authentication.repository.dart';
 
 class AppScaffold extends StatefulWidget {
   const AppScaffold({super.key});
@@ -64,22 +63,10 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
   void initState() {
     context.read<AuthenticationBloc>().updateRepositoriesContext(context);
     context.read<NotificationBloc>().updateContext(context);
-    final authRepository = RepositoryProvider.of<AuthenticationRepository>(context);
+    final sseService = context.read<SseService>();
     _realtimeCoordinator = RealtimeCoordinator(
       context: context,
-      sseService: SseService(
-        tokenProvider: () async {
-          final cached = await authRepository.getCachedAccessToken();
-          if (cached != null && cached.isNotEmpty) {
-            return cached;
-          }
-          final result = await authRepository.getToken();
-          if (result.isError) {
-            return null;
-          }
-          return result.data?.$1;
-        },
-      ),
+      sseService: sseService,
       authenticationBloc: context.read<AuthenticationBloc>(),
       profileBloc: context.read<ProfileBloc>(),
       resourcesBloc: context.read<ResourcesBloc>(),

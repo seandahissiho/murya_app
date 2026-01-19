@@ -18,6 +18,7 @@ import 'package:murya/config/routes.dart';
 import 'package:murya/config/theme.dart';
 import 'package:murya/localization/locale_controller.dart';
 import 'package:murya/main_screen.dart';
+import 'package:murya/realtime/sse_service.dart';
 import 'package:murya/repositories/app.repository.dart';
 import 'package:murya/repositories/authentication.repository.dart';
 import 'package:murya/repositories/jobs.repository.dart';
@@ -98,6 +99,24 @@ List<RepositoryProvider> getRepositoryProviders(BuildContext context) {
     ),
     RepositoryProvider<AuthenticationRepository>(
       create: (BuildContext context) => AuthenticationRepository(),
+    ),
+    RepositoryProvider<SseService>(
+      create: (BuildContext context) {
+        final authRepository = RepositoryProvider.of<AuthenticationRepository>(context);
+        return SseService(
+          tokenProvider: () async {
+            final cached = await authRepository.getCachedAccessToken();
+            if (cached != null && cached.isNotEmpty) {
+              return cached;
+            }
+            final result = await authRepository.getToken();
+            if (result.isError) {
+              return null;
+            }
+            return result.data?.$1;
+          },
+        );
+      },
     ),
     RepositoryProvider<NotificationRepository>(
       create: (BuildContext context) => NotificationRepository(),
