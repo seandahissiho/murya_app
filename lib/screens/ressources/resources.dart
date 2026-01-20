@@ -141,7 +141,7 @@ class _RessourcesScreenState extends State<RessourcesScreen> {
       return;
     }
     _pollResourcesOnce();
-    _pollTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+    _pollTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (!_isWaitingForResource || _sseConnected) {
         _pollTimer?.cancel();
         _pollTimer = null;
