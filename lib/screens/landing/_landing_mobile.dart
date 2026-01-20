@@ -290,7 +290,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
 
   _getTileForModule(Module module, {Widget? dragHandle, GlobalKey? tileKey}) {
     const cardMargin = EdgeInsets.zero;
-    switch (module.id) {
+    switch (module.slug) {
       case 'leaderboard':
         return AccountModuleWidget(
           // key: ValueKey('module-${module.id}'),
@@ -319,6 +319,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
           cardMargin: cardMargin,
         );
       default:
+        return Container();
         return AppModuleWidget(
           key: ValueKey('module-${module.id}'),
           module: module,

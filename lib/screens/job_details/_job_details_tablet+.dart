@@ -83,8 +83,9 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                             children: [
                               if (!hideBackButton)
                                 GestureDetector(
-                                  onTap: () {
-                                    navigateToPath(context, to: AppRoutes.jobModule);
+                                  onTap: () async {
+                                    // navigateToPath(context, to: AppRoutes.jobModule);
+                                    navigateToPath(context, to: AppRoutes.landing);
                                   },
                                   child: SvgPicture.asset(
                                     AppIcons.backButtonPath,

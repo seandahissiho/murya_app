@@ -98,12 +98,12 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                   );
                 },
                 child: AppModuleWidget(
-                  key: ValueKey('job-module-${widget.module.id}-empty'),
+                  key: ValueKey('job-module-${widget.module.id}-${userCurrentJob.jobId ?? 'no-job'}'),
                   module: widget.module,
                   onCardTap: () {
                     navigateToPath(
                       context,
-                      to: AppRoutes.jobDetails.replaceAll(':id', userCurrentJob.jobId!),
+                      to: AppRoutes.jobDetails.replaceAll(':id', userCurrentJob.jobId ?? userCurrentJob.jobFamilyId!),
                     );
                   },
                   hasData: state.userCurrentJob != null,
@@ -194,10 +194,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
         final bool isMobile = DeviceHelper.isMobile(context);
         final bool smallHeight = moduleType == AppModuleType.type1 || moduleType == AppModuleType.type1_2 || isMobile;
         final List<CompetencyFamily> families = _userJob.kiviats.isNotEmpty
-            ? _userJob.kiviats
-                .map((kiviat) => kiviat.competenciesFamily)
-                .whereType<CompetencyFamily>()
-                .toList()
+            ? _userJob.kiviats.map((kiviat) => kiviat.competenciesFamily).whereType<CompetencyFamily>().toList()
             : (_job ?? _jobFamily ?? Job.empty()).competenciesFamilies.isNotEmpty
                 ? (_job ?? _jobFamily ?? Job.empty()).competenciesFamilies
                 : _userJobCompetencyProfile.competencyFamilies;

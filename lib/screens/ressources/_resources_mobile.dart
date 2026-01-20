@@ -12,9 +12,10 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return BlocConsumer<ResourcesBloc, ResourcesState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         setState(() {});
         if (state is ResourceDetailsLoaded) {
+          return await contentNotAvailablePopup(context);
           navigateToPath(context,
               to: AppRoutes.userResourceViewerModule.replaceFirst(
                 ':id',

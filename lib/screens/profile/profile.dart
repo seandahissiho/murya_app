@@ -20,6 +20,7 @@ import 'package:murya/config/routes.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/app_user.dart';
+import 'package:murya/models/module.dart';
 import 'package:murya/models/quest.dart';
 import 'package:murya/models/reward.dart';
 import 'package:murya/screens/base.dart';

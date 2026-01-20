@@ -208,7 +208,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                   left: 0,
                   child: Container(
                     width: width,
-                    height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                    height: isMobile ? 0 : tabletAndAboveCTAHeight,
                     decoration: const BoxDecoration(
                       color: Color(0xFFE5E3D7),
                       borderRadius: BorderRadius.only(
@@ -232,7 +232,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                       top: isMobile ? AppSpacing.tinyMargin : AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
                       bottom: isMobile ? AppSpacing.tinyMargin : AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
                     ),
-                    child: _customisationRow(),
+                    child: _customisationRow(isMobile),
                   ),
                 )
               ],
@@ -243,7 +243,10 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     );
   }
 
-  _customisationRow() {
+  _customisationRow(bool isMobile) {
+    if (isMobile) {
+      return const SizedBox.shrink();
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.max,
@@ -372,10 +375,11 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         );
       }
       return const EdgeInsets.only(
-        top: mobileCTAHeight + AppSpacing.elementMargin,
+        // top: mobileCTAHeight + AppSpacing.elementMargin,
         left: AppSpacing.containerInsideMarginSmall,
         right: AppSpacing.containerInsideMarginSmall,
         bottom: AppSpacing.containerInsideMargin * 2 / 3,
+        top: AppSpacing.containerInsideMarginSmall,
       );
     }
     if (boxType == AppModuleType.type1) {
@@ -672,15 +676,16 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                 children: [
                   if (widget.module.button1Text(context) != null) ...[
                     Flexible(
-                      child: AppXButton(
-                        shrinkWrap: false,
-                        onPressed: primaryAction,
-                        isLoading: false,
-                        text: widget.module.button1Text(context) ?? '',
-                        // borderColor: AppColors.whiteSwatch,
-                        // bgColor: AppColors.whiteSwatch,
-                        // fgColor: AppColors.primaryDefault,
-                      ),
+                      child: widget.footerContent ??
+                          AppXButton(
+                            shrinkWrap: false,
+                            onPressed: primaryAction,
+                            isLoading: false,
+                            text: widget.module.button1Text(context) ?? '',
+                            // borderColor: AppColors.whiteSwatch,
+                            // bgColor: AppColors.whiteSwatch,
+                            // fgColor: AppColors.primaryDefault,
+                          ),
                     ),
                   ],
                   if (widget.module.button2Text(context) != null && showSecondButtonOnMobile(module)) ...[

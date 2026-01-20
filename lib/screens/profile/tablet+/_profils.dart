@@ -375,7 +375,9 @@ class InvitationBox extends StatelessWidget {
               color: AppButtonColors.primaryTextDefault,
             ),
             text: "Inviter",
-            onPressed: () {},
+            onPressed: () async {
+              return await contentNotAvailablePopup(context);
+            },
             isLoading: false,
           ),
         ],
