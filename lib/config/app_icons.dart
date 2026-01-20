@@ -19,6 +19,17 @@ class AppIcons {
   // employee-search-loupe.svg
   static const String employeeSearchLoupePath = '$basePath/employee-search-loupe.svg';
 
+  //assets/icons/ProtectionSecurity/browser-shield.svg
+  static const String browserShieldPath = '$basePath/ProtectionSecurity/browser-shield.svg';
+  // assets/icons/ProtectionSecurity/password-key.svg
+  static const String passwordKeyPath = '$basePath/ProtectionSecurity/password-key.svg';
+  // assets/icons/ProtectionSecurity/hands-shield.svg
+  static const String handsShieldPath = '$basePath/ProtectionSecurity/hands-shield.svg';
+  // assets/icons/ProtectionSecurity/search-loupe-add-plus-shield.svg
+  static const String searchLoupeAddPlusShieldPath = '$basePath/ProtectionSecurity/search-loupe-add-plus-shield.svg';
+  // assets/icons/ProtectionSecurity/Shield-Protected.svg
+  static const String shieldProtectedPath = '$basePath/ProtectionSecurity/Shield-Protected.svg';
+
   // dropdownArrowRightPath
   static const String dropdownArrowRightPath = '$basePath/ButtonRight.svg';
 

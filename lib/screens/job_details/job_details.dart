@@ -27,7 +27,6 @@ import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/job_kiviat.dart';
-import 'package:murya/models/module.dart';
 import 'package:murya/models/user_job_competency_profile.dart';
 import 'package:murya/screens/base.dart';
 
@@ -134,7 +133,7 @@ class _CFCardState extends State<CFCard> {
                 ),
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
-                  AppIcons.employeeSearchLoupePath,
+                  getIconForFamily(widget.family),
                   height: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
                   width: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
                   colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
@@ -193,6 +192,23 @@ class _CFCardState extends State<CFCard> {
   }
 }
 
+String getIconForFamily(CompetencyFamily family) {
+  switch (family.slug) {
+    case 'conception':
+      return AppIcons.handsShieldPath;
+    case 'installation':
+      return AppIcons.passwordKeyPath;
+    case 'exploitation':
+      return AppIcons.shieldProtectedPath;
+    case 'maintenance':
+      return AppIcons.searchLoupeAddPlusShieldPath;
+    case 'gestion':
+      return AppIcons.browserShieldPath;
+    default:
+      return AppIcons.employeeSearchLoupePath;
+  }
+}
+
 // class RoundedRadarChart extends StatelessWidget {
 //   final List<String> labels;
 //   final List<double> values;
@@ -230,8 +246,10 @@ class InteractiveRoundedRadarChart extends StatefulWidget {
   final List<double> userValues;
   final double maxValue;
   final double cornerRadius;
+
   // labelBoxColor
   final Color labelBgColor;
+
   // labelTextColor
   final Color labelTextColor;
   final bool hideTexts;

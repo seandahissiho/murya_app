@@ -116,7 +116,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                               ),
                               padding: const EdgeInsets.all(10),
                               child: SvgPicture.asset(
-                                AppIcons.employeeSearchLoupePath,
+                                getIconForFamily(_cf),
                                 height: tabletAndAboveCTAHeight - 15,
                                 width: tabletAndAboveCTAHeight - 15,
                                 colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
@@ -132,32 +132,33 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                                 children: [
-                                  WidgetSpan(
-                                    alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          await ShareUtils.shareContent(
-                                            text: locale.discover_cf_profile(_cf.name),
-                                            url: ShareUtils.generateJobDetailsLink(_cf.id!),
-                                            subject: locale.job_profile_page_title(_cf.name),
-                                          );
-                                          if (kIsWeb && mounted && context.mounted) {
-                                            // On web, there's a good chance we just copied to clipboard
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(content: Text(locale.link_copied)),
-                                            );
-                                          }
-                                        },
-                                        child: const Icon(
-                                          Icons.ios_share,
-                                          size: tabletAndAboveCTAHeight / 1.618,
-                                          color: AppColors.primaryDefault,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  // WidgetSpan(
+                                  //   alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                                  //   child: Padding(
+                                  //     padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
+                                  //     child: GestureDetector(
+                                  //       onTap: () async {
+                                  //         return await contentNotAvailablePopup(context);
+                                  //         await ShareUtils.shareContent(
+                                  //           text: locale.discover_cf_profile(_cf.name),
+                                  //           url: ShareUtils.generateJobDetailsLink(_cf.id!),
+                                  //           subject: locale.job_profile_page_title(_cf.name),
+                                  //         );
+                                  //         if (kIsWeb && mounted && context.mounted) {
+                                  //           // On web, there's a good chance we just copied to clipboard
+                                  //           ScaffoldMessenger.of(context).showSnackBar(
+                                  //             SnackBar(content: Text(locale.link_copied)),
+                                  //           );
+                                  //         }
+                                  //       },
+                                  //       child: const Icon(
+                                  //         Icons.ios_share,
+                                  //         size: tabletAndAboveCTAHeight / 1.618,
+                                  //         color: AppColors.primaryDefault,
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
