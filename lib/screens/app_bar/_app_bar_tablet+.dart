@@ -33,7 +33,7 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
                 child: GestureDetector(
                   onTap: () {
                     // rightModalOpen(context, screen: const MainSearchScreen());
-                    navigateToPath(context, to: AppRoutes.jobModule);
+                    // navigateToPath(context, to: AppRoutes.jobModule);
                   },
                   child: SvgPicture.asset(
                     AppIcons.homeSearchIconPath,
