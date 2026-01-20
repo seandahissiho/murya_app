@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
-import 'package:graphview/GraphView.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
@@ -24,6 +23,7 @@ import 'package:murya/models/app_user.dart';
 import 'package:murya/models/quest.dart';
 import 'package:murya/models/reward.dart';
 import 'package:murya/screens/base.dart';
+import 'package:murya/screens/profile/tablet+/quest_map.dart';
 
 part '_profile_mobile.dart';
 part '_profile_tablet+.dart';
