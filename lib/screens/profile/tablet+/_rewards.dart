@@ -224,7 +224,9 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                             disabled: !reward.canBuy ||
                                 reward.remainingPlaces <= 0 ||
                                 reward.costDiamonds > state.wallet.diamonds,
-                            onPressed: () {},
+                            onPressed: () async {
+                              return await contentNotAvailablePopup(context);
+                            },
                             isLoading: state is RewardsLoading,
                           ),
                         ),

@@ -31,7 +31,8 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+                    return await contentNotAvailablePopup(context);
                     // rightModalOpen(context, screen: const MainSearchScreen());
                     // navigateToPath(context, to: AppRoutes.jobModule);
                   },

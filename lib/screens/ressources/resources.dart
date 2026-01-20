@@ -20,6 +20,7 @@ import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
+import 'package:murya/models/module.dart';
 import 'package:murya/models/resource.dart';
 import 'package:murya/realtime/sse_service.dart';
 import 'package:murya/screens/base.dart';
@@ -280,6 +281,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
           if (index == 0) {
             return InkWell(
               onTap: () async {
+                return await contentNotAvailablePopup(context);
                 final int diamonds = context.read<ProfileBloc>().state.user.diamonds;
                 final int cost = Costs.byType(widget.type);
                 final canCreate = diamonds >= cost;
@@ -375,8 +377,11 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
           final resource = widget.resources[index - 1];
           final thumbnailUrl = resource.effectiveThumbnailUrl;
           return InkWell(
-            onTap: () {
+            onTap: () async {
               if (resource.id.isNotEmptyOrNull) {
+                if (isMobile) {
+                  return await contentNotAvailablePopup(context);
+                }
                 navigateToPath(
                   context,
                   to: AppRoutes.userResourceViewerModule.replaceFirst(

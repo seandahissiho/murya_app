@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
-import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/popup.dart';
-import 'package:murya/components/text_form_field.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
@@ -329,6 +326,10 @@ class Module {
     switch (slug) {
       case 'leaderboard':
         return () async {
+          final isMobile = DeviceHelper.isMobile(context);
+          if (isMobile) {
+            return await contentNotAvailablePopup(context);
+          }
           final authBloc = context.read<AuthenticationBloc>();
           final profileBloc = context.read<ProfileBloc>();
           const profileLoadTimeout = Duration(seconds: 3);
@@ -336,6 +337,7 @@ class Module {
           if (authState is AuthenticationLoading) {
             authState = await authBloc.stream.firstWhere((state) => state is! AuthenticationLoading);
           }
+          if (!context.mounted) return;
           if (!authState.isAuthenticated) {
             navigateToPath(context, to: AppRoutes.login);
             return;
@@ -348,6 +350,7 @@ class Module {
                 .timeout(profileLoadTimeout, onTimeout: () => profileBloc.state);
           }
           authState = authBloc.state;
+          if (!context.mounted) return;
           if (!authState.isAuthenticated) {
             navigateToPath(context, to: AppRoutes.login);
             return;
@@ -362,105 +365,105 @@ class Module {
           final theme = Theme.of(context);
           final locale = AppLocalizations.of(context);
           bool isMobile = DeviceHelper.isMobile(context);
-          displayPopUp(
-            width: 736,
-            context: context,
-            noActions: true,
-            contents: [
-              Center(
-                  child: Text(locale.popup_job_selection_title,
-                      style: GoogleFonts.anton(
-                        color: AppColors.primaryDefault,
-                        fontSize: isMobile
-                            ? theme.textTheme.headlineSmall!.fontSize!
-                            : theme.textTheme.displaySmall!.fontSize!,
-                        fontWeight: FontWeight.w400,
-                      ))),
-              AppSpacing.containerInsideMarginBox,
-              Container(
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  borderRadius: AppRadius.borderRadius20,
-                  image: DecorationImage(
-                    image: AssetImage(AppImages.homeBox1Path),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                padding: const EdgeInsets.all(AppSpacing.textFieldMargin),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SvgPicture.asset(AppIcons.cyberSecurityJobPopupIconPath),
-                    AppSpacing.textFieldMarginBox,
-                    Text(
-                      locale.popup_job_selection_technician_title,
-                      style: GoogleFonts.anton(
-                        color: AppColors.textInverted,
-                        fontSize: isMobile
-                            ? theme.textTheme.headlineSmall!.fontSize!
-                            : theme.textTheme.displaySmall!.fontSize!,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    AppSpacing.tinyTinyMarginBox,
-                    Text(
-                      locale.popup_job_selection_technician_subtitle,
-                      style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textInverted),
-                      textAlign: TextAlign.start,
-                    ),
-                    AppSpacing.containerInsideMarginBox,
-                    AppXButton(
-                      shrinkWrap: false,
-                      bgColor: AppColors.textInverted,
-                      fgColor: AppColors.primaryDefault,
-                      maxWidth: double.infinity,
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true).pop(true);
-                      },
-                      isLoading: false,
-                      text: locale.popup_job_selection_continue_button,
-                    )
-                  ],
-                ),
-              ),
-              AppSpacing.containerInsideMarginBox,
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.borderMedium),
-                  borderRadius: AppRadius.borderRadius20,
-                ),
-                padding: const EdgeInsets.all(AppSpacing.textFieldMargin),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      locale.popup_job_selection_other_expertise_label,
-                      style: theme.textTheme.labelLarge,
-                    ),
-                    AppSpacing.containerInsideMarginSmallBox,
-                    SizedBox(
-                      height: tabletAndAboveCTAHeight,
-                      child: AppTextFormField(
-                        // maxWidth: double.infinity,
-                        autoResize: true,
-                        controller: TextEditingController(),
-                        hintText: locale.popup_job_selection_search_hint,
-                        label: null,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ).then((value) {
-            if (context.mounted != true) return;
-            if (value == true) {
-              final jobId = context.read<JobBloc>().jobs.firstOrNull?.id!;
-              if (jobId != null) {
-                navigateToPath(context, to: AppRoutes.jobDetails.replaceAll(':id', jobId));
-              }
-            }
-          });
+          // displayPopUp(
+          //   width: 736,
+          //   context: context,
+          //   noActions: true,
+          //   contents: [
+          //     Center(
+          //         child: Text(locale.popup_job_selection_title,
+          //             style: GoogleFonts.anton(
+          //               color: AppColors.primaryDefault,
+          //               fontSize: isMobile
+          //                   ? theme.textTheme.headlineSmall!.fontSize!
+          //                   : theme.textTheme.displaySmall!.fontSize!,
+          //               fontWeight: FontWeight.w400,
+          //             ))),
+          //     AppSpacing.containerInsideMarginBox,
+          //     Container(
+          //       width: double.infinity,
+          //       decoration: const BoxDecoration(
+          //         borderRadius: AppRadius.borderRadius20,
+          //         image: DecorationImage(
+          //           image: AssetImage(AppImages.homeBox1Path),
+          //           fit: BoxFit.cover,
+          //         ),
+          //       ),
+          //       padding: const EdgeInsets.all(AppSpacing.textFieldMargin),
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           SvgPicture.asset(AppIcons.cyberSecurityJobPopupIconPath),
+          //           AppSpacing.textFieldMarginBox,
+          //           Text(
+          //             locale.popup_job_selection_technician_title,
+          //             style: GoogleFonts.anton(
+          //               color: AppColors.textInverted,
+          //               fontSize: isMobile
+          //                   ? theme.textTheme.headlineSmall!.fontSize!
+          //                   : theme.textTheme.displaySmall!.fontSize!,
+          //               fontWeight: FontWeight.w400,
+          //             ),
+          //           ),
+          //           AppSpacing.tinyTinyMarginBox,
+          //           Text(
+          //             locale.popup_job_selection_technician_subtitle,
+          //             style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textInverted),
+          //             textAlign: TextAlign.start,
+          //           ),
+          //           AppSpacing.containerInsideMarginBox,
+          //           AppXButton(
+          //             shrinkWrap: false,
+          //             bgColor: AppColors.textInverted,
+          //             fgColor: AppColors.primaryDefault,
+          //             maxWidth: double.infinity,
+          //             onPressed: () {
+          //               Navigator.of(context, rootNavigator: true).pop(true);
+          //             },
+          //             isLoading: false,
+          //             text: locale.popup_job_selection_continue_button,
+          //           )
+          //         ],
+          //       ),
+          //     ),
+          //     AppSpacing.containerInsideMarginBox,
+          //     Container(
+          //       decoration: BoxDecoration(
+          //         border: Border.all(color: AppColors.borderMedium),
+          //         borderRadius: AppRadius.borderRadius20,
+          //       ),
+          //       padding: const EdgeInsets.all(AppSpacing.textFieldMargin),
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(
+          //             locale.popup_job_selection_other_expertise_label,
+          //             style: theme.textTheme.labelLarge,
+          //           ),
+          //           AppSpacing.containerInsideMarginSmallBox,
+          //           SizedBox(
+          //             height: tabletAndAboveCTAHeight,
+          //             child: AppTextFormField(
+          //               // maxWidth: double.infinity,
+          //               autoResize: true,
+          //               controller: TextEditingController(),
+          //               hintText: locale.popup_job_selection_search_hint,
+          //               label: null,
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     )
+          //   ],
+          // ).then((value) {
+          //   if (context.mounted != true) return;
+          //   if (value == true) {
+          //     final jobId = context.read<JobBloc>().jobs.firstOrNull?.id!;
+          //     if (jobId != null) {
+          //       navigateToPath(context, to: AppRoutes.jobDetails.replaceAll(':id', jobId));
+          //     }
+          //   }
+          // });
         };
       case 'learning-resources':
         return () {
@@ -544,6 +547,77 @@ class Module {
       index: index ?? this.index,
     );
   }
+}
+
+Future<void> contentNotAvailablePopup(BuildContext context) async {
+  final isMobile = DeviceHelper.isMobile(context);
+  final theme = Theme.of(context);
+  return await displayPopUp(
+    context: context,
+    okText: 'Ok',
+    bgColor: const Color(0xFFE7E5DD),
+    // okEnabled: quizLoaded,
+    noActions: true,
+    contents: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: AppRadius.tiny,
+                ),
+                padding: const EdgeInsets.all(4),
+                child: SvgPicture.asset(
+                  AppIcons.warningIconPath,
+                  width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                  height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                ),
+              ),
+            ],
+          ),
+          AppSpacing.elementMarginBox,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Version de démonstration",
+                  textAlign: TextAlign.start,
+                  style: theme.textTheme.labelLarge,
+                ),
+                AppSpacing.elementMarginBox,
+                Text(
+                  "Cette fonctionnalité n'est pas accessible dans le prototype. Elle sera débloquée dans la version complète de Murya.",
+                  textAlign: TextAlign.start,
+                  style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      AppSpacing.sectionMarginBox,
+      Align(
+        alignment: Alignment.centerRight,
+        child: AppXButton(
+          text: "Ok, c'est compris",
+          shrinkWrap: true,
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+          isLoading: false,
+        ),
+      ),
+    ],
+  );
 }
 
 // ModuleBuilder.of(ctx).accountModule

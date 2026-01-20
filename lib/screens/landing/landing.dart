@@ -114,7 +114,9 @@ class AddModuleButton extends StatelessWidget {
           color: AppColors.textInverted,
         ),
         shrinkWrap: true,
-        onPressed: () {},
+        onPressed: () async {
+          return await contentNotAvailablePopup(context);
+        },
         isLoading: false,
       ),
       // child: Blob.animatedRandom(

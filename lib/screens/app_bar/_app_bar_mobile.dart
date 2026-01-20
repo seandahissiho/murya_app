@@ -28,7 +28,8 @@ class _MobileCustomAppBarState extends State<MobileCustomAppBar> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  return await contentNotAvailablePopup(context);
                   // rightModalOpen(context, screen: const MainSearchScreen());
                   // navigateToPath(context, to: AppRoutes.jobModule);
                 },

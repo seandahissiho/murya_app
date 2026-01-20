@@ -24,6 +24,7 @@ Future<T?> displayPopUp<T>({
   bool barrierDismissible = true,
   Alignment contentAlignment = Alignment.centerLeft,
   double? width,
+  Color bgColor = Colors.white,
 }) async {
   return await showDialog<T?>(
     context: context,
@@ -38,7 +39,7 @@ Future<T?> displayPopUp<T>({
               maxWidth: width ?? DeviceHelper.kMainBodyWidth(context),
             ),
             decoration: BoxDecoration(
-              color: AppColors.whiteSwatch,
+              color: bgColor,
               borderRadius: AppRadius.medium,
             ),
             child: SingleChildScrollView(

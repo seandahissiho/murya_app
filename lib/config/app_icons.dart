@@ -71,6 +71,8 @@ class AppIcons {
 
   // fireIconPath
   static const String fireIconPath = '$basePath/fire.svg';
+
+  static const String warningIconPath = '$basePath/warning.svg';
 }
 
 class AppImages {
