@@ -412,6 +412,7 @@ class Competency {
 class CompetencyFamily {
   final String? id;
   final String name;
+  final String slug;
   final String? description;
   final List<Competency> competencies;
   final CompetencyFamily? parent;
@@ -420,6 +421,7 @@ class CompetencyFamily {
   CompetencyFamily({
     required this.id,
     required this.name,
+    this.slug = '',
     this.description,
     this.competencies = const [],
     this.parent,
@@ -430,6 +432,7 @@ class CompetencyFamily {
     return CompetencyFamily(
       id: familyJson['id'],
       name: familyJson['name'],
+      slug: familyJson['slug'] ?? '',
       description: familyJson['description'],
       competencies: familyJson['competencies'] != null
           ? (familyJson['competencies'] as List).map((compJson) => Competency.fromJson(compJson)).toList()

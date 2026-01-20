@@ -127,6 +127,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/icons/ProtectionSecurity/
     - assets/images/
     - assets/lotties/
     - .env

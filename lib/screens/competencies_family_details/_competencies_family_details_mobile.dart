@@ -127,32 +127,33 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                           fontWeight: FontWeight.w700,
                         ),
                         children: [
-                          WidgetSpan(
-                            alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
-                              child: GestureDetector(
-                                onTap: () async {
-                                  await ShareUtils.shareContent(
-                                    text: locale.discover_cf_profile(_cf.name),
-                                    url: ShareUtils.generateJobDetailsLink(_cf.id!),
-                                    subject: locale.job_profile_page_title(_cf.name),
-                                  );
-                                  if (kIsWeb && mounted && context.mounted) {
-                                    // On web, there's a good chance we just copied to clipboard
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(locale.link_copied)),
-                                    );
-                                  }
-                                },
-                                child: const Icon(
-                                  Icons.ios_share,
-                                  size: mobileCTAHeight / 1.618,
-                                  color: AppColors.primaryDefault,
-                                ),
-                              ),
-                            ),
-                          ),
+                          // WidgetSpan(
+                          //   alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
+                          //     child: GestureDetector(
+                          //       onTap: () async {
+                          //         return await contentNotAvailablePopup(context);
+                          //         await ShareUtils.shareContent(
+                          //           text: locale.discover_cf_profile(_cf.name),
+                          //           url: ShareUtils.generateJobDetailsLink(_cf.id!),
+                          //           subject: locale.job_profile_page_title(_cf.name),
+                          //         );
+                          //         if (kIsWeb && mounted && context.mounted) {
+                          //           // On web, there's a good chance we just copied to clipboard
+                          //           ScaffoldMessenger.of(context).showSnackBar(
+                          //             SnackBar(content: Text(locale.link_copied)),
+                          //           );
+                          //         }
+                          //       },
+                          //       child: const Icon(
+                          //         Icons.ios_share,
+                          //         size: mobileCTAHeight / 1.618,
+                          //         color: AppColors.primaryDefault,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                       maxLines: 2,
