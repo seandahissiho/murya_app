@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -401,12 +402,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      color: Colors.blue,
-                      child: _thumbnailBackground(thumbnailUrl),
-                    ),
+                    child: ThumbnailBackground(thumbnailUrl, index: index - 1),
                   ),
                   Positioned.fill(
                     child: DecoratedBox(
@@ -456,39 +452,6 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
           );
         },
       ),
-    );
-  }
-
-  Widget _thumbnailBackground(String? url) {
-    // if (!url.isNotEmptyOrNull) {
-    //   return const DecoratedBox(
-    //     decoration: BoxDecoration(color: AppColors.primaryDefault),
-    //   );
-    // }
-
-    if (((url ?? '').contains("mqdefault") || (url ?? '').contains("hqdefault") || (url ?? '').contains("sqdefault")) &&
-        (url ?? '').contains("youtube")) {
-      url = url?.replaceAll("mqdefault", "maxresdefault");
-      url = url?.replaceAll("hqdefault", "maxresdefault");
-      url = url?.replaceAll("sqdefault", "maxresdefault");
-    }
-
-    return Image.network(
-      url ?? '',
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        return const DecoratedBox(
-          decoration: BoxDecoration(color: AppColors.primaryDefault),
-        );
-      },
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) {
-          return child;
-        }
-        return const DecoratedBox(
-          decoration: BoxDecoration(color: AppColors.primaryDefault),
-        );
-      },
     );
   }
 
@@ -606,5 +569,55 @@ void _waitingModal(BuildContext context, ThemeData theme) {
         textAlign: TextAlign.start,
       ),
     ],
+  );
+}
+
+Widget ThumbnailBackground(String? url, {int? index}) {
+  // if (!url.isNotEmptyOrNull) {
+  //   return const DecoratedBox(
+  //     decoration: BoxDecoration(color: AppColors.primaryDefault),
+  //   );
+  // }
+  if (url.isEmptyOrNull) {
+    return _fallbackThumbnail(index: index);
+  }
+
+  if (((url ?? '').contains("mqdefault") || (url ?? '').contains("hqdefault") || (url ?? '').contains("sqdefault")) &&
+      (url ?? '').contains("youtube")) {
+    url = url?.replaceAll("mqdefault", "maxresdefault");
+    url = url?.replaceAll("hqdefault", "maxresdefault");
+    url = url?.replaceAll("sqdefault", "maxresdefault");
+  }
+
+  return Image.network(
+    url ?? '',
+    fit: BoxFit.cover,
+    errorBuilder: (context, error, stackTrace) {
+      return const DecoratedBox(
+        decoration: BoxDecoration(color: AppColors.primaryDefault),
+      );
+    },
+    loadingBuilder: (context, child, loadingProgress) {
+      if (loadingProgress == null) {
+        return child;
+      }
+      return const DecoratedBox(
+        decoration: BoxDecoration(color: AppColors.primaryDefault),
+      );
+    },
+  );
+}
+
+Widget _fallbackThumbnail({int? index}) {
+  List<String> images = [
+    AppImages.resourceFallback2,
+    AppImages.resourceFallback4,
+    AppImages.resourceFallback1,
+    AppImages.resourceFallback3,
+  ];
+  final finalIndex = index ?? math.Random().nextInt(images.length);
+  return Image.asset(
+    images[finalIndex],
+    fit: BoxFit.cover,
   );
 }

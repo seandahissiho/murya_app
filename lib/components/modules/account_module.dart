@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
+import 'package:murya/blocs/modules/quests/quests_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/modules/app_module.dart';
 import 'package:murya/components/score.dart';
@@ -53,6 +54,7 @@ class _AccountModuleWidgetState extends State<AccountModuleWidget> {
             final user = state.user;
             final hasData = user.isRegistered;
             final buttonText = widget.module.button1Text(context);
+            final double questMapCompletion = context.read<QuestsBloc>().getUserQuestMapCompletionPercentage();
             return AnimatedSwitcher(
               duration: const Duration(milliseconds: 2500),
               switchInCurve: Curves.easeIn,
@@ -64,12 +66,12 @@ class _AccountModuleWidgetState extends State<AccountModuleWidget> {
                 );
               },
               child: AppModuleWidget(
-                key: ValueKey('account-module-${widget.module.id}-${hasData ? "data" : "empty"}'),
+                key: ValueKey('account-module-${widget.module.id}'),
                 module: widget.module,
                 hasData: true,
                 titleContent: widget.module.title(context),
                 subtitleContent: GoalWidget(
-                  value: hasData ? _goalValue(user) : 0,
+                  value: (hasData ? questMapCompletion : 0.0).toInt(),
                   // iconColor: AppColors.primaryDefault,
                   isLandingPage: true,
                 ),

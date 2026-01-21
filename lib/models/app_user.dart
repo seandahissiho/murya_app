@@ -120,7 +120,8 @@ class User {
 
   get isNotEmpty => id.isNotEmptyOrNull;
 
-  get isRegistered => (email.isNotEmptyOrNull || phone.isNotEmptyOrNull) && id.isNotEmptyOrNull;
+  get isRegistered =>
+      (email.isNotEmptyOrNull || phone.isNotEmptyOrNull || deviceId.isNotEmptyOrNull) && id.isNotEmptyOrNull;
 
   Map<String, dynamic> toJson() {
     return {
