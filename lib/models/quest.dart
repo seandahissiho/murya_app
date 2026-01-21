@@ -283,6 +283,35 @@ class QuestLineage {
     );
   }
 
+  int get userQuestMapTotalItems {
+    int countItems(QuestLineageNode? node) {
+      if (node == null) return 0;
+      int count = 1; // Count the current node
+      for (var child in node.children) {
+        count += countItems(child);
+      }
+      return count;
+    }
+
+    return countItems(main);
+  }
+
+  get userQuestMapCompletedItems {
+    int countCompletedItems(QuestLineageNode? node) {
+      if (node == null) return 0;
+      int count = 0;
+      if (node.instance != null && (node.instance!.status ?? '').toUpperCase() == 'COMPLETED') {
+        count = 1;
+      }
+      for (var child in node.children) {
+        count += countCompletedItems(child);
+      }
+      return count;
+    }
+
+    return countCompletedItems(main);
+  }
+
   static QuestLineage empty() => const QuestLineage();
 }
 
@@ -491,9 +520,7 @@ class QuestList {
     }
 
     List<QuestGroup> updateGroups(List<QuestGroup> items) {
-      return items
-          .map((group) => group.copyWith(items: updateItems(group.items)))
-          .toList();
+      return items.map((group) => group.copyWith(items: updateItems(group.items))).toList();
     }
 
     return copyWith(

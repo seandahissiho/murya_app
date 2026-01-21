@@ -14,6 +14,7 @@ import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/models/module.dart';
 import 'package:murya/models/resource.dart';
+import 'package:murya/screens/ressources/resources.dart';
 
 class RessourcesModuleWidget extends StatefulWidget {
   final Module module;
@@ -153,6 +154,7 @@ class _RessourcesStackedResources extends StatelessWidget {
                       resource: resource,
                       theme: theme,
                       isTopCard: isTopCard,
+                      index: index,
                     ),
                   ),
                 );
@@ -176,11 +178,13 @@ class _ResourceCard extends StatelessWidget {
   final Resource resource;
   final ThemeData theme;
   final bool isTopCard;
+  final int? index;
 
   const _ResourceCard({
     required this.resource,
     required this.theme,
     required this.isTopCard,
+    this.index,
   });
 
   @override
@@ -211,7 +215,7 @@ class _ResourceCard extends StatelessWidget {
             child: Stack(
               children: [
                 // Background image (pixelisée dans ton screenshot => normal)
-                Positioned.fill(child: _thumbnailBackground(thumbnailUrl)),
+                Positioned.fill(child: ThumbnailBackground(thumbnailUrl, index: index)),
 
                 // Dark gradient overlay (pour lisibilité texte)
                 Positioned.fill(
@@ -299,29 +303,29 @@ class _ResourceCard extends StatelessWidget {
   }
 }
 
-Widget _thumbnailBackground(String? url) {
-  if (url == null || url.trim().isEmpty) {
-    return const DecoratedBox(
-      decoration: BoxDecoration(color: AppColors.primaryDefault),
-    );
-  }
-
-  return Image.network(
-    url,
-    fit: BoxFit.cover,
-    errorBuilder: (_, __, ___) {
-      return const DecoratedBox(
-        decoration: BoxDecoration(color: AppColors.primaryDefault),
-      );
-    },
-    loadingBuilder: (context, child, loadingProgress) {
-      if (loadingProgress == null) return child;
-      return const DecoratedBox(
-        decoration: BoxDecoration(color: AppColors.primaryDefault),
-      );
-    },
-  );
-}
+// Widget _thumbnailBackground(String? url) {
+//   if (url == null || url.trim().isEmpty) {
+//     return const DecoratedBox(
+//       decoration: BoxDecoration(color: AppColors.primaryDefault),
+//     );
+//   }
+//
+//   return Image.network(
+//     url,
+//     fit: BoxFit.cover,
+//     errorBuilder: (_, __, ___) {
+//       return const DecoratedBox(
+//         decoration: BoxDecoration(color: AppColors.primaryDefault),
+//       );
+//     },
+//     loadingBuilder: (context, child, loadingProgress) {
+//       if (loadingProgress == null) return child;
+//       return const DecoratedBox(
+//         decoration: BoxDecoration(color: AppColors.primaryDefault),
+//       );
+//     },
+//   );
+// }
 
 Widget _resourcesStack(List<Resource> resources, Module module) {
   return LayoutBuilder(builder: (context, constraints) {

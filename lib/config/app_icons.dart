@@ -99,4 +99,9 @@ class AppImages {
   static const String CFCardBackgroundPath = '$basePath/93d4152ff0431e91e55321d66f736559248e055a.webp';
   static const String starsPath = '$basePath/vecteezy_stars_3.png';
   static const String avatarPlaceholder = '$basePath/148211565.png';
+
+  static const String resourceFallback1 = '$basePath/2f5d9c3f008989afc17b7b832e7f9075c19baa67.jpg';
+  static const String resourceFallback2 = '$basePath/93d4152ff0431e91e55321d66f736559248e055a.webp';
+  static const String resourceFallback3 = '$basePath/3196d2ef4d8a5ddc89bf3054643568508a65599c.jpg';
+  static const String resourceFallback4 = '$basePath/414debc092d5b8c1dd730a1c5ca8e7b13651da77.jpg';
 }

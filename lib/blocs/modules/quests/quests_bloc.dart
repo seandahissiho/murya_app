@@ -76,4 +76,12 @@ class QuestsBloc extends Bloc<QuestsEvent, QuestsState> {
     _jobSubscription.cancel();
     return super.close();
   }
+
+  double getUserQuestMapCompletionPercentage() {
+    if (state.questLineage.userQuestMapTotalItems == 0) {
+      return 0;
+    }
+    final result = (state.questLineage.userQuestMapCompletedItems / state.questLineage.userQuestMapTotalItems) * 100;
+    return result;
+  }
 }
