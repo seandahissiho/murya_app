@@ -483,7 +483,7 @@ class QuestInfoBox extends StatelessWidget {
                 AppSpacing.tinyMarginBox,
                 Flexible(
                   child: AutoSizeText(
-                    (questGroup.group?.title).toString(),
+                    (questGroup.group?.title ?? '').toString(),
                     style: theme.textTheme.labelLarge!.copyWith(
                       color: AppColors.textPrimary,
                       fontSize: math.max(16 * scale, 2),
