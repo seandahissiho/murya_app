@@ -401,7 +401,12 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: _thumbnailBackground(thumbnailUrl),
+                    child: Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      color: Colors.blue,
+                      child: _thumbnailBackground(thumbnailUrl),
+                    ),
                   ),
                   Positioned.fill(
                     child: DecoratedBox(
@@ -410,8 +415,8 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            AppColors.primaryDefault.withOpacity(0.05),
-                            AppColors.primaryDefault.withOpacity(0.8),
+                            AppColors.primaryDefault.withValues(alpha: 0.25),
+                            AppColors.primaryDefault.withValues(alpha: 0.9),
                           ],
                         ),
                       ),
@@ -455,14 +460,21 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
   }
 
   Widget _thumbnailBackground(String? url) {
-    if (!url.isNotEmptyOrNull) {
-      return const DecoratedBox(
-        decoration: BoxDecoration(color: AppColors.primaryDefault),
-      );
+    // if (!url.isNotEmptyOrNull) {
+    //   return const DecoratedBox(
+    //     decoration: BoxDecoration(color: AppColors.primaryDefault),
+    //   );
+    // }
+
+    if (((url ?? '').contains("mqdefault") || (url ?? '').contains("hqdefault") || (url ?? '').contains("sqdefault")) &&
+        (url ?? '').contains("youtube")) {
+      url = url?.replaceAll("mqdefault", "maxresdefault");
+      url = url?.replaceAll("hqdefault", "maxresdefault");
+      url = url?.replaceAll("sqdefault", "maxresdefault");
     }
 
     return Image.network(
-      url!,
+      url ?? '',
       fit: BoxFit.cover,
       errorBuilder: (context, error, stackTrace) {
         return const DecoratedBox(
