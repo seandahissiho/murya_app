@@ -20,7 +20,10 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
       final dynamic beamState = Beamer.of(context).currentBeamLocation.state;
       jobId = beamState.pathParameters['jobId'];
       cfId = beamState.pathParameters['cfId'];
-      context.read<JobBloc>().add(LoadCFDetails(context: context, jobId: jobId, cfId: cfId));
+      final userJobId = context.read<JobBloc>().state.userCurrentJob?.id;
+      context
+          .read<JobBloc>()
+          .add(LoadCFDetails(context: context, jobId: jobId, cfId: cfId, userJobId: userJobId));
     });
   }
 

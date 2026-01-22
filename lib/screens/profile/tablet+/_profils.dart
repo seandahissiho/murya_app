@@ -192,16 +192,10 @@ class UserListBox extends StatelessWidget {
             child: Container(
               height: _userRowHeight / 1.75,
               width: _userRowHeight / 1.75,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.backgroundCard,
                 // border: Border.all(color: AppColors.borderLight, width: 2),
                 shape: BoxShape.circle,
-                image: user.profilePictureUrl.isNotEmptyOrNull
-                    ? DecorationImage(
-                        image: NetworkImage(user.profilePictureUrl!),
-                        fit: BoxFit.cover,
-                      )
-                    : null,
               ),
               alignment: Alignment.center,
               child: user.profilePictureUrl.isEmptyOrNull
@@ -209,7 +203,26 @@ class UserListBox extends StatelessWidget {
                       AppIcons.avatarPlaceholderPath,
                       fit: BoxFit.cover,
                     )
-                  : null,
+                  : ClipOval(
+                      child: CachedNetworkImage(
+                        imageUrl: user.profilePictureUrl!,
+                        fit: BoxFit.cover,
+                        width: _userRowHeight / 1.75,
+                        height: _userRowHeight / 1.75,
+                        placeholder: (context, url) {
+                          return SvgPicture.asset(
+                            AppIcons.avatarPlaceholderPath,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                        errorWidget: (context, url, error) {
+                          return SvgPicture.asset(
+                            AppIcons.avatarPlaceholderPath,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                    ),
             ),
           ),
         )),
@@ -796,10 +809,13 @@ class _RewardListItemState extends State<RewardListItem> {
                   height: 48,
                   child: ClipRRect(
                     borderRadius: AppRadius.tinyTiny,
-                    child: Image.network(
-                      widget.reward.imageUrl,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.reward.imageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
+                      placeholder: (context, url) {
+                        return Container(color: AppColors.borderLight);
+                      },
+                      errorWidget: (context, url, error) {
                         return Container(
                           color: AppColors.borderLight,
                           child: const Center(

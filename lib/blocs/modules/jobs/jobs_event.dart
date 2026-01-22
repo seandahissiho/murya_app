@@ -55,6 +55,7 @@ final class LoadCFDetails extends JobEvent {
   final String jobId;
   final String cfId;
   final BuildContext context;
+  final String? userJobId;
 
-  LoadCFDetails({required this.jobId, required this.cfId, required this.context});
+  LoadCFDetails({required this.jobId, required this.cfId, required this.context, this.userJobId});
 }

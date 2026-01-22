@@ -29,6 +29,13 @@ class AppIcons {
   static const String searchLoupeAddPlusShieldPath = '$basePath/ProtectionSecurity/search-loupe-add-plus-shield.svg';
   // assets/icons/ProtectionSecurity/Shield-Protected.svg
   static const String shieldProtectedPath = '$basePath/ProtectionSecurity/Shield-Protected.svg';
+  // assets/icons/competenciesStates/😀 Grinning Face (Smile, Happy, Gleeful).svg
+  static const String grinningFacePath = '$basePath/competenciesStates/😀 Grinning Face (Smile, Happy, Gleeful).svg';
+  // assets/icons/competenciesStates/😐 Expressionless Face (Indifferent, Neutral, Apathetic).svg
+  static const String expressionlessFacePath =
+      '$basePath/competenciesStates/😐 Expressionless Face (Indifferent, Neutral, Apathetic).svg';
+  // assets/icons/competenciesStates/😩 Weary Face (Exhausted, Tired, Fatigued).svg
+  static const String wearyFacePath = '$basePath/competenciesStates/😩 Weary Face (Exhausted, Tired, Fatigued).svg';
 
   // dropdownArrowRightPath
   static const String dropdownArrowRightPath = '$basePath/ButtonRight.svg';

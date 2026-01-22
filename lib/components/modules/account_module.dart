@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -390,12 +391,19 @@ class _AvatarPhoto extends StatelessWidget {
           radius: size / 2,
           backgroundColor: AppColors.whiteSwatch,
           child: ClipOval(
-            child: Image.network(
-              photoUrl!,
+            child: CachedNetworkImage(
+              imageUrl: photoUrl!,
               width: size,
               height: size,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
+              placeholder: (context, url) {
+                return SvgPicture.asset(
+                  AppIcons.avatarPlaceholderPath,
+                  width: size,
+                  height: size,
+                );
+              },
+              errorWidget: (context, url, error) {
                 return SvgPicture.asset(
                   AppIcons.avatarPlaceholderPath,
                   width: size,
