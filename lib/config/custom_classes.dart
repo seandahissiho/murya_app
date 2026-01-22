@@ -11,6 +11,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:murya/config/DS.dart';
+import 'package:murya/config/app_icons.dart';
 import 'package:murya/models/country.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
@@ -97,19 +98,10 @@ class AppCachedNetworkImage extends StatelessWidget {
     }
 
     if ((imageUrl?.isNotEmpty ?? false) && imageUrl!.contains("http") == true && !byPassOnline) {
-      return Image.network(
-        'https://prodiser.blob.core.windows.net/images/1728070081215-Developpement_informatique_et_applications.png',
-        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Center(
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                  : null,
-            ),
-          );
-        },
-        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+      return Image.asset(
+        AppImages.avatarPlaceholder,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
           return _displayError(byPassOnline: true, byPassLocal: byPassLocal);
         },
       );

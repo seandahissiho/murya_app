@@ -145,26 +145,24 @@ class JobRepository extends BaseRepository {
   }
 
   // getCFDetails
-  Future<Result<(CompetencyFamily, AppJob)>> getCFDetails(String jobId, String cfId) async {
+  Future<Result<(CompetencyFamily, AppJob)>> getCFDetails(String jobId, String cfId, {String? userJobId}) async {
     return AppResponse.execute(
       action: () async {
-        final response = await api.dio.get('/jobs/$jobId/competency_families/$cfId/');
+        final String? resolvedUserJobId = userJobId != null && userJobId.isNotEmpty ? userJobId : null;
+        final String endpoint = resolvedUserJobId != null
+            ? '/userJobs/$resolvedUserJobId/competency_families/$cfId/'
+            : '/jobs/$jobId/competency_families/$cfId/';
+        final response = await api.dio.get(endpoint);
 
         if (response.data["data"] != null) {
-          await cacheService.save('cf_details_${jobId}_$cfId', response.data["data"]);
+          final cacheKey = resolvedUserJobId != null
+              ? 'cf_details_userjob_${resolvedUserJobId}_$cfId'
+              : 'cf_details_${jobId}_$cfId';
+          await cacheService.save(cacheKey, response.data["data"]);
         }
 
-        final familyJson = response.data["data"]['family'];
-        familyJson['competencies'] = response.data["data"]['competencies'];
-        final CompetencyFamily cfamily = CompetencyFamily.fromJson(familyJson);
-        final data = response.data["data"];
-        if (data['scope'] == 'JOB_FAMILY') {
-          final JobFamily jobFamily = JobFamily.fromJson(data['jobFamily']);
-          return (cfamily, jobFamily);
-        } else {
-          final Job job = Job.fromJson(data['job']);
-          return (cfamily, job);
-        }
+        final data = response.data["data"] as Map<String, dynamic>;
+        return _parseCFDetailsData(data);
         // final Job job = Job.fromJson(response.data["data"]['job']);
         // return (cfamily, job);
       },
@@ -172,15 +170,15 @@ class JobRepository extends BaseRepository {
     );
   }
 
-  Future<Result<(CompetencyFamily, Job)>> getCFDetailsCached(String jobId, String cfId) async {
+  Future<Result<(CompetencyFamily, AppJob)>> getCFDetailsCached(String jobId, String cfId, {String? userJobId}) async {
     try {
-      final cachedData = await cacheService.get('cf_details_${jobId}_$cfId');
+      final String? resolvedUserJobId = userJobId != null && userJobId.isNotEmpty ? userJobId : null;
+      final cacheKey = resolvedUserJobId != null
+          ? 'cf_details_userjob_${resolvedUserJobId}_$cfId'
+          : 'cf_details_${jobId}_$cfId';
+      final cachedData = await cacheService.get(cacheKey);
       if (cachedData != null) {
-        final familyJson = cachedData['family'];
-        familyJson['competencies'] = cachedData['competencies'];
-        final CompetencyFamily cfamily = CompetencyFamily.fromJson(familyJson);
-        final Job job = Job.fromJson(cachedData['job']);
-        return Result.success((cfamily, job), null);
+        return Result.success(_parseCFDetailsData(cachedData as Map<String, dynamic>), null);
       }
     } catch (e) {
       // ignore cache errors
@@ -252,5 +250,30 @@ class JobRepository extends BaseRepository {
       // ignore cache errors
     }
     return Result.success(UserJobCompetencyProfile.empty(), null);
+  }
+
+  (CompetencyFamily, AppJob) _parseCFDetailsData(Map<String, dynamic> data) {
+    final familyJson = Map<String, dynamic>.from(data['family'] as Map? ?? <String, dynamic>{});
+    familyJson['competencies'] = data['competencies'] ?? [];
+    final CompetencyFamily cfamily = CompetencyFamily.fromJson(familyJson);
+
+    final scope = data['scope'];
+    if (scope == 'JOB_FAMILY' && data['jobFamily'] != null) {
+      final JobFamily jobFamily = JobFamily.fromJson(data['jobFamily']);
+      return (cfamily, jobFamily);
+    }
+    if (scope == 'JOB' && data['job'] != null) {
+      final Job job = Job.fromJson(data['job']);
+      return (cfamily, job);
+    }
+    if (data['jobFamily'] != null) {
+      final JobFamily jobFamily = JobFamily.fromJson(data['jobFamily']);
+      return (cfamily, jobFamily);
+    }
+    if (data['job'] != null) {
+      final Job job = Job.fromJson(data['job']);
+      return (cfamily, job);
+    }
+    return (cfamily, Job.empty());
   }
 }

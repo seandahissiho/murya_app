@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -407,9 +408,15 @@ class RankingCard extends StatelessWidget {
                   width: isMobile ? mobileCTAHeight / 1.618 : tabletAndAboveCTAHeight / 1.618,
                   child: ClipOval(
                     child: pictureUrl.isNotEmpty
-                        ? Image.network(
-                            pictureUrl,
+                        ? CachedNetworkImage(
+                            imageUrl: pictureUrl,
                             fit: BoxFit.cover,
+                            placeholder: (context, url) {
+                              return Container(color: color);
+                            },
+                            errorWidget: (context, url, error) {
+                              return Container(color: color);
+                            },
                           )
                         : Container(
                             color: color,
@@ -466,9 +473,15 @@ class RankingCard extends StatelessWidget {
                   width: isMobile ? mobileCTAHeight / 1.618 : tabletAndAboveCTAHeight / 1.618,
                   child: ClipOval(
                     child: pictureUrl.isNotEmpty
-                        ? Image.network(
-                            pictureUrl,
+                        ? CachedNetworkImage(
+                            imageUrl: pictureUrl,
                             fit: BoxFit.cover,
+                            placeholder: (context, url) {
+                              return Container(color: Colors.transparent);
+                            },
+                            errorWidget: (context, url, error) {
+                              return Container(color: Colors.transparent);
+                            },
                           )
                         : Container(
                             color: Colors.transparent,

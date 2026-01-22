@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:beamer/beamer.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 // import 'package:fl_chart/fl_chart.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -589,18 +590,15 @@ Widget ThumbnailBackground(String? url, {int? index}) {
     url = url?.replaceAll("sqdefault", "maxresdefault");
   }
 
-  return Image.network(
-    url ?? '',
+  return CachedNetworkImage(
+    imageUrl: url ?? '',
     fit: BoxFit.cover,
-    errorBuilder: (context, error, stackTrace) {
+    placeholder: (context, url) {
       return const DecoratedBox(
         decoration: BoxDecoration(color: AppColors.primaryDefault),
       );
     },
-    loadingBuilder: (context, child, loadingProgress) {
-      if (loadingProgress == null) {
-        return child;
-      }
+    errorWidget: (context, url, error) {
       return const DecoratedBox(
         decoration: BoxDecoration(color: AppColors.primaryDefault),
       );

@@ -154,7 +154,8 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   }
 
   FutureOr<void> _onLoadCFDetails(LoadCFDetails event, Emitter<JobState> emit) async {
-    final cachedResult = await jobRepository.getCFDetailsCached(event.jobId, event.cfId);
+    final String? userJobId = event.userJobId ?? state.userCurrentJob?.id ?? _userCurrentJob?.id;
+    final cachedResult = await jobRepository.getCFDetailsCached(event.jobId, event.cfId, userJobId: userJobId);
     if (cachedResult.data != null) {
       emit(CFDetailsLoaded(
           cfamily: cachedResult.data!.$1, job: cachedResult.data!.$2, userCurrentJob: state.userCurrentJob));
@@ -162,7 +163,7 @@ class JobBloc extends Bloc<JobEvent, JobState> {
     if (event.context.mounted == false) return;
 
     final local = AppLocalizations.of(event.context);
-    final result = await jobRepository.getCFDetails(event.jobId, event.cfId);
+    final result = await jobRepository.getCFDetails(event.jobId, event.cfId, userJobId: userJobId);
 
     if (result.isError) {
       notificationBloc.add(ErrorNotificationEvent(message: result.error ?? local.user_ressources_module_title));

@@ -105,9 +105,9 @@ class CompetencyCard extends StatelessWidget {
                       if (isMobile) ...[
                         const Spacer(),
                         SvgPicture.asset(
-                          AppIcons.smilingIconPath,
-                          width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                          height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                          competency.rating?.iconAssetPath ?? AppIcons.expressionlessFacePath,
+                          width: 24,
+                          height: 24,
                         ),
                       ]
                     ],
@@ -120,7 +120,7 @@ class CompetencyCard extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
                     child: AppXButton(
@@ -134,9 +134,9 @@ class CompetencyCard extends StatelessWidget {
                   ),
                   AppSpacing.elementMarginBox,
                   SvgPicture.asset(
-                    AppIcons.smilingIconPath,
-                    width: tabletAndAboveCTAHeight,
-                    height: tabletAndAboveCTAHeight,
+                    competency.rating?.iconAssetPath ?? AppIcons.expressionlessFacePath,
+                    width: 32,
+                    height: 32,
                   ),
                 ],
               ),

@@ -149,12 +149,18 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                           width: double.infinity,
                           child: Stack(
                             children: [
-                              Image.network(
-                                reward.imageUrl,
+                              CachedNetworkImage(
+                                imageUrl: reward.imageUrl,
                                 height: 140,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
+                                placeholder: (context, url) {
+                                  return Container(
+                                    color: AppColors.borderLight,
+                                    height: 150,
+                                  );
+                                },
+                                errorWidget: (context, url, error) {
                                   return Container(
                                     color: AppColors.borderLight,
                                     height: 150,

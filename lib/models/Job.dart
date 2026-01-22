@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/main.dart';
@@ -378,6 +379,13 @@ class Competency {
   final List<CompetencyFamily>? families;
   final CompetencyType type;
   final Level level;
+  final CompetencyRating? rating;
+  final double? percentage;
+  final double? masteryNow;
+  final double? mastery30d;
+  final int? attemptsCount;
+  final double? bestScore;
+  final DateTime? lastQuizAt;
 
   Competency({
     required this.id,
@@ -385,6 +393,13 @@ class Competency {
     this.families,
     required this.type,
     required this.level,
+    this.rating,
+    this.percentage,
+    this.masteryNow,
+    this.mastery30d,
+    this.attemptsCount,
+    this.bestScore,
+    this.lastQuizAt,
   });
 
   factory Competency.fromJson(compJson) {
@@ -396,6 +411,13 @@ class Competency {
           : null,
       type: CompetencyTypeExtension.fromString(compJson['type']),
       level: LevelExtension.fromString(compJson['level']),
+      rating: CompetencyRatingExtension.fromString(compJson['rating'] as String?),
+      percentage: _toDoubleNullable(compJson['percentage']),
+      masteryNow: _toDoubleNullable(compJson['masteryNow']),
+      mastery30d: _toDoubleNullable(compJson['mastery30d']),
+      attemptsCount: (compJson['attemptsCount'] as num?)?.toInt(),
+      bestScore: _toDoubleNullable(compJson['bestScore']),
+      lastQuizAt: compJson['lastQuizAt'] != null ? DateTime.parse(compJson['lastQuizAt'] as String) : null,
     );
   }
 
@@ -406,6 +428,41 @@ class Competency {
       type: CompetencyType.hardSkill,
       level: Level.beginner,
     );
+  }
+}
+
+enum CompetencyRating { tresBon, bon, moyen, mauvais, tresMauvais }
+
+extension CompetencyRatingExtension on CompetencyRating {
+  static CompetencyRating? fromString(String? rating) {
+    if (rating == null) return null;
+    switch (rating.toUpperCase()) {
+      case 'TRES_BON':
+        return CompetencyRating.tresBon;
+      case 'BON':
+        return CompetencyRating.bon;
+      case 'MOYEN':
+        return CompetencyRating.moyen;
+      case 'MAUVAIS':
+        return CompetencyRating.mauvais;
+      case 'TRES_MAUVAIS':
+        return CompetencyRating.tresMauvais;
+      default:
+        return null;
+    }
+  }
+
+  String get iconAssetPath {
+    switch (this) {
+      case CompetencyRating.tresBon:
+      case CompetencyRating.bon:
+        return AppIcons.grinningFacePath;
+      case CompetencyRating.moyen:
+        return AppIcons.expressionlessFacePath;
+      case CompetencyRating.mauvais:
+      case CompetencyRating.tresMauvais:
+        return AppIcons.wearyFacePath;
+    }
   }
 }
 
@@ -461,6 +518,13 @@ class CompetencyFamily {
       description: '',
     );
   }
+}
+
+double? _toDoubleNullable(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value.toDouble();
+  if (value is String) return double.tryParse(value);
+  return null;
 }
 
 enum CompetencyType { hardSkill, softSkill }
