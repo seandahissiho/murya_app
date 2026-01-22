@@ -65,7 +65,7 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
 
   _tabs(ThemeData theme, AppLocalizations locale) {
     return DefaultTabController(
-      length: 4,
+      length: 3,
       child: Column(
         children: [
           SizedBox(

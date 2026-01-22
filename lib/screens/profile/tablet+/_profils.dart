@@ -89,25 +89,42 @@ class UserListBox extends StatelessWidget {
           ),
           child: isLoading && users.isEmpty
               ? const Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
-                  // physics: const NeverScrollableScrollPhysics(),
-                  child: Table(
-                    columnWidths: const {
-                      0: FlexColumnWidth(.125),
-                      1: FlexColumnWidth(.4),
-                      2: FlexColumnWidth(1),
-                      3: FlexColumnWidth(1),
-                      4: FlexColumnWidth(1),
-                      5: FlexColumnWidth(.75),
-                    },
-                    children: [
-                      headers(theme),
-                      ...users.map((user) {
-                        final int index = users.indexOf(user) + 1;
-                        return userRow(user, theme, index, currentUserId: state.user.id, isLast: index == users.length);
-                      }).toList(),
-                    ],
-                  ),
+              : Column(
+                  children: [
+                    Table(
+                      columnWidths: const {
+                        0: FlexColumnWidth(1 + .4 + .125),
+                        1: FlexColumnWidth(1),
+                        2: FlexColumnWidth(1),
+                        3: FlexColumnWidth(.75),
+                      },
+                      children: [
+                        headers(theme),
+                      ],
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        // physics: const NeverScrollableScrollPhysics(),
+                        child: Table(
+                          columnWidths: const {
+                            0: FlexColumnWidth(.125),
+                            1: FlexColumnWidth(.4),
+                            2: FlexColumnWidth(1),
+                            3: FlexColumnWidth(1),
+                            4: FlexColumnWidth(1),
+                            5: FlexColumnWidth(.75),
+                          },
+                          children: [
+                            ...users.map((user) {
+                              final int index = users.indexOf(user) + 1;
+                              return userRow(user, theme, index,
+                                  currentUserId: state.user.id, isLast: index == users.length);
+                            }).toList(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
         );
       },
@@ -116,8 +133,6 @@ class UserListBox extends StatelessWidget {
 
   TableRow headers(ThemeData theme) {
     final List<String> headers = [
-      '',
-      '',
       'Personne',
       'Expérience',
       'Questions répondues',
@@ -132,7 +147,10 @@ class UserListBox extends StatelessWidget {
       children: headers.map((header) {
         return TableCell(
             child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.containerInsideMargin),
+          padding: EdgeInsets.symmetric(
+            vertical: AppSpacing.containerInsideMargin,
+            horizontal: header == 'Personne' ? AppSpacing.containerInsideMargin : 0,
+          ),
           child: Text(
             header,
             style: theme.textTheme.labelLarge?.copyWith(
