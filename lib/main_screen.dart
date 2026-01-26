@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:beamer/beamer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
@@ -10,6 +9,7 @@ import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
+import 'package:murya/components/auth_loading_bar.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/models/app_user.dart';
@@ -169,11 +169,16 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
                         ),
                         if (authState is AuthenticationLoading && authState.isAuthenticated == false) ...[
                           const Center(
-                            child: CupertinoActivityIndicator(
-                              color: Colors.black,
-                            ),
+                            child: AuthLoadingBar(),
                           ),
                         ],
+                        // if (authState is AuthenticationLoading && authState.isAuthenticated == false) ...[
+                        //   const Center(
+                        //     child: CupertinoActivityIndicator(
+                        //       color: Colors.black,
+                        //     ),
+                        //   ),
+                        // ],
                       ],
                     ),
                   );
