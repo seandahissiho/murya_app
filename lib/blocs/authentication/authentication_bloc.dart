@@ -92,6 +92,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   FutureOr<void> _onTryAutoLogin(TryAutoLogin event, Emitter<AuthenticationState> emit) async {
+    // await Future.delayed(const Duration(milliseconds: 15500));
     final result = await authenticationRepository.getToken();
     if (result.isError) {
       // try to login with device id

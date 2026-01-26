@@ -664,6 +664,7 @@ class _QuestNodeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = _computeState(node);
+    final shape = _shapeForCategory(node);
 
     const outerBg = Color(0xFFEDE8E0);
     late final Color innerBg;
@@ -703,6 +704,10 @@ class _QuestNodeView extends StatelessWidget {
     }
 
     final glow = (state == _QuestVisualState.claimable || selected);
+    final borderSide = BorderSide(
+      color: selected ? const Color(0xFF6D3CF7) : Colors.transparent,
+      width: selected ? 3 : 0,
+    );
 
     return GestureDetector(
       onTap: onTap == null ? null : () => onTap!(node),
@@ -710,10 +715,10 @@ class _QuestNodeView extends StatelessWidget {
         duration: const Duration(milliseconds: 160),
         width: size,
         height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
+        decoration: ShapeDecoration(
+          shape: _shapeBorder(shape, size: size, side: borderSide),
           color: outerBg,
-          boxShadow: glow
+          shadows: glow
               ? [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.10),
@@ -722,17 +727,18 @@ class _QuestNodeView extends StatelessWidget {
                   ),
                 ]
               : [],
-          border: Border.all(
-            color: selected ? const Color(0xFF6D3CF7) : Colors.transparent,
-            width: selected ? 3 : 0,
-          ),
         ),
         child: Center(
-          child: Container(
+          child: SizedBox(
             width: size * 0.58,
             height: size * 0.58,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: innerBg),
-            child: Icon(icon, color: iconColor, size: size * 0.30),
+            child: DecoratedBox(
+              decoration: ShapeDecoration(
+                shape: _shapeBorder(shape, size: size * 0.58),
+                color: innerBg,
+              ),
+              child: Icon(icon, color: iconColor, size: size * 0.30),
+            ),
           ),
         ),
       ),
@@ -754,6 +760,112 @@ class _QuestNodeView extends StatelessWidget {
     if (progress > 0) return _QuestVisualState.inProgress;
 
     return _QuestVisualState.available;
+  }
+}
+
+enum _QuestNodeShape {
+  circle,
+  roundedSquare,
+  diamond,
+  hexagon,
+}
+
+_QuestNodeShape _shapeForCategory(QuestLineageNode node) {
+  final raw = node.definition?.category;
+  final s = raw?.toString().toUpperCase().trim();
+
+  switch (s) {
+    case 'MAIN':
+      return _QuestNodeShape.circle;
+    case 'BRANCH':
+      return _QuestNodeShape.roundedSquare;
+    case 'COLLECTION':
+      return _QuestNodeShape.hexagon;
+    case 'SHARE':
+      return _QuestNodeShape.diamond;
+    default:
+      return _QuestNodeShape.circle;
+  }
+}
+
+ShapeBorder _shapeBorder(
+  _QuestNodeShape shape, {
+  required double size,
+  BorderSide side = BorderSide.none,
+}) {
+  switch (shape) {
+    case _QuestNodeShape.circle:
+      return CircleBorder(side: side);
+    case _QuestNodeShape.roundedSquare:
+      return RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(size * 0.18),
+        side: side,
+      );
+    case _QuestNodeShape.diamond:
+      return _PolygonBorder(sides: 4, rotation: math.pi / 4, side: side);
+    case _QuestNodeShape.hexagon:
+      return _PolygonBorder(sides: 6, rotation: math.pi / 6, side: side);
+  }
+}
+
+class _PolygonBorder extends ShapeBorder {
+  final int sides;
+  final double rotation;
+  final BorderSide side;
+
+  const _PolygonBorder({
+    required this.sides,
+    this.rotation = 0,
+    this.side = BorderSide.none,
+  }) : assert(sides >= 3);
+
+  @override
+  EdgeInsetsGeometry get dimensions => EdgeInsets.all(side.width);
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    return _polygonPath(rect);
+  }
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
+    if (side.width <= 0) return _polygonPath(rect);
+    return _polygonPath(rect.deflate(side.width));
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    if (side.style == BorderStyle.none || side.width <= 0) return;
+    final paint = side.toPaint();
+    canvas.drawPath(_polygonPath(rect), paint);
+  }
+
+  @override
+  ShapeBorder scale(double t) {
+    return _PolygonBorder(
+      sides: sides,
+      rotation: rotation,
+      side: side.scale(t),
+    );
+  }
+
+  Path _polygonPath(Rect rect) {
+    final center = rect.center;
+    final radius = math.min(rect.width, rect.height) / 2;
+
+    final path = Path();
+    for (int i = 0; i < sides; i++) {
+      final angle = rotation + (math.pi * 2 * i / sides);
+      final x = center.dx + radius * math.cos(angle);
+      final y = center.dy + radius * math.sin(angle);
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
+    return path;
   }
 }
 
