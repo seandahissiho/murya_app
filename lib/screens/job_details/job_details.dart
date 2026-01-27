@@ -246,6 +246,7 @@ class InteractiveRoundedRadarChart extends StatefulWidget {
   final List<double> userValues;
   final double maxValue;
   final double cornerRadius;
+  final bool isLandingPageChart;
 
   // labelBoxColor
   final Color labelBgColor;
@@ -264,6 +265,7 @@ class InteractiveRoundedRadarChart extends StatefulWidget {
     this.labelBgColor = AppColors.primaryDefault,
     this.labelTextColor = AppColors.textInverted,
     this.hideTexts = false,
+    this.isLandingPageChart = false,
   }) : super(key: key);
 
   @override
@@ -301,6 +303,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
   }
 
   void _updateHover(Size size, Offset localPos) {
+    if (widget.isLandingPageChart) return;
     final pts = _computePoints(size, widget.defaultValues);
     // threshold scales with chart size
     final double threshold = math.max(10.0, size.width * 0.05);

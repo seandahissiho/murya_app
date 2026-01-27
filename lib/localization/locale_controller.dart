@@ -10,19 +10,27 @@ class LocaleProvider extends ChangeNotifier {
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     final code = prefs.getString(_k);
-    if (code != 'fr') {
-      _locale = const Locale('fr');
-      await prefs.setString(_k, 'fr');
-    } else {
-      _locale = const Locale('fr');
-    }
+    final resolvedCode = _normalizeCode(code);
+    _locale = resolvedCode == null ? null : Locale(resolvedCode);
     notifyListeners();
   }
 
   Future<void> set(Locale? locale) async {
-    _locale = const Locale('fr');
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_k, 'fr');
+    final code = _normalizeCode(locale?.languageCode);
+    if (code == null) {
+      _locale = null;
+      await prefs.remove(_k);
+    } else {
+      _locale = Locale(code);
+      await prefs.setString(_k, code);
+    }
     notifyListeners();
+  }
+
+  String? _normalizeCode(String? code) {
+    if (code == null) return null;
+    if (code == 'fr' || code == 'en') return code;
+    return 'fr';
   }
 }

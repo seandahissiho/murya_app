@@ -242,7 +242,7 @@ class _TextWithLinksState extends State<TextWithLinks> {
           offset: const Offset(0, -1),
         )
       ],
-      color: widget.textsLinks[i].underline ? Colors.transparent : Colors.transparent,
+      color: widget.textsLinks[i].underline ? Colors.transparent : color,
       decoration: widget.textsLinks[i].underline ? TextDecoration.underline : null,
       decorationColor: color,
       fontWeight: textStyle.fontWeight,

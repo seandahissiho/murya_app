@@ -35,7 +35,7 @@ class LandingLocation extends BeamLocation<RouteInformationSerializable<dynamic>
     return [
       const BeamPage(
         key: ValueKey('landing-page'),
-        title: 'Landing Page',
+        title: "Murya - Page d'accueil",
         child: LandingScreen(),
       ),
     ];

@@ -206,6 +206,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
               labels: families.map((cf) => cf.name).toList(),
               defaultValues: (_job ?? _jobFamily ?? Job.empty()).kiviatValues(JobProgressionLevel.JUNIOR),
               userValues: _userJob.kiviatValues(families),
+              isLandingPageChart: true,
               // labelBgColor: AppColors.whiteSwatch,
               // labelTextColor: AppColors.primaryDefault,
               hideTexts: smallHeight,

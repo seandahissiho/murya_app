@@ -134,7 +134,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   FutureOr<void> _onChangeLanguage(AppChangeLanguage event, Emitter<AppState> emit) {
-    if (event.language.code != 'fr') {
+    if (event.language == state.language) {
       return null;
     }
     _appLanguage = event.language;
@@ -168,6 +168,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
     await localeProvider.load();
     _appLanguage = AppLanguage.french;
+    if (context.mounted != true) return;
     add(AppChangeLanguage(
       language: _appLanguage,
       context: context,
