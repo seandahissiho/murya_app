@@ -40,10 +40,11 @@ class JobDetailsLocation extends BeamLocation<RouteInformationSerializable<dynam
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
+    final String jobName = ...;
     return [
       BeamPage(
         key: ValueKey('jobDetails-page-$languageCode'),
-        title: 'JobDetails Page',
+        title: 'Murya - #$jobName#',
         child: const JobDetailsScreen(),
       ),
     ];
@@ -83,7 +84,17 @@ class _CFCardState extends State<CFCard> {
     final locale = AppLocalizations.of(context);
     final isMobile = DeviceHelper.isMobile(context);
     return AppXButton(
-      onPressed: () {},
+      onPressed: () {
+        navigateToPath(
+          context,
+          to: AppRoutes.competencyFamilyDetails
+              .replaceAll(':jobId', widget.job.id!)
+              .replaceAll(':cfId', widget.family.id!),
+          data: {
+            'familyName': widget.family.name,
+          },
+        );
+      },
       isLoading: false,
       shrinkWrap: false,
       height: isMobile ? mobileCTAHeight * 3 : tabletAndAboveCTAHeight * 2.25,
@@ -140,10 +151,15 @@ class _CFCardState extends State<CFCard> {
         GestureDetector(
           onTap: () {
             // rightModalOpen(context, screen: const MainSearchScreen());
-            navigateToPath(context,
-                to: AppRoutes.competencyFamilyDetails
-                    .replaceAll(':jobId', widget.job.id!)
-                    .replaceAll(':cfId', widget.family.id!));
+            navigateToPath(
+              context,
+              to: AppRoutes.competencyFamilyDetails
+                  .replaceAll(':jobId', widget.job.id!)
+                  .replaceAll(':cfId', widget.family.id!),
+              data: {
+                'familyName': widget.family.name,
+              },
+            );
           },
           child: SvgPicture.asset(
             AppIcons.dropdownArrowRightPath,

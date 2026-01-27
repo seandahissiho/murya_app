@@ -105,41 +105,25 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
                   children: [
                     const AppXReturnButton(destination: AppRoutes.userRessourcesModule),
                     AppSpacing.elementMarginBox,
-                    Flexible(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: InkWell(
-                              onTap: () {
-                                navigateToPath(context, to: AppRoutes.userRessourcesModule);
-                              },
-                              child: Text(
-                                AppLocalizations.of(context).mediaLibrary,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: AppColors.textTertiary,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            ' → ',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: AppColors.primaryDefault,
-                            ),
-                          ),
-                          Flexible(
-                            child: Text(
-                              widget.resource.name,
-                              style: theme.textTheme.labelMedium?.copyWith(
-                                color: AppColors.primaryDefault,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                    AppBreadcrumb(
+                      items: [
+                        BreadcrumbItem(
+                          label: AppLocalizations.of(context).mediaLibrary,
+                          onTap: () => navigateToPath(context, to: AppRoutes.userRessourcesModule),
+                        ),
+                        BreadcrumbItem(label: widget.resource.title ?? ''),
+                      ],
+                      inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textTertiary,
                       ),
+                      inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.primaryDefault, // hover
+                        decoration: TextDecoration.underline, // optionnel
+                      ),
+                      activeTextStyle: theme.textTheme.labelMedium?.copyWith(
+                        color: AppColors.primaryDefault,
+                      ),
+                      scrollable: true,
                     ),
                   ],
                 ),

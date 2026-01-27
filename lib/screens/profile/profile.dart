@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:beamer/beamer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -44,7 +44,7 @@ class ProfileLocation extends BeamLocation<RouteInformationSerializable<dynamic>
     return [
       BeamPage(
         key: ValueKey('profile-page-$languageCode'),
-        title: 'Profile',
+        title: 'Murya - Profile',
         child: const ProfileScreen(),
       ),
     ];

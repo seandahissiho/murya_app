@@ -50,41 +50,25 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                       children: [
                         AppXReturnButton(destination: AppRoutes.jobDetails.replaceFirst(':id', jobId)),
                         AppSpacing.elementMarginBox,
-                        Flexible(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(
-                                child: InkWell(
-                                  onTap: () {
-                                    navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
-                                  },
-                                  child: Text(
-                                    _job.title,
-                                    style: theme.textTheme.bodySmall?.copyWith(
-                                      color: AppColors.textTertiary,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                ' → ',
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: AppColors.primaryDefault,
-                                ),
-                              ),
-                              Flexible(
-                                child: Text(
-                                  _cf.name,
-                                  style: theme.textTheme.labelSmall?.copyWith(
-                                    color: AppColors.primaryDefault,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
+                        AppBreadcrumb(
+                          items: [
+                            BreadcrumbItem(
+                              label: _job.title,
+                              onTap: () => navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId)),
+                            ),
+                            BreadcrumbItem(label: _cf.name),
+                          ],
+                          inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                            color: AppColors.textTertiary,
                           ),
+                          inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                            color: AppColors.primaryDefault, // hover
+                            decoration: TextDecoration.underline, // optionnel
+                          ),
+                          activeTextStyle: theme.textTheme.labelMedium?.copyWith(
+                            color: AppColors.primaryDefault,
+                          ),
+                          scrollable: true,
                         ),
                       ],
                     ),

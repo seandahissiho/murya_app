@@ -17,7 +17,7 @@ class DashboardLocation extends BeamLocation<RouteInformationSerializable<dynami
     return [
       BeamPage(
         key: ValueKey('dashboard-${context.read<AppBloc>().appLanguage.code}'),
-        title: 'Dashboard',
+        title: 'Murya - Dashboard',
         child: const DashboardScreen(),
       ),
     ];
