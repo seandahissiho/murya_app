@@ -69,213 +69,220 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
           return AppSkeletonizer(
             enabled: _job?.id.isEmptyOrNull ?? false,
             child: LayoutBuilder(builder: (context, bigConstraints) {
-              return SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    SizedBox(
-                      height: bigConstraints.maxHeight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              if (!hideBackButton) const AppXReturnButton(destination: AppRoutes.landing),
-                              // AppSpacing.groupMarginBox,
-                              // Expanded(
-                              //   flex: 10,
-                              //   child: Row(
-                              //     mainAxisSize: MainAxisSize.max,
-                              //     mainAxisAlignment: MainAxisAlignment.start,
-                              //     children: [
-                              //       Flexible(
-                              //         child: RichText(
-                              //           text: TextSpan(
-                              //             text: _job.title,
-                              //             style: GoogleFonts.anton(
-                              //               color: AppColors.textPrimary,
-                              //               fontSize: theme.textTheme.headlineLarge?.fontSize,
-                              //               fontWeight: FontWeight.w700,
-                              //             ),
-                              //             children: [
-                              //               WidgetSpan(
-                              //                 alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                              //                 child: Padding(
-                              //                   padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
-                              //                   child: GestureDetector(
-                              //                     onTap: () async {
-                              //                       await ShareUtils.shareContent(
-                              //                         text: locale.discover_job_profile(_job.title),
-                              //                         url: ShareUtils.generateJobDetailsLink(_job.id!),
-                              //                         subject: locale.job_profile_page_title(_job.title),
-                              //                       );
-                              //                       if (kIsWeb && mounted && context.mounted) {
-                              //                         // On web, there's a good chance we just copied to clipboard
-                              //                         ScaffoldMessenger.of(context).showSnackBar(
-                              //                           SnackBar(content: Text(locale.link_copied)),
-                              //                         );
-                              //                       }
-                              //                     },
-                              //                     child: Icon(
-                              //                       Icons.ios_share,
-                              //                       size: theme.textTheme.displayLarge!.fontSize! / 1.75,
-                              //                       color: AppColors.primaryDefault,
-                              //                     ),
-                              //                   ),
-                              //                 ),
-                              //               ),
-                              //             ],
-                              //           ),
-                              //           textAlign: TextAlign.start,
-                              //           maxLines: 2,
-                              //         ),
-                              //       ),
-                              //       if (_user.isNotEmpty) ...[
-                              //         AppSpacing.groupMarginBox,
-                              //         ScoreWidget(value: _user.diamonds),
-                              //       ],
-                              //     ],
-                              //   ),
-                              // ),
-                              const Spacer(),
-                              const AppXCloseButton(),
-                            ],
-                          ),
-                          AppSpacing.sectionMarginBox,
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+              return ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  scrollbars: false,
+                ),
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SizedBox(
+                        height: bigConstraints.maxHeight,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Flexible(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Flexible(
-                                            child: RichText(
-                                              text: TextSpan(
-                                                text: _job?.title,
-                                                style: GoogleFonts.anton(
-                                                  color: AppColors.textPrimary,
-                                                  fontSize: theme.textTheme.headlineLarge?.fontSize,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                                children: [
-                                                  // WidgetSpan(
-                                                  //   alignment: PlaceholderAlignment.middle, // aligns icon vertically
-                                                  //   child: Padding(
-                                                  //     padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
-                                                  //     child: GestureDetector(
-                                                  //       onTap: () async {
-                                                  //         await ShareUtils.shareContent(
-                                                  //           text: locale.discover_job_profile(_job.title),
-                                                  //           url: ShareUtils.generateJobDetailsLink(_job.id!),
-                                                  //           subject: locale.job_profile_page_title(_job.title),
-                                                  //         );
-                                                  //         if (kIsWeb && mounted && context.mounted) {
-                                                  //           // On web, there's a good chance we just copied to clipboard
-                                                  //           ScaffoldMessenger.of(context).showSnackBar(
-                                                  //             SnackBar(content: Text(locale.link_copied)),
-                                                  //           );
-                                                  //         }
-                                                  //       },
-                                                  //       child: Icon(
-                                                  //         Icons.ios_share,
-                                                  //         size: theme.textTheme.displayLarge!.fontSize! / 1.75,
-                                                  //         color: AppColors.primaryDefault,
-                                                  //       ),
-                                                  //     ),
-                                                  //   ),
-                                                  // ),
-                                                ],
-                                              ),
-                                              textAlign: TextAlign.start,
-                                              maxLines: 2,
-                                            ),
-                                          ),
-                                          if (_user.isNotEmpty) ...[
-                                            AppSpacing.groupMarginBox,
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 20.0),
-                                              child: ScoreWidget(value: _user.diamonds),
-                                            ),
-                                          ],
-                                        ],
-                                      ),
-                                      AppSpacing.containerInsideMarginBox,
-                                      AppXButton(
-                                        onPressed: () {
-                                          navigateToPath(context,
-                                              to: AppRoutes.jobEvaluation.replaceAll(':id', _job!.id!));
-                                        },
-                                        isLoading: false,
-                                        disabled: nextQuizAvailableIn != null,
-                                        text: nextQuizAvailableIn == null
-                                            ? locale.evaluateSkills
-                                            : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
-                                        shrinkWrap: false,
-                                      ),
-                                      AppSpacing.containerInsideMarginBox,
-                                      Expanded(
-                                        child: MarkdownWidget(
-                                          data: _job?.description ?? '',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                AppSpacing.groupMarginBox,
-                                Flexible(
-                                  child: ScrollConfiguration(
-                                    behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        children: [
-                                          _diagramBuilder(locale, theme, options),
-                                          if (_userJob.isNotEmpty &&
-                                              (_job?.id.isNotEmptyOrNull ?? false) &&
-                                              (_userJob.jobId == _job?.id || _userJob.jobFamilyId == _job?.id) &&
-                                              _userJob.completedQuizzes > 0) ...[
-                                            AppSpacing.groupMarginBox,
-                                            _rankingBuilder(locale, theme),
-                                          ],
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                AppSpacing.groupMarginBox,
-                                Flexible(
-                                  child: ScrollConfiguration(
-                                    behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          ...familiesBuilder(),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                if (!hideBackButton) const AppXReturnButton(destination: AppRoutes.landing),
+                                // AppSpacing.groupMarginBox,
+                                // Expanded(
+                                //   flex: 10,
+                                //   child: Row(
+                                //     mainAxisSize: MainAxisSize.max,
+                                //     mainAxisAlignment: MainAxisAlignment.start,
+                                //     children: [
+                                //       Flexible(
+                                //         child: RichText(
+                                //           text: TextSpan(
+                                //             text: _job.title,
+                                //             style: GoogleFonts.anton(
+                                //               color: AppColors.textPrimary,
+                                //               fontSize: theme.textTheme.headlineLarge?.fontSize,
+                                //               fontWeight: FontWeight.w700,
+                                //             ),
+                                //             children: [
+                                //               WidgetSpan(
+                                //                 alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                                //                 child: Padding(
+                                //                   padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
+                                //                   child: GestureDetector(
+                                //                     onTap: () async {
+                                //                       await ShareUtils.shareContent(
+                                //                         text: locale.discover_job_profile(_job.title),
+                                //                         url: ShareUtils.generateJobDetailsLink(_job.id!),
+                                //                         subject: locale.job_profile_page_title(_job.title),
+                                //                       );
+                                //                       if (kIsWeb && mounted && context.mounted) {
+                                //                         // On web, there's a good chance we just copied to clipboard
+                                //                         ScaffoldMessenger.of(context).showSnackBar(
+                                //                           SnackBar(content: Text(locale.link_copied)),
+                                //                         );
+                                //                       }
+                                //                     },
+                                //                     child: Icon(
+                                //                       Icons.ios_share,
+                                //                       size: theme.textTheme.displayLarge!.fontSize! / 1.75,
+                                //                       color: AppColors.primaryDefault,
+                                //                     ),
+                                //                   ),
+                                //                 ),
+                                //               ),
+                                //             ],
+                                //           ),
+                                //           textAlign: TextAlign.start,
+                                //           maxLines: 2,
+                                //         ),
+                                //       ),
+                                //       if (_user.isNotEmpty) ...[
+                                //         AppSpacing.groupMarginBox,
+                                //         ScoreWidget(value: _user.diamonds),
+                                //       ],
+                                //     ],
+                                //   ),
+                                // ),
+                                const Spacer(),
+                                const AppXCloseButton(),
                               ],
                             ),
-                          ),
-                        ],
+                            AppSpacing.sectionMarginBox,
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Flexible(
+                                              child: RichText(
+                                                text: TextSpan(
+                                                  text: _job?.title,
+                                                  style: GoogleFonts.anton(
+                                                    color: AppColors.textPrimary,
+                                                    fontSize: theme.textTheme.headlineLarge?.fontSize,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                  children: [
+                                                    // WidgetSpan(
+                                                    //   alignment: PlaceholderAlignment.middle, // aligns icon vertically
+                                                    //   child: Padding(
+                                                    //     padding: const EdgeInsets.only(left: AppSpacing.elementMargin),
+                                                    //     child: GestureDetector(
+                                                    //       onTap: () async {
+                                                    //         await ShareUtils.shareContent(
+                                                    //           text: locale.discover_job_profile(_job.title),
+                                                    //           url: ShareUtils.generateJobDetailsLink(_job.id!),
+                                                    //           subject: locale.job_profile_page_title(_job.title),
+                                                    //         );
+                                                    //         if (kIsWeb && mounted && context.mounted) {
+                                                    //           // On web, there's a good chance we just copied to clipboard
+                                                    //           ScaffoldMessenger.of(context).showSnackBar(
+                                                    //             SnackBar(content: Text(locale.link_copied)),
+                                                    //           );
+                                                    //         }
+                                                    //       },
+                                                    //       child: Icon(
+                                                    //         Icons.ios_share,
+                                                    //         size: theme.textTheme.displayLarge!.fontSize! / 1.75,
+                                                    //         color: AppColors.primaryDefault,
+                                                    //       ),
+                                                    //     ),
+                                                    //   ),
+                                                    // ),
+                                                  ],
+                                                ),
+                                                textAlign: TextAlign.start,
+                                                maxLines: 2,
+                                              ),
+                                            ),
+                                            if (_user.isNotEmpty) ...[
+                                              AppSpacing.groupMarginBox,
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 20.0),
+                                                child: ScoreWidget(value: _user.diamonds),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                        AppSpacing.containerInsideMarginBox,
+                                        AppXButton(
+                                          onPressed: () {
+                                            navigateToPath(context,
+                                                to: AppRoutes.jobEvaluation.replaceAll(':id', _job!.id!));
+                                          },
+                                          isLoading: false,
+                                          disabled: nextQuizAvailableIn != null,
+                                          text: nextQuizAvailableIn == null
+                                              ? locale.evaluateSkills
+                                              : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
+                                          shrinkWrap: false,
+                                        ),
+                                        AppSpacing.containerInsideMarginBox,
+                                        Expanded(
+                                          child: MarkdownWidget(
+                                            data: _job?.description ?? '',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  AppSpacing.groupMarginBox,
+                                  Flexible(
+                                    child: ScrollConfiguration(
+                                      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            _diagramBuilder(locale, theme, options),
+                                            if (_userJob.isNotEmpty &&
+                                                (_job?.id.isNotEmptyOrNull ?? false) &&
+                                                (_userJob.jobId == _job?.id || _userJob.jobFamilyId == _job?.id) &&
+                                                _userJob.completedQuizzes > 0) ...[
+                                              AppSpacing.groupMarginBox,
+                                              _rankingBuilder(locale, theme),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  AppSpacing.groupMarginBox,
+                                  Flexible(
+                                    child: ScrollConfiguration(
+                                      behavior: ScrollConfiguration.of(context).copyWith(
+                                        scrollbars: false,
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            ...familiesBuilder(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    AppSpacing.sectionMarginBox,
-                    const AppFooter(),
-                  ],
+                      AppSpacing.sectionMarginBox,
+                      const AppFooter(),
+                    ],
+                  ),
                 ),
               );
             }),
