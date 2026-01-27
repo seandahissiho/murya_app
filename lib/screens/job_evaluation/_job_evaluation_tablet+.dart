@@ -1,7 +1,9 @@
 part of 'job_evaluation.dart';
 
 class TabletJobEvaluationScreen extends StatefulWidget {
-  const TabletJobEvaluationScreen({super.key});
+  final String? jobTitle;
+
+  const TabletJobEvaluationScreen({super.key, this.jobTitle});
 
   @override
   State<TabletJobEvaluationScreen> createState() => _TabletJobEvaluationScreenState();
@@ -132,7 +134,11 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
           });
         } else {
           if (!mounted) return;
-          navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
+          navigateToPath(
+            context,
+            to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
+            data: {'jobTitle': widget.jobTitle},
+          );
         }
       });
 
@@ -217,7 +223,11 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                     children: [
                       GestureDetector(
                         onTap: () {
-                          navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
+                          navigateToPath(
+                            context,
+                            to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
+                            data: {'jobTitle': widget.jobTitle},
+                          );
                         },
                         child: SvgPicture.asset(
                           AppIcons.exitIconPath,
@@ -513,7 +523,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                   opacity: _showConfetti ? 1 : 0,
                   duration: const Duration(milliseconds: 120),
                   child: Lottie.asset(
-                    'assets/lotties/confetti on transparent background.json',
+                    'assets/lotties/confetti_on_transparent_background.json',
                     controller: _confettiCtrl,
                     fit: BoxFit.cover,
                     repeat: false,

@@ -147,7 +147,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String job_profile_page_title(String jobTitle) {
-    return 'Murya - Skills profile: $jobTitle';
+    return 'Murya - #$jobTitle#';
   }
 
   @override

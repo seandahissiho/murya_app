@@ -121,7 +121,11 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                       cursor: SystemMouseCursors.click,
                       child: GestureDetector(
                         onTap: () {
-                          navigateToPath(context, to: AppRoutes.jobDetails.replaceAll(':id', job.id!));
+                          navigateToPath(
+                            context,
+                            to: AppRoutes.jobDetails.replaceAll(':id', job.id!),
+                            data: {'jobTitle': job.title},
+                          );
                         },
                         child: Container(
                           padding: const EdgeInsets.all(8),

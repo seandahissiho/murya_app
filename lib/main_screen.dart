@@ -150,6 +150,11 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
               backgroundColor: AppColors.backgroundColor,
               body: LayoutBuilder(
                 builder: (context, constraints) {
+                  if (authState is AuthenticationLoading && authState.isAuthenticated == false) {
+                    return const Center(
+                      child: AuthLoadingBar(),
+                    );
+                  }
                   return GestureDetector(
                     onTap: () {
                       FocusScope.of(context).unfocus();
@@ -167,11 +172,6 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
                             ),
                           ],
                         ),
-                        if (authState is AuthenticationLoading && authState.isAuthenticated == false) ...[
-                          const Center(
-                            child: AuthLoadingBar(),
-                          ),
-                        ],
                         // if (authState is AuthenticationLoading && authState.isAuthenticated == false) ...[
                         //   const Center(
                         //     child: CupertinoActivityIndicator(

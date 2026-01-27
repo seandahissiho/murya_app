@@ -180,7 +180,11 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                 AppSpacing.containerInsideMarginBox,
                 AppXButton(
                   onPressed: () {
-                    navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!));
+                    navigateToPath(
+                      context,
+                      to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!),
+                      data: {'jobTitle': _job.title},
+                    );
                   },
                   isLoading: false,
                   disabled: nextQuizAvailableIn != null,

@@ -46,13 +46,20 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                 Expanded(
                   child: Row(
                     children: [
-                      AppXReturnButton(destination: AppRoutes.jobDetails.replaceFirst(':id', jobId)),
+                      AppXReturnButton(
+                        destination: AppRoutes.jobDetails.replaceFirst(':id', jobId),
+                        data: {'jobTitle': _job.title},
+                      ),
                       AppSpacing.elementMarginBox,
                       AppBreadcrumb(
                         items: [
                           BreadcrumbItem(
                             label: _job.title,
-                            onTap: () => navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId)),
+                            onTap: () => navigateToPath(
+                              context,
+                              to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
+                              data: {'jobTitle': _job.title},
+                            ),
                           ),
                           BreadcrumbItem(label: _cf.name),
                         ],

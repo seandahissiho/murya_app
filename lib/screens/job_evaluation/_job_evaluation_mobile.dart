@@ -1,7 +1,9 @@
 part of 'job_evaluation.dart';
 
 class MobileJobEvaluationScreen extends StatefulWidget {
-  const MobileJobEvaluationScreen({super.key});
+  final String? jobTitle;
+
+  const MobileJobEvaluationScreen({super.key, this.jobTitle});
 
   @override
   State<MobileJobEvaluationScreen> createState() => _MobileJobEvaluationScreenState();
@@ -86,7 +88,11 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                 children: [
                   GestureDetector(
                     onTap: () {
-                      navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
+                      navigateToPath(
+                        context,
+                        to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
+                        data: {'jobTitle': widget.jobTitle},
+                      );
                     },
                     child: SvgPicture.asset(
                       AppIcons.exitIconPath,

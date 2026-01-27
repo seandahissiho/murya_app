@@ -177,7 +177,7 @@
       }
     }
   },
-  "job_profile_page_title": "Murya - Skills profile: {jobTitle}",
+  "job_profile_page_title": "Murya - #{jobTitle}#",
   "@job_profile_page_title": {
     "description": "Title of a job's skills profile page",
     "placeholders": {

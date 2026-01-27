@@ -40,11 +40,16 @@ class JobDetailsLocation extends BeamLocation<RouteInformationSerializable<dynam
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
-    final String jobName = ...;
+    final locale = AppLocalizations.of(context);
+    final Map<String, dynamic>? routeData = data as Map<String, dynamic>?;
+    final dynamic payload = routeData?['data'];
+    final String jobName =
+        payload is Map<String, dynamic> && payload['jobTitle'] is String ? payload['jobTitle'] as String : '';
+    final String pageTitle = jobName.isNotEmpty ? locale.job_profile_page_title(jobName) : 'Murya';
     return [
       BeamPage(
         key: ValueKey('jobDetails-page-$languageCode'),
-        title: 'Murya - #$jobName#',
+        title: pageTitle,
         child: const JobDetailsScreen(),
       ),
     ];

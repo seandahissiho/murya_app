@@ -335,7 +335,7 @@ abstract class AppLocalizations {
   /// Titre de la page du profil de compétences d'un métier
   ///
   /// In fr, this message translates to:
-  /// **'Murya - Profil de compétences : {jobTitle}'**
+  /// **'Murya - #{jobTitle}#'**
   String job_profile_page_title(String jobTitle);
 
   /// Message affiché lorsque le lien est copié dans le presse-papier
