@@ -167,7 +167,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   Future<void> smt(BuildContext context) async {
     final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
     await localeProvider.load();
-    _appLanguage = AppLanguage.french;
+    final savedLocale = localeProvider.locale;
+    if (savedLocale == null) {
+      _appLanguage = AppLanguage.french;
+    } else {
+      _appLanguage = savedLocale.languageCode == 'en' ? AppLanguage.english : AppLanguage.french;
+    }
     if (context.mounted != true) return;
     add(AppChangeLanguage(
       language: _appLanguage,

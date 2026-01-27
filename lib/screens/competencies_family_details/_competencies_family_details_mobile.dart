@@ -21,9 +21,7 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
       jobId = beamState.pathParameters['jobId'];
       cfId = beamState.pathParameters['cfId'];
       final userJobId = context.read<JobBloc>().state.userCurrentJob?.id;
-      context
-          .read<JobBloc>()
-          .add(LoadCFDetails(context: context, jobId: jobId, cfId: cfId, userJobId: userJobId));
+      context.read<JobBloc>().add(LoadCFDetails(context: context, jobId: jobId, cfId: cfId, userJobId: userJobId));
     });
   }
 
@@ -50,16 +48,7 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                   Expanded(
                     child: Row(
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
-                          },
-                          child: SvgPicture.asset(
-                            AppIcons.backButtonPath,
-                            width: mobileCTAHeight,
-                            height: mobileCTAHeight,
-                          ),
-                        ),
+                        AppXReturnButton(destination: AppRoutes.jobDetails.replaceFirst(':id', jobId)),
                         AppSpacing.elementMarginBox,
                         Flexible(
                           child: Row(

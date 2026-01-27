@@ -103,16 +103,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
               Expanded(
                 child: Row(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        navigateToPath(context, to: AppRoutes.userRessourcesModule);
-                      },
-                      child: SvgPicture.asset(
-                        AppIcons.backButtonPath,
-                        width: tabletAndAboveCTAHeight,
-                        height: tabletAndAboveCTAHeight,
-                      ),
-                    ),
+                    const AppXReturnButton(destination: AppRoutes.userRessourcesModule),
                     AppSpacing.elementMarginBox,
                     Flexible(
                       child: Row(

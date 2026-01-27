@@ -621,16 +621,57 @@ class AppXCloseButton extends StatelessWidget {
         leftIcon: Padding(
           padding: const EdgeInsets.all(12.0),
           child: SvgPicture.asset(
-            AppIcons.searchBarCloseIconPath,
-            width: 16,
-            height: 16,
+            AppIcons.deleteDisabledIconPath,
+            width: ctaHeight,
+            height: ctaHeight,
           ),
         ),
         shadowColor: AppColors.borderMedium,
         bgColor: AppColors.backgroundColor,
+        fgColor: AppButtonColors.secondarySurfaceDefault,
         borderColor: AppColors.borderMedium,
-        hoverColor: AppColors.backgroundColor,
-        onPressedColor: AppColors.backgroundColor,
+        hoverColor: AppButtonColors.secondarySurfaceHover,
+        onPressedColor: AppButtonColors.secondarySurfacePressed,
+      ),
+    );
+  }
+}
+
+class AppXReturnButton extends StatelessWidget {
+  final String destination;
+  const AppXReturnButton({super.key, required this.destination});
+
+  @override
+  Widget build(BuildContext context) {
+    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    return SizedBox(
+      width: ctaHeight,
+      height: ctaHeight,
+      child: AppXButton(
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+            return;
+          }
+          navigateToPath(context, to: destination);
+        },
+        isLoading: false,
+        // leftIconPath: AppIcons.searchBarCloseIconPath,
+        removePaddings: true,
+        leftIcon: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SvgPicture.asset(
+            AppIcons.backArrowIconPath,
+            width: ctaHeight,
+            height: ctaHeight,
+          ),
+        ),
+        shadowColor: AppColors.borderMedium,
+        bgColor: AppColors.backgroundColor,
+        fgColor: AppButtonColors.secondarySurfaceDefault,
+        borderColor: AppColors.borderMedium,
+        hoverColor: AppButtonColors.secondarySurfaceHover,
+        onPressedColor: AppButtonColors.secondarySurfacePressed,
       ),
     );
   }
