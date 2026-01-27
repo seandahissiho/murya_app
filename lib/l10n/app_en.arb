@@ -139,6 +139,26 @@
       }
     }
   },
+  "competencyRatingVeryGoodTooltip": "You''re making progress!",
+  "@competencyRatingVeryGoodTooltip": {
+    "description": "Tooltip for a very good competency rating"
+  },
+  "competencyRatingGoodTooltip": "You''re making progress!",
+  "@competencyRatingGoodTooltip": {
+    "description": "Tooltip for a good competency rating"
+  },
+  "competencyRatingAverageTooltip": "You need more practice.",
+  "@competencyRatingAverageTooltip": {
+    "description": "Tooltip for an average competency rating"
+  },
+  "competencyRatingBadTooltip": "You need more practice.",
+  "@competencyRatingBadTooltip": {
+    "description": "Tooltip for a bad competency rating"
+  },
+  "competencyRatingVeryBadTooltip": "You need more practice.",
+  "@competencyRatingVeryBadTooltip": {
+    "description": "Tooltip for a very bad competency rating"
+  },
   "show_more": "Show more",
   "@show_more": {
     "description": "Text for the 'Show more' button"

@@ -24,7 +24,7 @@ class MainSearchLocation extends BeamLocation<RouteInformationSerializable<dynam
     return [
       BeamPage(
         key: ValueKey('main-search-page-$languageCode'),
-        title: 'Main Search',
+        title: 'Murya - Recherche',
         child: const MainSearchScreen(),
       ),
     ];

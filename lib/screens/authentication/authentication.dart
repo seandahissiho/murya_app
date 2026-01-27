@@ -25,7 +25,7 @@ class LoginLocation extends BeamLocation<RouteInformationSerializable<dynamic>> 
     return [
       BeamPage(
         key: ValueKey('login-page-$languageCode'),
-        title: 'Login',
+        title: 'Murya - Connexion',
         child: const AuthenticationScreen(initialTab: AuthenticationTab.login),
       ),
     ];
@@ -42,7 +42,7 @@ class RegisterLocation extends BeamLocation<RouteInformationSerializable<dynamic
     return [
       BeamPage(
         key: ValueKey('register-page-$languageCode'),
-        title: 'Register',
+        title: 'Murya - Inscription',
         child: const AuthenticationScreen(initialTab: AuthenticationTab.register),
       ),
     ];
@@ -59,7 +59,7 @@ class ForgotPasswordLocation extends BeamLocation<RouteInformationSerializable<d
     return [
       BeamPage(
         key: ValueKey('forgot-password-page-$languageCode'),
-        title: 'Forgot Password',
+        title: 'Murya - Mot de passe oublié',
         child: const ForgotPasswordScreen(),
       ),
     ];

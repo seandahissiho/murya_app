@@ -120,6 +120,24 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get competencyRatingVeryGoodTooltip => 'Vous êtes en progression !';
+
+  @override
+  String get competencyRatingGoodTooltip => 'Vous êtes en progression !';
+
+  @override
+  String get competencyRatingAverageTooltip =>
+      'Vous avez besoin de pratiquer davantage.';
+
+  @override
+  String get competencyRatingBadTooltip =>
+      'Vous avez besoin de pratiquer davantage.';
+
+  @override
+  String get competencyRatingVeryBadTooltip =>
+      'Vous avez besoin de pratiquer davantage.';
+
+  @override
   String get show_more => 'Afficher plus';
 
   @override

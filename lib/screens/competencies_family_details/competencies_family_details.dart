@@ -10,6 +10,7 @@ import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/app_footer.dart';
+import 'package:murya/components/fil_arianne.dart';
 import 'package:murya/components/skeletonizer.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
@@ -32,10 +33,15 @@ class CfDetailsLocation extends BeamLocation<RouteInformationSerializable<dynami
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
+    final Map<String, dynamic>? routeData = data as Map<String, dynamic>?;
+    final dynamic payload = routeData?['data'];
+    final String familyName =
+        payload is Map<String, dynamic> && payload['familyName'] is String ? payload['familyName'] as String : '';
+    final String pageTitle = familyName.isNotEmpty ? 'Murya - $familyName' : 'Murya';
     return [
       BeamPage(
         key: ValueKey('cfDetails-page-$languageCode'),
-        title: 'CfDetails Page',
+        title: pageTitle,
         child: const CfDetailsScreen(),
       ),
     ];
@@ -105,7 +111,26 @@ class CompetencyCard extends StatelessWidget {
                       if (isMobile) ...[
                         const Spacer(),
                         Tooltip(
-                          message: competency.rating?.localizedTooltipText(context) ?? '',
+                          decoration: const BoxDecoration(
+                            color: AppColors.primaryDefault,
+                            borderRadius: AppRadius.tinyTiny,
+                          ),
+                          preferBelow: false,
+                          message: competency.rating?.localizedTooltipText(context) ??
+                              CompetencyRating.moyen.localizedTooltipText(context),
+                          // font-family: Inter;
+                          // font-weight: 400;
+                          // font-style: Regular;
+                          // font-size: 14px;
+                          // leading-trim: NONE;
+                          // line-height: 20px;
+                          // letter-spacing: 0%;
+                          textStyle: GoogleFonts.inter(
+                            color: const Color(0xFFE5E5E5),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            height: 20 / 14,
+                          ),
                           child: SvgPicture.asset(
                             competency.rating?.iconAssetPath ?? AppIcons.expressionlessFacePath,
                             width: 24,
@@ -137,7 +162,19 @@ class CompetencyCard extends StatelessWidget {
                   ),
                   AppSpacing.groupMarginBox,
                   Tooltip(
-                    message: competency.rating?.localizedTooltipText(context) ?? '',
+                    decoration: const BoxDecoration(
+                      color: AppColors.primaryDefault,
+                      borderRadius: AppRadius.tinyTiny,
+                    ),
+                    textStyle: GoogleFonts.inter(
+                      color: const Color(0xFFE5E5E5),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      height: 20 / 14,
+                    ),
+                    preferBelow: false,
+                    message: competency.rating?.localizedTooltipText(context) ??
+                        CompetencyRating.moyen.localizedTooltipText(context),
                     child: SvgPicture.asset(
                       competency.rating?.iconAssetPath ?? AppIcons.expressionlessFacePath,
                       width: 32,

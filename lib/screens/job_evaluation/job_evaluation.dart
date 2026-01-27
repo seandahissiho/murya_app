@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:beamer/beamer.dart';
 // import 'package:fl_chart/fl_chart.dart';
@@ -32,10 +30,11 @@ class JobEvaluationLocation extends BeamLocation<RouteInformationSerializable<dy
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
+    final String jobTitle = ...;
     return [
       BeamPage(
         key: ValueKey('jobEvaluation-page-$languageCode'),
-        title: 'JobEvaluation Page',
+        title: 'Murya - #$jobTitle# Evaluation',
         child: const JobEvaluationScreen(),
       ),
     ];

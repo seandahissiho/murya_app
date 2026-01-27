@@ -139,6 +139,26 @@
       }
     }
   },
+  "competencyRatingVeryGoodTooltip": "Vous êtes en progression !",
+  "@competencyRatingVeryGoodTooltip": {
+    "description": "Infobulle pour une compétence très bonne"
+  },
+  "competencyRatingGoodTooltip": "Vous êtes en progression !",
+  "@competencyRatingGoodTooltip": {
+    "description": "Infobulle pour une compétence bonne"
+  },
+  "competencyRatingAverageTooltip": "Vous avez besoin de pratiquer davantage.",
+  "@competencyRatingAverageTooltip": {
+    "description": "Infobulle pour une compétence moyenne"
+  },
+  "competencyRatingBadTooltip": "Vous avez besoin de pratiquer davantage.",
+  "@competencyRatingBadTooltip": {
+    "description": "Infobulle pour une compétence mauvaise"
+  },
+  "competencyRatingVeryBadTooltip": "Vous avez besoin de pratiquer davantage.",
+  "@competencyRatingVeryBadTooltip": {
+    "description": "Infobulle pour une compétence très mauvaise"
+  },
   "show_more": "Afficher plus",
   "@show_more": {
     "description": "Texte pour le bouton 'Afficher plus'"

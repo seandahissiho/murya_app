@@ -284,6 +284,36 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0 {Aucune compétence} =1 {1 compétence} other {{count} compétences}}'**
   String competencies_count(int count);
 
+  /// Infobulle pour une compétence très bonne
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous êtes en progression !'**
+  String get competencyRatingVeryGoodTooltip;
+
+  /// Infobulle pour une compétence bonne
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous êtes en progression !'**
+  String get competencyRatingGoodTooltip;
+
+  /// Infobulle pour une compétence moyenne
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez besoin de pratiquer davantage.'**
+  String get competencyRatingAverageTooltip;
+
+  /// Infobulle pour une compétence mauvaise
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez besoin de pratiquer davantage.'**
+  String get competencyRatingBadTooltip;
+
+  /// Infobulle pour une compétence très mauvaise
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous avez besoin de pratiquer davantage.'**
+  String get competencyRatingVeryBadTooltip;
+
   /// Texte pour le bouton 'Afficher plus'
   ///
   /// In fr, this message translates to:
