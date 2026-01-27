@@ -997,7 +997,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         ),
         SizedBox(height: subtitleGap),
         widget.subtitleContent!,
-        AppSpacing.groupMarginBox,
+        // AppSpacing.groupMarginBox,
       ],
       Expanded(
         child: (showSubtitleOnTabletAndAbove(module))
@@ -1013,7 +1013,11 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppSpacing.groupMarginBox,
+            AppSpacing.containerInsideMarginBox,
+            if (widget.module.slug == 'daily-quiz') ...[
+              AppSpacing.groupMarginBox,
+              AppSpacing.elementMarginBox,
+            ],
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,

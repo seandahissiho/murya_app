@@ -36,7 +36,7 @@ class _AuthLoadingBarState extends State<AuthLoadingBar> with SingleTickerProvid
     // Animation max 15 secondes
     _progressCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 15),
+      duration: const Duration(seconds: 30),
     )..forward();
 
     // Message qui change toutes les 2 secondes
