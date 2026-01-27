@@ -82,6 +82,77 @@ class _CFCardState extends State<CFCard> {
     final nbCompetencies = widget.job.competenciesPerFamily(widget.family).length;
     final locale = AppLocalizations.of(context);
     final isMobile = DeviceHelper.isMobile(context);
+    return AppXButton(
+      onPressed: () {},
+      isLoading: false,
+      shrinkWrap: false,
+      height: isMobile ? mobileCTAHeight * 3 : tabletAndAboveCTAHeight * 2.25,
+      bgColor: AppButtonColors.secondarySurfaceDefault,
+      hoverColor: AppButtonColors.secondarySurfaceHover,
+      shadowColor: AppButtonColors.secondaryShadowDefault,
+      borderColor: AppButtonColors.secondaryBorderDefault,
+      onPressedColor: AppButtonColors.secondarySurfaceDefault,
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            //rgba(158, 154, 166, 0.2)
+            color: Color.fromRGBO(158, 154, 166, 0.3),
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(10),
+          child: SvgPicture.asset(
+            getIconForFamily(widget.family),
+            height: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
+            width: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
+            colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
+          ),
+        ),
+        AppSpacing.groupMarginBox,
+        Expanded(
+          flex: 100,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                widget.family.name,
+                style: GoogleFonts.anton(
+                  color: _isHovering ? AppColors.textInverted : AppColors.textPrimary,
+                  fontSize:
+                      isMobile ? theme.textTheme.displayMedium!.fontSize : theme.textTheme.headlineSmall!.fontSize,
+                  fontWeight: FontWeight.w400,
+                  // height: 1 / 3.8,
+                ),
+              ),
+              AppSpacing.tinyTinyMarginBox,
+              Text(
+                locale.competencies_count(nbCompetencies),
+                style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
+                  color: _isHovering ? AppColors.textInverted : AppColors.textSecondary,
+                  // height: 1 / 2.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: () {
+            // rightModalOpen(context, screen: const MainSearchScreen());
+            navigateToPath(context,
+                to: AppRoutes.competencyFamilyDetails
+                    .replaceAll(':jobId', widget.job.id!)
+                    .replaceAll(':cfId', widget.family.id!));
+          },
+          child: SvgPicture.asset(
+            AppIcons.dropdownArrowRightPath,
+            height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+            width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+          ),
+        ),
+      ],
+    );
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (event) {

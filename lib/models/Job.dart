@@ -464,6 +464,37 @@ extension CompetencyRatingExtension on CompetencyRating {
         return AppIcons.wearyFacePath;
     }
   }
+
+  String get tooltipText {
+    switch (this) {
+      case CompetencyRating.tresBon:
+        return 'Vous êtes en progression !';
+      case CompetencyRating.bon:
+        return 'Vous êtes en progression !';
+      case CompetencyRating.moyen:
+        return 'Vous avez besoin de pratiquer davantage.';
+      case CompetencyRating.mauvais:
+        return 'Vous avez besoin de pratiquer davantage.';
+      case CompetencyRating.tresMauvais:
+        return 'Vous avez besoin de pratiquer davantage.';
+    }
+  }
+
+  String localizedTooltipText(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    switch (this) {
+      case CompetencyRating.tresBon:
+        return locale.competencyRatingVeryGoodTooltip;
+      case CompetencyRating.bon:
+        return locale.competencyRatingGoodTooltip;
+      case CompetencyRating.moyen:
+        return locale.competencyRatingAverageTooltip;
+      case CompetencyRating.mauvais:
+        return locale.competencyRatingBadTooltip;
+      case CompetencyRating.tresMauvais:
+        return locale.competencyRatingVeryBadTooltip;
+    }
+  }
 }
 
 class CompetencyFamily {

@@ -104,10 +104,13 @@ class CompetencyCard extends StatelessWidget {
                       TagWidget(type: competency.level),
                       if (isMobile) ...[
                         const Spacer(),
-                        SvgPicture.asset(
-                          competency.rating?.iconAssetPath ?? AppIcons.expressionlessFacePath,
-                          width: 24,
-                          height: 24,
+                        Tooltip(
+                          message: competency.rating?.localizedTooltipText(context) ?? '',
+                          child: SvgPicture.asset(
+                            competency.rating?.iconAssetPath ?? AppIcons.expressionlessFacePath,
+                            width: 24,
+                            height: 24,
+                          ),
                         ),
                       ]
                     ],
@@ -132,11 +135,14 @@ class CompetencyCard extends StatelessWidget {
                       text: locale.consult,
                     ),
                   ),
-                  AppSpacing.elementMarginBox,
-                  SvgPicture.asset(
-                    competency.rating?.iconAssetPath ?? AppIcons.expressionlessFacePath,
-                    width: 32,
-                    height: 32,
+                  AppSpacing.groupMarginBox,
+                  Tooltip(
+                    message: competency.rating?.localizedTooltipText(context) ?? '',
+                    child: SvgPicture.asset(
+                      competency.rating?.iconAssetPath ?? AppIcons.expressionlessFacePath,
+                      width: 32,
+                      height: 32,
+                    ),
                   ),
                 ],
               ),
