@@ -37,7 +37,7 @@ class CfDetailsLocation extends BeamLocation<RouteInformationSerializable<dynami
     final dynamic payload = routeData?['data'];
     final String familyName =
         payload is Map<String, dynamic> && payload['familyName'] is String ? payload['familyName'] as String : '';
-    final String pageTitle = familyName.isNotEmpty ? 'Murya - $familyName' : 'Murya';
+    final String pageTitle = familyName.isNotEmpty ? 'Murya - #$familyName#' : 'Murya';
     return [
       BeamPage(
         key: ValueKey('cfDetails-page-$languageCode'),

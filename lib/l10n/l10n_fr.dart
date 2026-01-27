@@ -150,7 +150,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String job_profile_page_title(String jobTitle) {
-    return 'Murya - Profil de compétences : $jobTitle';
+    return 'Murya - #$jobTitle#';
   }
 
   @override

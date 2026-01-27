@@ -30,26 +30,34 @@ class JobEvaluationLocation extends BeamLocation<RouteInformationSerializable<dy
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
-    final String jobTitle = ...;
+    final locale = AppLocalizations.of(context);
+    final Map<String, dynamic>? routeData = data as Map<String, dynamic>?;
+    final dynamic payload = routeData?['data'];
+    final String jobTitle =
+        payload is Map<String, dynamic> && payload['jobTitle'] is String ? payload['jobTitle'] as String : '';
+    final String pageTitle =
+        jobTitle.isNotEmpty ? 'Murya - #$jobTitle# ${locale.evaluateSkills}' : 'Murya - ${locale.evaluateSkills}';
     return [
       BeamPage(
         key: ValueKey('jobEvaluation-page-$languageCode'),
-        title: 'Murya - #$jobTitle# Evaluation',
-        child: const JobEvaluationScreen(),
+        title: pageTitle,
+        child: JobEvaluationScreen(jobTitle: jobTitle),
       ),
     ];
   }
 }
 
 class JobEvaluationScreen extends StatelessWidget {
-  const JobEvaluationScreen({super.key});
+  final String? jobTitle;
+
+  const JobEvaluationScreen({super.key, this.jobTitle});
 
   @override
   Widget build(BuildContext context) {
-    return const BaseScreen(
-      mobileScreen: MobileJobEvaluationScreen(),
-      tabletScreen: TabletJobEvaluationScreen(),
-      desktopScreen: TabletJobEvaluationScreen(),
+    return BaseScreen(
+      mobileScreen: MobileJobEvaluationScreen(jobTitle: jobTitle),
+      tabletScreen: TabletJobEvaluationScreen(jobTitle: jobTitle),
+      desktopScreen: TabletJobEvaluationScreen(jobTitle: jobTitle),
     );
   }
 }

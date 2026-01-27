@@ -177,7 +177,7 @@
       }
     }
   },
-  "job_profile_page_title": "Murya - Profil de compétences : {jobTitle}",
+  "job_profile_page_title": "Murya - #{jobTitle}#",
   "@job_profile_page_title": {
     "description": "Titre de la page du profil de compétences d'un métier",
     "placeholders": {

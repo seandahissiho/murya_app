@@ -101,9 +101,11 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                   key: ValueKey('job-module-${widget.module.id}-${userCurrentJob.jobId ?? 'no-job'}'),
                   module: widget.module,
                   onCardTap: () {
+                    final jobTitle = userCurrentJob.job?.title ?? userCurrentJob.jobFamily?.title;
                     navigateToPath(
                       context,
                       to: AppRoutes.jobDetails.replaceAll(':id', userCurrentJob.jobId ?? userCurrentJob.jobFamilyId!),
+                      data: {'jobTitle': jobTitle},
                     );
                   },
                   hasData: state.userCurrentJob != null,
@@ -121,11 +123,13 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                   footerContent: AppXButton(
                     shrinkWrap: false,
                     onPressed: () {
+                      final jobTitle = userCurrentJob.job?.title ?? userCurrentJob.jobFamily?.title;
                       // if (nextQuizAvailableIn != null) return;
                       // navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', userCurrentJob.jobId!));
                       navigateToPath(
                         context,
                         to: AppRoutes.jobDetails.replaceAll(':id', userCurrentJob.jobId ?? userCurrentJob.jobFamilyId!),
+                        data: {'jobTitle': jobTitle},
                       );
                     },
                     isLoading: false,

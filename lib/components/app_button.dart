@@ -641,7 +641,8 @@ class AppXCloseButton extends StatelessWidget {
 
 class AppXReturnButton extends StatelessWidget {
   final String destination;
-  const AppXReturnButton({super.key, required this.destination});
+  final Object? data;
+  const AppXReturnButton({super.key, required this.destination, this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -655,7 +656,7 @@ class AppXReturnButton extends StatelessWidget {
             Navigator.pop(context);
             return;
           }
-          navigateToPath(context, to: destination);
+          navigateToPath(context, to: destination, data: data);
         },
         isLoading: false,
         // leftIconPath: AppIcons.searchBarCloseIconPath,
