@@ -44,6 +44,7 @@ class AppXButton extends StatefulWidget {
     this.iconOnlyPadding = 5,
     this.onlyLeftRounded = false,
     this.onlyRightRounded = false,
+    this.children,
   });
 
   final String? text;
@@ -77,6 +78,7 @@ class AppXButton extends StatefulWidget {
   final double iconOnlyPadding;
   final bool onlyLeftRounded;
   final bool onlyRightRounded;
+  final List<Widget>? children;
 
   @override
   State<AppXButton> createState() => _AppXButtonState();
@@ -469,9 +471,9 @@ class _AppXButtonState extends State<AppXButton> {
                             shrinkWrap: widget.shrinkWrap,
                             removePaddings: widget.removePaddings,
                             horizontalAlignment: widget.horizontalAlignment,
-                            children: children,
                             disabled: widget.disabled,
                             disabledColor: widget.disabledColor ?? AppColors.primaryDisabled,
+                            children: widget.children ?? children,
                           ),
                         )
                       : _ButtonBody(
@@ -482,9 +484,9 @@ class _AppXButtonState extends State<AppXButton> {
                           shrinkWrap: widget.shrinkWrap,
                           removePaddings: widget.removePaddings,
                           horizontalAlignment: widget.horizontalAlignment,
-                          children: children,
                           disabled: widget.disabled,
                           disabledColor: widget.disabledColor ?? AppColors.primaryDisabled,
+                          children: widget.children ?? children,
                         ),
                 ),
               ),

@@ -160,7 +160,7 @@ class AppButtonColors {
   static const Color secondaryBorderDefault = Color(0xFFD8D5D1);
   static const Color secondaryShadowDefault = Color(0xFFD8D5D1);
 
-  static const Color secondarySurfaceHover = Color(0xFFF4F6FF);
+  static const Color secondarySurfaceHover = Color(0xFFE8E5E1);
   static const Color secondarySurfacePressed = Color(0xFFF4F3EC);
   static const Color secondaryBorderFocus = Color(0x572B7FFF);
 
