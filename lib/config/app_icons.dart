@@ -49,6 +49,12 @@ class AppIcons {
   // clearIconPath
   static const String clearIconPath = '$basePath/close.svg';
 
+  // Delete, Disabled.svg
+  static const String deleteDisabledIconPath = '$basePath/Delete, Disabled.svg';
+
+  // Back-Arrow.svg
+  static const String backArrowIconPath = '$basePath/Back-Arrow.svg';
+
   // enLanguageIconPath
   static const String enLanguageIconPath = '$basePath/GB.svg';
 

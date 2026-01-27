@@ -74,25 +74,14 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Container(
+                    SizedBox(
                       height: bigConstraints.maxHeight,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              if (!hideBackButton)
-                                GestureDetector(
-                                  onTap: () async {
-                                    // navigateToPath(context, to: AppRoutes.jobModule);
-                                    navigateToPath(context, to: AppRoutes.landing);
-                                  },
-                                  child: SvgPicture.asset(
-                                    AppIcons.backButtonPath,
-                                    width: tabletAndAboveCTAHeight,
-                                    height: tabletAndAboveCTAHeight,
-                                  ),
-                                ),
+                              if (!hideBackButton) const AppXReturnButton(destination: AppRoutes.landing),
                               // AppSpacing.groupMarginBox,
                               // Expanded(
                               //   flex: 10,

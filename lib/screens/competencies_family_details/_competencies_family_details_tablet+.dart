@@ -10,7 +10,7 @@ class TabletCfDetailsScreen extends StatefulWidget {
 class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
   CompetencyFamily _cf = CompetencyFamily.empty();
   AppJob _job = Job.empty();
-  late final jobId;
+  String jobId = '';
   late final cfId;
 
   @override
@@ -21,9 +21,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
       jobId = beamState.pathParameters['jobId'];
       cfId = beamState.pathParameters['cfId'];
       final userJobId = context.read<JobBloc>().state.userCurrentJob?.id;
-      context
-          .read<JobBloc>()
-          .add(LoadCFDetails(context: context, jobId: jobId, cfId: cfId, userJobId: userJobId));
+      context.read<JobBloc>().add(LoadCFDetails(context: context, jobId: jobId, cfId: cfId, userJobId: userJobId));
     });
   }
 
@@ -48,16 +46,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                 Expanded(
                   child: Row(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
-                        },
-                        child: SvgPicture.asset(
-                          AppIcons.backButtonPath,
-                          width: tabletAndAboveCTAHeight,
-                          height: tabletAndAboveCTAHeight,
-                        ),
-                      ),
+                      AppXReturnButton(destination: AppRoutes.jobDetails.replaceFirst(':id', jobId)),
                       AppSpacing.elementMarginBox,
                       Flexible(
                         child: Row(
