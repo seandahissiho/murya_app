@@ -301,7 +301,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                   },
                   // labelInside: null,
                   shrinkWrap: true,
-                  foregroundColor: AppColors.primaryDefault,
+                  fgColor: AppColors.primaryDefault,
                 ),
               ],
             ),

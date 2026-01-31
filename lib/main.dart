@@ -19,7 +19,8 @@ Future<void> main() async {
   );
 
   Beamer.setPathUrlStrategy();
-  Intl.defaultLocale = 'fr_FR';
+  final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;
+  Intl.defaultLocale = Intl.canonicalizedLocale(systemLocale.toLanguageTag());
 
   runApp(
     ChangeNotifierProvider(

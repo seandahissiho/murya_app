@@ -273,7 +273,7 @@ class _ResourceCard extends StatelessWidget {
                       ),
                       SizedBox(height: smallGap),
                       AutoSizeText(
-                        resource.createdAt?.formattedDate ?? '',
+                        resource.createdAt?.formattedDate() ?? '',
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: AppColors.textInverted,
                           fontSize: dateFontSize,

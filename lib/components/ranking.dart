@@ -175,7 +175,7 @@ class _RankingChartState extends State<RankingChart> {
                               // labelInside: null,
                               shrinkWrap: false,
                               maxDropdownWidth: 150,
-                              foregroundColor: AppColors.primaryDefault,
+                              fgColor: AppColors.primaryDefault,
                             ),
                           ],
                         ),

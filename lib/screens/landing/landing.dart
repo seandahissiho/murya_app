@@ -101,23 +101,29 @@ class AddModuleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isMobile = DeviceHelper.isMobile(context);
+    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
     return Padding(
       padding: EdgeInsets.only(
         bottom: isMobile
             ? AppSpacing.pageMargin + MediaQuery.of(context).padding.bottom
             : AppSpacing.pageMargin + AppSpacing.sectionMargin,
       ),
-      child: AppXButton(
-        height: tabletAndAboveCTAHeight,
-        leftIcon: const Icon(
-          Icons.add,
-          color: AppColors.textInverted,
+      child: SizedBox(
+        width: ctaHeight,
+        height: ctaHeight,
+        child: AppXButton(
+          leftIcon: const Icon(
+            Icons.add,
+            color: AppColors.textInverted,
+          ),
+          // leftIconPath: AppIcons.searchBarCloseIconPath,
+          shrinkWrap: true,
+          onPressed: () async {
+            return await contentNotAvailablePopup(context);
+          },
+          isLoading: false,
+          // borderColor: ,
         ),
-        shrinkWrap: true,
-        onPressed: () async {
-          return await contentNotAvailablePopup(context);
-        },
-        isLoading: false,
       ),
       // child: Blob.animatedRandom(
       //   size: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 27,

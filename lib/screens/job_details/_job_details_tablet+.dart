@@ -42,6 +42,16 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
       final lastBeamState = history[history.length - 2];
       final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
       hideBackButton = lastPath == AppRoutes.landing;
+      // get last 3 paths
+      final last3Paths = history
+          .sublist(history.length - 4 < 0 ? 0 : history.length - 4, history.length - 1)
+          .map((beamState) => beamState.state.routeInformation.uri.path.toString())
+          .toList();
+      // if last 3 paths contain landing, hide back button
+      hideBackButton = true;
+      if (last3Paths.contains(AppRoutes.jobModule)) {
+        hideBackButton = false;
+      }
     }
     return BlocListener<ProfileBloc, ProfileState>(
       listener: (context, state) {
@@ -307,7 +317,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
   _diagramBuilder(AppLocalizations locale, ThemeData theme, List<String> options) {
     return Container(
       decoration: const BoxDecoration(
-        color: AppColors.backgroundCard,
+        // color: AppColors.backgroundCard,
+        color: Colors.white,
         borderRadius: AppRadius.large,
       ),
       padding: const EdgeInsets.only(
@@ -356,7 +367,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                     // labelInside: null,
                     shrinkWrap: false,
                     maxDropdownWidth: 150,
-                    foregroundColor: AppColors.primaryDefault,
+                    fgColor: AppColors.primaryDefault,
+                    bgColor: AppColors.backgroundColor,
                   ),
                 ],
               ),
@@ -381,7 +393,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
     return LayoutBuilder(builder: (context, constraints) {
       return Card(
         elevation: 0,
-        color: AppColors.backgroundCard,
+        color: Colors.white,
         shape: const RoundedRectangleBorder(
           borderRadius: AppRadius.large,
         ),

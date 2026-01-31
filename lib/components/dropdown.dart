@@ -15,8 +15,8 @@ class AppXDropdown<T> extends StatefulWidget {
     this.rightIconPath = AppIcons.angleDownPath,
     this.rightIcon,
     this.leftIcon,
-    this.background = Colors.transparent,
-    this.foregroundColor,
+    this.bgColor = AppColors.backgroundCard,
+    this.fgColor,
     this.borderColor,
     this.shrinkWrap = false,
     this.borderLineWidth = 1,
@@ -45,8 +45,8 @@ class AppXDropdown<T> extends StatefulWidget {
   final String? rightIconPath;
   final Widget? rightIcon;
   final Widget? leftIcon;
-  final Color background;
-  final Color? foregroundColor;
+  final Color bgColor;
+  final Color? fgColor;
   final Color? borderColor;
   final bool shrinkWrap;
   final double borderLineWidth;
@@ -230,7 +230,7 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
     return Container(
       height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
       decoration: BoxDecoration(
-        color: Colors.transparent,
+        color: widget.bgColor, // Colors.transparent,
         borderRadius: AppRadius.small,
         border: Border.all(
           color: state.hasError ? AppColors.error.shade500 : (widget.borderColor ?? AppColors.borderMedium),
@@ -249,7 +249,7 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                 : (widget.hintTextForced ? widget.hintText! : "Sélectionnez ${widget.hintText ?? "une option"}"),
             style: (isMobile ? theme.textTheme.labelSmall : theme.textTheme.bodyMedium)?.copyWith(
               color: widget.controller.text.isNotEmpty
-                  ? (widget.foregroundColor ?? AppColors.primaryDefault)
+                  ? (widget.fgColor ?? AppColors.primaryDefault)
                   : AppColors.textSecondary,
             ),
             maxLines: 1,

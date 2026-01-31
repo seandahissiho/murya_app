@@ -12,6 +12,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
   AppJob _job = Job.empty();
   String jobId = '';
   late final cfId;
+  final ScrollController _competenciesScrollController = ScrollController();
 
   @override
   void initState() {
@@ -23,6 +24,12 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
       final userJobId = context.read<JobBloc>().state.userCurrentJob?.id;
       context.read<JobBloc>().add(LoadCFDetails(context: context, jobId: jobId, cfId: cfId, userJobId: userJobId));
     });
+  }
+
+  @override
+  void dispose() {
+    _competenciesScrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -161,19 +168,33 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                     flex: 2,
                     child: Container(
                       decoration: const BoxDecoration(
-                        color: AppColors.backgroundCard,
+                        // color: AppColors.backgroundCard,
                         borderRadius: AppRadius.borderRadius20,
                       ),
-                      padding: const EdgeInsets.all(AppSpacing.groupMargin),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: _cf.competencies.map((competency) {
-                            bool isLast = _cf.competencies.indexOf(competency) == _cf.competencies.length - 1;
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.groupMargin),
-                              child: CompetencyCard(competency: competency),
-                            );
-                          }).toList(),
+                      padding: const EdgeInsets.only(
+                        top: AppSpacing.groupMargin,
+                        left: AppSpacing.groupMargin,
+                        bottom: AppSpacing.groupMargin,
+                      ),
+                      child: ScrollConfiguration(
+                        behavior: ScrollConfiguration.of(context).copyWith(
+                          scrollbars: true,
+                        ),
+                        child: Scrollbar(
+                          controller: _competenciesScrollController,
+                          thumbVisibility: true,
+                          child: SingleChildScrollView(
+                            controller: _competenciesScrollController,
+                            child: Column(
+                              children: _cf.competencies.map((competency) {
+                                bool isLast = _cf.competencies.indexOf(competency) == _cf.competencies.length - 1;
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.groupMargin),
+                                  child: CompetencyCard(competency: competency),
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
                       ),
                     ),

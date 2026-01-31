@@ -154,7 +154,7 @@ extension ExtensionDateTime on DateTime {
     return DateTime(year, month, day, hour, 0).add(const Duration(hours: 1));
   }
 
-  String get formattedDate {
+  String formattedDate() {
     return ddMMMyyyy();
   }
 
@@ -258,10 +258,8 @@ extension ExtensionDateTime on DateTime {
   }
 
   String ddMMMyyyy() {
-    // Format the date as "dd MMM yyyy" (e.g., "01 Jan 2023")
-    // In French locale, the month names are abbreviated.
-    final months = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
-    return "${day.toString().padLeft(2, '0')} ${months[month - 1]} ${year.toString().substring(2)}";
+    // Use Intl to format dates based on the current locale.
+    return intl.DateFormat('dd MMM. yy').format(this);
   }
 
   String toDbString() {
