@@ -52,7 +52,7 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                           destination: AppRoutes.jobDetails.replaceFirst(':id', jobId),
                           data: {'jobTitle': _job.title},
                         ),
-                        AppSpacing.elementMarginBox,
+                        AppSpacing.groupMarginBox,
                         AppBreadcrumb(
                           items: [
                             BreadcrumbItem(

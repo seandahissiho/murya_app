@@ -57,7 +57,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                         destination: AppRoutes.jobDetails.replaceFirst(':id', jobId),
                         data: {'jobTitle': _job.title},
                       ),
-                      AppSpacing.elementMarginBox,
+                      AppSpacing.groupMarginBox,
                       AppBreadcrumb(
                         items: [
                           BreadcrumbItem(
