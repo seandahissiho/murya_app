@@ -82,32 +82,28 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
         children: [
           Row(
             children: [
+              const AppXReturnButton(destination: AppRoutes.userRessourcesModule),
+              AppSpacing.groupMarginBox,
               Expanded(
-                child: Row(
-                  children: [
-                    const AppXReturnButton(destination: AppRoutes.userRessourcesModule),
-                    AppSpacing.elementMarginBox,
-                    AppBreadcrumb(
-                      items: [
-                        BreadcrumbItem(
-                          label: AppLocalizations.of(context).mediaLibrary,
-                          onTap: () => navigateToPath(context, to: AppRoutes.userRessourcesModule),
-                        ),
-                        BreadcrumbItem(label: widget.resource.title ?? ''),
-                      ],
-                      inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textTertiary,
-                      ),
-                      inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppColors.primaryDefault, // hover
-                        decoration: TextDecoration.underline, // optionnel
-                      ),
-                      activeTextStyle: theme.textTheme.labelMedium?.copyWith(
-                        color: AppColors.primaryDefault,
-                      ),
-                      scrollable: true,
+                child: AppBreadcrumb(
+                  items: [
+                    BreadcrumbItem(
+                      label: AppLocalizations.of(context).mediaLibrary,
+                      onTap: () => navigateToPath(context, to: AppRoutes.userRessourcesModule),
                     ),
+                    BreadcrumbItem(label: widget.resource.title ?? ''),
                   ],
+                  inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textTertiary,
+                  ),
+                  inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.primaryDefault, // hover
+                    decoration: TextDecoration.underline, // optionnel
+                  ),
+                  activeTextStyle: theme.textTheme.labelMedium?.copyWith(
+                    color: AppColors.primaryDefault,
+                  ),
+                  scrollable: true,
                 ),
               ),
               const AppXCloseButton(),

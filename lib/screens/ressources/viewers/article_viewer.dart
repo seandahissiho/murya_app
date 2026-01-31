@@ -204,27 +204,30 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
         Row(
           children: [
             const AppXReturnButton(destination: AppRoutes.userRessourcesModule),
-            AppSpacing.elementMarginBox,
-            AppBreadcrumb(
-              items: [
-                BreadcrumbItem(
-                  label: AppLocalizations.of(context).mediaLibrary,
-                  onTap: () => navigateToPath(context, to: AppRoutes.userRessourcesModule),
+            AppSpacing.groupMarginBox,
+            Expanded(
+              child: AppBreadcrumb(
+                items: [
+                  BreadcrumbItem(
+                    label: AppLocalizations.of(context).mediaLibrary,
+                    onTap: () => navigateToPath(context, to: AppRoutes.userRessourcesModule),
+                  ),
+                  BreadcrumbItem(label: widget.resource.title ?? ''),
+                ],
+                inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textTertiary,
                 ),
-                BreadcrumbItem(label: widget.resource.title ?? ''),
-              ],
-              inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textTertiary,
+                inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppColors.primaryDefault, // hover
+                  decoration: TextDecoration.underline, // optionnel
+                ),
+                activeTextStyle: theme.textTheme.labelMedium?.copyWith(
+                  color: AppColors.primaryDefault,
+                ),
+                scrollable: true,
               ),
-              inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.primaryDefault, // hover
-                decoration: TextDecoration.underline, // optionnel
-              ),
-              activeTextStyle: theme.textTheme.labelMedium?.copyWith(
-                color: AppColors.primaryDefault,
-              ),
-              scrollable: true,
             ),
+            const AppXCloseButton(),
           ],
         ),
         AppSpacing.sectionMarginBox,
