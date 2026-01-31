@@ -284,7 +284,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ));
   }
 
-
   List<LeaderBoardUser> _mapLeaderboardUsers(JobRankings ranking) {
     final users = ranking.rankings.map((ranking) {
       final String firstName = ranking.firstName ?? ranking.firstname ?? '';
@@ -305,6 +304,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       );
     }).toList();
     users.sort((a, b) => a.rank.compareTo(b.rank));
+    // retrieve current user and put them at the top
+    final currentUserIndex = users.indexWhere((user) => user.id == _userProfile.id);
+    if (currentUserIndex != -1) {
+      final currentUser = users.removeAt(currentUserIndex);
+      users.insert(0, currentUser);
+    }
     return users;
   }
 

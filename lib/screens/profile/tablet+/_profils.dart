@@ -10,9 +10,7 @@ class TabletJourneyInfoTab extends StatefulWidget {
 class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final AppLocalizations locale = AppLocalizations.of(context);
-    return const Row(
+    return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -75,6 +73,7 @@ class UserListBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final AppLocalizations locale = AppLocalizations.of(context);
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         final List<LeaderBoardUser> users = state.leaderboardUsers;
@@ -99,7 +98,7 @@ class UserListBox extends StatelessWidget {
                         3: FlexColumnWidth(.75),
                       },
                       children: [
-                        headers(theme),
+                        headers(theme, locale, users.length),
                       ],
                     ),
                     Expanded(
@@ -107,17 +106,16 @@ class UserListBox extends StatelessWidget {
                         // physics: const NeverScrollableScrollPhysics(),
                         child: Table(
                           columnWidths: const {
-                            0: FlexColumnWidth(.125),
-                            1: FlexColumnWidth(.4),
+                            0: FlexColumnWidth(.4),
+                            1: FlexColumnWidth(1.125),
                             2: FlexColumnWidth(1),
                             3: FlexColumnWidth(1),
-                            4: FlexColumnWidth(1),
-                            5: FlexColumnWidth(.75),
+                            4: FlexColumnWidth(.75),
                           },
                           children: [
                             ...users.map((user) {
                               final int index = users.indexOf(user) + 1;
-                              return userRow(user, theme, index,
+                              return userRow(user, theme, locale, index,
                                   currentUserId: state.user.id, isLast: index == users.length);
                             }).toList(),
                           ],
@@ -131,12 +129,12 @@ class UserListBox extends StatelessWidget {
     );
   }
 
-  TableRow headers(ThemeData theme) {
+  TableRow headers(ThemeData theme, AppLocalizations locale, int length) {
     final List<String> headers = [
-      'Personne',
-      'Expérience',
-      'Questions répondues',
-      'Performance',
+      "  ${locale.parcoursRanking_peopleCount(length)}",
+      locale.parcoursRanking_header_experience,
+      locale.parcoursRanking_header_answeredQuestions,
+      locale.parcoursRanking_header_performance,
     ];
     return TableRow(
       decoration: const BoxDecoration(
@@ -144,12 +142,14 @@ class UserListBox extends StatelessWidget {
           bottom: BorderSide(color: AppColors.borderLight),
         ),
       ),
-      children: headers.map((header) {
+      children: headers.asMap().entries.map((entry) {
+        final int index = entry.key;
+        final String header = entry.value;
         return TableCell(
             child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: AppSpacing.containerInsideMargin,
-            horizontal: header == 'Personne' ? AppSpacing.containerInsideMargin : 0,
+            horizontal: index == 0 ? AppSpacing.containerInsideMargin : 0,
           ),
           child: Text(
             header,
@@ -162,8 +162,10 @@ class UserListBox extends StatelessWidget {
     );
   }
 
-  TableRow userRow(LeaderBoardUser user, ThemeData theme, int index, {String? currentUserId, bool isLast = false}) {
+  TableRow userRow(LeaderBoardUser user, ThemeData theme, AppLocalizations locale, int index,
+      {String? currentUserId, bool isLast = false}) {
     final int displayRank = user.rank > 0 ? user.rank : index;
+    final String youTag = currentUserId == user.id ? ' ${locale.parcoursRanking_youTag}' : '';
     return TableRow(
       decoration: BoxDecoration(
         border: Border(
@@ -171,20 +173,20 @@ class UserListBox extends StatelessWidget {
         ),
       ),
       children: [
-        TableCell(
-            child: SizedBox(
-          height: _userRowHeight,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.containerInsideMarginSmall),
-            alignment: Alignment.centerRight,
-            child: Text(
-              '$displayRank',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-        )),
+        // TableCell(
+        //     child: SizedBox(
+        //   height: _userRowHeight,
+        //   child: Container(
+        //     padding: const EdgeInsets.symmetric(vertical: AppSpacing.containerInsideMarginSmall),
+        //     alignment: Alignment.centerRight,
+        //     child: Text(
+        //       '$displayRank',
+        //       style: theme.textTheme.bodyMedium?.copyWith(
+        //         color: AppColors.textPrimary,
+        //       ),
+        //     ),
+        //   ),
+        // )),
         TableCell(
             child: SizedBox(
           height: _userRowHeight,
@@ -236,13 +238,13 @@ class UserListBox extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "${user.firstName.isEmpty ? 'Prénom' : user.firstName} ${currentUserId == user.id ? '(Vous)' : ''}",
+                  "${user.firstName.isEmpty ? locale.user_firstName_placeholder : user.firstName}$youTag",
                   style: theme.textTheme.labelLarge?.copyWith(
                     color: AppColors.textPrimary,
                   ),
                 ),
                 Text(
-                  user.lastName.isEmpty ? 'Nom' : user.lastName,
+                  user.lastName.isEmpty ? locale.user_lastName_placeholder : user.lastName,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: AppColors.textPrimary,
                   ),
@@ -286,12 +288,15 @@ class UserListBox extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: user.completedQuizzes > 0
                   ? Text(
-                      '${user.completedQuizzes * 10} depuis ${_formatDate(user.sinceDate)}',
+                      locale.parcoursRanking_answeredSince(
+                        user.completedQuizzes * 10,
+                        _formatDate(user.sinceDate),
+                      ),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: AppColors.textPrimary,
                       ),
                     )
-                  : pendingChip(theme),
+                  : pendingChip(theme, locale.parcoursRanking_status_pending),
             ),
           ),
         )),
@@ -312,7 +317,7 @@ class UserListBox extends StatelessWidget {
                           color: AppColors.textPrimary,
                         ),
                       )
-                    : pendingChip(theme),
+                    : pendingChip(theme, locale.parcoursRanking_status_pending),
               ],
             ),
           ),
@@ -321,7 +326,7 @@ class UserListBox extends StatelessWidget {
     );
   }
 
-  pendingChip(ThemeData theme) {
+  Widget pendingChip(ThemeData theme, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.elementMargin,
@@ -333,7 +338,7 @@ class UserListBox extends StatelessWidget {
         borderRadius: AppRadius.small,
       ),
       child: Text(
-        'En attente',
+        text,
         style: theme.textTheme.labelMedium?.copyWith(
           // rgba(199, 128, 40, 1)
           color: const Color.fromRGBO(199, 128, 40, 1),
@@ -349,6 +354,7 @@ class InvitationBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final AppLocalizations locale = AppLocalizations.of(context);
     return Container(
       constraints: const BoxConstraints(
         minHeight: 100,
@@ -364,7 +370,7 @@ class InvitationBox extends StatelessWidget {
         children: [
           const Row(mainAxisSize: MainAxisSize.max, children: []),
           Text(
-            "Inviter des amis",
+            locale.inviteFriends_title,
             style: GoogleFonts.anton(
               fontSize: 28,
               fontWeight: FontWeight.w400,
@@ -376,22 +382,14 @@ class InvitationBox extends StatelessWidget {
           AppSpacing.groupMarginBox,
           RichText(
               text: TextSpan(
-            text:
-                "Dis à tes amis qu’apprendre avec Murya, c’est simple, intelligent et récompensé.\nInvite-les et gagne ",
+            text: '${locale.inviteFriends_description}\n',
             style: theme.textTheme.bodyLarge?.copyWith(
               color: AppColors.textSecondary,
               height: 24 / theme.textTheme.bodyLarge!.fontSize!,
             ),
             children: [
               TextSpan(
-                text: "1000 💎 ",
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: AppColors.textSecondary,
-                  height: 24 / theme.textTheme.bodyLarge!.fontSize!,
-                ),
-              ),
-              TextSpan(
-                text: "dès leur inscription.",
+                text: locale.inviteFriends_bonus(1000),
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: AppColors.textSecondary,
                   height: 24 / theme.textTheme.bodyLarge!.fontSize!,
@@ -405,7 +403,7 @@ class InvitationBox extends StatelessWidget {
               Icons.person_add_alt_1_outlined,
               color: AppButtonColors.primaryTextDefault,
             ),
-            text: "Inviter",
+            text: locale.inviteFriends_cta,
             onPressed: () async {
               return await contentNotAvailablePopup(context);
             },
@@ -422,6 +420,7 @@ class UserInfoBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations locale = AppLocalizations.of(context);
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         final user = state.user;
@@ -456,13 +455,13 @@ class UserInfoBox extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    user.firstName ?? 'Prénom',
+                    user.firstName ?? locale.user_firstName_placeholder,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           color: AppColors.textPrimary,
                         ),
                   ),
                   Text(
-                    user.lastName ?? 'Nom',
+                    user.lastName ?? locale.user_lastName_placeholder,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: AppColors.textPrimary,
                         ),
@@ -492,61 +491,67 @@ class QuestInfoBox extends StatelessWidget {
       return BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
           final questGroup = state.questGroups.groups.firstOrNull ?? const QuestGroup();
-          return Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              border: Border.all(color: AppColors.borderMedium),
-              borderRadius: AppRadius.small,
-            ),
-            padding: const EdgeInsets.all(AppSpacing.containerInsideMargin * scale),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  locale.parcoursObjective_inProgress,
-                  style: theme.textTheme.bodyMedium!.copyWith(
-                    color: AppColors.textSecondary,
-                    fontSize: 14 * scale,
+          return InkWell(
+            onTap: () {
+              // Navigate to quests tab
+              DefaultTabController.of(context).animateTo(1);
+            },
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.borderMedium),
+                borderRadius: AppRadius.small,
+              ),
+              padding: const EdgeInsets.all(AppSpacing.containerInsideMargin * scale),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    locale.parcoursObjective_inProgress,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.textSecondary,
+                      fontSize: 14 * scale,
+                    ),
                   ),
-                ),
-                AppSpacing.tinyMarginBox,
-                Flexible(
-                  child: AutoSizeText(
-                    (questGroup.group?.title ?? '').toString(),
-                    style: theme.textTheme.labelLarge!.copyWith(
-                      color: AppColors.textPrimary,
-                      fontSize: math.max(16 * scale, 2),
+                  AppSpacing.tinyMarginBox,
+                  Flexible(
+                    child: AutoSizeText(
+                      (questGroup.group?.title ?? '').toString(),
+                      style: theme.textTheme.labelLarge!.copyWith(
+                        color: AppColors.textPrimary,
+                        fontSize: math.max(16 * scale, 2),
+                      ),
+                      maxFontSize: math.max(16 * scale, 2),
+                      minFontSize: math.max(10 * scale, 2),
+                      maxLines: 2,
                     ),
-                    maxFontSize: math.max(16 * scale, 2),
-                    minFontSize: math.max(10 * scale, 2),
-                    maxLines: 2,
                   ),
-                ),
-                AppSpacing.groupMarginBox,
-                // Progress bar
-                Stack(
-                  children: [
-                    Container(
-                      height: 16 * scale,
-                      decoration: BoxDecoration(
-                        color: AppColors.borderLight,
-                        borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                  AppSpacing.groupMarginBox,
+                  // Progress bar
+                  Stack(
+                    children: [
+                      Container(
+                        height: 16 * scale,
+                        decoration: BoxDecoration(
+                          color: AppColors.borderLight,
+                          borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                        ),
                       ),
-                    ),
-                    Container(
-                      height: 16 * scale,
-                      width: (constraints.maxWidth - 2 * AppSpacing.containerInsideMargin * scale) *
-                          (completionPercentage(questGroup)),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryFocus,
-                        borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                      Container(
+                        height: 16 * scale,
+                        width: (constraints.maxWidth - 2 * AppSpacing.containerInsideMargin * scale) *
+                            (completionPercentage(questGroup)),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryFocus,
+                          borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -572,11 +577,19 @@ class QuestInfoBox extends StatelessWidget {
   }
 }
 
-class PossibleRewardsBox extends StatelessWidget {
+class PossibleRewardsBox extends StatefulWidget {
   const PossibleRewardsBox({super.key});
 
   @override
+  State<PossibleRewardsBox> createState() => _PossibleRewardsBoxState();
+}
+
+class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
+  bool _isHovering = false;
+
+  @override
   Widget build(BuildContext context) {
+    final AppLocalizations locale = AppLocalizations.of(context);
     final demoRewards = <RewardItem>[
       const RewardItem(
         id: "reward_le_dietrich",
@@ -689,7 +702,7 @@ class PossibleRewardsBox extends StatelessWidget {
             children: [
               Flexible(
                 child: AutoSizeText(
-                  "Récompenses possibles",
+                  locale.parcoursRewards_possibleTitle,
                   style: GoogleFonts.anton(
                     fontSize: 28,
                     fontWeight: FontWeight.w400,
@@ -702,20 +715,30 @@ class PossibleRewardsBox extends StatelessWidget {
                   maxLines: 1,
                 ),
               ),
-              AppXButton(
-                text: "Voir tout",
-                onPressed: () {
-                  // Switch to rewards tab
-                  DefaultTabController.of(context).animateTo(2);
+              MouseRegion(
+                onEnter: (event) {
+                  _isHovering = true;
+                  setState(() {});
                 },
-                fgColor: AppButtonColors.tertiaryTextDefault,
-                bgColor: Colors.transparent,
-                borderColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                onPressedColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                elevation: 0,
-                isLoading: false,
+                onExit: (event) {
+                  _isHovering = false;
+                  setState(() {});
+                },
+                child: AppXButton(
+                  text: locale.parcoursRewards_seeAll,
+                  onPressed: () {
+                    // Switch to rewards tab
+                    DefaultTabController.of(context).animateTo(2);
+                  },
+                  fgColor: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+                  bgColor: Colors.transparent,
+                  borderColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  onPressedColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  elevation: 0,
+                  isLoading: false,
+                ),
               ),
             ],
           ),
@@ -765,7 +788,7 @@ class _RewardListItemState extends State<RewardListItem> {
     final isMobile = DeviceHelper.isMobile(context);
     return LayoutBuilder(builder: (context, constraints) {
       return MouseRegion(
-        cursor: SystemMouseCursors.click,
+        cursor: MouseCursor.defer,
         onEnter: (event) {
           // _isHovering = true;
           setState(() {});
@@ -853,7 +876,7 @@ class _RewardListItemState extends State<RewardListItem> {
                       ),
                       AppSpacing.tinyTinyMarginBox,
                       Text(
-                        "${widget.reward.kind.labelFr} • ${widget.reward.city}",
+                        "${widget.reward.kind.label(locale)} • ${widget.reward.city}",
                         style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
                           color: _isHovering ? AppColors.textInverted : AppColors.textSecondary,
                           // height: 1 / 2.4,

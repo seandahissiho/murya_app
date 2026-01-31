@@ -25,6 +25,23 @@ class MobileArticleViewerScreen extends StatefulWidget {
 }
 
 class _MobileArticleViewerScreenState extends State<MobileArticleViewerScreen> {
+  bool _readSent = false;
+
+  @override
+  void dispose() {
+    _sendReadIfNeeded();
+    super.dispose();
+  }
+
+  void _sendReadIfNeeded() {
+    if (_readSent) return;
+    final resourceId = widget.resource.id;
+    if (resourceId == null || resourceId.isEmpty) return;
+    if (widget.resource.userState?.readAt != null) return;
+    _readSent = true;
+    context.read<ResourcesBloc>().add(ReadResource(resourceId: resourceId, progress: 1.0));
+  }
+
   @override
   Widget build(BuildContext context) {
     final appSize = AppSize(context);
@@ -194,6 +211,22 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
   final TocController tocController = TocController();
   final AutoScrollController controller = AutoScrollController();
   int currentIndex = 0;
+  bool _readSent = false;
+
+  @override
+  void dispose() {
+    _sendReadIfNeeded();
+    super.dispose();
+  }
+
+  void _sendReadIfNeeded() {
+    if (_readSent) return;
+    final resourceId = widget.resource.id;
+    if (resourceId == null || resourceId.isEmpty) return;
+    if (widget.resource.userState?.readAt != null) return;
+    _readSent = true;
+    context.read<ResourcesBloc>().add(ReadResource(resourceId: resourceId, progress: 1.0));
+  }
 
   @override
   Widget build(BuildContext context) {

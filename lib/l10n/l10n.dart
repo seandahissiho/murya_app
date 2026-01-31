@@ -782,6 +782,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0 {0 personne} =1 {1 personne} other {{count} personnes}}'**
   String parcoursRanking_peopleCount(int count);
 
+  /// En-tête de colonne Personne dans le tableau de classement Parcours
+  ///
+  /// In fr, this message translates to:
+  /// **'Personne'**
+  String get parcoursRanking_header_person;
+
   /// En-tête de colonne Expérience dans le tableau de classement Parcours
   ///
   /// In fr, this message translates to:
@@ -800,11 +806,23 @@ abstract class AppLocalizations {
   /// **'Performance'**
   String get parcoursRanking_header_performance;
 
+  /// Texte affichant le nombre de questions répondues et la date de début
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} depuis {date}'**
+  String parcoursRanking_answeredSince(int count, String date);
+
   /// Badge de statut quand l'utilisateur n'a pas encore répondu au questionnaire
   ///
   /// In fr, this message translates to:
   /// **'En attente'**
   String get parcoursRanking_status_pending;
+
+  /// Indicateur affiché à côté de l'utilisateur courant dans le classement
+  ///
+  /// In fr, this message translates to:
+  /// **'(Vous)'**
+  String get parcoursRanking_youTag;
 
   /// Titre du bloc objectif en cours (colonne droite)
   ///
@@ -829,6 +847,54 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Voir tout'**
   String get parcoursRewards_seeAll;
+
+  /// Nombre de places restantes pour une récompense
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0 {0 place restante} =1 {1 place restante} other {{count} places restantes}}'**
+  String reward_remainingPlaces(int count);
+
+  /// Bouton pour débloquer une récompense
+  ///
+  /// In fr, this message translates to:
+  /// **'Débloquer'**
+  String get reward_unlock_cta;
+
+  /// Libellé du type de récompense cinéma
+  ///
+  /// In fr, this message translates to:
+  /// **'Cinéma'**
+  String get rewardKind_cinema;
+
+  /// Libellé du type de récompense salle de concert
+  ///
+  /// In fr, this message translates to:
+  /// **'Salle de concert'**
+  String get rewardKind_concertHall;
+
+  /// Libellé du type de récompense théâtre
+  ///
+  /// In fr, this message translates to:
+  /// **'Salle de spectacle'**
+  String get rewardKind_theatre;
+
+  /// Libellé du type de récompense match de sport
+  ///
+  /// In fr, this message translates to:
+  /// **'Match de basket'**
+  String get rewardKind_sportsMatch;
+
+  /// Libellé du type de récompense parc d'attractions
+  ///
+  /// In fr, this message translates to:
+  /// **'Parc d\'\'attractions'**
+  String get rewardKind_themePark;
+
+  /// Libellé du type de récompense autre
+  ///
+  /// In fr, this message translates to:
+  /// **'Autre'**
+  String get rewardKind_other;
 
   /// Nom d'une récompense possible
   ///
@@ -871,6 +937,126 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Invite-les et gagne {amount} 💎 dès leur inscription.'**
   String inviteFriends_bonus(int amount);
+
+  /// Texte du bouton d'appel à l'action pour inviter des amis
+  ///
+  /// In fr, this message translates to:
+  /// **'Inviter'**
+  String get inviteFriends_cta;
+
+  /// Libellé générique pour un bouton OK
+  ///
+  /// In fr, this message translates to:
+  /// **'Ok'**
+  String get common_ok;
+
+  /// Titre de la modale indiquant qu'une fonctionnalité n'est pas disponible
+  ///
+  /// In fr, this message translates to:
+  /// **'Version de démonstration'**
+  String get popup_contentNotAvailable_title;
+
+  /// Texte de la modale indiquant qu'une fonctionnalité n'est pas disponible
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette fonctionnalité n\'\'est pas accessible dans le prototype. Elle sera débloquée dans la version complète de Murya.'**
+  String get popup_contentNotAvailable_body;
+
+  /// Bouton de fermeture de la modale indiquant qu'une fonctionnalité n'est pas disponible
+  ///
+  /// In fr, this message translates to:
+  /// **'Ok, c\'\'est compris'**
+  String get popup_contentNotAvailable_cta;
+
+  /// Titre principal de l'écran de chargement d'authentification
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement...'**
+  String get authLoading_title;
+
+  /// Message de progression pour l'initialisation
+  ///
+  /// In fr, this message translates to:
+  /// **'Initialisation du moteur...'**
+  String get authLoading_message_engineInit;
+
+  /// Message de progression pour le chargement des artefacts UI
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement des artefacts UI...'**
+  String get authLoading_message_uiArtifacts;
+
+  /// Message de progression pour la vérification des autorisations
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérification des autorisations...'**
+  String get authLoading_message_permissionsCheck;
+
+  /// Message de progression pour la compilation des modules
+  ///
+  /// In fr, this message translates to:
+  /// **'Compilation des modules...'**
+  String get authLoading_message_modulesCompile;
+
+  /// Message de progression pour la synchronisation du cache
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchronisation du cache local...'**
+  String get authLoading_message_cacheSync;
+
+  /// Message de progression pour la récupération du profil utilisateur
+  ///
+  /// In fr, this message translates to:
+  /// **'Récupération du profil utilisateur...'**
+  String get authLoading_message_profileFetch;
+
+  /// Message de progression pour la préparation de session
+  ///
+  /// In fr, this message translates to:
+  /// **'Préparation de la session...'**
+  String get authLoading_message_sessionPrep;
+
+  /// Message de progression pour l'optimisation du rendu
+  ///
+  /// In fr, this message translates to:
+  /// **'Optimisation du rendu...'**
+  String get authLoading_message_renderOptimize;
+
+  /// Message de progression pour la finalisation
+  ///
+  /// In fr, this message translates to:
+  /// **'Finalisation...'**
+  String get authLoading_message_finalize;
+
+  /// Ligne de statut de chargement avec pourcentage
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement des ressources • {percent}%'**
+  String authLoading_debugLine(int percent);
+
+  /// Libellé du chip pour un nouvel élément
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau'**
+  String get chip_new;
+
+  /// Libellé du chip pour un élément en attente
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get chip_pending;
+
+  /// Placeholder pour le prénom de l'utilisateur
+  ///
+  /// In fr, this message translates to:
+  /// **'Prénom'**
+  String get user_firstName_placeholder;
+
+  /// Placeholder pour le nom de famille de l'utilisateur
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom'**
+  String get user_lastName_placeholder;
 
   /// Placeholder pour le nom d'utilisateur anonyme
   ///

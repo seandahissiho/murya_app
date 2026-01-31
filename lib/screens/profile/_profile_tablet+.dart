@@ -19,27 +19,24 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
       builder: (context, state) {
         return Column(
           children: [
-            const Row(
-              children: [
-                Spacer(),
-                AppXCloseButton(),
-              ],
-            ),
             Row(
               children: [
-                RichText(
-                  text: TextSpan(
-                    text: AppLocalizations.of(context).parcoursPageTitle,
-                    style: GoogleFonts.anton(
-                      color: AppColors.textPrimary,
-                      fontSize: theme.textTheme.headlineMedium?.fontSize,
-                      fontWeight: FontWeight.w700,
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      text: AppLocalizations.of(context).parcoursPageTitle,
+                      style: GoogleFonts.anton(
+                        color: AppColors.textPrimary,
+                        fontSize: theme.textTheme.headlineMedium?.fontSize,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
+                const AppXCloseButton(),
               ],
             ),
-            AppSpacing.sectionMarginBox,
+            AppSpacing.groupMarginBox,
             Expanded(
               child: _tabs(theme, locale),
             ),

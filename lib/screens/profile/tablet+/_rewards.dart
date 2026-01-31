@@ -27,6 +27,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final locale = AppLocalizations.of(context);
     return BlocBuilder<RewardsBloc, RewardsState>(
       builder: (context, state) {
         final demoRewards = <RewardItem>[
@@ -191,7 +192,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                                       ),
                                       AppSpacing.elementMarginBox,
                                       Text(
-                                        "${reward.remainingPlaces} places restantes",
+                                        locale.reward_remainingPlaces(reward.remainingPlaces),
                                         style: theme.textTheme.labelSmall?.copyWith(
                                           color: AppColors.textPrimary,
                                           fontWeight: FontWeight.w600,
@@ -217,7 +218,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.textFieldMargin),
                           child: Text(
-                            "${reward.kind.labelFr} • ${reward.city}",
+                            "${reward.kind.label(locale)} • ${reward.city}",
                             style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
                           ),
                         ),
@@ -226,7 +227,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.textFieldMargin),
                           child: AppXButton(
                             shrinkWrap: false,
-                            text: "Débloquer",
+                            text: locale.reward_unlock_cta,
                             disabled: !reward.canBuy ||
                                 reward.remainingPlaces <= 0 ||
                                 reward.costDiamonds > state.wallet.diamonds,

@@ -18,6 +18,9 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
   late final AuthenticationBloc _authenticationBloc;
   late final StreamSubscription<AuthenticationState> _authSubscription;
   final Set<String> _loadingResourceIds = {};
+  final Set<String> _openedResourceIds = {};
+  final Set<String> _readResourceIds = {};
+  final Map<String, double> _lastReadProgress = {};
 
   final List<Resource> _articles = [
     Resource.empty(),
@@ -43,11 +46,14 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
   ResourcesBloc({required this.context}) : super(ResourcesInitial()) {
     on<ResourcesEvent>((event, emit) {
+      if (event is OpenResource || event is ReadResource) return;
       emit(ResourcesLoading());
     });
     on<GenerateResource>(_onGenerateResource);
     on<LoadResourceDetails>(_onLoadResourceDetails);
     on<LoadResources>(_onLoadResources);
+    on<OpenResource>(_onOpenResource);
+    on<ReadResource>(_onReadResource);
 
     resourceRepository = RepositoryProvider.of<ResourcesRepository>(context);
     profileBloc = BlocProvider.of<ProfileBloc>(context);
@@ -73,10 +79,8 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     });
   }
 
-  FutureOr<void> _onGenerateResource(
-      GenerateResource event, Emitter<ResourcesState> emit) async {
-    final result = await resourceRepository.generateResource(
-        type: event.type, userJobId: event.userJobId);
+  FutureOr<void> _onGenerateResource(GenerateResource event, Emitter<ResourcesState> emit) async {
+    final result = await resourceRepository.generateResource(type: event.type, userJobId: event.userJobId);
     if (result.isError) {
       // Handle error (e.g., emit an error state or log the error)
       return;
@@ -87,8 +91,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     profileBloc.add(ProfileLoadEvent());
   }
 
-  FutureOr<void> _onLoadResourceDetails(
-      LoadResourceDetails event, Emitter<ResourcesState> emit) async {
+  FutureOr<void> _onLoadResourceDetails(LoadResourceDetails event, Emitter<ResourcesState> emit) async {
     if (event.resourceId.isEmpty) {
       return;
     }
@@ -111,8 +114,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
       return;
     }
 
-    final cachedResult =
-        await resourceRepository.fetchResourcesCached(userJobId);
+    final cachedResult = await resourceRepository.fetchResourcesCached(userJobId);
     if (cachedResult.data != null && cachedResult.data!.isNotEmpty) {
       _replaceResources(cachedResult.data!);
       final cachedResource = _findResourceById(event.resourceId);
@@ -139,16 +141,65 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     _loadingResourceIds.remove(event.resourceId);
   }
 
-  FutureOr<void> _onLoadResources(
-      LoadResources event, Emitter<ResourcesState> emit) async {
+  String _timezone() {
+    final timezone = DateTime.now().timeZoneName;
+    return timezone.isNotEmpty ? timezone : '';
+  }
+
+  FutureOr<void> _onOpenResource(OpenResource event, Emitter<ResourcesState> emit) async {
+    if (event.resourceId.isEmpty) return;
+    if (_openedResourceIds.contains(event.resourceId)) return;
+    _openedResourceIds.add(event.resourceId);
+
+    final result = await resourceRepository.openResource(
+      resourceId: event.resourceId,
+      timezone: _timezone(),
+    );
+    if (result.isError || result.data == null) {
+      return;
+    }
+    final updated = result.data!;
+    _updateResource(updated);
+    _updateCacheUserState(updated);
+    emit(ResourcesLoaded(resources: [..._articles, ..._videos, ..._podcasts]));
+  }
+
+  FutureOr<void> _onReadResource(ReadResource event, Emitter<ResourcesState> emit) async {
+    if (event.resourceId.isEmpty) return;
+
+    final double? progress = event.progress;
+    final double lastProgress = _lastReadProgress[event.resourceId] ?? -1;
+    final bool shouldSkip =
+        _readResourceIds.contains(event.resourceId) && (progress == null || progress <= lastProgress + 0.01);
+    if (shouldSkip) return;
+
+    _readResourceIds.add(event.resourceId);
+    if (progress != null) {
+      _lastReadProgress[event.resourceId] = progress;
+    }
+
+    final result = await resourceRepository.readResource(
+      resourceId: event.resourceId,
+      timezone: _timezone(),
+      progress: progress,
+    );
+    if (result.isError || result.data == null) {
+      return;
+    }
+    final updated = result.data!;
+    _updateResource(updated);
+    _updateCacheUserState(updated);
+    emit(ResourcesLoaded(resources: [..._articles, ..._videos, ..._podcasts]));
+  }
+
+  FutureOr<void> _onLoadResources(LoadResources event, Emitter<ResourcesState> emit) async {
     final userJobId = event.userJobId;
     if (userJobId == null || userJobId.isEmpty) {
       return;
     }
 
     // cache first
-    final cachedResult =
-        await resourceRepository.fetchResourcesCached(userJobId);
+    final cachedResult = await resourceRepository.fetchResourcesCached(userJobId);
     if (cachedResult.data != null && cachedResult.data!.isNotEmpty) {
       final resources = cachedResult.data!;
 
@@ -182,6 +233,41 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
       }
     }
     return null;
+  }
+
+  void _updateResource(Resource updated) {
+    bool updatedAny = false;
+    for (final list in [_articles, _videos, _podcasts]) {
+      final index = list.indexWhere((r) => r.id == updated.id);
+      if (index != -1) {
+        list[index] = updated;
+        updatedAny = true;
+      }
+    }
+    if (!updatedAny) {
+      switch (updated.type) {
+        case ResourceType.article:
+          _articles.add(updated);
+          break;
+        case ResourceType.video:
+          _videos.add(updated);
+          break;
+        case ResourceType.podcast:
+          _podcasts.add(updated);
+          break;
+        default:
+          _articles.add(updated);
+      }
+    }
+  }
+
+  void _updateCacheUserState(Resource updated) {
+    final userJobId = updated.userJobId;
+    if (userJobId == null || userJobId.isEmpty) return;
+    resourceRepository.updateCachedResourceUserState(
+      userJobId: userJobId,
+      updated: updated,
+    );
   }
 
   void _replaceResources(List<Resource> resources) {

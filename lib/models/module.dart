@@ -552,9 +552,10 @@ class Module {
 Future<void> contentNotAvailablePopup(BuildContext context) async {
   final isMobile = DeviceHelper.isMobile(context);
   final theme = Theme.of(context);
+  final locale = AppLocalizations.of(context);
   return await displayPopUp(
     context: context,
-    okText: 'Ok',
+    okText: locale.common_ok,
     bgColor: const Color(0xFFE7E5DD),
     // okEnabled: quizLoaded,
     noActions: true,
@@ -589,13 +590,13 @@ Future<void> contentNotAvailablePopup(BuildContext context) async {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Version de démonstration",
+                  locale.popup_contentNotAvailable_title,
                   textAlign: TextAlign.start,
                   style: theme.textTheme.labelLarge,
                 ),
                 AppSpacing.elementMarginBox,
                 Text(
-                  "Cette fonctionnalité n'est pas accessible dans le prototype. Elle sera débloquée dans la version complète de Murya.",
+                  locale.popup_contentNotAvailable_body,
                   textAlign: TextAlign.start,
                   style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
                 ),
@@ -608,7 +609,7 @@ Future<void> contentNotAvailablePopup(BuildContext context) async {
       Align(
         alignment: Alignment.centerRight,
         child: AppXButton(
-          text: "Ok, c'est compris",
+          text: locale.popup_contentNotAvailable_cta,
           shrinkWrap: true,
           onPressed: () {
             Navigator.of(context, rootNavigator: true).pop();

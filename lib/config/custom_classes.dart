@@ -14,6 +14,7 @@ import 'package:intl/intl.dart' as intl;
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 import 'package:murya/models/country.dart';
+import 'package:murya/models/resource.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 import 'package:timezone/timezone.dart' as tz;

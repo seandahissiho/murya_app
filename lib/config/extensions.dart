@@ -471,18 +471,6 @@ extension ClassExtension on Object? {
     return "";
   }
 
-  Color get color {
-    return Colors.blue; // Default color for other classes
-  }
-
-  Color get textColor {
-    return idealTextColor(color);
-  }
-
-  Color get borderColor {
-    return color.withOpacity(0.5);
-  }
-
   bool get isNotNull {
     return this != null;
   }

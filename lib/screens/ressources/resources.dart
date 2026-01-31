@@ -276,7 +276,8 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
           disableCenter: true,
           pageSnapping: true,
           padEnds: false,
-          viewportFraction: (height * (isMobile ? 1.168 : 1.393)) / appSize.screenWidth,
+          // viewportFraction: (height * (isMobile ? 1.168 : 1.393)) / appSize.screenWidth,
+          viewportFraction: (height + AppSpacing.groupMargin * 4) / appSize.screenWidth,
           // aspectRatio: 1,
         ),
         itemBuilder: (context, index, realIndex) {
@@ -378,78 +379,10 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
           }
           final resource = widget.resources[index - 1];
           final thumbnailUrl = resource.effectiveThumbnailUrl;
-          return InkWell(
-            onTap: () async {
-              if (resource.id.isNotEmptyOrNull) {
-                if (isMobile) {
-                  return await contentNotAvailablePopup(context);
-                }
-                navigateToPath(
-                  context,
-                  to: AppRoutes.userResourceViewerModule.replaceFirst(
-                    ':id',
-                    resource.id!,
-                  ),
-                  data: resource,
-                );
-              }
-            },
-            child: Container(
-              margin: const EdgeInsets.only(right: AppSpacing.groupMargin),
-              decoration: const BoxDecoration(
-                borderRadius: AppRadius.borderRadius28,
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: ThumbnailBackground(thumbnailUrl, index: index - 1),
-                  ),
-                  Positioned.fill(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            AppColors.primaryDefault.withValues(alpha: 0.25),
-                            AppColors.primaryDefault.withValues(alpha: 0.9),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          resource.title ?? '',
-                          style: theme.textTheme.labelLarge?.copyWith(
-                              color: AppColors.textInverted,
-                              fontSize: theme.textTheme.displayMedium?.fontSize,
-                              height: 0),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.start,
-                        ),
-                        AppSpacing.containerInsideMarginSmallBox,
-                        Text(
-                          resource.createdAt?.formattedDate() ?? '',
-                          style: theme.textTheme.labelLarge?.copyWith(color: AppColors.textInverted),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          return ResourceItemWidget(
+            resource: resource,
+            thumbnailUrl: thumbnailUrl,
+            index: index,
           );
         },
       ),
@@ -618,4 +551,171 @@ Widget _fallbackThumbnail({int? index}) {
     images[finalIndex],
     fit: BoxFit.cover,
   );
+}
+
+class ResourceItemWidget extends StatelessWidget {
+  final Resource resource;
+  final String? thumbnailUrl;
+  final int index;
+  final Module? module;
+
+  const ResourceItemWidget({super.key, required this.resource, this.thumbnailUrl, required this.index, this.module});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isMobile = DeviceHelper.isMobile(context);
+    return LayoutBuilder(builder: (context, constraints) {
+      return InkWell(
+        onTap: () async {
+          if (context.mounted != true || module != null) {
+            return;
+          }
+          if (resource.id.isNotEmptyOrNull) {
+            if (isMobile) {
+              return await contentNotAvailablePopup(context);
+            }
+            navigateToPath(
+              context,
+              to: AppRoutes.userResourceViewerModule.replaceFirst(
+                ':id',
+                resource.id!,
+              ),
+              data: resource,
+            );
+          }
+        },
+        child: Container(
+          height: constraints.maxHeight,
+          width: constraints.maxHeight,
+          margin: const EdgeInsets.only(right: AppSpacing.groupMargin),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundCard,
+            borderRadius: AppRadius.borderRadius20,
+            border: Border(
+              top: BorderSide(color: resource.borderColor, width: 20, strokeAlign: BorderSide.strokeAlignInside),
+              bottom: BorderSide(color: resource.borderColor, width: 2, strokeAlign: BorderSide.strokeAlignInside),
+              left: BorderSide(color: resource.borderColor, width: 2, strokeAlign: BorderSide.strokeAlignInside),
+              right: BorderSide(color: resource.borderColor, width: 2, strokeAlign: BorderSide.strokeAlignInside),
+            ),
+          ),
+          padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                    width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                    decoration: BoxDecoration(
+                      borderRadius: AppRadius.small,
+                      color: AppColors.backgroundCard,
+                      border: Border.all(color: AppColors.primaryDefault, width: 2),
+                    ),
+                    padding: const EdgeInsets.all(8),
+                    child: FittedBox(fit: BoxFit.scaleDown, child: SvgPicture.asset(resource.iconPath)),
+                  ),
+                  const Spacer(),
+                  if (resource.isNew) ...[
+                    AppXChip(type: ChipType.newItem),
+                  ]
+                ],
+              ),
+              if (module?.boxType != AppModuleType.type1) ...[
+                AppSpacing.elementMarginBox,
+                Expanded(
+                  child: Text(
+                    (resource.title ?? '').toUpperCase(),
+                    // font-family: Anton;
+                    // font-weight: 400;
+                    // font-style: Regular;
+                    // font-size: 28px;
+                    // leading-trim: NONE;
+                    // line-height: 44px;
+                    // letter-spacing: -2%;
+                    style: GoogleFonts.anton(
+                      color: AppColors.primaryDefault,
+                      fontSize: isMobile ? 20 : 28,
+                      height: 1.8,
+                      letterSpacing: -0.02,
+                    ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ] else ...[
+                const Spacer()
+              ],
+              AppSpacing.tinyMarginBox,
+              Text(
+                resource.createdAt?.formattedDate() ?? '',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.2,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+}
+
+enum ChipType {
+  newItem,
+  pending,
+}
+
+class AppXChip extends StatelessWidget {
+  final ChipType type;
+
+  const AppXChip({super.key, required this.type});
+
+  Color get color {
+    switch (type) {
+      case ChipType.newItem:
+        // rgba(130, 90, 247, 1)
+        return const Color.fromRGBO(130, 90, 247, 1);
+      case ChipType.pending:
+        // rgba(199, 128, 40, 1)
+        return const Color.fromRGBO(199, 128, 40, 1);
+    }
+  }
+
+  String text(context) {
+    switch (type) {
+      case ChipType.newItem:
+        return AppLocalizations.of(context).chip_new;
+      case ChipType.pending:
+        return AppLocalizations.of(context).chip_pending;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.elementMargin,
+        vertical: AppSpacing.tinyMargin,
+      ),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: AppRadius.small,
+      ),
+      child: Text(
+        text(context),
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
 }

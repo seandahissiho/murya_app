@@ -1,4 +1,58 @@
+import 'dart:ui';
+
+import 'package:murya/config/app_icons.dart';
+
 enum ResourceType { article, podcast, video }
+
+extension ResourceTypeX on ResourceType {
+  Color get borderColor {
+    switch (this) {
+      case ResourceType.article:
+        // rgba(255, 214, 0, 1)
+        return const Color.fromRGBO(255, 214, 0, 1); // Yellowish
+      case ResourceType.podcast:
+        // rgba(255, 120, 73, 1)
+        return const Color.fromRGBO(255, 120, 73, 1); // Reddish
+      case ResourceType.video:
+        // rgba(39, 245, 152, 1)
+        return const Color.fromRGBO(39, 245, 152, 1); // Greenish
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case ResourceType.article:
+        // rgba(255, 214, 0, 1)
+        return const Color.fromRGBO(255, 214, 0, 1); // Yellowish
+      case ResourceType.podcast:
+        // rgba(255, 120, 73, 1)
+        return const Color.fromRGBO(255, 120, 73, 1); // Reddish
+      case ResourceType.video:
+        // rgba(39, 245, 152, 1)
+        return const Color.fromRGBO(39, 245, 152, 1); // Greenish
+    }
+  }
+
+  String toJson() => name;
+
+  static ResourceType fromJson(String? value) {
+    if (value == null) return ResourceType.article;
+    final normalized = value.trim().toLowerCase();
+    switch (normalized) {
+      case "article":
+        return ResourceType.article;
+      case "podcast":
+        return ResourceType.podcast;
+      case "video":
+        return ResourceType.video;
+      default:
+        return ResourceType.values.firstWhere(
+          (e) => e.name == normalized,
+          orElse: () => ResourceType.article,
+        );
+    }
+  }
+}
 
 class Author {
   final String? id;
@@ -12,6 +66,54 @@ class ResourceSummary {
   final List<String> sections;
 
   ResourceSummary({required this.sections});
+}
+
+class UserResourceState {
+  final DateTime? openedAt;
+  final DateTime? readAt;
+  final DateTime? lastViewedAt;
+  final int viewsCount;
+  final double? progress;
+
+  const UserResourceState({
+    this.openedAt,
+    this.readAt,
+    this.lastViewedAt,
+    this.viewsCount = 0,
+    this.progress,
+  });
+
+  factory UserResourceState.fromJson(Map<String, dynamic> json) {
+    DateTime? parseDate(dynamic value) {
+      if (value is String && value.isNotEmpty) {
+        return DateTime.tryParse(value);
+      }
+      return null;
+    }
+
+    final progressValue = json['progress'];
+    final double? progress = progressValue is num
+        ? progressValue.toDouble()
+        : (progressValue is String ? double.tryParse(progressValue) : null);
+
+    return UserResourceState(
+      openedAt: parseDate(json['openedAt']),
+      readAt: parseDate(json['readAt']),
+      lastViewedAt: parseDate(json['lastViewedAt']),
+      viewsCount: (json['viewsCount'] as num?)?.toInt() ?? 0,
+      progress: progress,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'openedAt': openedAt?.toIso8601String(),
+      'readAt': readAt?.toIso8601String(),
+      'lastViewedAt': lastViewedAt?.toIso8601String(),
+      'viewsCount': viewsCount,
+      'progress': progress,
+    };
+  }
 }
 
 /*
@@ -81,6 +183,8 @@ class Resource {
   final Author? author;
   final String? content;
   final Map<String, dynamic>? metadata;
+  final bool isNew;
+  final UserResourceState? userState;
 
   Resource({
     this.id,
@@ -96,6 +200,8 @@ class Resource {
     this.author,
     this.content,
     this.metadata,
+    this.isNew = false,
+    this.userState,
   });
 
   factory Resource.fromJson(Map<String, dynamic> json) {
@@ -114,14 +220,15 @@ class Resource {
             orElse: () => ResourceType.article,
           )
         : ResourceType.article;
-    final DateTime? createdAt =
-        json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null;
-    final DateTime? updatedAt =
-        json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null;
+    final DateTime? createdAt = json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null;
+    final DateTime? updatedAt = json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null;
     final String? content = json['content'] as String?;
     final dynamic metadataJson = json['metadata'];
-    final Map<String, dynamic>? metadata =
-        metadataJson is Map ? metadataJson.cast<String, dynamic>() : null;
+    final Map<String, dynamic>? metadata = metadataJson is Map ? metadataJson.cast<String, dynamic>() : null;
+    final dynamic userStateJson = json['userState'];
+    final UserResourceState? userState =
+        userStateJson is Map<String, dynamic> ? UserResourceState.fromJson(userStateJson) : null;
+    final bool isNew = userState?.openedAt == null;
 
     return Resource(
       id: id,
@@ -136,6 +243,47 @@ class Resource {
       updatedAt: updatedAt,
       content: content,
       metadata: metadata,
+      userState: userState,
+      isNew: isNew,
+    );
+  }
+
+  Resource copyWith({
+    String? id,
+    String? jobId,
+    String? userJobId,
+    String? title,
+    String? description,
+    String? url,
+    String? thumbnailUrl,
+    ResourceType? type,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Author? author,
+    String? content,
+    Map<String, dynamic>? metadata,
+    bool? isNew,
+    UserResourceState? userState,
+  }) {
+    if (userState != null) {
+      isNew = userState.openedAt == null;
+    }
+    return Resource(
+      id: id ?? this.id,
+      jobId: jobId ?? this.jobId,
+      userJobId: userJobId ?? this.userJobId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      url: url ?? this.url,
+      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+      type: type ?? this.type,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      author: author ?? this.author,
+      content: content ?? this.content,
+      metadata: metadata ?? this.metadata,
+      isNew: isNew ?? this.isNew,
+      userState: userState ?? this.userState,
     );
   }
 
@@ -152,6 +300,32 @@ class Resource {
 
   ResourceSummary get summary => ResourceSummary(sections: []);
 
+  String get iconPath {
+    switch (type) {
+      case ResourceType.article:
+        return AppIcons.booksPath;
+      case ResourceType.podcast:
+        return AppIcons.micPath;
+      case ResourceType.video:
+        return AppIcons.videoPlayerPath;
+      default:
+        return AppIcons.booksPath;
+    }
+  }
+
+  Color get borderColor {
+    switch (type) {
+      case ResourceType.article:
+        return const Color.fromRGBO(255, 214, 0, 1); // Yellowish
+      case ResourceType.podcast:
+        return const Color.fromRGBO(255, 120, 73, 1); // Reddish
+      case ResourceType.video:
+        return const Color.fromRGBO(39, 245, 152, 1); // Greenish
+      default:
+        return const Color.fromRGBO(255, 214, 0, 1); // Yellowish
+    }
+  }
+
   static empty() {
     return Resource(
       title: 'Sample Resource',
@@ -160,6 +334,7 @@ class Resource {
       type: ResourceType.article,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
+      isNew: false,
     );
   }
 }

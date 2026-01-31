@@ -10,6 +10,7 @@ class AppIcons {
   static const String homeSearchIcon2Path = '$basePath/search_bar_icon.svg';
   static const String searchBarCloseIconPath = '$basePath/close.svg';
   static const String backButtonPath = '$basePath/back_button.svg';
+
   // avatar_placeholder.svg
   static const String avatarPlaceholderPath = '$basePath/avatar_placeholder.svg';
 
@@ -21,19 +22,25 @@ class AppIcons {
 
   // assets/icons/protection_security/browser_shield.svg
   static const String browserShieldPath = '$basePath/protection_security/browser_shield.svg';
+
   // assets/icons/protection_security/password_key.svg
   static const String passwordKeyPath = '$basePath/protection_security/password_key.svg';
+
   // assets/icons/protection_security/hands_shield.svg
   static const String handsShieldPath = '$basePath/protection_security/hands_shield.svg';
+
   // assets/icons/protection_security/search_loupe_add_plus_shield.svg
   static const String searchLoupeAddPlusShieldPath = '$basePath/protection_security/search_loupe_add_plus_shield.svg';
+
   // assets/icons/protection_security/shield_protected.svg
   static const String shieldProtectedPath = '$basePath/protection_security/shield_protected.svg';
+
   // assets/icons/competencies_states/grinning_face.svg
   static const String grinningFacePath = '$basePath/competencies_states/grinning_face.svg';
+
   // assets/icons/competencies_states/expressionless_face.svg
-  static const String expressionlessFacePath =
-      '$basePath/competencies_states/expressionless_face.svg';
+  static const String expressionlessFacePath = '$basePath/competencies_states/expressionless_face.svg';
+
   // assets/icons/competencies_states/weary_face.svg
   static const String wearyFacePath = '$basePath/competencies_states/weary_face.svg';
 
@@ -92,8 +99,10 @@ class AppIcons {
 
   // chevronDownPixel
   static const String chevronDownPixelPath = '$basePath/chevron_down_pixel.svg';
+
   // angle_down.svg
   static const String angleDownPath = '$basePath/angle_down.svg';
+
   // done_check.svg
   static const String doneCheckPath = '$basePath/done_check.svg';
 
@@ -101,6 +110,15 @@ class AppIcons {
   static const String fireIconPath = '$basePath/fire.svg';
 
   static const String warningIconPath = '$basePath/warning.svg';
+
+  // video_player.svg
+  static const String videoPlayerPath = '$basePath/video_player.svg';
+
+  // mic.svg
+  static const String micPath = '$basePath/mic.svg';
+
+  // books.svg
+  static const String booksPath = '$basePath/books.svg';
 }
 
 class AppImages {

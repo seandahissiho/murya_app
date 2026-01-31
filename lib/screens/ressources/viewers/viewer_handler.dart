@@ -59,6 +59,7 @@ class ViewerHandler extends StatefulWidget {
 class _ViewerHandlerState extends State<ViewerHandler> {
   Resource? resource;
   String? resourceId;
+  bool _openSent = false;
 
   @override
   void initState() {
@@ -70,6 +71,7 @@ class _ViewerHandlerState extends State<ViewerHandler> {
         setState(() {
           resource = widget.resource;
         });
+        _sendOpenIfNeeded();
       } else if (resourceId != null && resourceId!.isNotEmpty) {
         context.read<ResourcesBloc>().add(LoadResourceDetails(resourceId: resourceId!));
       }
@@ -84,6 +86,7 @@ class _ViewerHandlerState extends State<ViewerHandler> {
           setState(() {
             resource = state.resource;
           });
+          _sendOpenIfNeeded();
         }
       },
       child: Builder(
@@ -107,5 +110,13 @@ class _ViewerHandlerState extends State<ViewerHandler> {
         },
       ),
     );
+  }
+
+  void _sendOpenIfNeeded() {
+    if (_openSent) return;
+    final res = resource;
+    if (res == null || res.id == null || res.id!.isEmpty) return;
+    _openSent = true;
+    context.read<ResourcesBloc>().add(OpenResource(resourceId: res.id!));
   }
 }
