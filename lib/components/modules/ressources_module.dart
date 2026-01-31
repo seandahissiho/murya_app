@@ -148,13 +148,13 @@ class _RessourcesStackedResources extends StatelessWidget {
 
                 final double dx = offset * depth;
                 final double dy = offset * depth;
-
                 return Positioned.fill(
                   child: Transform.translate(
                     offset: Offset(dx, dy),
                     child: ResourceItemWidget(
                       resource: resource,
                       module: module,
+                      scale: _stackScale(constraints, isMobile),
                       // theme: theme,
                       // isTopCard: isTopCard,
                       index: index + 1,

@@ -119,7 +119,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       return math.max((availableHeight + AppSpacing.sectionMargin) / 4, size_1W);
     } else {
       // return ((availableHeight - AppSpacing.groupMargin) / 2) / 1.618;
-      return math.max((availableHeight) / 2 - 90, 225);
+      return math.max((availableHeight) / 2 - 100, 225);
     }
   }
 
