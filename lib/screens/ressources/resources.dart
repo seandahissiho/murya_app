@@ -558,14 +558,19 @@ class ResourceItemWidget extends StatelessWidget {
   final String? thumbnailUrl;
   final int index;
   final Module? module;
+  final double scale;
 
-  const ResourceItemWidget({super.key, required this.resource, this.thumbnailUrl, required this.index, this.module});
+  const ResourceItemWidget(
+      {super.key, required this.resource, this.thumbnailUrl, required this.index, this.module, this.scale = 1.0});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isMobile = DeviceHelper.isMobile(context);
     return LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxHeight <= 100 || constraints.maxWidth <= 150) {
+        return const SizedBox.shrink();
+      }
       return InkWell(
         onTap: () async {
           if (context.mounted != true || module != null) {
@@ -605,26 +610,28 @@ class ResourceItemWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Container(
-                    height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                    width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                    decoration: BoxDecoration(
-                      borderRadius: AppRadius.small,
-                      color: AppColors.backgroundCard,
-                      border: Border.all(color: AppColors.primaryDefault, width: 2),
+              if (constraints.maxWidth > 200) ...[
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                      height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
+                      width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
+                      decoration: BoxDecoration(
+                        borderRadius: AppRadius.small,
+                        color: AppColors.backgroundCard,
+                        border: Border.all(color: AppColors.primaryDefault, width: 2),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      child: FittedBox(fit: BoxFit.scaleDown, child: SvgPicture.asset(resource.iconPath)),
                     ),
-                    padding: const EdgeInsets.all(8),
-                    child: FittedBox(fit: BoxFit.scaleDown, child: SvgPicture.asset(resource.iconPath)),
-                  ),
-                  const Spacer(),
-                  if (resource.isNew) ...[
-                    AppXChip(type: ChipType.newItem),
-                  ]
-                ],
-              ),
+                    const Spacer(),
+                    if (resource.isNew) ...[
+                      const AppXChip(type: ChipType.newItem),
+                    ]
+                  ],
+                ),
+              ],
               if (module?.boxType != AppModuleType.type1) ...[
                 AppSpacing.elementMarginBox,
                 Expanded(
@@ -650,16 +657,18 @@ class ResourceItemWidget extends StatelessWidget {
               ] else ...[
                 const Spacer()
               ],
-              AppSpacing.tinyMarginBox,
-              Text(
-                resource.createdAt?.formattedDate() ?? '',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                  height: 1.2,
+              if (constraints.maxWidth > 100) ...[
+                AppSpacing.tinyMarginBox,
+                Text(
+                  resource.createdAt?.formattedDate() ?? '',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                    height: 1.2,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              ],
             ],
           ),
         ),

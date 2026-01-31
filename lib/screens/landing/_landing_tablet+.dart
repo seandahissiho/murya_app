@@ -57,7 +57,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
       return (availableHeight + AppSpacing.pageMargin) / 4;
     } else {
       // return ((availableHeight - AppSpacing.groupMargin) / 2) / 1.618;
-      return math.max((availableHeight) / 2 - 90, 225);
+      return math.max((availableHeight) / 2 - 100, 225);
     }
   }
 
@@ -97,127 +97,135 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
 
                     return Stack(
                       children: [
-                        CustomScrollView(
-                          // reverse: true,
-                          shrinkWrap: true,
-                          primary: true, // ensures a ScrollPosition; prevents that null in hitTest
-                          slivers: [
-                            SliverToBoxAdapter(
-                              child: Container(
-                                // color: Colors.blue,
-                                // height: mainBodyHeight,
-                                constraints: BoxConstraints(
-                                  minHeight: mainBodyHeight,
-                                ),
-                                child: SingleChildScrollView(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  child: Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Wrap(
-                                      key: _bodyWrapKey,
-                                      children: List.generate(state.modules.length, (i) {
-                                        bool hasBeenContacted = concats.contains(i);
-                                        if (hasBeenContacted) {
-                                          return const SizedBox.shrink();
-                                        }
-
-                                        // final i = entry.value.index;
-                                        final module = state.modules[i];
-                                        final nextModule = i + 1 < state.modules.length ? state.modules[i + 1] : null;
-                                        final nextNextModule =
-                                            i + 2 < state.modules.length ? state.modules[i + 2] : null;
-
-                                        // Your actual tile widget
-                                        bool concat2 = false;
-                                        bool concat3 = false;
-
-                                        if (nextModule != null) {
-                                          if ((module.boxType == AppModuleType.type1 &&
-                                              nextModule.boxType == AppModuleType.type1)) {
-                                            concat2 = true;
+                        ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context).copyWith(
+                            scrollbars: state.modules.length > 3,
+                          ),
+                          child: CustomScrollView(
+                            physics: state.modules.length <= 3
+                                ? const NeverScrollableScrollPhysics()
+                                : const BouncingScrollPhysics(),
+                            // reverse: true,
+                            shrinkWrap: true,
+                            primary: true, // ensures a ScrollPosition; prevents that null in hitTest
+                            slivers: [
+                              SliverToBoxAdapter(
+                                child: Container(
+                                  // color: Colors.blue,
+                                  // height: mainBodyHeight,
+                                  constraints: BoxConstraints(
+                                    minHeight: mainBodyHeight,
+                                  ),
+                                  child: SingleChildScrollView(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Wrap(
+                                        key: _bodyWrapKey,
+                                        children: List.generate(state.modules.length, (i) {
+                                          bool hasBeenContacted = concats.contains(i);
+                                          if (hasBeenContacted) {
+                                            return const SizedBox.shrink();
                                           }
-                                          bool currentIsType1_2 = module.boxType == AppModuleType.type1_2;
-                                          bool nextIsType1_2 = nextModule.boxType == AppModuleType.type1_2;
-                                          if (currentIsType1_2 && nextIsType1_2) {
-                                            concat2 = true;
+
+                                          // final i = entry.value.index;
+                                          final module = state.modules[i];
+                                          final nextModule = i + 1 < state.modules.length ? state.modules[i + 1] : null;
+                                          final nextNextModule =
+                                              i + 2 < state.modules.length ? state.modules[i + 2] : null;
+
+                                          // Your actual tile widget
+                                          bool concat2 = false;
+                                          bool concat3 = false;
+
+                                          if (nextModule != null) {
+                                            if ((module.boxType == AppModuleType.type1 &&
+                                                nextModule.boxType == AppModuleType.type1)) {
+                                              concat2 = true;
+                                            }
+                                            bool currentIsType1_2 = module.boxType == AppModuleType.type1_2;
+                                            bool nextIsType1_2 = nextModule.boxType == AppModuleType.type1_2;
+                                            if (currentIsType1_2 && nextIsType1_2) {
+                                              concat2 = true;
+                                            }
                                           }
-                                        }
-                                        if (nextModule != null && nextNextModule != null) {
-                                          bool currentIsType1_2 = module.boxType == AppModuleType.type1_2;
-                                          bool nextIsType1 = nextModule.boxType == AppModuleType.type1;
-                                          bool nextNextIsType1 = nextNextModule.boxType == AppModuleType.type1;
+                                          if (nextModule != null && nextNextModule != null) {
+                                            bool currentIsType1_2 = module.boxType == AppModuleType.type1_2;
+                                            bool nextIsType1 = nextModule.boxType == AppModuleType.type1;
+                                            bool nextNextIsType1 = nextNextModule.boxType == AppModuleType.type1;
 
-                                          if (currentIsType1_2 && nextIsType1 && nextNextIsType1) {
-                                            concat3 = true;
-                                            concat2 = false;
+                                            if (currentIsType1_2 && nextIsType1 && nextNextIsType1) {
+                                              concat3 = true;
+                                              concat2 = false;
+                                            }
                                           }
-                                        }
 
-                                        if (concat2 && !concat3) {
-                                          concats.add(i + 1);
-                                        }
-                                        if (concat3) {
-                                          concats.add(i + 1);
-                                          concats.add(i + 2);
-                                        }
-                                        final int lastIndex = state.modules.length - 1;
-                                        final int span = _moduleColSpan(module);
-                                        if (columnCursor + span > maxColumns) {
-                                          columnCursor = 0;
-                                        }
-                                        final bool isFirstOfRow = columnCursor == 0;
-                                        final bool isLastVisibleGroup = i == lastIndex ||
-                                            (concat2 && i + 1 == lastIndex) ||
-                                            (concat3 && i + 2 == lastIndex);
-                                        final bool isLastOfRow =
-                                            columnCursor + span >= maxColumns || isLastVisibleGroup;
-                                        columnCursor += span;
-                                        if (columnCursor >= maxColumns) {
-                                          columnCursor = 0;
-                                        }
-                                        double left = isFirstOfRow ? 0 : AppSpacing.elementMargin / 2;
-                                        double right = isLastOfRow ? 0 : AppSpacing.elementMargin / 2;
+                                          if (concat2 && !concat3) {
+                                            concats.add(i + 1);
+                                          }
+                                          if (concat3) {
+                                            concats.add(i + 1);
+                                            concats.add(i + 2);
+                                          }
+                                          final int lastIndex = state.modules.length - 1;
+                                          final int span = _moduleColSpan(module);
+                                          if (columnCursor + span > maxColumns) {
+                                            columnCursor = 0;
+                                          }
+                                          final bool isFirstOfRow = columnCursor == 0;
+                                          final bool isLastVisibleGroup = i == lastIndex ||
+                                              (concat2 && i + 1 == lastIndex) ||
+                                              (concat3 && i + 2 == lastIndex);
+                                          final bool isLastOfRow =
+                                              columnCursor + span >= maxColumns || isLastVisibleGroup;
+                                          columnCursor += span;
+                                          if (columnCursor >= maxColumns) {
+                                            columnCursor = 0;
+                                          }
+                                          double left = isFirstOfRow ? 0 : AppSpacing.elementMargin / 2;
+                                          double right = isLastOfRow ? 0 : AppSpacing.elementMargin / 2;
 
-                                        return Padding(
-                                          padding: EdgeInsets.only(
-                                            left: left,
-                                            right: right,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              _test(module, i),
-                                              AppSpacing.elementMarginBox,
-                                              if (concat2) ...[
-                                                _test(nextModule!, i + 1),
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                              left: left,
+                                              right: right,
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                _test(module, i),
                                                 AppSpacing.elementMarginBox,
+                                                if (concat2) ...[
+                                                  _test(nextModule!, i + 1),
+                                                  AppSpacing.elementMarginBox,
+                                                ],
+                                                if (concat3) ...[
+                                                  Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      _test(nextModule!, i + 1),
+                                                      AppSpacing.elementMarginBox,
+                                                      _test(nextNextModule!, i + 2),
+                                                    ],
+                                                  ),
+                                                  AppSpacing.elementMarginBox,
+                                                ],
                                               ],
-                                              if (concat3) ...[
-                                                Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    _test(nextModule!, i + 1),
-                                                    AppSpacing.elementMarginBox,
-                                                    _test(nextNextModule!, i + 2),
-                                                  ],
-                                                ),
-                                                AppSpacing.elementMarginBox,
-                                              ],
-                                            ],
-                                          ),
-                                        );
-                                      }),
+                                            ),
+                                          );
+                                        }),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SliverToBoxAdapter(
-                              child: AppSpacing.containerInsideMarginSmallBox,
-                            ),
-                            SliverToBoxAdapter(
-                              child: AppFooter(key: _footerWrapKey, isLanding: true),
-                            ),
-                          ],
+                              const SliverToBoxAdapter(
+                                child: AppSpacing.containerInsideMarginSmallBox,
+                              ),
+                              SliverToBoxAdapter(
+                                child: AppFooter(key: _footerWrapKey, isLanding: true),
+                              ),
+                            ],
+                          ),
                         ),
                         const Align(
                           alignment: Alignment.bottomRight,
