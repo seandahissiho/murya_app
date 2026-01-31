@@ -21,3 +21,16 @@ final class LoadResourceDetails extends ResourcesEvent {
 
   LoadResourceDetails({required this.resourceId});
 }
+
+final class OpenResource extends ResourcesEvent {
+  final String resourceId;
+
+  OpenResource({required this.resourceId});
+}
+
+final class ReadResource extends ResourcesEvent {
+  final String resourceId;
+  final double? progress;
+
+  ReadResource({required this.resourceId, this.progress});
+}

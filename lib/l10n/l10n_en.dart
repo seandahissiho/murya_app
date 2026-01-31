@@ -405,6 +405,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get parcoursRanking_header_person => 'Person';
+
+  @override
   String get parcoursRanking_header_experience => 'Experience';
 
   @override
@@ -414,7 +417,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get parcoursRanking_header_performance => 'Performance';
 
   @override
+  String parcoursRanking_answeredSince(int count, String date) {
+    return '$count since $date';
+  }
+
+  @override
   String get parcoursRanking_status_pending => 'Pending';
+
+  @override
+  String get parcoursRanking_youTag => '(You)';
 
   @override
   String get parcoursObjective_inProgress => 'Goal in progress';
@@ -428,6 +439,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get parcoursRewards_seeAll => 'See all';
+
+  @override
+  String reward_remainingPlaces(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count places left',
+      one: '1 place left',
+      zero: '0 places left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reward_unlock_cta => 'Unlock';
+
+  @override
+  String get rewardKind_cinema => 'Cinema';
+
+  @override
+  String get rewardKind_concertHall => 'Concert hall';
+
+  @override
+  String get rewardKind_theatre => 'Theater';
+
+  @override
+  String get rewardKind_sportsMatch => 'Basketball game';
+
+  @override
+  String get rewardKind_themePark => 'Theme park';
+
+  @override
+  String get rewardKind_other => 'Other';
 
   @override
   String get rewardItem_francofoliesLaRochelle =>
@@ -453,6 +497,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String inviteFriends_bonus(int amount) {
     return 'Invite them and earn $amount 💎 as soon as they sign up.';
   }
+
+  @override
+  String get inviteFriends_cta => 'Invite';
+
+  @override
+  String get common_ok => 'Ok';
+
+  @override
+  String get popup_contentNotAvailable_title => 'Demo version';
+
+  @override
+  String get popup_contentNotAvailable_body =>
+      'This feature is not available in the prototype. It will be unlocked in the full version of Murya.';
+
+  @override
+  String get popup_contentNotAvailable_cta => 'Ok, got it';
+
+  @override
+  String get authLoading_title => 'Loading...';
+
+  @override
+  String get authLoading_message_engineInit => 'Initializing engine...';
+
+  @override
+  String get authLoading_message_uiArtifacts => 'Loading UI artifacts...';
+
+  @override
+  String get authLoading_message_permissionsCheck => 'Checking permissions...';
+
+  @override
+  String get authLoading_message_modulesCompile => 'Compiling modules...';
+
+  @override
+  String get authLoading_message_cacheSync => 'Syncing local cache...';
+
+  @override
+  String get authLoading_message_profileFetch => 'Fetching user profile...';
+
+  @override
+  String get authLoading_message_sessionPrep => 'Preparing session...';
+
+  @override
+  String get authLoading_message_renderOptimize => 'Optimizing rendering...';
+
+  @override
+  String get authLoading_message_finalize => 'Finalizing...';
+
+  @override
+  String authLoading_debugLine(int percent) {
+    return 'Loading resources • $percent%';
+  }
+
+  @override
+  String get chip_new => 'New';
+
+  @override
+  String get chip_pending => 'Pending';
+
+  @override
+  String get user_firstName_placeholder => 'Firstname';
+
+  @override
+  String get user_lastName_placeholder => 'Lastname';
 
   @override
   String get user_anonymous_placeholder => 'Firstname Lastname';

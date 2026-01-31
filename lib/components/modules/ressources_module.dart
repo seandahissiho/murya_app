@@ -95,20 +95,22 @@ class _RessourcesModuleWidgetState extends State<RessourcesModuleWidget> {
 }
 
 class RessourcesModuleContent extends StatelessWidget {
+  final Module module;
   final List<Resource> resources;
 
-  const RessourcesModuleContent({super.key, required this.resources});
+  const RessourcesModuleContent({super.key, required this.resources, required this.module});
 
   @override
   Widget build(BuildContext context) {
-    return _RessourcesStackedResources(resources: resources);
+    return _RessourcesStackedResources(resources: resources, module: module);
   }
 }
 
 class _RessourcesStackedResources extends StatelessWidget {
+  final Module module;
   final List<Resource> resources;
 
-  const _RessourcesStackedResources({required this.resources});
+  const _RessourcesStackedResources({required this.resources, required this.module});
 
   @override
   Widget build(BuildContext context) {
@@ -150,11 +152,12 @@ class _RessourcesStackedResources extends StatelessWidget {
                 return Positioned.fill(
                   child: Transform.translate(
                     offset: Offset(dx, dy),
-                    child: _ResourceCard(
+                    child: ResourceItemWidget(
                       resource: resource,
-                      theme: theme,
-                      isTopCard: isTopCard,
-                      index: index,
+                      module: module,
+                      // theme: theme,
+                      // isTopCard: isTopCard,
+                      index: index + 1,
                     ),
                   ),
                 );
@@ -340,7 +343,7 @@ Widget _resourcesStack(List<Resource> resources, Module module) {
             left: module.boxType == AppModuleType.type1 ? 0 : 8.0,
             right: module.boxType == AppModuleType.type1 ? 20 : 40.0,
           ),
-          child: RessourcesModuleContent(resources: resources),
+          child: RessourcesModuleContent(resources: resources, module: module),
         ),
       ),
     );

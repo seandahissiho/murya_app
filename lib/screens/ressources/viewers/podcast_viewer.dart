@@ -28,6 +28,8 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
   _AudioViewerError? _error;
   Duration? _duration;
   List<double>? _waveformPeaks;
+  double _lastProgress = 0.0;
+  bool _readSent = false;
 
   @override
   void initState() {
@@ -38,6 +40,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
 
   @override
   void dispose() {
+    _sendReadIfNeeded();
     _player.dispose();
     super.dispose();
   }
@@ -227,6 +230,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
         final duration = _duration ?? Duration.zero;
         final maxMillis = duration.inMilliseconds.toDouble().clamp(1.0, double.infinity);
         final value = position.inMilliseconds.toDouble().clamp(0.0, maxMillis);
+        _updateProgress(position, duration);
         return Column(
           children: [
             Slider(
@@ -256,6 +260,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
         final position = snapshot.data ?? Duration.zero;
         final duration = _duration ?? Duration.zero;
         final progress = duration.inMilliseconds > 0 ? position.inMilliseconds / duration.inMilliseconds : 0.0;
+        _updateProgress(position, duration);
         return Column(
           children: [
             LayoutBuilder(
@@ -330,6 +335,26 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
       return '${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}';
     }
     return '${twoDigits(minutes)}:${twoDigits(seconds)}';
+  }
+
+  void _updateProgress(Duration position, Duration duration) {
+    if (duration.inMilliseconds <= 0) return;
+    final progress = position.inMilliseconds / duration.inMilliseconds;
+    _lastProgress = progress.clamp(0.0, 1.0);
+  }
+
+  void _sendReadIfNeeded() {
+    if (_readSent) return;
+    final resourceId = widget.resource.id;
+    if (resourceId == null || resourceId.isEmpty) return;
+    final existingProgress = widget.resource.userState?.progress;
+    if (widget.resource.userState?.readAt != null &&
+        (existingProgress == null || _lastProgress <= existingProgress + 0.01)) {
+      return;
+    }
+    _readSent = true;
+    final progress = _lastProgress > 0 ? _lastProgress : null;
+    context.read<ResourcesBloc>().add(ReadResource(resourceId: resourceId, progress: progress));
   }
 
   String _errorMessage(BuildContext context) {

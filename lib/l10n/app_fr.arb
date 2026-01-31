@@ -468,6 +468,10 @@
       }
     }
   },
+  "parcoursRanking_header_person": "Personne",
+  "@parcoursRanking_header_person": {
+    "description": "En-tête de colonne Personne dans le tableau de classement Parcours"
+  },
   "parcoursRanking_header_experience": "Expérience",
   "@parcoursRanking_header_experience": {
     "description": "En-tête de colonne Expérience dans le tableau de classement Parcours"
@@ -480,9 +484,27 @@
   "@parcoursRanking_header_performance": {
     "description": "En-tête de colonne Performance dans le tableau de classement Parcours"
   },
+  "parcoursRanking_answeredSince": "{count} depuis {date}",
+  "@parcoursRanking_answeredSince": {
+    "description": "Texte affichant le nombre de questions répondues et la date de début",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "40"
+      },
+      "date": {
+        "type": "String",
+        "example": "12/03/24"
+      }
+    }
+  },
   "parcoursRanking_status_pending": "En attente",
   "@parcoursRanking_status_pending": {
     "description": "Badge de statut quand l'utilisateur n'a pas encore répondu au questionnaire"
+  },
+  "parcoursRanking_youTag": "(Vous)",
+  "@parcoursRanking_youTag": {
+    "description": "Indicateur affiché à côté de l'utilisateur courant dans le classement"
   },
   "parcoursObjective_inProgress": "Objectif en cours",
   "@parcoursObjective_inProgress": {
@@ -499,6 +521,43 @@
   "parcoursRewards_seeAll": "Voir tout",
   "@parcoursRewards_seeAll": {
     "description": "Lien/Bouton pour afficher toutes les récompenses"
+  },
+  "reward_remainingPlaces": "{count, plural, =0 {0 place restante} =1 {1 place restante} other {{count} places restantes}}",
+  "@reward_remainingPlaces": {
+    "description": "Nombre de places restantes pour une récompense",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reward_unlock_cta": "Débloquer",
+  "@reward_unlock_cta": {
+    "description": "Bouton pour débloquer une récompense"
+  },
+  "rewardKind_cinema": "Cinéma",
+  "@rewardKind_cinema": {
+    "description": "Libellé du type de récompense cinéma"
+  },
+  "rewardKind_concertHall": "Salle de concert",
+  "@rewardKind_concertHall": {
+    "description": "Libellé du type de récompense salle de concert"
+  },
+  "rewardKind_theatre": "Salle de spectacle",
+  "@rewardKind_theatre": {
+    "description": "Libellé du type de récompense théâtre"
+  },
+  "rewardKind_sportsMatch": "Match de basket",
+  "@rewardKind_sportsMatch": {
+    "description": "Libellé du type de récompense match de sport"
+  },
+  "rewardKind_themePark": "Parc d''attractions",
+  "@rewardKind_themePark": {
+    "description": "Libellé du type de récompense parc d'attractions"
+  },
+  "rewardKind_other": "Autre",
+  "@rewardKind_other": {
+    "description": "Libellé du type de récompense autre"
   },
   "rewardItem_francofoliesLaRochelle": "Les francofolies de La Rochelle",
   "@rewardItem_francofoliesLaRochelle": {
@@ -533,6 +592,92 @@
         "example": "1000"
       }
     }
+  },
+  "inviteFriends_cta": "Inviter",
+  "@inviteFriends_cta": {
+    "description": "Texte du bouton d'appel à l'action pour inviter des amis"
+  },
+  "common_ok": "Ok",
+  "@common_ok": {
+    "description": "Libellé générique pour un bouton OK"
+  },
+  "popup_contentNotAvailable_title": "Version de démonstration",
+  "@popup_contentNotAvailable_title": {
+    "description": "Titre de la modale indiquant qu'une fonctionnalité n'est pas disponible"
+  },
+  "popup_contentNotAvailable_body": "Cette fonctionnalité n''est pas accessible dans le prototype. Elle sera débloquée dans la version complète de Murya.",
+  "@popup_contentNotAvailable_body": {
+    "description": "Texte de la modale indiquant qu'une fonctionnalité n'est pas disponible"
+  },
+  "popup_contentNotAvailable_cta": "Ok, c''est compris",
+  "@popup_contentNotAvailable_cta": {
+    "description": "Bouton de fermeture de la modale indiquant qu'une fonctionnalité n'est pas disponible"
+  },
+  "authLoading_title": "Chargement...",
+  "@authLoading_title": {
+    "description": "Titre principal de l'écran de chargement d'authentification"
+  },
+  "authLoading_message_engineInit": "Initialisation du moteur...",
+  "@authLoading_message_engineInit": {
+    "description": "Message de progression pour l'initialisation"
+  },
+  "authLoading_message_uiArtifacts": "Chargement des artefacts UI...",
+  "@authLoading_message_uiArtifacts": {
+    "description": "Message de progression pour le chargement des artefacts UI"
+  },
+  "authLoading_message_permissionsCheck": "Vérification des autorisations...",
+  "@authLoading_message_permissionsCheck": {
+    "description": "Message de progression pour la vérification des autorisations"
+  },
+  "authLoading_message_modulesCompile": "Compilation des modules...",
+  "@authLoading_message_modulesCompile": {
+    "description": "Message de progression pour la compilation des modules"
+  },
+  "authLoading_message_cacheSync": "Synchronisation du cache local...",
+  "@authLoading_message_cacheSync": {
+    "description": "Message de progression pour la synchronisation du cache"
+  },
+  "authLoading_message_profileFetch": "Récupération du profil utilisateur...",
+  "@authLoading_message_profileFetch": {
+    "description": "Message de progression pour la récupération du profil utilisateur"
+  },
+  "authLoading_message_sessionPrep": "Préparation de la session...",
+  "@authLoading_message_sessionPrep": {
+    "description": "Message de progression pour la préparation de session"
+  },
+  "authLoading_message_renderOptimize": "Optimisation du rendu...",
+  "@authLoading_message_renderOptimize": {
+    "description": "Message de progression pour l'optimisation du rendu"
+  },
+  "authLoading_message_finalize": "Finalisation...",
+  "@authLoading_message_finalize": {
+    "description": "Message de progression pour la finalisation"
+  },
+  "authLoading_debugLine": "Chargement des ressources • {percent}%",
+  "@authLoading_debugLine": {
+    "description": "Ligne de statut de chargement avec pourcentage",
+    "placeholders": {
+      "percent": {
+        "type": "int",
+        "example": "42"
+      }
+    }
+  },
+  "chip_new": "Nouveau",
+  "@chip_new": {
+    "description": "Libellé du chip pour un nouvel élément"
+  },
+  "chip_pending": "En attente",
+  "@chip_pending": {
+    "description": "Libellé du chip pour un élément en attente"
+  },
+  "user_firstName_placeholder": "Prénom",
+  "@user_firstName_placeholder": {
+    "description": "Placeholder pour le prénom de l'utilisateur"
+  },
+  "user_lastName_placeholder": "Nom",
+  "@user_lastName_placeholder": {
+    "description": "Placeholder pour le nom de famille de l'utilisateur"
   },
   "user_anonymous_placeholder": "Prénom Nom",
   "@user_anonymous_placeholder": {

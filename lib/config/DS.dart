@@ -132,6 +132,10 @@ class AppRadius {
   static const BorderRadius borderRadius20 = BorderRadius.all(Radius.circular(radius20));
   static const double largeRadius = 24;
   static const BorderRadius large = BorderRadius.all(Radius.circular(largeRadius));
+  static const double radius24 = 24;
+  static const BorderRadius borderRadius24 = BorderRadius.all(Radius.circular(radius24));
+  static const double radius26 = 26;
+  static const BorderRadius borderRadius26 = BorderRadius.all(Radius.circular(radius26));
   static const double radius28 = 28;
   static const BorderRadius borderRadius28 = BorderRadius.all(Radius.circular(radius28));
   static const double radius30 = 30;

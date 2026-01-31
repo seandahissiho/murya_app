@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:murya/config/DS.dart';
+import 'package:murya/l10n/l10n.dart';
 
 class AuthLoadingBar extends StatefulWidget {
   const AuthLoadingBar({super.key});
@@ -14,18 +15,7 @@ class AuthLoadingBar extends StatefulWidget {
 class _AuthLoadingBarState extends State<AuthLoadingBar> with SingleTickerProviderStateMixin {
   late final AnimationController _progressCtrl;
   Timer? _messageTimer;
-
-  final List<String> _messages = const [
-    "Initialisation du moteur...",
-    "Chargement des artefacts UI...",
-    "Vérification des autorisations...",
-    "Compilation des modules...",
-    "Synchronisation du cache local...",
-    "Récupération du profil utilisateur...",
-    "Préparation de la session...",
-    "Optimisation du rendu...",
-    "Finalisation...",
-  ];
+  static const int _messageCount = 9;
 
   int _messageIndex = 0;
 
@@ -43,7 +33,7 @@ class _AuthLoadingBarState extends State<AuthLoadingBar> with SingleTickerProvid
     _messageTimer = Timer.periodic(const Duration(seconds: 2), (_) {
       if (!mounted) return;
       setState(() {
-        _messageIndex = (_messageIndex + 1) % _messages.length;
+        _messageIndex = (_messageIndex + 1) % _messageCount;
       });
     });
   }
@@ -64,6 +54,18 @@ class _AuthLoadingBarState extends State<AuthLoadingBar> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     final w = math.min(MediaQuery.of(context).size.width * 0.85, 520.0);
+    final locale = AppLocalizations.of(context);
+    final messages = [
+      locale.authLoading_message_engineInit,
+      locale.authLoading_message_uiArtifacts,
+      locale.authLoading_message_permissionsCheck,
+      locale.authLoading_message_modulesCompile,
+      locale.authLoading_message_cacheSync,
+      locale.authLoading_message_profileFetch,
+      locale.authLoading_message_sessionPrep,
+      locale.authLoading_message_renderOptimize,
+      locale.authLoading_message_finalize,
+    ];
 
     return Material(
       color: AppColors.backgroundColor,
@@ -75,14 +77,14 @@ class _AuthLoadingBarState extends State<AuthLoadingBar> with SingleTickerProvid
             final raw = _progressCtrl.value; // 0.0 -> 1.0 en 15s
             final progress = _clampedProgress(raw); // 0.0 -> 0.95 max
 
-            final percent = (progress * 100).round().clamp(0, 99);
+            final int percent = (progress * 100).round().clamp(0, 99).toInt();
 
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 // ---- Titre "Loading..."
-                const Text(
-                  "Chargement...",
+                Text(
+                  locale.authLoading_title,
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.w800,
@@ -107,7 +109,7 @@ class _AuthLoadingBarState extends State<AuthLoadingBar> with SingleTickerProvid
                     return FadeTransition(opacity: anim, child: child);
                   },
                   child: Text(
-                    _messages[_messageIndex],
+                    messages[_messageIndex % messages.length],
                     key: ValueKey(_messageIndex),
                     style: const TextStyle(
                       fontSize: 14,
@@ -122,7 +124,7 @@ class _AuthLoadingBarState extends State<AuthLoadingBar> with SingleTickerProvid
 
                 // ---- Petite ligne “debug” (optionnel)
                 Text(
-                  "Chargement des ressources • $percent%",
+                  locale.authLoading_debugLine(percent),
                   style: const TextStyle(
                     fontSize: 12,
                     color: Colors.black54,

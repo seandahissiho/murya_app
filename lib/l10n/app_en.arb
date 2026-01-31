@@ -426,6 +426,10 @@
       "count": { "type": "int" }
     }
   },
+  "parcoursRanking_header_person": "Person",
+  "@parcoursRanking_header_person": {
+    "description": "Person column header in the Journey ranking table"
+  },
   "parcoursRanking_header_experience": "Experience",
   "@parcoursRanking_header_experience": {
     "description": "Experience column header in the Journey ranking table"
@@ -438,10 +442,22 @@
   "@parcoursRanking_header_performance": {
     "description": "Performance column header in the Journey ranking table"
   },
+  "parcoursRanking_answeredSince": "{count} since {date}",
+  "@parcoursRanking_answeredSince": {
+    "description": "Text showing the number of answered questions and the start date",
+    "placeholders": {
+      "count": { "type": "int", "example": "40" },
+      "date": { "type": "String", "example": "03/12/24" }
+    }
+  },
 
   "parcoursRanking_status_pending": "Pending",
   "@parcoursRanking_status_pending": {
     "description": "Status badge when the user has not answered yet"
+  },
+  "parcoursRanking_youTag": "(You)",
+  "@parcoursRanking_youTag": {
+    "description": "Tag displayed next to the current user in the ranking"
   },
 
   "parcoursObjective_inProgress": "Goal in progress",
@@ -460,6 +476,41 @@
   "parcoursRewards_seeAll": "See all",
   "@parcoursRewards_seeAll": {
     "description": "Link/Button to view all rewards"
+  },
+  "reward_remainingPlaces": "{count, plural, =0 {0 places left} =1 {1 place left} other {{count} places left}}",
+  "@reward_remainingPlaces": {
+    "description": "Number of remaining places for a reward",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reward_unlock_cta": "Unlock",
+  "@reward_unlock_cta": {
+    "description": "Button to unlock a reward"
+  },
+  "rewardKind_cinema": "Cinema",
+  "@rewardKind_cinema": {
+    "description": "Reward kind label for cinema"
+  },
+  "rewardKind_concertHall": "Concert hall",
+  "@rewardKind_concertHall": {
+    "description": "Reward kind label for concert hall"
+  },
+  "rewardKind_theatre": "Theater",
+  "@rewardKind_theatre": {
+    "description": "Reward kind label for theatre"
+  },
+  "rewardKind_sportsMatch": "Basketball game",
+  "@rewardKind_sportsMatch": {
+    "description": "Reward kind label for sports match"
+  },
+  "rewardKind_themePark": "Theme park",
+  "@rewardKind_themePark": {
+    "description": "Reward kind label for theme park"
+  },
+  "rewardKind_other": "Other",
+  "@rewardKind_other": {
+    "description": "Reward kind label for other"
   },
 
   "rewardItem_francofoliesLaRochelle": "Les Francofolies de La Rochelle",
@@ -494,6 +545,89 @@
     "placeholders": {
       "amount": { "type": "int", "example": "1000" }
     }
+  },
+  "inviteFriends_cta": "Invite",
+  "@inviteFriends_cta": {
+    "description": "Call-to-action button text to invite friends"
+  },
+  "common_ok": "Ok",
+  "@common_ok": {
+    "description": "Generic OK button label"
+  },
+  "popup_contentNotAvailable_title": "Demo version",
+  "@popup_contentNotAvailable_title": {
+    "description": "Title of the modal indicating a feature is not available"
+  },
+  "popup_contentNotAvailable_body": "This feature is not available in the prototype. It will be unlocked in the full version of Murya.",
+  "@popup_contentNotAvailable_body": {
+    "description": "Body text of the modal indicating a feature is not available"
+  },
+  "popup_contentNotAvailable_cta": "Ok, got it",
+  "@popup_contentNotAvailable_cta": {
+    "description": "Dismiss button label for the modal indicating a feature is not available"
+  },
+  "authLoading_title": "Loading...",
+  "@authLoading_title": {
+    "description": "Main title of the authentication loading screen"
+  },
+  "authLoading_message_engineInit": "Initializing engine...",
+  "@authLoading_message_engineInit": {
+    "description": "Progress message for initialization"
+  },
+  "authLoading_message_uiArtifacts": "Loading UI artifacts...",
+  "@authLoading_message_uiArtifacts": {
+    "description": "Progress message for UI artifacts loading"
+  },
+  "authLoading_message_permissionsCheck": "Checking permissions...",
+  "@authLoading_message_permissionsCheck": {
+    "description": "Progress message for permissions check"
+  },
+  "authLoading_message_modulesCompile": "Compiling modules...",
+  "@authLoading_message_modulesCompile": {
+    "description": "Progress message for modules compilation"
+  },
+  "authLoading_message_cacheSync": "Syncing local cache...",
+  "@authLoading_message_cacheSync": {
+    "description": "Progress message for cache sync"
+  },
+  "authLoading_message_profileFetch": "Fetching user profile...",
+  "@authLoading_message_profileFetch": {
+    "description": "Progress message for profile fetch"
+  },
+  "authLoading_message_sessionPrep": "Preparing session...",
+  "@authLoading_message_sessionPrep": {
+    "description": "Progress message for session preparation"
+  },
+  "authLoading_message_renderOptimize": "Optimizing rendering...",
+  "@authLoading_message_renderOptimize": {
+    "description": "Progress message for render optimization"
+  },
+  "authLoading_message_finalize": "Finalizing...",
+  "@authLoading_message_finalize": {
+    "description": "Progress message for finalization"
+  },
+  "authLoading_debugLine": "Loading resources • {percent}%",
+  "@authLoading_debugLine": {
+    "description": "Loading status line with percentage",
+    "placeholders": {
+      "percent": { "type": "int", "example": "42" }
+    }
+  },
+  "chip_new": "New",
+  "@chip_new": {
+    "description": "Chip label for a new item"
+  },
+  "chip_pending": "Pending",
+  "@chip_pending": {
+    "description": "Chip label for a pending item"
+  },
+  "user_firstName_placeholder": "Firstname",
+  "@user_firstName_placeholder": {
+    "description": "Placeholder for the user's first name"
+  },
+  "user_lastName_placeholder": "Lastname",
+  "@user_lastName_placeholder": {
+    "description": "Placeholder for the user's last name"
   },
   "user_anonymous_placeholder": "Firstname Lastname",
   "@user_anonymous_placeholder": {

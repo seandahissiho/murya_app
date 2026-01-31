@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:murya/l10n/l10n.dart';
 
 @immutable
 class RewardAddress {
@@ -74,20 +75,20 @@ enum RewardKind {
 }
 
 extension RewardKindX on RewardKind {
-  String get labelFr {
+  String label(AppLocalizations locale) {
     switch (this) {
       case RewardKind.cinema:
-        return "Cinéma";
+        return locale.rewardKind_cinema;
       case RewardKind.concertHall:
-        return "Salle de concert";
+        return locale.rewardKind_concertHall;
       case RewardKind.theatre:
-        return "Salle de spectacle";
+        return locale.rewardKind_theatre;
       case RewardKind.sportsMatch:
-        return "Match de basket";
+        return locale.rewardKind_sportsMatch;
       case RewardKind.themePark:
-        return "Parc d’attractions";
+        return locale.rewardKind_themePark;
       case RewardKind.other:
-        return "Autre";
+        return locale.rewardKind_other;
     }
   }
 
@@ -163,7 +164,7 @@ class RewardItem {
     this.canBuyReason,
   });
 
-  String get subtitle => "${kind.labelFr} - $city";
+  String subtitle(AppLocalizations locale) => "${kind.label(locale)} - $city";
 
   factory RewardItem.fromJson(Map<String, dynamic> json) {
     final user = (json["user"] as Map<String, dynamic>?) ?? const {};

@@ -28,6 +28,8 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
   YoutubePlayerController? _youtubeController;
   _VideoViewerError? _error;
   bool _isYoutube = false;
+  double _lastProgress = 0.0;
+  bool _readSent = false;
 
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
 
   @override
   void dispose() {
+    _sendReadIfNeeded();
     _controller?.dispose();
     _youtubeController?.dispose();
     super.dispose();
@@ -155,6 +158,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
       if (youtubeController == null) {
         return const Center(child: CircularProgressIndicator());
       }
+      _updateYoutubeProgress(youtubeController);
       return Center(
         child: AspectRatio(
           aspectRatio: 16 / 9,
@@ -172,6 +176,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
     }
 
     final double aspectRatio = controller.value.aspectRatio == 0 ? 16 / 9 : controller.value.aspectRatio;
+    _updateVideoProgress(controller);
 
     return Center(
       child: AspectRatio(
@@ -208,6 +213,36 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
       default:
         return localizations.videoViewerLoadFailed;
     }
+  }
+
+  void _updateVideoProgress(VideoPlayerController controller) {
+    final duration = controller.value.duration;
+    if (duration.inMilliseconds <= 0) return;
+    final position = controller.value.position;
+    final progress = position.inMilliseconds / duration.inMilliseconds;
+    _lastProgress = progress.clamp(0.0, 1.0);
+  }
+
+  void _updateYoutubeProgress(YoutubePlayerController controller) {
+    final duration = controller.metadata.duration;
+    if (duration.inMilliseconds <= 0) return;
+    final position = controller.value.position;
+    final progress = position.inMilliseconds / duration.inMilliseconds;
+    _lastProgress = progress.clamp(0.0, 1.0);
+  }
+
+  void _sendReadIfNeeded() {
+    if (_readSent) return;
+    final resourceId = widget.resource.id;
+    if (resourceId == null || resourceId.isEmpty) return;
+    final existingProgress = widget.resource.userState?.progress;
+    if (widget.resource.userState?.readAt != null &&
+        (existingProgress == null || _lastProgress <= existingProgress + 0.01)) {
+      return;
+    }
+    _readSent = true;
+    final progress = _lastProgress > 0 ? _lastProgress : null;
+    context.read<ResourcesBloc>().add(ReadResource(resourceId: resourceId, progress: progress));
   }
 }
 
