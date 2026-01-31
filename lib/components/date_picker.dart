@@ -111,7 +111,7 @@ class _AppDatePickerState extends State<AppDatePicker> {
           key: UniqueKey(),
           keyboardType: TextInputType.text,
           definedKey: _dateWidgetKey,
-          controller: TextEditingController(text: _date?.formattedDate),
+          controller: TextEditingController(text: _date?.formattedDate()),
           hint: widget.hintText ?? 'Sélectionnez une date',
           validator: (String? value) {
             if (widget.checkEmpty == true && (value == null || value.isEmpty)) {
@@ -128,7 +128,7 @@ class _AppDatePickerState extends State<AppDatePicker> {
     return AppTextFormField(
       key: UniqueKey(),
       definedKey: _dateWidgetKey,
-      controller: TextEditingController(text: _date?.formattedDate),
+      controller: TextEditingController(text: _date?.formattedDate()),
       label: widget.label,
       hintText: widget.hintText ?? 'Sélectionnez une date',
       // enabled: false,

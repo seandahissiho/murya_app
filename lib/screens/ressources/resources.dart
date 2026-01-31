@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 // import 'package:fl_chart/fl_chart.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -438,7 +438,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                         ),
                         AppSpacing.containerInsideMarginSmallBox,
                         Text(
-                          resource.createdAt?.formattedDate ?? '',
+                          resource.createdAt?.formattedDate() ?? '',
                           style: theme.textTheme.labelLarge?.copyWith(color: AppColors.textInverted),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

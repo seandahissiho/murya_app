@@ -37,7 +37,7 @@ class CfDetailsLocation extends BeamLocation<RouteInformationSerializable<dynami
     final dynamic payload = routeData?['data'];
     final String familyName =
         payload is Map<String, dynamic> && payload['familyName'] is String ? payload['familyName'] as String : '';
-    final String pageTitle = familyName.isNotEmpty ? 'Murya - #$familyName#' : 'Murya';
+    final String pageTitle = familyName.isNotEmpty ? 'Murya - $familyName' : 'Murya';
     return [
       BeamPage(
         key: ValueKey('cfDetails-page-$languageCode'),
@@ -77,7 +77,7 @@ class CompetencyCard extends StatelessWidget {
         width: constraints.maxWidth,
         decoration: const BoxDecoration(
           borderRadius: AppRadius.medium,
-          color: AppColors.secondaryDefault,
+          color: Colors.white,
         ),
         padding: const EdgeInsets.all(AppSpacing.groupMargin),
         child: Row(

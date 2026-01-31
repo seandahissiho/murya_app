@@ -244,41 +244,41 @@ class AppColors {
   static const Color backgroundCard = Color(0xFFEDECE4);
 
   // Tags
-  // rgba(111, 63, 245, 0.2)
-  static const Color tagSoftSkill = Color.fromRGBO(111, 63, 245, 0.2);
-
-  // rgba(91, 47, 219, 1)
-  static const Color tagSoftSkillText = Color.fromRGBO(91, 47, 219, 1);
-
-  // rgba(58, 176, 194, 0.15)
-  static const Color tagHardSkill = Color.fromRGBO(58, 176, 194, 0.15);
-
-  // rgba(35, 116, 128, 1)
-  static const Color tagHardSkillText = Color.fromRGBO(35, 116, 128, 1);
-
-  // rgba(0, 168, 112, 0.15)
-  static const Color tagBeginnerLevel = Color.fromRGBO(0, 168, 112, 0.15);
-
-  // rgba(0, 76, 51, 1)
-  static const Color tagBeginnerLevelText = Color.fromRGBO(0, 76, 51, 1);
-
   // rgba(245, 163, 63, 0.2)
-  static const Color tagIntermediateLevel = Color.fromRGBO(245, 163, 63, 0.2);
+  static const Color tagSoftSkill = Color.fromRGBO(245, 163, 63, 0.2);
 
   // rgba(199, 128, 40, 1)
-  static const Color tagIntermediateLevelText = Color.fromRGBO(199, 128, 40, 1);
+  static const Color tagSoftSkillText = Color.fromRGBO(199, 128, 40, 1);
 
-  // rgba(255, 59, 48, 0.15)
-  static const Color tagAdvancedLevel = Color.fromRGBO(255, 59, 48, 0.15);
+  // rgba(111, 63, 245, 0.2)
+  static const Color tagHardSkill = Color.fromRGBO(111, 63, 245, 0.2);
 
-  // rgba(92, 0, 0, 1)
-  static const Color tagAdvancedLevelText = Color.fromRGBO(92, 0, 0, 1);
+  // rgba(111, 63, 245, 1)
+  static const Color tagHardSkillText = Color.fromRGBO(111, 63, 245, 1);
 
-  // rgba(13, 13, 13, 0.15)
-  static const Color tagExpertLevel = Color.fromRGBO(199, 40, 128, 0.2);
+  // rgba(247, 247, 247, 1)
+  static const Color tagBeginnerLevel = Color.fromRGBO(247, 247, 247, 1);
 
-  // rgba(13, 13, 13, 1)
-  static const Color tagExpertLevelText = Color.fromRGBO(13, 13, 13, 1);
+  // rgba(233, 233, 233, 1)
+  static const Color tagIntermediateLevel = Color.fromRGBO(233, 233, 233, 1);
+
+  // rgba(216, 216, 216, 1)
+  static const Color tagAdvancedLevel = Color.fromRGBO(216, 216, 216, 1);
+
+  // rgba(200, 200, 200, 1)
+  static const Color tagExpertLevel = Color.fromRGBO(200, 200, 200, 1);
+
+  // rgba(31, 22, 51, 1)
+  static const Color tagBeginnerLevelText = Color.fromRGBO(31, 22, 51, 1);
+
+  // rgba(31, 22, 51, 1)
+  static const Color tagIntermediateLevelText = Color.fromRGBO(31, 22, 51, 1);
+
+  // rgba(31, 22, 51, 1)
+  static const Color tagAdvancedLevelText = Color.fromRGBO(31, 22, 51, 1);
+
+  // rgba(31, 22, 51, 1)
+  static const Color tagExpertLevelText = Color.fromRGBO(31, 22, 51, 1);
 
   // Gradient sample (for convenience)
   static const List<Color> gradient = <Color>[

@@ -287,31 +287,31 @@ abstract class AppLocalizations {
   /// Infobulle pour une compétence très bonne
   ///
   /// In fr, this message translates to:
-  /// **'Vous êtes en progression !'**
+  /// **'Cet indicateur reflète votre évolution.'**
   String get competencyRatingVeryGoodTooltip;
 
   /// Infobulle pour une compétence bonne
   ///
   /// In fr, this message translates to:
-  /// **'Vous êtes en progression !'**
+  /// **'Cet indicateur reflète votre évolution.'**
   String get competencyRatingGoodTooltip;
 
   /// Infobulle pour une compétence moyenne
   ///
   /// In fr, this message translates to:
-  /// **'Vous avez besoin de pratiquer davantage.'**
+  /// **'Cet indicateur reflète votre évolution.'**
   String get competencyRatingAverageTooltip;
 
   /// Infobulle pour une compétence mauvaise
   ///
   /// In fr, this message translates to:
-  /// **'Vous avez besoin de pratiquer davantage.'**
+  /// **'Cet indicateur reflète votre évolution.'**
   String get competencyRatingBadTooltip;
 
   /// Infobulle pour une compétence très mauvaise
   ///
   /// In fr, this message translates to:
-  /// **'Vous avez besoin de pratiquer davantage.'**
+  /// **'Cet indicateur reflète votre évolution.'**
   String get competencyRatingVeryBadTooltip;
 
   /// Texte pour le bouton 'Afficher plus'
@@ -335,7 +335,7 @@ abstract class AppLocalizations {
   /// Titre de la page du profil de compétences d'un métier
   ///
   /// In fr, this message translates to:
-  /// **'Murya - #{jobTitle}#'**
+  /// **'Murya - {jobTitle}'**
   String job_profile_page_title(String jobTitle);
 
   /// Message affiché lorsque le lien est copié dans le presse-papier

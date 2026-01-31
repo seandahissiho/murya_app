@@ -36,7 +36,7 @@ class JobEvaluationLocation extends BeamLocation<RouteInformationSerializable<dy
     final String jobTitle =
         payload is Map<String, dynamic> && payload['jobTitle'] is String ? payload['jobTitle'] as String : '';
     final String pageTitle =
-        jobTitle.isNotEmpty ? 'Murya - #$jobTitle# ${locale.evaluateSkills}' : 'Murya - ${locale.evaluateSkills}';
+        jobTitle.isNotEmpty ? 'Murya - $jobTitle ${locale.evaluateSkills}' : 'Murya - ${locale.evaluateSkills}';
     return [
       BeamPage(
         key: ValueKey('jobEvaluation-page-$languageCode'),

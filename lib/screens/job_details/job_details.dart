@@ -339,6 +339,7 @@ class InteractiveRoundedRadarChart extends StatefulWidget {
   final double maxValue;
   final double cornerRadius;
   final bool isLandingPageChart;
+  final Color bgColor;
 
   // labelBoxColor
   final Color labelBgColor;
@@ -358,6 +359,7 @@ class InteractiveRoundedRadarChart extends StatefulWidget {
     this.labelTextColor = AppColors.textInverted,
     this.hideTexts = false,
     this.isLandingPageChart = false,
+    this.bgColor = Colors.transparent,
   }) : super(key: key);
 
   @override
@@ -506,7 +508,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
 
     for (int i = 0; i < n; i++) {
       final Offset dir = fit.dir(i);
-      final double defaultV = widget.defaultValues[i];
+      final double defaultV = widget.defaultValues.elementAtOrNull(i) ?? 0.0;
       final double userV = (widget.userValues.isNotEmpty && i < widget.userValues.length) ? widget.userValues[i] : 0.0;
       final double maxV = math.max(defaultV, userV).clamp(0.0, widget.maxValue);
       final double t = (widget.maxValue <= 0) ? 0.0 : (maxV / widget.maxValue);

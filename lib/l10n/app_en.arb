@@ -139,23 +139,23 @@
       }
     }
   },
-  "competencyRatingVeryGoodTooltip": "You''re making progress!",
+  "competencyRatingVeryGoodTooltip": "This indicator reflects your progress.",
   "@competencyRatingVeryGoodTooltip": {
     "description": "Tooltip for a very good competency rating"
   },
-  "competencyRatingGoodTooltip": "You''re making progress!",
+  "competencyRatingGoodTooltip": "This indicator reflects your progress.",
   "@competencyRatingGoodTooltip": {
     "description": "Tooltip for a good competency rating"
   },
-  "competencyRatingAverageTooltip": "You need more practice.",
+  "competencyRatingAverageTooltip": "This indicator reflects your progress.",
   "@competencyRatingAverageTooltip": {
     "description": "Tooltip for an average competency rating"
   },
-  "competencyRatingBadTooltip": "You need more practice.",
+  "competencyRatingBadTooltip": "This indicator reflects your progress.",
   "@competencyRatingBadTooltip": {
     "description": "Tooltip for a bad competency rating"
   },
-  "competencyRatingVeryBadTooltip": "You need more practice.",
+  "competencyRatingVeryBadTooltip": "This indicator reflects your progress.",
   "@competencyRatingVeryBadTooltip": {
     "description": "Tooltip for a very bad competency rating"
   },
@@ -177,7 +177,7 @@
       }
     }
   },
-  "job_profile_page_title": "Murya - #{jobTitle}#",
+  "job_profile_page_title": "Murya - {jobTitle}",
   "@job_profile_page_title": {
     "description": "Title of a job's skills profile page",
     "placeholders": {

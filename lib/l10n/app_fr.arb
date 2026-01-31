@@ -139,23 +139,23 @@
       }
     }
   },
-  "competencyRatingVeryGoodTooltip": "Vous êtes en progression !",
+  "competencyRatingVeryGoodTooltip": "Cet indicateur reflète votre évolution.",
   "@competencyRatingVeryGoodTooltip": {
     "description": "Infobulle pour une compétence très bonne"
   },
-  "competencyRatingGoodTooltip": "Vous êtes en progression !",
+  "competencyRatingGoodTooltip": "Cet indicateur reflète votre évolution.",
   "@competencyRatingGoodTooltip": {
     "description": "Infobulle pour une compétence bonne"
   },
-  "competencyRatingAverageTooltip": "Vous avez besoin de pratiquer davantage.",
+  "competencyRatingAverageTooltip": "Cet indicateur reflète votre évolution.",
   "@competencyRatingAverageTooltip": {
     "description": "Infobulle pour une compétence moyenne"
   },
-  "competencyRatingBadTooltip": "Vous avez besoin de pratiquer davantage.",
+  "competencyRatingBadTooltip": "Cet indicateur reflète votre évolution.",
   "@competencyRatingBadTooltip": {
     "description": "Infobulle pour une compétence mauvaise"
   },
-  "competencyRatingVeryBadTooltip": "Vous avez besoin de pratiquer davantage.",
+  "competencyRatingVeryBadTooltip": "Cet indicateur reflète votre évolution.",
   "@competencyRatingVeryBadTooltip": {
     "description": "Infobulle pour une compétence très mauvaise"
   },
@@ -177,7 +177,7 @@
       }
     }
   },
-  "job_profile_page_title": "Murya - #{jobTitle}#",
+  "job_profile_page_title": "Murya - {jobTitle}",
   "@job_profile_page_title": {
     "description": "Titre de la page du profil de compétences d'un métier",
     "placeholders": {

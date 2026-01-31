@@ -21,27 +21,24 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
       builder: (context, state) {
         return Column(
           children: [
-            const Row(
-              children: [
-                Spacer(),
-                AppXCloseButton(),
-              ],
-            ),
             Row(
               children: [
-                RichText(
-                  text: TextSpan(
-                    text: AppLocalizations.of(context).page_title_resources,
-                    style: GoogleFonts.anton(
-                      color: AppColors.textPrimary,
-                      fontSize: theme.textTheme.headlineMedium?.fontSize,
-                      fontWeight: FontWeight.w700,
+                Expanded(
+                  child: RichText(
+                    text: TextSpan(
+                      text: AppLocalizations.of(context).page_title_resources,
+                      style: GoogleFonts.anton(
+                        color: AppColors.textPrimary,
+                        fontSize: theme.textTheme.headlineMedium?.fontSize,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
+                const AppXCloseButton(),
               ],
             ),
-            AppSpacing.sectionMarginBox,
+            AppSpacing.groupMarginBox,
             Expanded(
               child: SingleChildScrollView(
                 child: AppSkeletonizer(

@@ -120,19 +120,24 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get competencyRatingVeryGoodTooltip => 'You\'re making progress!';
+  String get competencyRatingVeryGoodTooltip =>
+      'This indicator reflects your progress.';
 
   @override
-  String get competencyRatingGoodTooltip => 'You\'re making progress!';
+  String get competencyRatingGoodTooltip =>
+      'This indicator reflects your progress.';
 
   @override
-  String get competencyRatingAverageTooltip => 'You need more practice.';
+  String get competencyRatingAverageTooltip =>
+      'This indicator reflects your progress.';
 
   @override
-  String get competencyRatingBadTooltip => 'You need more practice.';
+  String get competencyRatingBadTooltip =>
+      'This indicator reflects your progress.';
 
   @override
-  String get competencyRatingVeryBadTooltip => 'You need more practice.';
+  String get competencyRatingVeryBadTooltip =>
+      'This indicator reflects your progress.';
 
   @override
   String get show_more => 'Show more';
@@ -147,7 +152,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String job_profile_page_title(String jobTitle) {
-    return 'Murya - #$jobTitle#';
+    return 'Murya - $jobTitle';
   }
 
   @override
