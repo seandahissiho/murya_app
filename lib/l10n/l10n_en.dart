@@ -493,12 +493,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inviteFriends_title => 'Invite friends';
 
   @override
-  String get inviteFriends_description =>
-      'Tell your friends that learning with Murya is simple, smart, and rewarding.';
-
-  @override
   String inviteFriends_bonus(int amount) {
-    return 'Invite them and earn $amount 💎 as soon as they sign up.';
+    return 'Each friend who joins you earns you $amount 💎.';
   }
 
   @override

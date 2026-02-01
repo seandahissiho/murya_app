@@ -929,19 +929,13 @@ abstract class AppLocalizations {
   /// Titre du module d'invitation d'amis
   ///
   /// In fr, this message translates to:
-  /// **'Inviter des amis'**
+  /// **'Challenge tes amis !'**
   String get inviteFriends_title;
-
-  /// Texte descriptif du module d'invitation d'amis
-  ///
-  /// In fr, this message translates to:
-  /// **'Dis à tes amis qu\'apprendre avec Murya, c\'est simple, intelligent et récompensé.'**
-  String get inviteFriends_description;
 
   /// Texte du bonus de parrainage (points/diamants)
   ///
   /// In fr, this message translates to:
-  /// **'Invite-les et gagne {amount} 💎 dès leur inscription.'**
+  /// **'Chaque ami qui te rejoint, c\'\'est {amount} 💎 offerts.'**
   String inviteFriends_bonus(int amount);
 
   /// Texte du bouton d'appel à l'action pour inviter des amis
