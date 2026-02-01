@@ -127,6 +127,9 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/icons/gb.svg
+    - assets/icons/fr.svg
+    - assets/icons/star.svg
     - assets/icons/protection_security/
     - assets/icons/competencies_states/
     - assets/images/
