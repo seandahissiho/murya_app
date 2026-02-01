@@ -9,29 +9,38 @@ class User {
   final String? phone;
   final String? deviceId;
 
-  final String? photoURL;
+  final String? avatarUrl;
   final String? firstName;
   final String? lastName;
+  final DateTime? birthDate;
+  final String? genre;
+  final String? preferredLangCode;
   final Diploma? diploma;
   final DiplomaYear? diplomaYear;
   final DiplomaSchool? diplomaSchool;
 
   final int diamonds;
+  final int streakDays;
 
-  static const User zero = User(id: '', email: '', phone: '', deviceId: '', firstName: '', lastName: '');
+  static const User zero =
+      User(id: '', email: '', phone: '', deviceId: '', firstName: '', lastName: '');
 
   const User({
     this.id,
     this.email,
     this.phone,
     this.deviceId,
-    this.photoURL,
+    this.avatarUrl,
     this.firstName,
     this.lastName,
+    this.birthDate,
+    this.genre,
+    this.preferredLangCode,
     this.diploma,
     this.diplomaYear,
     this.diplomaSchool,
     this.diamonds = 0,
+    this.streakDays = 0,
   });
 
   String get fullName {
@@ -59,12 +68,14 @@ class User {
   }
 
   String get displayPhotoURL {
-    return photoURL ?? 'https://example.com/default-avatar.png'; // Default avatar URL
+    return avatarUrl ?? 'https://example.com/default-avatar.png'; // Default avatar URL
   }
+
+  String? get photoURL => avatarUrl;
 
   @override
   String toString() {
-    return 'AppUser{id: $id, email: $email, photoURL: $photoURL, firstName: $firstName, lastName: $lastName, phone: $phone, diploma: $diploma, diplomaYear: $diplomaYear, diplomaSchool: $diplomaSchool}';
+    return 'AppUser{id: $id, email: $email, avatarUrl: $avatarUrl, firstName: $firstName, lastName: $lastName, phone: $phone, birthDate: $birthDate, genre: $genre, preferredLangCode: $preferredLangCode, diploma: $diploma, diplomaYear: $diplomaYear, diplomaSchool: $diplomaSchool, streakDays: $streakDays}';
   }
 
   @override
@@ -74,43 +85,55 @@ class User {
     final User otherUser = other as User;
     return id == otherUser.id &&
         email == otherUser.email &&
-        photoURL == otherUser.photoURL &&
+        avatarUrl == otherUser.avatarUrl &&
         firstName == otherUser.firstName &&
         lastName == otherUser.lastName &&
+        birthDate == otherUser.birthDate &&
+        genre == otherUser.genre &&
+        preferredLangCode == otherUser.preferredLangCode &&
         diploma == otherUser.diploma &&
         diplomaYear == otherUser.diplomaYear &&
         diplomaSchool == otherUser.diplomaSchool &&
         phone == otherUser.phone &&
-        diamonds == otherUser.diamonds;
+        diamonds == otherUser.diamonds &&
+        streakDays == otherUser.streakDays;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
         email.hashCode ^
-        (photoURL?.hashCode ?? 0) ^
+        (avatarUrl?.hashCode ?? 0) ^
         firstName.hashCode ^
         lastName.hashCode ^
+        birthDate.hashCode ^
+        genre.hashCode ^
+        preferredLangCode.hashCode ^
         diploma.hashCode ^
         diplomaYear.hashCode ^
         diplomaSchool.hashCode ^
         phone.hashCode ^
-        diamonds.hashCode;
+        diamonds.hashCode ^
+        streakDays.hashCode;
   }
 
   static User empty() {
     return const User(
       id: '',
       email: '',
-      photoURL: null,
+      avatarUrl: null,
       firstName: '',
       lastName: '',
+      birthDate: null,
+      genre: null,
+      preferredLangCode: null,
       diploma: null,
       diplomaYear: null,
       diplomaSchool: null,
       phone: '',
       deviceId: '',
       diamonds: 0,
+      streakDays: 0,
     );
   }
 
@@ -119,26 +142,35 @@ class User {
     final String? email = json['email'];
     final String? phone = json['phone'];
     final String? deviceId = json['deviceId'];
-    final String? photoURL = json['avatarURL'];
-    final String? firstName = json['firstname'];
-    final String? lastName = json['lastname'];
+    final String? avatarUrl =
+        (json['avatarUrl'] ?? json['avatarURL'] ?? json['photoURL'] ?? json['photoUrl']) as String?;
+    final String? firstName = (json['firstname'] ?? json['firstName']) as String?;
+    final String? lastName = (json['lastname'] ?? json['lastName']) as String?;
     final int diamonds = json['diamonds'] ?? 0;
     final Diploma? diploma = diplomaFromJson(json['diploma']);
     final DiplomaYear? diplomaYear = diplomaYearFromJson(json['diplomaYear']);
     final DiplomaSchool? diplomaSchool = diplomaSchoolFromJson(json['diplomaSchool']);
+    final int streakDays = _toInt(json['streakDays'] ?? json['streak']);
+    final DateTime? birthDate = _toDate(json['birthDate']);
+    final String? genre = json['genre'] as String?;
+    final String? preferredLangCode = json['preferredLangCode'] as String?;
 
     return User(
       id: id,
       email: email,
       phone: phone,
       deviceId: deviceId,
-      photoURL: photoURL,
+      avatarUrl: avatarUrl,
       firstName: firstName,
       lastName: lastName,
+      birthDate: birthDate,
+      genre: genre,
+      preferredLangCode: preferredLangCode,
       diploma: diploma,
       diplomaYear: diplomaYear,
       diplomaSchool: diplomaSchool,
       diamonds: diamonds,
+      streakDays: streakDays,
     );
   }
 
@@ -147,20 +179,35 @@ class User {
   get isRegistered =>
       (email.isNotEmptyOrNull || phone.isNotEmptyOrNull || deviceId.isNotEmptyOrNull) && id.isNotEmptyOrNull;
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'email': email,
-      'photoURL': photoURL,
-      'firstName': firstName,
-      'lastName': lastName,
-      'phone': phone,
-      'deviceId': deviceId,
-      'diploma': diploma?.name,
-      'diplomaYear': diplomaYear?.name,
-      'diplomaSchool': diplomaSchool?.name,
-      'diamonds': diamonds,
-    };
+  Map<String, dynamic> toJson({User? baseline}) {
+    final Map<String, dynamic> data = {};
+
+    void setField(String key, dynamic value, dynamic baselineValue) {
+      if (baseline != null) {
+        if (value != baselineValue) {
+          data[key] = value;
+        }
+        return;
+      }
+      if (value != null) {
+        data[key] = value;
+      }
+    }
+
+    final String? birthDateValue = birthDate != null ? _formatDate(birthDate!) : null;
+    final String? birthDateBaseline =
+        baseline?.birthDate != null ? _formatDate(baseline!.birthDate!) : null;
+
+    setField('firstname', firstName, baseline?.firstName);
+    setField('lastname', lastName, baseline?.lastName);
+    setField('email', email, baseline?.email);
+    setField('phone', phone, baseline?.phone);
+    setField('avatarUrl', avatarUrl, baseline?.avatarUrl);
+    setField('birthDate', birthDateValue, birthDateBaseline);
+    setField('genre', genre, baseline?.genre);
+    setField('preferredLangCode', preferredLangCode, baseline?.preferredLangCode);
+
+    return data;
   }
 
   String contextName(BuildContext context) {
@@ -175,27 +222,57 @@ class User {
     String? email,
     String? phone,
     String? deviceId,
-    String? photoURL,
+    String? avatarUrl,
     String? firstName,
     String? lastName,
+    DateTime? birthDate,
+    String? genre,
+    String? preferredLangCode,
     Diploma? diploma,
     DiplomaYear? diplomaYear,
     DiplomaSchool? diplomaSchool,
     int? diamonds,
+    int? streakDays,
   }) {
     return User(
       id: id ?? this.id,
       email: email ?? this.email,
       phone: phone ?? this.phone,
       deviceId: deviceId ?? this.deviceId,
-      photoURL: photoURL ?? this.photoURL,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
+      birthDate: birthDate ?? this.birthDate,
+      genre: genre ?? this.genre,
+      preferredLangCode: preferredLangCode ?? this.preferredLangCode,
       diploma: diploma ?? this.diploma,
       diplomaYear: diplomaYear ?? this.diplomaYear,
       diplomaSchool: diplomaSchool ?? this.diplomaSchool,
       diamonds: diamonds ?? this.diamonds,
+      streakDays: streakDays ?? this.streakDays,
     );
+  }
+
+  static int _toInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    return int.tryParse(value.toString()) ?? 0;
+  }
+
+  static DateTime? _toDate(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value;
+    final parsed = DateTime.tryParse(value.toString());
+    if (parsed == null) return null;
+    return DateTime(parsed.year, parsed.month, parsed.day);
+  }
+
+  static String _formatDate(DateTime value) {
+    final year = value.year.toString().padLeft(4, '0');
+    final month = value.month.toString().padLeft(2, '0');
+    final day = value.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
   }
 }
 

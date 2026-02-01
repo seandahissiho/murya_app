@@ -116,7 +116,7 @@ class _TabletJourneySettingsTabState extends State<TabletJourneySettingsTab> {
                               height: 24,
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: StreakWidget(streakDays: state.user.diamonds, iconSize: 24),
+                                child: StreakWidget(streakDays: state.user.streakDays, iconSize: 24),
                               ),
                             ),
                           ],
