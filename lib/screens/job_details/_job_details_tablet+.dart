@@ -49,7 +49,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
           .toList();
       // if last 3 paths contain landing, hide back button
       hideBackButton = true;
-      if (last3Paths.contains(AppRoutes.jobModule)) {
+      if (last3Paths.contains(AppRoutes.searchModule)) {
         hideBackButton = false;
       }
     }
@@ -344,14 +344,14 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
-                  child: Text(
-                    locale.skillsDiagramTitle,
-                    style: GoogleFonts.anton(
-                      fontSize: 32,
-                      color: AppColors.textPrimary,
-                      letterSpacing: -0.6,
+                    child: Text(
+                      locale.skillsDiagramTitle,
+                      style: GoogleFonts.anton(
+                        fontSize: 32,
+                        color: AppColors.textPrimary,
+                        letterSpacing: -0.6,
+                      ),
                     ),
-                  ),
                   ),
                   AppXDropdown<int>(
                     controller: TextEditingController(text: options[_detailsLevel.index]),

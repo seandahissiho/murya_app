@@ -73,7 +73,7 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
                                 });
                                 await Future.delayed(_animationDuration);
                                 if (!mounted) return;
-                                navigateToPath(context, to: AppRoutes.jobModule);
+                                navigateToPath(context, to: AppRoutes.searchModule);
                               },
                         controller: _searchController,
                         labelText: null,
