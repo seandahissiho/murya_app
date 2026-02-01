@@ -3,8 +3,34 @@ import 'package:murya/models/reward.dart';
 import 'package:murya/models/reward_catalog.dart';
 import 'package:murya/models/reward_purchase.dart';
 import 'package:murya/repositories/base.repository.dart';
+import 'package:murya/services/cache.service.dart';
 
 class RewardsRepository extends BaseRepository {
+  final CacheService cacheService;
+
+  RewardsRepository({CacheService? cacheService}) : cacheService = cacheService ?? CacheService();
+
+  String _rewardsCacheKey({
+    String? city,
+    String? kind,
+    bool? onlyAvailable,
+    int page = 1,
+    int limit = 20,
+  }) {
+    final cityKey = city != null && city.isNotEmpty ? city : 'null';
+    final kindKey = kind != null && kind.isNotEmpty ? kind : 'null';
+    final availKey = onlyAvailable == null ? 'null' : onlyAvailable.toString();
+    return 'rewards_catalog_${cityKey}_${kindKey}_${availKey}_${page}_$limit';
+  }
+
+  String _rewardItemKey(String rewardId) => 'reward_item_$rewardId';
+
+  String _purchasesKey({int page = 1, int limit = 20}) => 'reward_purchases_${page}_$limit';
+
+  String _purchaseKey(String purchaseId) => 'reward_purchase_$purchaseId';
+
+  String _walletKey() => 'reward_wallet';
+
   Future<Result<RewardCatalog>> getRewards({
     String? city,
     String? kind,
@@ -30,6 +56,21 @@ class RewardsRepository extends BaseRepository {
               .whereType<Map>()
               .map((item) => RewardItem.fromJson(Map<String, dynamic>.from(item)))
               .toList();
+          await cacheService.save(
+            _rewardsCacheKey(
+              city: city,
+              kind: kind,
+              onlyAvailable: onlyAvailable,
+              page: page,
+              limit: limit,
+            ),
+            {
+              'items': raw.whereType<Map>().toList(),
+              'page': page,
+              'limit': limit,
+              'total': items.length,
+            },
+          );
           return RewardCatalog(
             items: items,
             page: page,
@@ -38,11 +79,47 @@ class RewardsRepository extends BaseRepository {
           );
         }
         final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
+        await cacheService.save(
+          _rewardsCacheKey(
+            city: city,
+            kind: kind,
+            onlyAvailable: onlyAvailable,
+            page: page,
+            limit: limit,
+          ),
+          data,
+        );
         return RewardCatalog.fromJson(data);
       },
       parentFunctionName: 'RewardsRepository.getRewards',
       errorResult: RewardCatalog.empty(),
     );
+  }
+
+  Future<Result<RewardCatalog>> getRewardsCached({
+    String? city,
+    String? kind,
+    bool? onlyAvailable,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final cachedData = await cacheService.get(
+        _rewardsCacheKey(
+          city: city,
+          kind: kind,
+          onlyAvailable: onlyAvailable,
+          page: page,
+          limit: limit,
+        ),
+      );
+      if (cachedData != null) {
+        return Result.success(RewardCatalog.fromJson(Map<String, dynamic>.from(cachedData)), null);
+      }
+    } catch (_) {
+      // ignore cache errors
+    }
+    return Result.success(null, null);
   }
 
   Future<Result<RewardItem>> getRewardById(String rewardId) async {
@@ -51,6 +128,7 @@ class RewardsRepository extends BaseRepository {
         final response = await api.dio.get('/api/rewards/$rewardId');
         final raw = _extractData(response.data);
         final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
+        await cacheService.save(_rewardItemKey(rewardId), data);
         return RewardItem.fromJson(data);
       },
       parentFunctionName: 'RewardsRepository.getRewardById',
@@ -72,6 +150,18 @@ class RewardsRepository extends BaseRepository {
     );
   }
 
+  Future<Result<RewardItem>> getRewardByIdCached(String rewardId) async {
+    try {
+      final cachedData = await cacheService.get(_rewardItemKey(rewardId));
+      if (cachedData != null) {
+        return Result.success(RewardItem.fromJson(Map<String, dynamic>.from(cachedData)), null);
+      }
+    } catch (_) {
+      // ignore cache errors
+    }
+    return Result.success(null, null);
+  }
+
   Future<Result<RewardPurchaseList>> getPurchases({
     int page = 1,
     int limit = 20,
@@ -91,6 +181,15 @@ class RewardsRepository extends BaseRepository {
               .whereType<Map>()
               .map((item) => RewardPurchase.fromJson(Map<String, dynamic>.from(item)))
               .toList();
+          await cacheService.save(
+            _purchasesKey(page: page, limit: limit),
+            {
+              'items': raw.whereType<Map>().toList(),
+              'page': page,
+              'limit': limit,
+              'total': items.length,
+            },
+          );
           return RewardPurchaseList(
             items: items,
             page: page,
@@ -99,11 +198,27 @@ class RewardsRepository extends BaseRepository {
           );
         }
         final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
+        await cacheService.save(_purchasesKey(page: page, limit: limit), data);
         return RewardPurchaseList.fromJson(data);
       },
       parentFunctionName: 'RewardsRepository.getPurchases',
       errorResult: RewardPurchaseList.empty(),
     );
+  }
+
+  Future<Result<RewardPurchaseList>> getPurchasesCached({
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final cachedData = await cacheService.get(_purchasesKey(page: page, limit: limit));
+      if (cachedData != null) {
+        return Result.success(RewardPurchaseList.fromJson(Map<String, dynamic>.from(cachedData)), null);
+      }
+    } catch (_) {
+      // ignore cache errors
+    }
+    return Result.success(null, null);
   }
 
   Future<Result<RewardPurchase>> getPurchaseById(String purchaseId) async {
@@ -112,6 +227,7 @@ class RewardsRepository extends BaseRepository {
         final response = await api.dio.get('/api/me/reward-purchases/$purchaseId');
         final raw = _extractData(response.data);
         final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
+        await cacheService.save(_purchaseKey(purchaseId), data);
         return RewardPurchase.fromJson(data);
       },
       parentFunctionName: 'RewardsRepository.getPurchaseById',
@@ -124,6 +240,18 @@ class RewardsRepository extends BaseRepository {
         reward: RewardSummary(id: "", title: ""),
       ),
     );
+  }
+
+  Future<Result<RewardPurchase>> getPurchaseByIdCached(String purchaseId) async {
+    try {
+      final cachedData = await cacheService.get(_purchaseKey(purchaseId));
+      if (cachedData != null) {
+        return Result.success(RewardPurchase.fromJson(Map<String, dynamic>.from(cachedData)), null);
+      }
+    } catch (_) {
+      // ignore cache errors
+    }
+    return Result.success(null, null);
   }
 
   Future<Result<RewardPurchaseResult>> purchaseReward({
@@ -163,11 +291,24 @@ class RewardsRepository extends BaseRepository {
         final response = await api.dio.get('/api/me/wallet');
         final raw = _extractData(response.data);
         final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
+        await cacheService.save(_walletKey(), data);
         return Wallet.fromJson(data);
       },
       parentFunctionName: 'RewardsRepository.getWallet',
       errorResult: Wallet.empty(),
     );
+  }
+
+  Future<Result<Wallet>> getWalletCached() async {
+    try {
+      final cachedData = await cacheService.get(_walletKey());
+      if (cachedData != null) {
+        return Result.success(Wallet.fromJson(Map<String, dynamic>.from(cachedData)), null);
+      }
+    } catch (_) {
+      // ignore cache errors
+    }
+    return Result.success(null, null);
   }
 
   dynamic _extractData(dynamic raw) {

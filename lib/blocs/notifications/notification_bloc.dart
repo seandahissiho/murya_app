@@ -196,6 +196,29 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     totalPages = 0;
     unreadCount = 0;
 
+    final cachedResult = await notificationRepository.getNotificationsCached(
+      selectedCategories: categories,
+      page: page,
+    );
+    final cachedNotifications = cachedResult.data?.$1 ?? [];
+    final hasCached = cachedNotifications.isNotEmpty;
+    if (hasCached) {
+      notifications
+        ..clear()
+        ..addAll(cachedNotifications);
+      totalPages = cachedResult.data?.$2 ?? totalPages;
+      unreadCount = cachedResult.data?.$3 ?? unreadCount;
+      notificationStream.addResponse(notifications);
+      emit(NotificationLoaded(
+        categories: categories,
+        notificationStream: notificationStream,
+        notifications: notifications,
+        page: page,
+        totalPages: totalPages,
+        unreadCount: unreadCount,
+      ));
+    }
+
     final getResult = await notificationRepository.getNotifications(
       selectedCategories: categories,
       page: page,
@@ -368,6 +391,28 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     page = 1;
     totalPages = 0;
 
+    final cachedResult = await notificationRepository.getNotificationsCached(
+      selectedCategories: categories,
+      page: page,
+    );
+    final cachedNotifications = cachedResult.data?.$1 ?? [];
+    final hasCached = cachedNotifications.isNotEmpty;
+    if (hasCached) {
+      notifications
+        ..clear()
+        ..addAll(cachedNotifications);
+      totalPages = cachedResult.data?.$2 ?? totalPages;
+      unreadCount = cachedResult.data?.$3 ?? unreadCount;
+      notificationStream.addResponse(notifications);
+      emit(NewWebHookNotificationState(
+        notificationStream: notificationStream,
+        notifications: notifications,
+        page: page,
+        totalPages: totalPages,
+        unreadCount: unreadCount,
+      ));
+    }
+
     final getResult = await notificationRepository.getNotifications(
       selectedCategories: categories,
       page: page,
@@ -413,6 +458,29 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     page = 1;
     totalPages = 0;
 
+    final cachedResult = await notificationRepository.getNotificationsCached(
+      selectedCategories: categories,
+      page: page,
+    );
+    final cachedNotifications = cachedResult.data?.$1 ?? [];
+    final hasCached = cachedNotifications.isNotEmpty;
+    if (hasCached) {
+      notifications
+        ..clear()
+        ..addAll(cachedNotifications);
+      totalPages = cachedResult.data?.$2 ?? totalPages;
+      unreadCount = cachedResult.data?.$3 ?? unreadCount;
+      notificationStream.addResponse(notifications);
+      emit(NotificationLoaded(
+        categories: categories,
+        notificationStream: notificationStream,
+        notifications: notifications,
+        page: page,
+        totalPages: totalPages,
+        unreadCount: unreadCount,
+      ));
+    }
+
     final getResult = await notificationRepository.getNotifications(
       selectedCategories: categories,
       page: page,
@@ -457,6 +525,27 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       ChangeNotificationPageEvent event, Emitter<NotificationState> emit) async {
     page = event.page;
 
+    final cachedResult = await notificationRepository.getNotificationsCached(
+      selectedCategories: categories,
+      page: page,
+    );
+    final cachedNotifications = cachedResult.data?.$1 ?? [];
+    final hasCached = cachedNotifications.isNotEmpty;
+    if (hasCached) {
+      _appendNotifications(cachedNotifications);
+      totalPages = cachedResult.data?.$2 ?? totalPages;
+      unreadCount = cachedResult.data?.$3 ?? unreadCount;
+      notificationStream.addResponse(notifications);
+      emit(NotificationLoaded(
+        categories: categories,
+        notificationStream: notificationStream,
+        notifications: notifications,
+        page: page,
+        totalPages: totalPages,
+        unreadCount: unreadCount,
+      ));
+    }
+
     final getResult = await notificationRepository.getNotifications(
       selectedCategories: categories,
       page: page,
@@ -481,7 +570,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       ));
     }
 
-    notifications.addAll(getResult.data!.$1);
+    _appendNotifications(getResult.data!.$1);
     totalPages = getResult.data!.$2;
     unreadCount = getResult.data!.$3;
     notificationStream.addResponse(notifications);
@@ -579,5 +668,18 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     totalPages = 0;
     unreadCount = 0;
     notificationStream.addResponse(notifications);
+  }
+
+  void _appendNotifications(List<AppNotification> incoming) {
+    final existingIds = notifications.map((n) => n.id).whereType<String>().toSet();
+    for (final notification in incoming) {
+      final id = notification.id;
+      if (id == null || !existingIds.contains(id)) {
+        notifications.add(notification);
+        if (id != null) {
+          existingIds.add(id);
+        }
+      }
+    }
   }
 }
