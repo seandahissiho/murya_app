@@ -203,7 +203,7 @@ abstract class AppLocalizations {
   /// Texte d'espace réservé pour la barre de recherche
   ///
   /// In fr, this message translates to:
-  /// **'Rechercher des compétences et des métiers'**
+  /// **'Rechercher'**
   String get search_placeholder;
 
   /// Titre du module des ressources de l'utilisateur

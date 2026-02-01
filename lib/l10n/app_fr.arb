@@ -70,7 +70,7 @@
   "@footer_copyright": {
     "description": "Droits d'auteur affichés dans le pied de page"
   },
-  "search_placeholder": "Rechercher des compétences et des métiers",
+  "search_placeholder": "Rechercher",
   "@search_placeholder": {
     "description": "Texte d'espace réservé pour la barre de recherche"
   },

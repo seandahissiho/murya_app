@@ -100,7 +100,7 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (widget.labelInside == false) ...[
+        if (widget.labelInside == false && widget.labelText != null && widget.labelText!.isNotEmpty) ...[
           Text(
             widget.labelText ?? '',
             style: theme.textTheme.labelMedium!.copyWith(
