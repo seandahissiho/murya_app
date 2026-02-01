@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/components/app_button.dart';
-import 'package:murya/components/text_form_field.dart';
+import 'package:murya/components/x_text_form_field.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/routes.dart';
@@ -14,18 +14,31 @@ import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/screens/base.dart';
 
-class MainSearchLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class MainSearchLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.jobModule];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(
         key: ValueKey('main-search-page-$languageCode'),
         title: 'Murya - Recherche',
         child: const MainSearchScreen(),
+        routeBuilder: (context, settings, child) {
+          return PageRouteBuilder(
+            settings: settings,
+            pageBuilder: (context, animation, secondaryAnimation) => child,
+            transitionDuration: const Duration(milliseconds: 1600),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          );
+        },
       ),
     ];
   }
@@ -40,6 +53,7 @@ class MainSearchScreen extends StatefulWidget {
 
 class _MainSearchScreenState extends State<MainSearchScreen> {
   final FocusNode focusNode = FocusNode();
+  final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
   static const _debounceDuration = Duration(milliseconds: 250);
 
@@ -57,12 +71,16 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
     // ✨ Clean up
     _debounce?.cancel();
     focusNode.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(mobileScreen: searchScreen(), tabletScreen: searchScreen(), desktopScreen: searchScreen());
+    return BaseScreen(
+        mobileScreen: searchScreen(),
+        tabletScreen: searchScreen(),
+        desktopScreen: searchScreen());
   }
 
   searchScreen() {
@@ -82,15 +100,23 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
             children: [
               Flexible(
                 flex: 10,
-                child: AppTextFormField(
-                  label: null,
-                  autoResize: false,
-                  leadingIcon: AppIcons.homeSearchIcon2Path,
-                  hintText: locale.search_placeholder,
-                  focusNode: focusNode,
-                  onChanged: _onSearchChanged,
-                  width:
-                      isMobile ? null : constraints.maxWidth / (constraints.maxWidth ~/ (340)) - AppSpacing.spacing16,
+                child: Hero(
+                  tag: 'main-search-bar',
+                  child: SizedBox(
+                    width: isMobile
+                        ? null
+                        : constraints.maxWidth /
+                                (constraints.maxWidth ~/ (340)) -
+                            AppSpacing.spacing16,
+                    child: AppXTextFormField(
+                      labelText: null,
+                      hintText: locale.search_placeholder,
+                      prefixIconPath: AppIcons.homeSearchIcon2Path,
+                      controller: _searchController,
+                      focusNode: focusNode,
+                      onChanged: _onSearchChanged,
+                    ),
+                  ),
                 ),
               ),
               AppSpacing.spacing16_Box,
@@ -110,8 +136,10 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                   // physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: isMobile ? 2 : constraints.maxWidth ~/ 340,
-                    mainAxisSpacing: isMobile ? AppSpacing.spacing8 : AppSpacing.spacing16,
-                    crossAxisSpacing: isMobile ? AppSpacing.spacing8 : AppSpacing.spacing16,
+                    mainAxisSpacing:
+                        isMobile ? AppSpacing.spacing8 : AppSpacing.spacing16,
+                    crossAxisSpacing:
+                        isMobile ? AppSpacing.spacing8 : AppSpacing.spacing16,
                     childAspectRatio: isMobile ? 1.618 : 2.42857143,
                   ),
                   itemCount: state.jobs.length,
@@ -130,7 +158,8 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.backgroundInverted),
+                            border:
+                                Border.all(color: AppColors.backgroundInverted),
                             color: AppColors.backgroundInverted,
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -138,7 +167,10 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                             child: Text(
                               job.title,
                               textAlign: TextAlign.center,
-                              style: (isMobile ? theme.textTheme.labelLarge! : theme.textTheme.displayMedium!).copyWith(
+                              style: (isMobile
+                                      ? theme.textTheme.labelLarge!
+                                      : theme.textTheme.displayMedium!)
+                                  .copyWith(
                                 fontWeight: FontWeight.w900,
                                 color: AppColors.whiteSwatch,
                               ),
