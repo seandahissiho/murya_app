@@ -26,26 +26,26 @@ class TextSize {
 
   TextSize({double fontSizeIndex = 0}) {
     // Display Large Bold
-    double displayLarge = 56.0;
+    double displayLarge = 48.0;
     // Display Small Bold
-    double displaySmall = 48.0;
+    double displaySmall = 40.0;
 
     // Heading 1 Bold
-    double headingLarge = 48.0;
+    double headingLarge = 40.0;
     // Heading 2 Bold
-    double headingMedium = 40.0;
+    double headingMedium = 32.0;
     // Heading 3 Bold
-    double headingSmall = 32.0;
+    double headingSmall = 24.0;
 
     // Heading 1
-    double titleLarge = 48.0;
+    double titleLarge = 40.0;
     // Heading 2
-    double titleMedium = 40.0;
+    double titleMedium = 32.0;
     // Heading 3
-    double titleSmall = 32.0;
+    double titleSmall = 24.0;
 
     // Subheading
-    double displayMedium = 28.0;
+    double displayMedium = 20.0;
 
     // Body 1 Regular Bold
     double labelLarge = 16.0;
