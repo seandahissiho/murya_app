@@ -251,11 +251,11 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                   color: AppColors.textTertiary,
                 ),
                 inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.primaryDefault, // hover
+                  color: AppColors.textPrimary, // hover
                   decoration: TextDecoration.underline, // optionnel
                 ),
                 activeTextStyle: theme.textTheme.labelMedium?.copyWith(
-                  color: AppColors.primaryDefault,
+                  color: AppColors.textPrimary,
                 ),
                 scrollable: true,
               ),

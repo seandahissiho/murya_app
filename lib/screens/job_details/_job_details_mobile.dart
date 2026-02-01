@@ -204,11 +204,11 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                             _job.description,
                             // FAKER.lorem.sentences(10).join(' '),
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: AppColors.primaryDefault,
+                              color: AppColors.textPrimary,
                               overflow: TextOverflow.ellipsis,
                             ),
                             linkStyle: theme.textTheme.labelMedium?.copyWith(
-                              color: AppColors.primaryDefault,
+                              color: AppColors.textPrimary,
                               decoration: TextDecoration.underline,
                             ),
                             maxLines: 4,
@@ -282,7 +282,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                 Text(
                   locale.skillsDiagramTitle,
                   style: theme.textTheme.labelLarge!.copyWith(
-                    color: AppColors.primaryDefault,
+                    color: AppColors.textPrimary,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -301,7 +301,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                   },
                   // labelInside: null,
                   shrinkWrap: true,
-                  fgColor: AppColors.primaryDefault,
+                  fgColor: AppColors.textPrimary,
                 ),
               ],
             ),

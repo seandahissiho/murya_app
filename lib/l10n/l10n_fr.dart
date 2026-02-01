@@ -573,4 +573,37 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get user_anonymous_placeholder => 'Prénom Nom';
+
+  @override
+  String streakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jours consécutifs',
+      one: 'Premier jour, beau départ !',
+      zero: 'Premier jour, beau départ !',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get email_label => 'E-mail';
+
+  @override
+  String get email_invalid_error => 'E-mail invalide';
+
+  @override
+  String get diploma_label => 'Diplôme';
+
+  @override
+  String get diplomaYear_label => 'Promotion';
+
+  @override
+  String get diplomaSchool_label => 'Établissement';
+
+  @override
+  String get saveChanges_button => 'Enregistrer';
+
+  @override
+  String get editChanges_button => 'Modifier';
 }

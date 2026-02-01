@@ -566,4 +566,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get user_anonymous_placeholder => 'Firstname Lastname';
+
+  @override
+  String streakDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count-day streak',
+      one: 'Day 1 — great start!',
+      zero: 'Day 1 — great start!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get email_label => 'Email';
+
+  @override
+  String get email_invalid_error => 'Invalid email';
+
+  @override
+  String get diploma_label => 'Diploma';
+
+  @override
+  String get diplomaYear_label => 'Graduation year';
+
+  @override
+  String get diplomaSchool_label => 'School';
+
+  @override
+  String get saveChanges_button => 'Save';
+
+  @override
+  String get editChanges_button => 'Edit';
 }

@@ -686,5 +686,42 @@
   "user_anonymous_placeholder": "Prénom Nom",
   "@user_anonymous_placeholder": {
     "description": "Placeholder pour le nom d'utilisateur anonyme"
+  },
+  "streakDays": "{count, plural, =0 {Premier jour, beau départ !} =1 {Premier jour, beau départ !} other {{count} jours consécutifs}}",
+  "@streakDays": {
+    "description": "Message de série de jours consécutifs",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "email_label": "E-mail",
+  "@email_label": {
+    "description": "Libellé pour le champ e-mail"
+  },
+  "email_invalid_error": "E-mail invalide",
+  "@email_invalid_error": {
+    "description": "Message d'erreur pour un e-mail invalide"
+  },
+  "diploma_label": "Diplôme",
+  "@diploma_label": {
+    "description": "Libellé du diplôme"
+  },
+  "diplomaYear_label": "Promotion",
+  "@diplomaYear_label": {
+    "description": "Libellé de l'année de promotion"
+  },
+  "diplomaSchool_label": "Établissement",
+  "@diplomaSchool_label": {
+    "description": "Libellé de l'établissement"
+  },
+  "saveChanges_button": "Enregistrer",
+  "@saveChanges_button": {
+    "description": "Libellé du bouton d'enregistrement"
+  },
+  "editChanges_button": "Modifier",
+  "@editChanges_button": {
+    "description": "Libellé du bouton de modification"
   }
 }

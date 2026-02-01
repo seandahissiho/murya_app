@@ -155,7 +155,7 @@ class _RankingChartState extends State<RankingChart> {
                               locale.ranking,
                               style: GoogleFonts.anton(
                                 fontSize: isMobile ? 24 : 32,
-                                color: AppColors.primaryDefault,
+                                color: AppColors.textPrimary,
                                 letterSpacing: -0.6,
                               ),
                             ),
@@ -175,7 +175,7 @@ class _RankingChartState extends State<RankingChart> {
                               // labelInside: null,
                               shrinkWrap: false,
                               maxDropdownWidth: 150,
-                              fgColor: AppColors.primaryDefault,
+                              fgColor: AppColors.textPrimary,
                             ),
                           ],
                         ),

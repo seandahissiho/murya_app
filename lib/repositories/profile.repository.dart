@@ -53,6 +53,21 @@ class ProfileRepository extends BaseRepository {
     return Result.success(User.empty(), null);
   }
 
+  // update Me
+  Future<Result<User>> updateMe(User updatedUser) async {
+    return AppResponse.execute(
+      action: () async {
+        final Response response = await api.dio.put('/auth/me', data: updatedUser.toJson());
+        if (response.data["data"] != null) {
+          await cacheService.save('user_profile_me', response.data["data"]);
+        }
+        return User.fromJson(response.data["data"]);
+      },
+      parentFunctionName: "ProfileRepository.updateMe",
+      errorResult: User.empty(),
+    );
+  }
+
   Future<Result<QuestList>> getQuests({
     required QuestScope scope,
     String? timezone,
