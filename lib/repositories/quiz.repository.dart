@@ -3,6 +3,7 @@ import 'package:murya/blocs/modules/quizz/quiz_bloc.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/quiz.dart';
 import 'package:murya/models/quiz_result.dart';
+import 'package:murya/services/cache.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'base.repository.dart';
@@ -10,12 +11,15 @@ import 'base.repository.dart';
 class QuizRepository extends BaseRepository {
   late final SharedPreferences prefs;
   bool initialized = false;
+  final CacheService cacheService;
 
-  QuizRepository() {
+  QuizRepository({CacheService? cacheService}) : cacheService = cacheService ?? CacheService() {
     initPrefs().then((_) {
       initialized = true;
     });
   }
+
+  String _quizCacheKey(String jobId) => 'quiz_$jobId';
 
   Future<void> initPrefs() async {
     prefs = await SharedPreferences.getInstance();
@@ -56,9 +60,31 @@ class QuizRepository extends BaseRepository {
         }
         final Response response = await api.dio.get('/userJobs/$jobId/quiz');
 
+        final data = response.data["data"];
+        if (data is Map<String, dynamic>) {
+          await cacheService.save(_quizCacheKey(jobId), data);
+          return Quiz.fromJson(data);
+        }
+        if (data is Map) {
+          final map = Map<String, dynamic>.from(data);
+          await cacheService.save(_quizCacheKey(jobId), map);
+          return Quiz.fromJson(map);
+        }
         return Quiz.fromJson(response.data["data"]);
       },
       parentFunctionName: "QuizRepository.getQuizForJob",
     );
+  }
+
+  Future<Result<Quiz?>> getQuizForJobCached(String jobId) async {
+    try {
+      final cachedData = await cacheService.get(_quizCacheKey(jobId));
+      if (cachedData != null) {
+        return Result.success(Quiz.fromJson(Map<String, dynamic>.from(cachedData)), null);
+      }
+    } catch (e) {
+      // ignore cache errors
+    }
+    return Result.success(null, null);
   }
 }

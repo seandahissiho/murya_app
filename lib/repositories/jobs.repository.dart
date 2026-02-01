@@ -10,25 +10,71 @@ class JobRepository extends BaseRepository {
 
   JobRepository({CacheService? cacheService}) : cacheService = cacheService ?? CacheService();
 
+  String _normalizeQuery(String query) => query.trim().toLowerCase();
+
+  String _searchCacheKey(String normalizedQuery) {
+    return 'job_search_${Uri.encodeComponent(normalizedQuery)}';
+  }
+
+  List<Job> _filterJobs(List<Job> jobs, String normalizedQuery) {
+    if (normalizedQuery.isEmpty) return <Job>[];
+    return jobs.where((job) {
+      final title = job.title;
+      if (title == null || title.isEmpty) return false;
+      return title.toLowerCase().contains(normalizedQuery);
+    }).toList();
+  }
+
   Future<Result<List<Job>>> searchJobs({
     required String query,
   }) async {
+    final normalizedQuery = _normalizeQuery(query);
+    if (normalizedQuery.isEmpty) {
+      return Result.success(<Job>[], null);
+    }
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get(
           '/jobs/',
           queryParameters: {
-            'query': query,
+            'query': normalizedQuery,
           },
         );
 
         final List<Job> jobs =
             (response.data["data"]['items'] as List).map((jobJson) => Job.fromJson(jobJson)).toList();
-        return jobs.whereOrEmpty((job) => job.title.toLowerCase().contains(query.toLowerCase()) ?? false).toList();
+        final filtered = _filterJobs(jobs, normalizedQuery);
+        await cacheService.save(
+          _searchCacheKey(normalizedQuery),
+          {
+            'items': (response.data["data"]['items'] as List).whereType<Map>().toList(),
+          },
+        );
+        return filtered;
       },
       parentFunctionName: 'JobRepository -> getJob',
       errorResult: <Job>[],
     );
+  }
+
+  Future<Result<List<Job>>> searchJobsCached({
+    required String query,
+  }) async {
+    final normalizedQuery = _normalizeQuery(query);
+    if (normalizedQuery.isEmpty) {
+      return Result.success(<Job>[], null);
+    }
+    try {
+      final cachedData = await cacheService.get(_searchCacheKey(normalizedQuery));
+      final raw = cachedData?['items'];
+      if (raw is List) {
+        final jobs = raw.whereType<Map>().map((jobJson) => Job.fromJson(Map<String, dynamic>.from(jobJson))).toList();
+        return Result.success(_filterJobs(jobs, normalizedQuery), null);
+      }
+    } catch (e) {
+      // ignore cache errors
+    }
+    return Result.success(<Job>[], null);
   }
 
   Future<Result<AppJob>> getJobDetails(String jobId) async {

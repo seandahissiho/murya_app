@@ -56,6 +56,27 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       rewardsError: null,
     ));
 
+    final cachedResult = await rewardsRepository.getRewardsCached(
+      city: event.city,
+      kind: event.kind,
+      onlyAvailable: event.onlyAvailable,
+      page: event.page,
+      limit: event.limit,
+    );
+    final cachedCatalog = cachedResult.data;
+    final hasCached = cachedCatalog != null && cachedCatalog.items.isNotEmpty;
+    if (hasCached) {
+      emit(RewardsCatalogLoaded.from(
+        state,
+        rewards: cachedCatalog.items,
+        rewardsPage: cachedCatalog.page,
+        rewardsLimit: cachedCatalog.limit,
+        rewardsTotal: cachedCatalog.total,
+        rewardsLoading: false,
+        rewardsError: null,
+      ));
+    }
+
     final result = await rewardsRepository.getRewards(
       city: event.city,
       kind: event.kind,
@@ -94,6 +115,17 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       rewardDetailsLoading: true,
       rewardDetailsError: null,
     ));
+    final cachedResult = await rewardsRepository.getRewardByIdCached(event.rewardId);
+    final cachedReward = cachedResult.data;
+    final hasCached = cachedReward != null && cachedReward.id.isNotEmpty;
+    if (hasCached) {
+      emit(RewardDetailsLoaded.from(
+        state,
+        rewardDetails: cachedReward,
+        rewardDetailsLoading: false,
+        rewardDetailsError: null,
+      ));
+    }
     final result = await rewardsRepository.getRewardById(event.rewardId);
     if (result.isError) {
       emit(RewardDetailsError.from(
@@ -120,6 +152,24 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       purchasesLoading: true,
       purchasesError: null,
     ));
+
+    final cachedResult = await rewardsRepository.getPurchasesCached(
+      page: event.page,
+      limit: event.limit,
+    );
+    final cachedPurchases = cachedResult.data;
+    final hasCached = cachedPurchases != null && cachedPurchases.items.isNotEmpty;
+    if (hasCached) {
+      emit(RewardPurchasesLoaded.from(
+        state,
+        purchases: cachedPurchases.items,
+        purchasesPage: cachedPurchases.page,
+        purchasesLimit: cachedPurchases.limit,
+        purchasesTotal: cachedPurchases.total,
+        purchasesLoading: false,
+        purchasesError: null,
+      ));
+    }
 
     final result = await rewardsRepository.getPurchases(
       page: event.page,
@@ -156,6 +206,17 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       purchaseDetailsLoading: true,
       purchaseDetailsError: null,
     ));
+    final cachedResult = await rewardsRepository.getPurchaseByIdCached(event.purchaseId);
+    final cachedPurchase = cachedResult.data;
+    final hasCached = cachedPurchase != null && cachedPurchase.id.isNotEmpty;
+    if (hasCached) {
+      emit(RewardPurchaseDetailsLoaded.from(
+        state,
+        purchaseDetails: cachedPurchase,
+        purchaseDetailsLoading: false,
+        purchaseDetailsError: null,
+      ));
+    }
     final result = await rewardsRepository.getPurchaseById(event.purchaseId);
     if (result.isError) {
       emit(RewardPurchaseDetailsError.from(
@@ -229,6 +290,15 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       walletLoading: true,
       walletError: null,
     ));
+    final cachedResult = await rewardsRepository.getWalletCached();
+    if (cachedResult.data != null) {
+      emit(RewardsWalletLoaded.from(
+        state,
+        wallet: cachedResult.data ?? Wallet.empty(),
+        walletLoading: false,
+        walletError: null,
+      ));
+    }
     final result = await rewardsRepository.getWallet();
     if (result.isError) {
       emit(RewardsWalletError.from(

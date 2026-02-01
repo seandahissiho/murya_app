@@ -155,6 +155,39 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       leaderboardTo: state.leaderboardTo,
     ));
 
+    final cachedResult = await profileRepository.getQuestsCached(
+      scope: event.scope,
+      timezone: event.timezone,
+      userJobId: event.userJobId,
+    );
+    final cachedQuests = cachedResult.data;
+    final hasCachedQuests = cachedQuests != null &&
+        (cachedQuests.main != null ||
+            cachedQuests.branches.isNotEmpty ||
+            cachedQuests.others.isNotEmpty ||
+            cachedQuests.groups.isNotEmpty);
+    if (hasCachedQuests) {
+      emit(ProfileLoaded(
+        user: state.user,
+        quests: cachedQuests,
+        questGroups: state.questGroups,
+        questsLoading: false,
+        questGroupsLoading: state.questGroupsLoading,
+        questsError: null,
+        questGroupsError: state.questGroupsError,
+        questUserJobId: event.userJobId,
+        questTimezone: event.timezone,
+        questScope: event.scope,
+        claimingQuestId: state.claimingQuestId,
+        leaderboardUsers: state.leaderboardUsers,
+        leaderboardLoading: state.leaderboardLoading,
+        leaderboardError: state.leaderboardError,
+        leaderboardJobId: state.leaderboardJobId,
+        leaderboardFrom: state.leaderboardFrom,
+        leaderboardTo: state.leaderboardTo,
+      ));
+    }
+
     final result = await profileRepository.getQuests(
       scope: event.scope,
       timezone: event.timezone,
@@ -231,6 +264,35 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       leaderboardFrom: state.leaderboardFrom,
       leaderboardTo: state.leaderboardTo,
     ));
+
+    final cachedResult = await profileRepository.getQuestGroupsCached(
+      scope: event.scope,
+      timezone: event.timezone,
+      userJobId: event.userJobId,
+    );
+    final cachedGroups = cachedResult.data;
+    final hasCachedGroups = cachedGroups != null && cachedGroups.groups.isNotEmpty;
+    if (hasCachedGroups) {
+      emit(ProfileLoaded(
+        user: state.user,
+        quests: state.quests,
+        questGroups: cachedGroups,
+        questsLoading: state.questsLoading,
+        questGroupsLoading: false,
+        questsError: state.questsError,
+        questGroupsError: null,
+        questUserJobId: event.userJobId,
+        questTimezone: event.timezone,
+        questScope: event.scope,
+        claimingQuestId: state.claimingQuestId,
+        leaderboardUsers: state.leaderboardUsers,
+        leaderboardLoading: state.leaderboardLoading,
+        leaderboardError: state.leaderboardError,
+        leaderboardJobId: state.leaderboardJobId,
+        leaderboardFrom: state.leaderboardFrom,
+        leaderboardTo: state.leaderboardTo,
+      ));
+    }
 
     final result = await profileRepository.getQuestGroups(
       scope: event.scope,

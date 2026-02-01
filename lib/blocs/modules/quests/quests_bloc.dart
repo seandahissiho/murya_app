@@ -40,6 +40,23 @@ class QuestsBloc extends Bloc<QuestsEvent, QuestsState> {
       questLineageScope: event.scope,
     ));
 
+    final cachedResult = await profileRepository.getQuestLineageCached(
+      scope: event.scope,
+      timezone: event.timezone,
+      userJobId: event.userJobId ?? jobBloc.state.userCurrentJob?.id,
+    );
+    final cachedLineage = cachedResult.data;
+    if (cachedLineage != null && cachedLineage.main != null) {
+      emit(QuestsLoaded(
+        questLineage: cachedLineage,
+        questLineageLoading: false,
+        questLineageError: null,
+        questLineageUserJobId: event.userJobId,
+        questLineageTimezone: event.timezone,
+        questLineageScope: event.scope,
+      ));
+    }
+
     final result = await profileRepository.getQuestLineage(
       scope: event.scope,
       timezone: event.timezone,

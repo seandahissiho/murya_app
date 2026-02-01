@@ -82,6 +82,10 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
   }
 
   FutureOr<void> _loadQuizForJob(LoadQuizForJob event, Emitter<QuizState> emit) async {
+    final cachedResult = await quizRepository.getQuizForJobCached(event.jobId);
+    if (cachedResult.data != null) {
+      emit(QuizLoaded(quiz: cachedResult.data!));
+    }
     var result;
     if (authBloc.state.isAuthenticated) {
       result = await quizRepository.getQuizForJob(event.jobId);

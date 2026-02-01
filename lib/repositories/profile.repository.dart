@@ -17,6 +17,12 @@ class ProfileRepository extends BaseRepository {
     });
   }
 
+  String _questCacheKey(String type, QuestScope scope, String? timezone, String? userJobId) {
+    final tz = timezone != null && timezone.isNotEmpty ? timezone : 'null';
+    final jobId = userJobId != null && userJobId.isNotEmpty ? userJobId : 'null';
+    return 'quests_${type}_${scope.apiValue}_${tz}_$jobId';
+  }
+
   Future<void> initPrefs() async {
     prefs = await SharedPreferences.getInstance();
   }
@@ -85,11 +91,34 @@ class ProfileRepository extends BaseRepository {
         };
         final Response response = await api.dio.get('/quests', queryParameters: queryParameters);
         final data = response.data['data'] as Map<String, dynamic>? ?? const {};
+        await cacheService.save(
+          _questCacheKey('list', scope, timezone, userJobId),
+          Map<String, dynamic>.from(data),
+        );
         return QuestList.fromJson(Map<String, dynamic>.from(data));
       },
       parentFunctionName: 'ProfileRepository.getQuests',
       errorResult: QuestList.empty(),
     );
+  }
+
+  Future<Result<QuestList>> getQuestsCached({
+    required QuestScope scope,
+    String? timezone,
+    String? userJobId,
+  }) async {
+    if (scope == QuestScope.userJob && (userJobId == null || userJobId.isEmpty)) {
+      return Result.failure('userJobId is required for USER_JOB scope');
+    }
+    try {
+      final cachedData = await cacheService.get(_questCacheKey('list', scope, timezone, userJobId));
+      if (cachedData != null) {
+        return Result.success(QuestList.fromJson(Map<String, dynamic>.from(cachedData)), null);
+      }
+    } catch (e) {
+      // ignore cache errors
+    }
+    return Result.success(QuestList.empty(), null);
   }
 
   Future<Result<QuestGroupList>> getQuestGroups({
@@ -109,11 +138,34 @@ class ProfileRepository extends BaseRepository {
         };
         final Response response = await api.dio.get('/quest-groups', queryParameters: queryParameters);
         final data = response.data['data'] as Map<String, dynamic>? ?? const {};
+        await cacheService.save(
+          _questCacheKey('groups', scope, timezone, userJobId),
+          Map<String, dynamic>.from(data),
+        );
         return QuestGroupList.fromJson(Map<String, dynamic>.from(data));
       },
       parentFunctionName: 'ProfileRepository.getQuestGroups',
       errorResult: QuestGroupList.empty(),
     );
+  }
+
+  Future<Result<QuestGroupList>> getQuestGroupsCached({
+    required QuestScope scope,
+    String? timezone,
+    String? userJobId,
+  }) async {
+    if (scope == QuestScope.userJob && (userJobId == null || userJobId.isEmpty)) {
+      return Result.failure('userJobId is required for USER_JOB scope');
+    }
+    try {
+      final cachedData = await cacheService.get(_questCacheKey('groups', scope, timezone, userJobId));
+      if (cachedData != null) {
+        return Result.success(QuestGroupList.fromJson(Map<String, dynamic>.from(cachedData)), null);
+      }
+    } catch (e) {
+      // ignore cache errors
+    }
+    return Result.success(QuestGroupList.empty(), null);
   }
 
   Future<Result<QuestLineage>> getQuestLineage({
@@ -133,11 +185,34 @@ class ProfileRepository extends BaseRepository {
         };
         final Response response = await api.dio.get('/quests/lineage', queryParameters: queryParameters);
         final data = response.data['data'] as Map<String, dynamic>? ?? const {};
+        await cacheService.save(
+          _questCacheKey('lineage', scope, timezone, userJobId),
+          Map<String, dynamic>.from(data),
+        );
         return QuestLineage.fromJson(Map<String, dynamic>.from(data));
       },
       parentFunctionName: 'ProfileRepository.getQuestLineage',
       errorResult: QuestLineage.empty(),
     );
+  }
+
+  Future<Result<QuestLineage>> getQuestLineageCached({
+    required QuestScope scope,
+    String? timezone,
+    String? userJobId,
+  }) async {
+    if (scope == QuestScope.userJob && (userJobId == null || userJobId.isEmpty)) {
+      return Result.failure('userJobId is required for USER_JOB scope');
+    }
+    try {
+      final cachedData = await cacheService.get(_questCacheKey('lineage', scope, timezone, userJobId));
+      if (cachedData != null) {
+        return Result.success(QuestLineage.fromJson(Map<String, dynamic>.from(cachedData)), null);
+      }
+    } catch (e) {
+      // ignore cache errors
+    }
+    return Result.success(QuestLineage.empty(), null);
   }
 
   Future<Result<QuestInstance>> claimUserJobQuest(String questId) async {

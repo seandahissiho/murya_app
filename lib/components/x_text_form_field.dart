@@ -153,7 +153,9 @@ class _AppXTextFormFieldState extends State<AppXTextFormField> {
                 keyboardType: widget.keyboardType,
                 inputFormatters: widget.inputFormatters,
                 readOnly: widget.readOnly,
-                style: theme.textTheme.bodyLarge,
+                style: theme.textTheme.bodyLarge!.copyWith(
+                  color: widget.disabled ? AppButtonColors.primaryTextDisabled : AppColors.textPrimary,
+                ),
                 focusNode: widget.focusNode,
                 controller: widget.controller,
                 enabled: !widget.disabled,

@@ -49,11 +49,22 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   Future<void> _onSearchJobs(SearchJobs event, Emitter<JobState> emit) async {
     final local = AppLocalizations.of(event.context);
     final query = event.query.toLowerCase();
+    final cachedResult = await jobRepository.searchJobsCached(query: query);
+    final cachedJobs = cachedResult.data ?? [];
+    final hasCached = cachedJobs.isNotEmpty;
+    if (hasCached) {
+      jobs.clear();
+      jobs.addAll(cachedJobs);
+      emit(JobsSearchResults(searchResults: cachedJobs, userCurrentJob: state.userCurrentJob));
+    }
+
     final result = await jobRepository.searchJobs(query: query);
 
     if (result.isError) {
       notificationBloc.add(ErrorNotificationEvent(message: result.error ?? local.searchNoResults(query)));
-      emit(JobsSearchResults(searchResults: [], userCurrentJob: state.userCurrentJob));
+      if (!hasCached) {
+        emit(JobsSearchResults(searchResults: [], userCurrentJob: state.userCurrentJob));
+      }
       return;
     }
 
