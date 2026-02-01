@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/helpers.dart';
+import 'package:murya/screens/authentication/authentication.dart';
 import 'package:murya/screens/competencies_family_details/competencies_family_details.dart';
+import 'package:murya/screens/dashboard/dashboard.dart';
 import 'package:murya/screens/job_details/job_details.dart';
 import 'package:murya/screens/job_evaluation/job_evaluation.dart';
 import 'package:murya/screens/landing/landing.dart';
-import 'package:murya/screens/dashboard/dashboard.dart';
+import 'package:murya/screens/profile/profile.dart';
 import 'package:murya/screens/ressources/resources.dart';
 import 'package:murya/screens/ressources/viewers/viewer_handler.dart';
 import 'package:murya/screens/search/search.dart';
-import 'package:murya/screens/authentication/authentication.dart';
-import 'package:murya/screens/profile/profile.dart';
 
 class AppRoutes {
   static const String landing = '/landing';
@@ -27,15 +27,14 @@ class AppRoutes {
   // allModules
   static const String allModules = '/all-modules';
   static const String accountModule = '/account';
-  static const String jobModule = '/job';
+  static const String searchModule = '/search';
   static const String userRessourcesModule = '/user-ressources';
   static const String userResourceViewerModule = '/user-ressources/viewer/:id';
 
   // Jobs
   static const String jobDetails = '/job/:id/details';
   // competencyFamilyDetails
-  static const String competencyFamilyDetails =
-      '/job/:jobId/competency-family/:cfId/details';
+  static const String competencyFamilyDetails = '/job/:jobId/competency-family/:cfId/details';
   // jobEvaluation
   static const String jobEvaluation = '/job/:id/evaluation';
 
@@ -85,14 +84,12 @@ List<BeamLocation<RouteInformationSerializable<dynamic>>> beamLocations = [
   OtherLocation(), // Add other locations as needed
 ];
 
-class OtherLocation
-    extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class OtherLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => ['*'];
 
   @override
-  List<BeamPage> buildPages(
-      BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(
@@ -103,8 +100,7 @@ class OtherLocation
             navigateToPath(context, to: AppRoutes.landing);
           },
           child: const Center(
-            child:
-                Text('Page not found', style: TextStyle(color: Colors.black)),
+            child: Text('Page not found', style: TextStyle(color: Colors.black)),
           ),
         ),
       ),
