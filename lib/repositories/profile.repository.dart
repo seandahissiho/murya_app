@@ -54,10 +54,10 @@ class ProfileRepository extends BaseRepository {
   }
 
   // update Me
-  Future<Result<User>> updateMe(User updatedUser) async {
+  Future<Result<User>> updateMe(User updatedUser, {User? baseline}) async {
     return AppResponse.execute(
       action: () async {
-        final Response response = await api.dio.put('/auth/me', data: updatedUser.toJson());
+        final Response response = await api.dio.put('/auth/me', data: updatedUser.toJson(baseline: baseline));
         if (response.data["data"] != null) {
           await cacheService.save('user_profile_me', response.data["data"]);
         }

@@ -224,7 +224,7 @@ class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStat
             Row(
               children: [
                 scoreText,
-                AppSpacing.spacing12_Box,
+                widget.isLandingPage ? AppSpacing.spacing4_Box : AppSpacing.spacing8_Box,
                 diamondIcon,
               ],
             ),

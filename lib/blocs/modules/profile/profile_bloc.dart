@@ -494,6 +494,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   FutureOr<void> _onProfileUpdateEvent(ProfileUpdateEvent event, Emitter<ProfileState> emit) async {
+    final User previousUser = state.user;
     _userProfile = event.user;
     emit(ProfileLoaded(
       user: _userProfile,
@@ -515,7 +516,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       leaderboardTo: state.leaderboardTo,
     ));
 
-    final result = await profileRepository.updateMe(event.user);
+    final result = await profileRepository.updateMe(event.user, baseline: previousUser);
     if (result.isError) {
       notificationBloc.add(ErrorNotificationEvent(message: result.error));
       return;
