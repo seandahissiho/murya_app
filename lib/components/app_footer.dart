@@ -26,7 +26,7 @@ class AppFooter extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(AppSpacing.spacing12),
+          padding: const EdgeInsets.all(AppSpacing.spacing24),
           decoration: const BoxDecoration(
             color: AppColors.backgroundHover,
             borderRadius: BorderRadius.all(Radius.circular(AppRadius.largeRadius)),
@@ -36,6 +36,7 @@ class AppFooter extends StatelessWidget {
             tabletScreen: TabletAppFooter(),
             desktopScreen: TabletAppFooter(),
             useBackgroundColor: false,
+            noPadding: true,
           ),
         ),
         AppSpacing.pageMarginBox,

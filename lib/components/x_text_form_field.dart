@@ -120,7 +120,7 @@ class _AppXTextFormFieldState extends State<AppXTextFormField> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.labelInside == false) ...[
+        if (widget.labelInside == false && widget.labelText != null && widget.labelText!.isNotEmpty) ...[
           Text(
             widget.labelText ?? '',
             style: theme.textTheme.labelMedium!.copyWith(
@@ -183,7 +183,9 @@ class _AppXTextFormFieldState extends State<AppXTextFormField> {
                                     height: widget.iconSize,
                                     width: widget.iconSize,
                                     colorFilter: ColorFilter.mode(
-                                      theme.inputDecorationTheme.prefixIconColor ?? AppColors.secondary.shade900,
+                                      widget.disabled
+                                          ? AppButtonColors.primaryTextDisabled
+                                          : theme.inputDecorationTheme.prefixIconColor ?? AppColors.secondary.shade900,
                                       BlendMode.srcATop,
                                     ),
                                   ),
@@ -204,7 +206,9 @@ class _AppXTextFormFieldState extends State<AppXTextFormField> {
                                     height: widget.iconSize,
                                     width: widget.iconSize,
                                     colorFilter: ColorFilter.mode(
-                                      theme.inputDecorationTheme.suffixIconColor ?? AppColors.secondary.shade900,
+                                      widget.disabled
+                                          ? AppButtonColors.primaryTextDisabled
+                                          : theme.inputDecorationTheme.suffixIconColor ?? AppColors.secondary.shade900,
                                       BlendMode.srcATop,
                                     ),
                                   ),
@@ -214,7 +218,7 @@ class _AppXTextFormFieldState extends State<AppXTextFormField> {
                           : widget.suffixIcon,
                       errorMaxLines: widget.errorMaxLines ?? 5,
                       hintText: widget.hintText ?? 'Placeholder',
-                      hintStyle: theme.textTheme.bodyLarge?.copyWith(
+                      hintStyle: theme.textTheme.bodyMedium?.copyWith(
                         color: AppButtonColors.primaryTextDisabled,
                         fontWeight: FontWeight.w300,
                       ),

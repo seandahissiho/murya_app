@@ -60,6 +60,7 @@ class BaseScreen extends StatefulWidget {
   final Widget? tabletScreen;
   final Widget? desktopScreen;
   final bool useBackgroundColor;
+  final bool noPadding;
 
   const BaseScreen({
     super.key,
@@ -67,6 +68,7 @@ class BaseScreen extends StatefulWidget {
     required this.tabletScreen,
     required this.desktopScreen,
     this.useBackgroundColor = true,
+    this.noPadding = false,
   });
 
   @override
@@ -85,12 +87,14 @@ class _BaseScreenState extends State<BaseScreen> {
           top: true,
           bottom: false,
           child: Padding(
-            padding: const EdgeInsets.only(
-              top: AppSpacing.pageMargin,
-              left: AppSpacing.pageMargin,
-              right: AppSpacing.pageMargin,
-              bottom: AppSpacing.spacing8,
-            ),
+            padding: widget.noPadding
+                ? EdgeInsetsGeometry.zero
+                : const EdgeInsets.only(
+                    top: AppSpacing.pageMargin,
+                    left: AppSpacing.pageMargin,
+                    right: AppSpacing.pageMargin,
+                    bottom: AppSpacing.spacing8,
+                  ),
             child: widget.mobileScreen ?? Container(),
           ),
         );
@@ -99,12 +103,14 @@ class _BaseScreenState extends State<BaseScreen> {
             top: true,
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.only(
-                top: AppSpacing.pageMargin,
-                left: AppSpacing.pageMargin * 2,
-                right: AppSpacing.pageMargin * 2,
-                bottom: AppSpacing.pageMargin,
-              ),
+              padding: widget.noPadding
+                  ? EdgeInsetsGeometry.zero
+                  : const EdgeInsets.only(
+                      top: AppSpacing.pageMargin,
+                      left: AppSpacing.pageMargin * 2,
+                      right: AppSpacing.pageMargin * 2,
+                      bottom: AppSpacing.pageMargin,
+                    ),
               child: widget.tabletScreen ?? widget.desktopScreen ?? Container(),
             ));
       case DeviceType.desktop:
@@ -112,12 +118,14 @@ class _BaseScreenState extends State<BaseScreen> {
             top: true,
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.only(
-                top: AppSpacing.pageMargin,
-                left: AppSpacing.pageMargin * 2,
-                right: AppSpacing.pageMargin * 2,
-                bottom: AppSpacing.pageMargin,
-              ),
+              padding: widget.noPadding
+                  ? EdgeInsetsGeometry.zero
+                  : const EdgeInsets.only(
+                      top: AppSpacing.pageMargin,
+                      left: AppSpacing.pageMargin * 2,
+                      right: AppSpacing.pageMargin * 2,
+                      bottom: AppSpacing.pageMargin,
+                    ),
               child: widget.desktopScreen ?? widget.tabletScreen ?? Container(),
             ));
       default:
@@ -125,12 +133,14 @@ class _BaseScreenState extends State<BaseScreen> {
             top: true,
             bottom: false,
             child: Padding(
-              padding: const EdgeInsets.only(
-                top: AppSpacing.pageMargin,
-                left: AppSpacing.pageMargin * 3,
-                right: AppSpacing.pageMargin * 3,
-                bottom: AppSpacing.pageMargin,
-              ),
+              padding: widget.noPadding
+                  ? EdgeInsetsGeometry.zero
+                  : const EdgeInsets.only(
+                      top: AppSpacing.pageMargin,
+                      left: AppSpacing.pageMargin * 3,
+                      right: AppSpacing.pageMargin * 3,
+                      bottom: AppSpacing.pageMargin,
+                    ),
               child: widget.desktopScreen ?? widget.tabletScreen ?? Container(),
             ));
     }

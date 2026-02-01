@@ -64,7 +64,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get footer_copyright => '2025 Murya SAS';
 
   @override
-  String get search_placeholder => 'Rechercher des compétences et des métiers';
+  String get search_placeholder => 'Rechercher';
 
   @override
   String get user_ressources_module_title => 'Ressources';

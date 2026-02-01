@@ -8,44 +8,81 @@ class DesktopCustomAppBar extends StatefulWidget {
 }
 
 class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
+  bool isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+
+  static const Duration _animationDuration = Duration(milliseconds: 1600);
+  static const Curve _animationCurve = Curves.easeInOutBack;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
     return Column(
       children: [
-        SizedBox(
-          height: tabletAndAboveCTAHeight,
-          width: 100.w,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                height: tabletAndAboveCTAHeight - 10,
-                child: SvgPicture.asset(
-                  AppIcons.appIcon1Path,
-                  width: 161,
-                  height: tabletAndAboveCTAHeight,
-                ),
-              ),
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () async {
-                    return await contentNotAvailablePopup(context);
-                    // rightModalOpen(context, screen: const MainSearchScreen());
-                    // navigateToPath(context, to: AppRoutes.jobModule);
-                  },
-                  child: SvgPicture.asset(
-                    AppIcons.homeSearchIconPath,
-                    width: tabletAndAboveCTAHeight,
-                    height: tabletAndAboveCTAHeight,
+        LayoutBuilder(builder: (context, constraints) {
+          final double maxWidth = constraints.maxWidth;
+          return SizedBox(
+            height: tabletAndAboveCTAHeight,
+            width: maxWidth,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                AnimatedPositioned(
+                  duration: _animationDuration,
+                  curve: _animationCurve,
+                  left: 0,
+                  child: AnimatedOpacity(
+                    duration: _animationDuration,
+                    opacity: isSearching ? 0 : 1,
+                    child: SizedBox(
+                      height: tabletAndAboveCTAHeight - 10,
+                      child: SvgPicture.asset(
+                        AppIcons.appIcon1Path,
+                        width: 161,
+                        height: tabletAndAboveCTAHeight,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
+                AnimatedPositioned(
+                  duration: _animationDuration,
+                  right: isSearching ? maxWidth - 320 : 0,
+                  curve: _animationCurve,
+                  child: SizedBox(
+                    width: 320,
+                    child: AppXTextFormField(
+                      focusNode: _searchFocusNode,
+                      readOnly: !isSearching,
+                      disabled: false,
+                      onTap: isSearching
+                          ? null
+                          : () {
+                              setState(() {
+                                isSearching = true;
+                              });
+                              Future.delayed(_animationDuration, () {
+                                _searchFocusNode.requestFocus();
+                              });
+                            },
+                      controller: _searchController,
+                      labelText: null,
+                      hintText: locale.search_placeholder,
+                      prefixIconPath: AppIcons.homeSearchIcon2Path,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
         AppSpacing.spacing40_Box,
       ],
     );

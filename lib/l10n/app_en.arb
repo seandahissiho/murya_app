@@ -70,7 +70,7 @@
   "@footer_copyright": {
     "description": "Copyright text shown in the footer"
   },
-  "search_placeholder": "Search for skills and jobs",
+  "search_placeholder": "Search",
   "@search_placeholder": {
     "description": "Placeholder text for the search bar"
   },
