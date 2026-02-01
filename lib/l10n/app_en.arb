@@ -114,6 +114,10 @@
   "@skillsDiagramTitle": {
     "description": "Title of the skills chart"
   },
+  "profile_account_title": "Account",
+  "@profile_account_title": {
+    "description": "Title of the account section in profile"
+  },
   "skillLevel_easy": "Junior",
   "@skillLevel_easy": {
     "description": "Easy skill level"

@@ -104,7 +104,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
           Row(
             children: [
               const AppXReturnButton(destination: AppRoutes.userRessourcesModule),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               Expanded(
                 child: AppBreadcrumb(
                   items: [
@@ -130,11 +130,11 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
               const AppXCloseButton(),
             ],
           ),
-          AppSpacing.groupMarginBox,
+          AppSpacing.spacing16_Box,
           Expanded(
             child: _body(),
           ),
-          AppSpacing.sectionMarginBox,
+          AppSpacing.spacing40_Box,
         ],
       ),
     );

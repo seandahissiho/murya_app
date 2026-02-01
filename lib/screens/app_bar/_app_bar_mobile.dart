@@ -42,7 +42,7 @@ class _MobileCustomAppBarState extends State<MobileCustomAppBar> {
             ],
           ),
         ),
-        AppSpacing.groupMarginBox,
+        AppSpacing.spacing16_Box,
       ],
     );
   }

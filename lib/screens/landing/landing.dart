@@ -106,7 +106,7 @@ class AddModuleButton extends StatelessWidget {
       padding: EdgeInsets.only(
         bottom: isMobile
             ? AppSpacing.pageMargin + MediaQuery.of(context).padding.bottom
-            : AppSpacing.pageMargin + AppSpacing.sectionMargin,
+            : AppSpacing.pageMargin + AppSpacing.spacing40,
       ),
       child: SizedBox(
         width: ctaHeight,
@@ -195,7 +195,7 @@ class LandingCustomizationDialog extends StatelessWidget {
       insetPadding: const EdgeInsets.all(AppSpacing.pageMargin),
       child: Container(
         width: isMobile ? double.infinity : 560,
-        padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+        padding: const EdgeInsets.all(AppSpacing.spacing24),
         decoration: BoxDecoration(
           color: AppColors.whiteSwatch,
           borderRadius: AppRadius.medium,
@@ -219,14 +219,14 @@ class LandingCustomizationDialog extends StatelessWidget {
                     const AppXCloseButton(),
                   ],
                 ),
-                AppSpacing.groupMarginBox,
+                AppSpacing.spacing16_Box,
                 Text(
                   'Organisez vos modules, ajoutez-en de nouveaux, ou retirez ceux qui ne sont pas obligatoires.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.textSecondary,
                       ),
                 ),
-                AppSpacing.groupMarginBox,
+                AppSpacing.spacing16_Box,
                 Container(
                   constraints: const BoxConstraints(maxHeight: 320),
                   decoration: BoxDecoration(
@@ -235,7 +235,7 @@ class LandingCustomizationDialog extends StatelessWidget {
                   ),
                   child: modules.isEmpty
                       ? Padding(
-                          padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+                          padding: const EdgeInsets.all(AppSpacing.spacing24),
                           child: Text(
                             'Aucun module disponible.',
                             style: Theme.of(context).textTheme.bodyMedium,
@@ -257,7 +257,7 @@ class LandingCustomizationDialog extends StatelessWidget {
                           },
                         ),
                 ),
-                AppSpacing.groupMarginBox,
+                AppSpacing.spacing16_Box,
                 Row(
                   children: [
                     Expanded(
@@ -275,7 +275,7 @@ class LandingCustomizationDialog extends StatelessWidget {
                         shrinkWrap: false,
                       ),
                     ),
-                    AppSpacing.elementMarginBox,
+                    AppSpacing.spacing8_Box,
                     Expanded(
                       child: AppXButton(
                         onPressed: () {
@@ -315,10 +315,10 @@ class _LandingModuleRow extends StatelessWidget {
     final bool isDefault = module.defaultOnLanding == true;
     return Container(
       key: key,
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.elementMargin, vertical: AppSpacing.tinyMargin),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing8, vertical: AppSpacing.spacing4),
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.containerInsideMarginSmall,
-        vertical: AppSpacing.containerInsideMarginSmall,
+        horizontal: AppSpacing.spacing12,
+        vertical: AppSpacing.spacing12,
       ),
       decoration: BoxDecoration(
         color: AppColors.whiteSwatch,
@@ -328,7 +328,7 @@ class _LandingModuleRow extends StatelessWidget {
       child: Row(
         children: [
           const Icon(Icons.drag_indicator, color: AppColors.textTertiary),
-          AppSpacing.elementMarginBox,
+          AppSpacing.spacing8_Box,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,7 +340,7 @@ class _LandingModuleRow extends StatelessWidget {
                       ),
                 ),
                 if (module.subtitle(context).isNotEmpty) ...[
-                  AppSpacing.tinyTinyMarginBox,
+                  AppSpacing.spacing2_Box,
                   Text(
                     module.subtitle(context),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -395,7 +395,7 @@ class ModuleCatalogDialog extends StatelessWidget {
       insetPadding: const EdgeInsets.all(AppSpacing.pageMargin),
       child: Container(
         width: isMobile ? double.infinity : 640,
-        padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+        padding: const EdgeInsets.all(AppSpacing.spacing24),
         decoration: BoxDecoration(
           color: AppColors.whiteSwatch,
           borderRadius: AppRadius.medium,
@@ -420,7 +420,7 @@ class ModuleCatalogDialog extends StatelessWidget {
                     const AppXCloseButton(),
                   ],
                 ),
-                AppSpacing.groupMarginBox,
+                AppSpacing.spacing16_Box,
                 if (state.isCatalogLoading)
                   const Center(child: CircularProgressIndicator())
                 else if (modules.isEmpty)
@@ -434,12 +434,12 @@ class ModuleCatalogDialog extends StatelessWidget {
                     child: ListView.separated(
                       shrinkWrap: true,
                       itemCount: modules.length,
-                      separatorBuilder: (_, __) => AppSpacing.tinyMarginBox,
+                      separatorBuilder: (_, __) => AppSpacing.spacing4_Box,
                       itemBuilder: (context, index) {
                         final module = modules[index];
                         final bool alreadyAdded = landingIds.contains(module.id);
                         return Container(
-                          padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
+                          padding: const EdgeInsets.all(AppSpacing.spacing12),
                           decoration: BoxDecoration(
                             borderRadius: AppRadius.borderRadius20,
                             border: Border.all(color: AppColors.borderLight),
@@ -457,7 +457,7 @@ class ModuleCatalogDialog extends StatelessWidget {
                                           ),
                                     ),
                                     if (module.description != null && module.description!.isNotEmpty) ...[
-                                      AppSpacing.tinyTinyMarginBox,
+                                      AppSpacing.spacing2_Box,
                                       Text(
                                         module.description!,
                                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -465,7 +465,7 @@ class ModuleCatalogDialog extends StatelessWidget {
                                             ),
                                       ),
                                     ] else if (module.slug != null && module.slug!.isNotEmpty) ...[
-                                      AppSpacing.tinyTinyMarginBox,
+                                      AppSpacing.spacing2_Box,
                                       Text(
                                         module.slug!,
                                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -478,7 +478,7 @@ class ModuleCatalogDialog extends StatelessWidget {
                               ),
                               if (module.defaultOnLanding == true)
                                 Container(
-                                  margin: const EdgeInsets.only(right: AppSpacing.elementMargin),
+                                  margin: const EdgeInsets.only(right: AppSpacing.spacing8),
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                   decoration: BoxDecoration(
                                     color: AppColors.backgroundColor,
@@ -529,7 +529,7 @@ class LandingAuditDialog extends StatelessWidget {
       insetPadding: const EdgeInsets.all(AppSpacing.pageMargin),
       child: Container(
         width: isMobile ? double.infinity : 560,
-        padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+        padding: const EdgeInsets.all(AppSpacing.spacing24),
         decoration: BoxDecoration(
           color: AppColors.whiteSwatch,
           borderRadius: AppRadius.medium,
@@ -553,7 +553,7 @@ class LandingAuditDialog extends StatelessWidget {
                     const AppXCloseButton(),
                   ],
                 ),
-                AppSpacing.groupMarginBox,
+                AppSpacing.spacing16_Box,
                 if (state.isAuditLoading)
                   const Center(child: CircularProgressIndicator())
                 else if (events.isEmpty)
@@ -567,7 +567,7 @@ class LandingAuditDialog extends StatelessWidget {
                     child: ListView.separated(
                       shrinkWrap: true,
                       itemCount: events.length,
-                      separatorBuilder: (_, __) => AppSpacing.tinyMarginBox,
+                      separatorBuilder: (_, __) => AppSpacing.spacing4_Box,
                       itemBuilder: (context, index) {
                         final event = events[index];
                         final moduleName = _moduleNameForEvent(context, event, state.modules, state.catalogModules);
@@ -575,7 +575,7 @@ class LandingAuditDialog extends StatelessWidget {
                         final actionLabel = event.action == LandingAction.remove ? 'a retire' : 'a ajoute';
                         final dateLabel = event.createdAt != null ? event.createdAt!.ddMMMyyyy() : '';
                         return Container(
-                          padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
+                          padding: const EdgeInsets.all(AppSpacing.spacing12),
                           decoration: BoxDecoration(
                             borderRadius: AppRadius.borderRadius20,
                             border: Border.all(color: AppColors.borderLight),
@@ -590,7 +590,7 @@ class LandingAuditDialog extends StatelessWidget {
                                     ? AppColors.errorDefault
                                     : AppStatusColors.normal,
                               ),
-                              AppSpacing.elementMarginBox,
+                              AppSpacing.spacing8_Box,
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -602,7 +602,7 @@ class LandingAuditDialog extends StatelessWidget {
                                           ),
                                     ),
                                     if (dateLabel.isNotEmpty) ...[
-                                      AppSpacing.tinyTinyMarginBox,
+                                      AppSpacing.spacing2_Box,
                                       Text(
                                         dateLabel,
                                         style: Theme.of(context).textTheme.bodySmall?.copyWith(

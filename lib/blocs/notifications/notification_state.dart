@@ -85,14 +85,14 @@ class NewNotificationState extends NotificationState {
                 ),
               ),
               padding: const EdgeInsets.symmetric(
-                vertical: AppSpacing.containerInsideMargin / 2,
-                horizontal: AppSpacing.containerInsideMargin,
+                vertical: AppSpacing.spacing24 / 2,
+                horizontal: AppSpacing.spacing24,
               ),
               margin: EdgeInsets.only(
                 top: isMobile ? 0 : AppSpacing.pageMargin,
                 bottom: AppSpacing.pageMargin,
-                left: AppSpacing.containerInsideMargin,
-                right: AppSpacing.containerInsideMargin,
+                left: AppSpacing.spacing24,
+                right: AppSpacing.spacing24,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -108,7 +108,7 @@ class NewNotificationState extends NotificationState {
                           style: theme.textTheme.labelLarge,
                         ),
                       ),
-                      AppSpacing.elementMarginBox,
+                      AppSpacing.spacing8_Box,
                       InkWell(
                         onTap: () {
                           if (entry.mounted) entry.remove();
@@ -123,7 +123,7 @@ class NewNotificationState extends NotificationState {
                       ),
                     ],
                   ),
-                  AppSpacing.elementMarginBox,
+                  AppSpacing.spacing8_Box,
                   Text(
                     notification.body,
                     maxLines: 3,

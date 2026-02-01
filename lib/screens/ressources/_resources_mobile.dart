@@ -32,7 +32,7 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                 AppXCloseButton(),
               ],
             ),
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             Row(
               children: [
                 RichText(
@@ -47,7 +47,7 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                 ),
               ],
             ),
-            AppSpacing.sectionMarginBox,
+            AppSpacing.spacing40_Box,
             Expanded(
               child: SingleChildScrollView(
                 child: AppSkeletonizer(
@@ -71,12 +71,12 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                           ),
                         ],
                       ),
-                      AppSpacing.groupMarginBox,
+                      AppSpacing.spacing16_Box,
                       ResourcesCarousel(
                         resources: context.read<ResourcesBloc>().articles,
                         type: ResourceType.article,
                       ),
-                      AppSpacing.containerInsideMarginBox,
+                      AppSpacing.spacing24_Box,
                       Row(
                         children: [
                           RichText(
@@ -91,12 +91,12 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                           ),
                         ],
                       ),
-                      AppSpacing.groupMarginBox,
+                      AppSpacing.spacing16_Box,
                       ResourcesCarousel(
                         resources: context.read<ResourcesBloc>().podcasts,
                         type: ResourceType.podcast,
                       ),
-                      AppSpacing.containerInsideMarginBox,
+                      AppSpacing.spacing24_Box,
                       // Videos Section
                       Row(
                         children: [
@@ -112,7 +112,7 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
                           ),
                         ],
                       ),
-                      AppSpacing.groupMarginBox,
+                      AppSpacing.spacing16_Box,
                       ResourcesCarousel(
                         resources: context.read<ResourcesBloc>().videos,
                         type: ResourceType.video,

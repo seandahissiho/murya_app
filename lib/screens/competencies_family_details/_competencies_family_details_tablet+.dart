@@ -57,7 +57,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                         destination: AppRoutes.jobDetails.replaceFirst(':id', jobId),
                         data: {'jobTitle': _job.title},
                       ),
-                      AppSpacing.groupMarginBox,
+                      AppSpacing.spacing16_Box,
                       AppBreadcrumb(
                         items: [
                           BreadcrumbItem(
@@ -88,7 +88,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                 const AppXCloseButton(),
               ],
             ),
-            AppSpacing.sectionMarginBox,
+            AppSpacing.spacing40_Box,
             Expanded(
               child: Row(
                 children: [
@@ -112,7 +112,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                                 colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
                               ),
                             ),
-                            AppSpacing.elementMarginBox,
+                            AppSpacing.spacing8_Box,
                             RichText(
                               text: TextSpan(
                                 text: _cf.name,
@@ -154,7 +154,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                             ),
                           ],
                         ),
-                        AppSpacing.containerInsideMarginBox,
+                        AppSpacing.spacing24_Box,
                         Expanded(
                           child: MarkdownWidget(
                             data: _cf.description ?? '',
@@ -163,7 +163,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                       ],
                     ),
                   ),
-                  AppSpacing.groupMarginBox,
+                  AppSpacing.spacing16_Box,
                   Expanded(
                     flex: 2,
                     child: Container(
@@ -172,9 +172,9 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                         borderRadius: AppRadius.borderRadius20,
                       ),
                       padding: const EdgeInsets.only(
-                        top: AppSpacing.groupMargin,
-                        left: AppSpacing.groupMargin,
-                        bottom: AppSpacing.groupMargin,
+                        top: AppSpacing.spacing16,
+                        left: AppSpacing.spacing16,
+                        bottom: AppSpacing.spacing16,
                       ),
                       child: ScrollConfiguration(
                         behavior: ScrollConfiguration.of(context).copyWith(
@@ -189,7 +189,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                               children: _cf.competencies.map((competency) {
                                 bool isLast = _cf.competencies.indexOf(competency) == _cf.competencies.length - 1;
                                 return Padding(
-                                  padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.groupMargin),
+                                  padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.spacing16),
                                   child: CompetencyCard(competency: competency),
                                 );
                               }).toList(),

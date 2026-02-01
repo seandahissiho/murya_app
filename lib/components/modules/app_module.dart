@@ -100,7 +100,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       }
       // log("AppSizeWidthTabletAndAbove: ${appSize.screenWidth}");
       final double calculatedSize =
-          (appSize.screenWidth - sideMargins * AppSpacing.pageMargin) / 3 - AppSpacing.elementMargin / 1.5;
+          (appSize.screenWidth - sideMargins * AppSpacing.pageMargin) / 3 - AppSpacing.spacing8 / 1.5;
       return calculatedSize;
     }
   }
@@ -114,9 +114,9 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         safeAreaPadding.bottom -
         (AppSpacing.pageMargin * 2) -
         27 -
-        AppSpacing.sectionMargin;
+        AppSpacing.spacing40;
     if (DeviceHelper.isMobile(context)) {
-      return math.max((availableHeight + AppSpacing.sectionMargin) / 4, size_1W);
+      return math.max((availableHeight + AppSpacing.spacing40) / 4, size_1W);
     } else {
       // return ((availableHeight - AppSpacing.groupMargin) / 2) / 1.618;
       return math.max((availableHeight) / 2 - 100, 225);
@@ -129,13 +129,13 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       case AppModuleType.type1:
       // Two rows, One Col
       case AppModuleType.type2_1:
-        return size_1W - AppSpacing.elementMargin;
+        return size_1W - AppSpacing.spacing8;
 
       // One row, Two Cols
       case AppModuleType.type1_2:
       // Two rows, Two Cols
       case AppModuleType.type2_2:
-        return size_1W * 2 - AppSpacing.elementMargin;
+        return size_1W * 2 - AppSpacing.spacing8;
     }
   }
 
@@ -145,13 +145,13 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
       case AppModuleType.type1:
       // One row, Two Cols
       case AppModuleType.type1_2:
-        return size_1H - AppSpacing.groupMargin;
+        return size_1H - AppSpacing.spacing16;
 
       // Two rows, One Col
       case AppModuleType.type2_1:
       // Two rows, Two Cols
       case AppModuleType.type2_2:
-        return size_1H * 2 - AppSpacing.groupMargin;
+        return size_1H * 2 - AppSpacing.spacing16;
     }
   }
 
@@ -227,10 +227,10 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                       ),
                     ),
                     padding: EdgeInsets.only(
-                      right: AppSpacing.groupMargin,
-                      left: AppSpacing.groupMargin,
-                      top: isMobile ? AppSpacing.tinyMargin : AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
-                      bottom: isMobile ? AppSpacing.tinyMargin : AppSpacing.tinyMargin + AppSpacing.tinyTinyMargin,
+                      right: AppSpacing.spacing16,
+                      left: AppSpacing.spacing16,
+                      top: isMobile ? AppSpacing.spacing4 : AppSpacing.spacing4 + AppSpacing.spacing2,
+                      bottom: isMobile ? AppSpacing.spacing4 : AppSpacing.spacing4 + AppSpacing.spacing2,
                     ),
                     child: _customisationRow(isMobile),
                   ),
@@ -275,7 +275,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                         ));
                   },
                 ),
-                AppSpacing.tinyTinyMarginBox,
+                AppSpacing.spacing2_Box,
                 _BentoOption(
                   iconPath: AppIcons.bento2_1Path,
                   isSelected: widget.module.boxType == AppModuleType.type2_1,
@@ -294,7 +294,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                         ));
                   },
                 ),
-                AppSpacing.tinyTinyMarginBox,
+                AppSpacing.spacing2_Box,
                 _BentoOption(
                   iconPath: AppIcons.bento1_2Path,
                   isSelected: widget.module.boxType == AppModuleType.type1_2,
@@ -313,7 +313,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                         ));
                   },
                 ),
-                AppSpacing.tinyTinyMarginBox,
+                AppSpacing.spacing2_Box,
                 _BentoOption(
                   iconPath: AppIcons.bento2_2Path,
                   isSelected: widget.module.boxType == AppModuleType.type2_2,
@@ -336,13 +336,13 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
             ),
           ),
         ),
-        AppSpacing.containerInsideMarginSmallBox,
+        AppSpacing.spacing12_Box,
         Container(
           height: 24,
           width: 1,
           color: AppColors.borderMedium,
         ),
-        AppSpacing.containerInsideMarginSmallBox,
+        AppSpacing.spacing12_Box,
         widget.dragHandle ?? const AppModuleDragHandle(),
       ],
     );
@@ -352,65 +352,65 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
     if (isMobile) {
       if (boxType == AppModuleType.type1) {
         return const EdgeInsets.only(
-          top: mobileCTAHeight + AppSpacing.elementMargin,
-          left: AppSpacing.containerInsideMarginSmall,
-          right: AppSpacing.containerInsideMarginSmall,
-          bottom: AppSpacing.containerInsideMargin * 2 / 3,
+          top: mobileCTAHeight + AppSpacing.spacing8,
+          left: AppSpacing.spacing12,
+          right: AppSpacing.spacing12,
+          bottom: AppSpacing.spacing24 * 2 / 3,
         );
       }
       if (boxType == AppModuleType.type1_2) {
         return const EdgeInsets.only(
-          top: mobileCTAHeight + AppSpacing.elementMargin,
-          left: AppSpacing.containerInsideMarginSmall,
-          right: AppSpacing.containerInsideMarginSmall,
-          bottom: AppSpacing.containerInsideMargin * 2 / 3,
+          top: mobileCTAHeight + AppSpacing.spacing8,
+          left: AppSpacing.spacing12,
+          right: AppSpacing.spacing12,
+          bottom: AppSpacing.spacing24 * 2 / 3,
         );
       }
       if (boxType == AppModuleType.type2_1) {
         return const EdgeInsets.only(
-          top: mobileCTAHeight + AppSpacing.elementMargin,
-          left: AppSpacing.containerInsideMarginSmall,
-          right: AppSpacing.containerInsideMarginSmall,
-          bottom: AppSpacing.containerInsideMargin * 2 / 3,
+          top: mobileCTAHeight + AppSpacing.spacing8,
+          left: AppSpacing.spacing12,
+          right: AppSpacing.spacing12,
+          bottom: AppSpacing.spacing24 * 2 / 3,
         );
       }
       return const EdgeInsets.only(
         // top: mobileCTAHeight + AppSpacing.elementMargin,
-        left: AppSpacing.containerInsideMarginSmall,
-        right: AppSpacing.containerInsideMarginSmall,
-        bottom: AppSpacing.containerInsideMargin * 2 / 3,
-        top: AppSpacing.containerInsideMarginSmall,
+        left: AppSpacing.spacing12,
+        right: AppSpacing.spacing12,
+        bottom: AppSpacing.spacing24 * 2 / 3,
+        top: AppSpacing.spacing12,
       );
     }
     if (boxType == AppModuleType.type1) {
       return const EdgeInsets.only(
-        top: AppSpacing.groupMargin + tabletAndAboveCTAHeight,
-        left: AppSpacing.containerInsideMargin,
-        right: AppSpacing.containerInsideMargin,
-        bottom: AppSpacing.containerInsideMargin,
+        top: AppSpacing.spacing16 + tabletAndAboveCTAHeight,
+        left: AppSpacing.spacing24,
+        right: AppSpacing.spacing24,
+        bottom: AppSpacing.spacing24,
       );
     }
     if (boxType == AppModuleType.type1_2) {
       return const EdgeInsets.only(
-        top: AppSpacing.groupMargin + tabletAndAboveCTAHeight,
-        left: AppSpacing.containerInsideMargin,
-        right: AppSpacing.containerInsideMargin,
-        bottom: AppSpacing.containerInsideMargin,
+        top: AppSpacing.spacing16 + tabletAndAboveCTAHeight,
+        left: AppSpacing.spacing24,
+        right: AppSpacing.spacing24,
+        bottom: AppSpacing.spacing24,
       );
     }
     if (boxType == AppModuleType.type2_1) {
       return const EdgeInsets.only(
-        top: AppSpacing.groupMargin + tabletAndAboveCTAHeight,
-        left: AppSpacing.containerInsideMargin,
-        right: AppSpacing.containerInsideMargin,
-        bottom: AppSpacing.containerInsideMargin,
+        top: AppSpacing.spacing16 + tabletAndAboveCTAHeight,
+        left: AppSpacing.spacing24,
+        right: AppSpacing.spacing24,
+        bottom: AppSpacing.spacing24,
       );
     }
     return const EdgeInsets.only(
-      top: AppSpacing.groupMargin + tabletAndAboveCTAHeight,
-      left: AppSpacing.containerInsideMargin,
-      right: AppSpacing.containerInsideMargin,
-      bottom: AppSpacing.containerInsideMargin,
+      top: AppSpacing.spacing16 + tabletAndAboveCTAHeight,
+      left: AppSpacing.spacing24,
+      right: AppSpacing.spacing24,
+      bottom: AppSpacing.spacing24,
     );
   }
 
@@ -554,7 +554,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             ConstrainedBox(
               constraints: const BoxConstraints(
                   // maxWidth: size_1W,
@@ -579,7 +579,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                     ),
                   ],
                   if (widget.module.button2Text(context) != null && showSecondButtonOnMobile(module)) ...[
-                    AppSpacing.groupMarginBox,
+                    AppSpacing.spacing16_Box,
                     Flexible(
                       child: AppXButton(
                         shrinkWrap: false,
@@ -663,7 +663,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             ConstrainedBox(
               constraints: const BoxConstraints(
                   // maxWidth: size_1W,
@@ -689,7 +689,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                     ),
                   ],
                   if (widget.module.button2Text(context) != null && showSecondButtonOnMobile(module)) ...[
-                    AppSpacing.groupMarginBox,
+                    AppSpacing.spacing16_Box,
                     Flexible(
                       child: AppXButton(
                         shrinkWrap: false,
@@ -772,7 +772,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             ConstrainedBox(
               constraints: const BoxConstraints(
                   // maxWidth: size_1W,
@@ -797,7 +797,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                     ),
                   ],
                   if (widget.module.button2Text(context) != null && showSecondButtonOnTabletAndAbove(module)) ...[
-                    AppSpacing.groupMarginBox,
+                    AppSpacing.spacing16_Box,
                     Flexible(
                       child: AppXButton(
                         shrinkWrap: false,
@@ -937,7 +937,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
             ],
           ),
         ),
-        AppSpacing.groupMarginBox,
+        AppSpacing.spacing16_Box,
       ],
       Expanded(
         child: (showSubtitleOnTabletAndAbove(module))
@@ -952,7 +952,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1013,10 +1013,10 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppSpacing.containerInsideMarginBox,
+            AppSpacing.spacing24_Box,
             if (widget.module.slug == 'daily-quiz') ...[
-              AppSpacing.groupMarginBox,
-              AppSpacing.elementMarginBox,
+              AppSpacing.spacing16_Box,
+              AppSpacing.spacing8_Box,
             ],
             Row(
               mainAxisSize: MainAxisSize.max,
@@ -1072,7 +1072,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                     ),
                     SizedBox(height: subtitleGap),
                     widget.subtitleContent!,
-                    AppSpacing.groupMarginBox,
+                    AppSpacing.spacing16_Box,
                   ],
                   const Spacer(),
                   if (showButtonsOnTabletAndAbove(widget.module))
@@ -1080,7 +1080,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppSpacing.groupMarginBox,
+                        AppSpacing.spacing16_Box,
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -1095,7 +1095,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
                 ],
               ),
             ),
-            AppSpacing.containerInsideMarginBox,
+            AppSpacing.spacing24_Box,
             Expanded(
               flex: 50,
               child: (showSubtitleOnTabletAndAbove(module))
@@ -1182,7 +1182,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         final int titleMaxLines = isCompactHeight ? 1 : 2;
         final double titleMinFontSize =
             isCompactHeight ? (theme.textTheme.bodySmall?.fontSize ?? 12) : theme.textTheme.bodyLarge!.fontSize!;
-        final double subtitleGap = isCompactHeight ? AppSpacing.tinyTinyMargin : AppSpacing.tinyMargin;
+        final double subtitleGap = isCompactHeight ? AppSpacing.spacing2 : AppSpacing.spacing4;
         return InkWell(
           onTap: cardTapAction,
           child: Column(
@@ -1219,7 +1219,7 @@ class _AppModuleWidgetState extends State<AppModuleWidget> {
         final int titleMaxLines = isCompactHeight ? 1 : 2;
         final double titleMinFontSize =
             isCompactHeight ? (theme.textTheme.bodySmall?.fontSize ?? 12) : theme.textTheme.bodyLarge!.fontSize!;
-        final double subtitleGap = isCompactHeight ? AppSpacing.tinyMargin : AppSpacing.elementMargin;
+        final double subtitleGap = isCompactHeight ? AppSpacing.spacing4 : AppSpacing.spacing8;
         return Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

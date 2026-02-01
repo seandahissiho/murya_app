@@ -86,7 +86,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
           Row(
             children: [
               const AppXReturnButton(destination: AppRoutes.userRessourcesModule),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               Expanded(
                 child: AppBreadcrumb(
                   items: [
@@ -112,11 +112,11 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
               const AppXCloseButton(),
             ],
           ),
-          AppSpacing.sectionMarginBox,
+          AppSpacing.spacing40_Box,
           Expanded(
             child: _body(),
           ),
-          AppSpacing.sectionMarginBox,
+          AppSpacing.spacing40_Box,
         ],
       ),
     );
@@ -136,14 +136,14 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
         borderRadius: AppRadius.borderRadius28,
         border: Border.all(color: AppColors.borderMedium, width: 1),
       ),
-      padding: const EdgeInsets.all(AppSpacing.sectionMargin),
+      padding: const EdgeInsets.all(AppSpacing.spacing40),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _titleBlock(theme),
-          AppSpacing.sectionMarginBox,
+          AppSpacing.spacing40_Box,
           _controls(theme),
-          AppSpacing.groupMarginBox,
+          AppSpacing.spacing16_Box,
           _timeline(),
           if (_error != null) ...[
             Center(
@@ -173,7 +173,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
         ),
-        AppSpacing.containerInsideMarginSmallBox,
+        AppSpacing.spacing12_Box,
         Text(
           widget.resource.description ?? '',
           style: theme.textTheme.bodyMedium?.copyWith(
@@ -202,13 +202,13 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
               icon: Icons.replay_10,
               onTap: _seekBack,
             ),
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             _ControlIconButton(
               icon: isLoading ? Icons.hourglass_empty : (isPlaying ? Icons.pause_circle : Icons.play_circle),
               size: 64,
               onTap: isLoading || _error != null ? null : _togglePlay,
             ),
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             _ControlIconButton(
               icon: Icons.forward_10,
               onTap: _seekForward,
@@ -284,7 +284,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
                 );
               },
             ),
-            AppSpacing.containerInsideMarginSmallBox,
+            AppSpacing.spacing12_Box,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

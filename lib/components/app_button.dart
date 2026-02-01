@@ -113,9 +113,9 @@ class _AppXButtonState extends State<AppXButton> {
       case Alignment.center:
         return (0, 0, 0, 0);
       case Alignment.centerLeft:
-        return (AppSpacing.containerInsideMargin, null, 0, 0);
+        return (AppSpacing.spacing24, null, 0, 0);
       case Alignment.centerRight:
-        return (null, AppSpacing.containerInsideMargin, 0, 0);
+        return (null, AppSpacing.spacing24, 0, 0);
       case Alignment.topCenter:
         return (0, 0, 0, null);
       case Alignment.topLeft:
@@ -348,7 +348,7 @@ class _AppXButtonState extends State<AppXButton> {
       if (widget.rightIcon == null &&
           widget.rightIconPath == null &&
           (widget.leftIconPath != null || widget.leftIcon != null)) {
-        children.add(AppSpacing.tinyMarginBox);
+        children.add(AppSpacing.spacing4_Box);
       }
     }
 
@@ -556,9 +556,7 @@ class _ButtonBody extends StatelessWidget {
         maxWidth: shrinkWrap ? double.infinity : maxWidth,
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: shrinkWrap
-            ? (removePaddings ? 0 : AppSpacing.containerInsideMarginSmall)
-            : AppSpacing.containerInsideMargin,
+        horizontal: shrinkWrap ? (removePaddings ? 0 : AppSpacing.spacing12) : AppSpacing.spacing24,
       ),
       child: SizedBox(
         height: effectiveHeight,

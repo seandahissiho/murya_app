@@ -96,6 +96,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get skillsDiagramTitle => 'Chart';
 
   @override
+  String get profile_account_title => 'Account';
+
+  @override
   String get skillLevel_easy => 'Junior';
 
   @override

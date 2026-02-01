@@ -113,7 +113,7 @@ class _AppXTextFormFieldState extends State<AppXTextFormField> {
             widget.labelText ?? '',
             style: theme.textTheme.labelMedium,
           ),
-          AppSpacing.elementMarginBox,
+          AppSpacing.spacing8_Box,
         ],
         SizedBox(
           height: 44,
@@ -233,8 +233,8 @@ class _AppXTextFormFieldState extends State<AppXTextFormField> {
                           disabledBorder: InputBorder.none,
                           errorBorder: InputBorder.none,
                           contentPadding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.containerInsideMargin / 3,
-                            vertical: AppSpacing.containerInsideMargin / 6,
+                            horizontal: AppSpacing.spacing24 / 3,
+                            vertical: AppSpacing.spacing24 / 6,
                           ),
                         ),
                     validator: widget.validator,

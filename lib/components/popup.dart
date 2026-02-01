@@ -34,7 +34,7 @@ Future<T?> displayPopUp<T>({
         final ThemeData theme = Theme.of(context);
         return Dialog(
           child: Container(
-            padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+            padding: const EdgeInsets.all(AppSpacing.spacing24),
             constraints: BoxConstraints(
               maxWidth: width ?? DeviceHelper.kMainBodyWidth(context),
             ),
@@ -69,7 +69,7 @@ Future<T?> displayPopUp<T>({
                                 ),
                               ),
                               if (cancelText != null) ...[
-                                AppSpacing.elementMarginBox,
+                                AppSpacing.spacing8_Box,
                                 Flexible(
                                   child: AppXButton(
                                     onPressed: () {
@@ -100,7 +100,7 @@ Future<T?> displayPopUp<T>({
                             ),
                           ),
                         ],
-                        AppSpacing.sectionMarginBox,
+                        AppSpacing.spacing40_Box,
                         Text(
                           title ?? '',
                           style: theme.textTheme.headlineSmall?.copyWith(
@@ -108,7 +108,7 @@ Future<T?> displayPopUp<T>({
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        AppSpacing.groupMarginBox,
+                        AppSpacing.spacing16_Box,
                         Text(
                           description ?? '',
                           style: theme.textTheme.bodyLarge?.copyWith(
@@ -116,8 +116,8 @@ Future<T?> displayPopUp<T>({
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        AppSpacing.sectionMarginBox,
-                        AppSpacing.sectionMarginBox,
+                        AppSpacing.spacing40_Box,
+                        AppSpacing.spacing40_Box,
                         LayoutBuilder(builder: (context, constraints) {
                           return Row(
                             mainAxisSize: MainAxisSize.max,
@@ -126,7 +126,7 @@ Future<T?> displayPopUp<T>({
                               if (cancelText != null) ...[
                                 AppXButton(
                                   shrinkWrap: false,
-                                  maxWidth: constraints.maxWidth / 2 - AppSpacing.elementMargin * 2,
+                                  maxWidth: constraints.maxWidth / 2 - AppSpacing.spacing8 * 2,
                                   onPressed: () {
                                     Navigator.of(context).pop(false);
                                   },
@@ -136,11 +136,11 @@ Future<T?> displayPopUp<T>({
                                   borderColor: AppColors.primary.shade200,
                                   fgColor: AppColors.primary.shade700,
                                 ),
-                                AppSpacing.elementMarginBox,
+                                AppSpacing.spacing8_Box,
                               ],
                               AppXButton(
                                 shrinkWrap: false,
-                                maxWidth: constraints.maxWidth / 2 - AppSpacing.elementMargin * 2,
+                                maxWidth: constraints.maxWidth / 2 - AppSpacing.spacing8 * 2,
                                 onPressed: () {
                                   Navigator.of(context).pop(true);
                                 },
@@ -368,8 +368,8 @@ class _OverlayMenuContentState extends State<OverlayMenuContent> {
                                         : (appSize.screenWidth -
                                             kNavBarWidth -
                                             AppSpacing.pageMargin * 2 -
-                                            AppSpacing.sectionMargin))),
-                    padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+                                            AppSpacing.spacing40))),
+                    padding: const EdgeInsets.all(AppSpacing.spacing24),
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
                         minWidth: widget.width ?? 0.0,
@@ -402,6 +402,6 @@ class _OverlayMenuContentState extends State<OverlayMenuContent> {
         MediaQuery.of(context).padding.top -
         AppSpacing.pageMargin -
         40 -
-        AppSpacing.sectionMargin;
+        AppSpacing.spacing40;
   }
 }

@@ -127,7 +127,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                     AppXCloseButton(),
                   ],
                 ),
-                AppSpacing.groupMarginBox,
+                AppSpacing.spacing16_Box,
                 Row(
                   children: [
                     Expanded(
@@ -172,12 +172,12 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                       ),
                     ),
                     if (_user.isNotEmpty) ...[
-                      AppSpacing.groupMarginBox,
+                      AppSpacing.spacing16_Box,
                       ScoreWidget(value: _user.diamonds),
                     ],
                   ],
                 ),
-                AppSpacing.containerInsideMarginBox,
+                AppSpacing.spacing24_Box,
                 AppXButton(
                   onPressed: () {
                     navigateToPath(
@@ -193,7 +193,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                       : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
                   shrinkWrap: false,
                 ),
-                AppSpacing.containerInsideMarginBox,
+                AppSpacing.spacing24_Box,
                 Expanded(
                   child: SingleChildScrollView(
                     child: LayoutBuilder(builder: (context, constraints) {
@@ -216,21 +216,21 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                             collapseText: '\n\n${locale.show_less}',
                             linkEllipsis: false,
                           ),
-                          AppSpacing.containerInsideMarginBox,
+                          AppSpacing.spacing24_Box,
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               if (_userJob.isNotEmpty && _job.id.isNotEmptyOrNull) ...[
                                 _rankingBuilder(constraints, locale, theme),
-                                AppSpacing.groupMarginBox,
+                                AppSpacing.spacing16_Box,
                               ],
                               _diagramBuilder(constraints, locale, theme, options),
                             ],
                           ),
-                          AppSpacing.containerInsideMarginBox,
+                          AppSpacing.spacing24_Box,
                           ...familiesBuilder(),
-                          AppSpacing.sectionMarginBox,
+                          AppSpacing.spacing40_Box,
                           const AppFooter(),
                         ],
                       );
@@ -249,7 +249,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
     final List<Widget> widgets = [];
     for (final family in _job.competenciesFamilies) {
       widgets.add(CFCard(job: _job, family: family));
-      widgets.add(AppSpacing.groupMarginBox);
+      widgets.add(AppSpacing.spacing16_Box);
     }
     return widgets;
   }
@@ -273,9 +273,9 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
               userValues: _userJobCompetencyProfile.kiviatValues,
             ),
           ),
-          AppSpacing.groupMarginBox,
+          AppSpacing.spacing16_Box,
           Padding(
-            padding: const EdgeInsets.only(left: AppSpacing.containerInsideMargin),
+            padding: const EdgeInsets.only(left: AppSpacing.spacing24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -287,7 +287,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                AppSpacing.groupMarginBox,
+                AppSpacing.spacing16_Box,
                 AppXDropdown<int>(
                   controller: TextEditingController(text: options[_detailsLevel.index]),
                   items: options.map((level) => DropdownMenuEntry(
@@ -306,7 +306,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
               ],
             ),
           ),
-          AppSpacing.containerInsideMarginBox,
+          AppSpacing.spacing24_Box,
         ],
       ),
     );
@@ -321,7 +321,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
       ),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+        padding: const EdgeInsets.all(AppSpacing.spacing24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -62,7 +62,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
           SvgPicture.asset(
             AppIcons.popupIconPath,
           ),
-          AppSpacing.containerInsideMarginBox,
+          AppSpacing.spacing24_Box,
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
@@ -73,32 +73,32 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
               textAlign: TextAlign.start,
             ),
           ),
-          AppSpacing.groupMarginBox,
+          AppSpacing.spacing16_Box,
           Text(
             localizations.quiz_start_description_1,
             style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.start,
           ),
-          AppSpacing.groupMarginBox,
+          AppSpacing.spacing16_Box,
           Text(
             localizations.quiz_start_description_2,
             style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.start,
           ),
-          AppSpacing.groupMarginBox,
+          AppSpacing.spacing16_Box,
           Text(
             localizations.quiz_start_description_3,
             style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.start,
           ),
-          AppSpacing.containerInsideMarginBox,
+          AppSpacing.spacing24_Box,
           Text(
             localizations.quiz_start_advice,
             style: theme.textTheme.bodyMedium
                 ?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic, fontWeight: FontWeight.w100),
             textAlign: TextAlign.start,
           ),
-          AppSpacing.sectionMarginBox,
+          AppSpacing.spacing40_Box,
           BlocConsumer<QuizBloc, QuizState>(
             listener: (context, state) {
               setState(() {});
@@ -301,7 +301,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                     ],
                   ),
                 ),
-                AppSpacing.sectionMarginBox,
+                AppSpacing.spacing40_Box,
                 Expanded(
                   flex: 4,
                   child: Center(
@@ -364,7 +364,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                                                 currentQuestionIndex + 1, quiz.questionResponses.length),
                                             style: theme.textTheme.labelLarge,
                                           ),
-                                          AppSpacing.groupMarginBox,
+                                          AppSpacing.spacing16_Box,
                                           // AppSpacing.groupMarginBox,
                                           Expanded(
                                             child: AutoSizeText(
@@ -375,7 +375,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                                               textAlign: TextAlign.start,
                                             ),
                                           ),
-                                          AppSpacing.sectionMarginBox,
+                                          AppSpacing.spacing40_Box,
                                           Center(
                                             child: Container(
                                               constraints: BoxConstraints(
@@ -384,8 +384,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                                               ),
                                               child: LayoutBuilder(builder: (context, constraints) {
                                                 return Wrap(
-                                                  spacing: AppSpacing.elementMargin,
-                                                  runSpacing: AppSpacing.groupMargin,
+                                                  spacing: AppSpacing.spacing8,
+                                                  runSpacing: AppSpacing.spacing16,
                                                   children: List.generate(4, (index) {
                                                     return GestureDetector(
                                                       onTap: () {
@@ -844,7 +844,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
           SvgPicture.asset(
             AppIcons.popupIconPath,
           ),
-          AppSpacing.containerInsideMarginBox,
+          AppSpacing.spacing24_Box,
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
@@ -855,23 +855,23 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
               textAlign: TextAlign.center,
             ),
           ),
-          AppSpacing.groupMarginBox,
+          AppSpacing.spacing16_Box,
           Text(
             localizations.quiz_completed_subtitle,
             style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
-          AppSpacing.containerInsideMarginBox,
+          AppSpacing.spacing24_Box,
           Text(
             localizations.quiz_completed_description,
             style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
-          AppSpacing.containerInsideMarginBox,
+          AppSpacing.spacing24_Box,
           _todayPerformanceWidget(),
-          AppSpacing.containerInsideMarginBox,
+          AppSpacing.spacing24_Box,
           _todayRewardsWidget(),
-          AppSpacing.sectionMarginBox,
+          AppSpacing.spacing40_Box,
         ],
       ).then((value) {
         if (!mounted) return;
@@ -967,8 +967,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
 
   _card(BoxConstraints constraints, int index, ThemeData theme, {required String type}) {
     return Container(
-      height: constraints.maxHeight / 2 - AppSpacing.elementMargin / 2,
-      width: constraints.maxWidth / 2 - AppSpacing.elementMargin / 2,
+      height: constraints.maxHeight / 2 - AppSpacing.spacing8 / 2,
+      width: constraints.maxWidth / 2 - AppSpacing.spacing8 / 2,
       decoration: BoxDecoration(
         color: type == 'normal'
             ? AppColors.backgroundCard
@@ -986,8 +986,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         borderRadius: AppRadius.borderRadius20,
       ),
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.groupMargin,
-        vertical: AppSpacing.tinyTinyMargin,
+        horizontal: AppSpacing.spacing16,
+        vertical: AppSpacing.spacing2,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -1012,7 +1012,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                 width: 2,
               ),
             ),
-            padding: const EdgeInsets.all(AppSpacing.elementMargin + AppSpacing.tinyMargin),
+            padding: const EdgeInsets.all(AppSpacing.spacing8 + AppSpacing.spacing4),
             child: Text(
               '${index + 1}',
               // String.fromCharCode(65 + index),
@@ -1139,7 +1139,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(localizations.quiz_daily_performance, style: theme.textTheme.bodyLarge),
-        AppSpacing.groupMarginBox,
+        AppSpacing.spacing16_Box,
         Row(
           children: [
             const Spacer(flex: 4),
@@ -1149,7 +1149,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                 Text("${answers.whereOrEmpty((a) => a.isCorrect).length}",
                     style: theme.textTheme.displaySmall
                         ?.copyWith(color: AppColors.successDefault, fontWeight: FontWeight.bold)),
-                AppSpacing.elementMarginBox,
+                AppSpacing.spacing8_Box,
                 Text(localizations.quiz_good_answers,
                     style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textTertiary)),
               ],
@@ -1167,7 +1167,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                 Text("${answers.whereOrEmpty((a) => !a.isCorrect).length}",
                     style: theme.textTheme.displaySmall
                         ?.copyWith(color: AppColors.errorDefault, fontWeight: FontWeight.bold)),
-                AppSpacing.elementMarginBox,
+                AppSpacing.spacing8_Box,
                 Text(localizations.quiz_answers_to_review,
                     style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textTertiary)),
               ],
@@ -1193,7 +1193,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
           localizations.quiz_reward,
           style: theme.textTheme.labelLarge,
         ),
-        AppSpacing.groupMarginBox,
+        AppSpacing.spacing16_Box,
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,

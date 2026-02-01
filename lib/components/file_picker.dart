@@ -38,9 +38,9 @@ class _AppFilePickerState extends State<AppFilePicker> {
           // enabled: false,
           leadingIcon: Icons.attach_file,
           contentPadding: const EdgeInsets.only(
-            left: AppSpacing.containerInsideMargin / 2,
-            right: AppSpacing.containerInsideMargin / 2,
-            top: AppSpacing.containerInsideMargin / 2,
+            left: AppSpacing.spacing24 / 2,
+            right: AppSpacing.spacing24 / 2,
+            top: AppSpacing.spacing24 / 2,
           ),
           onTap: () async {
             dynamic file = await FileManager.pickFile();

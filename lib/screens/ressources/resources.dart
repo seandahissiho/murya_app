@@ -277,7 +277,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
           pageSnapping: true,
           padEnds: false,
           // viewportFraction: (height * (isMobile ? 1.168 : 1.393)) / appSize.screenWidth,
-          viewportFraction: (height + AppSpacing.groupMargin * 4) / appSize.screenWidth,
+          viewportFraction: (height + AppSpacing.spacing16 * 4) / appSize.screenWidth,
           // aspectRatio: 1,
         ),
         itemBuilder: (context, index, realIndex) {
@@ -297,7 +297,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     SvgPicture.asset(
                       AppIcons.popupIconPath,
                     ),
-                    AppSpacing.containerInsideMarginBox,
+                    AppSpacing.spacing24_Box,
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
@@ -308,19 +308,19 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                         textAlign: TextAlign.start,
                       ),
                     ),
-                    AppSpacing.groupMarginBox,
+                    AppSpacing.spacing16_Box,
                     Text(
                       AppLocalizations.of(context).popup_unlock_resource_description,
                       style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
                       textAlign: TextAlign.start,
                     ),
-                    AppSpacing.containerInsideMarginBox,
+                    AppSpacing.spacing24_Box,
                     _costRow(label: AppLocalizations.of(context).cost_creation_label, cost: cost),
-                    AppSpacing.groupMarginBox,
+                    AppSpacing.spacing16_Box,
                     _costRow(label: AppLocalizations.of(context).cost_current_balance_label, cost: diamonds),
-                    AppSpacing.groupMarginBox,
+                    AppSpacing.spacing16_Box,
                     _costRow(label: AppLocalizations.of(context).cost_remaining_balance_label, cost: remaining),
-                    AppSpacing.sectionMarginBox,
+                    AppSpacing.spacing40_Box,
                   ],
                 );
                 if (result == true && mounted && context.mounted) {
@@ -336,13 +336,13 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                 }
               },
               child: Container(
-                margin: const EdgeInsets.only(right: AppSpacing.groupMargin),
+                margin: const EdgeInsets.only(right: AppSpacing.spacing16),
                 decoration: BoxDecoration(
                   color: AppColors.backgroundCard,
                   borderRadius: AppRadius.borderRadius28,
                   border: Border.all(color: AppColors.borderMedium, width: 1),
                 ),
-                padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+                padding: const EdgeInsets.all(AppSpacing.spacing24),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -353,7 +353,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.borderMedium, width: 2),
                       ),
-                      padding: const EdgeInsets.all(AppSpacing.elementMargin),
+                      padding: const EdgeInsets.all(AppSpacing.spacing8),
                       child: SvgPicture.asset(
                         AppIcons.addResourceIconPath,
                         width: 20,
@@ -361,7 +361,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                         colorFilter: const ColorFilter.mode(AppColors.textSecondary, BlendMode.srcIn),
                       ),
                     ),
-                    AppSpacing.containerInsideMarginSmallBox,
+                    AppSpacing.spacing12_Box,
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
@@ -404,7 +404,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
               maxLines: 2,
             ),
           ),
-          AppSpacing.groupMarginBox,
+          AppSpacing.spacing16_Box,
           ScoreWidget(
             value: cost,
             compact: true,
@@ -473,7 +473,7 @@ void _waitingModal(BuildContext context, ThemeData theme) {
                 ),
               ],
             ),
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             Flexible(
               child: FittedBox(
                 fit: BoxFit.scaleDown,
@@ -486,7 +486,7 @@ void _waitingModal(BuildContext context, ThemeData theme) {
           ],
         ),
       ),
-      AppSpacing.groupMarginBox,
+      AppSpacing.spacing16_Box,
       Text(
         AppLocalizations.of(context).loading_murya_working,
         style: theme.textTheme.bodyMedium?.copyWith(
@@ -494,7 +494,7 @@ void _waitingModal(BuildContext context, ThemeData theme) {
         ),
         textAlign: TextAlign.start,
       ),
-      AppSpacing.elementMarginBox,
+      AppSpacing.spacing8_Box,
       Text(
         AppLocalizations.of(context).loading_analyzing_answers,
         style: theme.textTheme.bodyMedium?.copyWith(
@@ -593,7 +593,7 @@ class ResourceItemWidget extends StatelessWidget {
         child: Container(
           height: constraints.maxHeight,
           width: constraints.maxHeight,
-          margin: const EdgeInsets.only(right: AppSpacing.groupMargin),
+          margin: const EdgeInsets.only(right: AppSpacing.spacing16),
           decoration: BoxDecoration(
             color: AppColors.backgroundCard,
             borderRadius: AppRadius.borderRadius20,
@@ -604,7 +604,7 @@ class ResourceItemWidget extends StatelessWidget {
               right: BorderSide(color: resource.borderColor, width: 2, strokeAlign: BorderSide.strokeAlignInside),
             ),
           ),
-          padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+          padding: const EdgeInsets.all(AppSpacing.spacing24),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -633,7 +633,7 @@ class ResourceItemWidget extends StatelessWidget {
                 ),
               ],
               if (module?.boxType != AppModuleType.type1) ...[
-                AppSpacing.elementMarginBox,
+                AppSpacing.spacing8_Box,
                 Expanded(
                   child: Text(
                     (resource.title ?? '').toUpperCase(),
@@ -658,7 +658,7 @@ class ResourceItemWidget extends StatelessWidget {
                 const Spacer()
               ],
               if (constraints.maxWidth > 100) ...[
-                AppSpacing.tinyMarginBox,
+                AppSpacing.spacing4_Box,
                 Text(
                   resource.createdAt?.formattedDate() ?? '',
                   style: theme.textTheme.labelMedium?.copyWith(
@@ -712,8 +712,8 @@ class AppXChip extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.elementMargin,
-        vertical: AppSpacing.tinyMargin,
+        horizontal: AppSpacing.spacing8,
+        vertical: AppSpacing.spacing4,
       ),
       decoration: BoxDecoration(
         color: color,

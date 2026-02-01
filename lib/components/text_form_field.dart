@@ -84,8 +84,8 @@ class _AppTextFieldState extends State<AppTextField> {
                 ),
               ),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.containerInsideMargin,
-          vertical: AppSpacing.containerInsideMargin,
+          horizontal: AppSpacing.spacing24,
+          vertical: AppSpacing.spacing24,
         ),
       ),
       onTapOutside: (event) {
@@ -202,7 +202,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
                 widget.label!,
                 style: theme.textTheme.labelMedium,
               ),
-              AppSpacing.elementMarginBox,
+              AppSpacing.spacing8_Box,
             ],
             Stack(
               children: [
@@ -322,7 +322,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
             ),
             if (state.hasError) ...[
               Padding(
-                padding: const EdgeInsets.only(top: AppSpacing.elementMargin, left: AppSpacing.elementMargin),
+                padding: const EdgeInsets.only(top: AppSpacing.spacing8, left: AppSpacing.spacing8),
                 child: Text(
                   state.errorText ?? '',
                   style: theme.textTheme.bodySmall?.copyWith(

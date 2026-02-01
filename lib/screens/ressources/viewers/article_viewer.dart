@@ -48,7 +48,7 @@ class _MobileArticleViewerScreenState extends State<MobileArticleViewerScreen> {
     final theme = Theme.of(context);
     return Column(
       children: [
-        AppSpacing.sectionMarginBox,
+        AppSpacing.spacing40_Box,
         Expanded(
           child: Row(
             children: [
@@ -237,7 +237,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
         Row(
           children: [
             const AppXReturnButton(destination: AppRoutes.userRessourcesModule),
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             Expanded(
               child: AppBreadcrumb(
                 items: [
@@ -263,7 +263,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
             const AppXCloseButton(),
           ],
         ),
-        AppSpacing.sectionMarginBox,
+        AppSpacing.spacing40_Box,
         Expanded(
           child: Row(
             children: [
@@ -280,7 +280,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+                        padding: const EdgeInsets.all(AppSpacing.spacing24),
                         child: Text(AppLocalizations.of(context).summary, style: theme.textTheme.labelLarge),
                       ),
                       const Divider(
@@ -290,7 +290,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+                          padding: const EdgeInsets.all(AppSpacing.spacing24),
                           child: TocWidget(
                             controller: tocController,
                             itemBuilder: (data) {
@@ -332,7 +332,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                       borderRadius: AppRadius.tiny,
                                     ),
                                     padding: const EdgeInsets.all(
-                                      AppSpacing.containerInsideMarginSmall,
+                                      AppSpacing.spacing12,
                                     ),
                                     child: Padding(
                                       padding: EdgeInsets.only(left: 12.0 * (level - 1) * 0),
@@ -348,13 +348,12 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                                 width: 1,
                                               ),
                                             ),
-                                            padding: const EdgeInsets.all(
-                                                AppSpacing.elementMargin + AppSpacing.tinyTinyMargin),
+                                            padding: const EdgeInsets.all(AppSpacing.spacing8 + AppSpacing.spacing2),
                                             child: Center(
                                               child: Text((index + 1).toString()),
                                             ),
                                           ),
-                                          AppSpacing.elementMarginBox,
+                                          AppSpacing.spacing8_Box,
 
                                           // actual heading title from markdown
                                           Expanded(
@@ -389,7 +388,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                   ),
                 ),
               ),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               Expanded(
                 flex: 2,
                 child: Container(
@@ -403,7 +402,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+                        padding: const EdgeInsets.all(AppSpacing.spacing24),
                         child: Text(AppLocalizations.of(context).article, style: theme.textTheme.labelLarge),
                       ),
                       const Divider(
@@ -413,7 +412,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+                          padding: const EdgeInsets.all(AppSpacing.spacing24),
                           child: MarkdownWidget(
                             tocController: tocController,
                             data: widget.resource.content ?? '',
