@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
+import 'package:murya/l10n/l10n.dart';
 
 class ScoreWidget extends StatefulWidget {
   final int value;
@@ -12,15 +13,19 @@ class ScoreWidget extends StatefulWidget {
   final bool isReward;
   final bool isLandingPage;
   final Color iconColor;
+  final bool reverse;
+  final double? iconSize;
 
   const ScoreWidget({
     super.key,
     required this.value,
     this.compact = false,
     this.isLandingPage = false,
-    this.textColor = AppColors.primaryDefault,
-    this.iconColor = AppColors.primaryFocus,
+    this.textColor = AppColors.textSecondary,
+    this.iconColor = AppButtonColors.primarySurfaceDefault,
     this.isReward = false,
+    this.reverse = false,
+    this.iconSize,
   });
 
   @override
@@ -128,13 +133,85 @@ class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStat
     final isMobile = DeviceHelper.isMobile(context);
     final style = _style(isMobile, theme);
 
-    final double iconSize = isMobile
-        ? mobileCTAHeight / (widget.compact ? 2.5 : 1.5)
-        : tabletAndAboveCTAHeight / (widget.compact ? 2.5 : 1.5) * (widget.isReward ? 1.75 : 1);
+    final double defaultIconSize = _getDefaultIconSize(isMobile);
+    final double iconSize = widget.iconSize != null ? widget.iconSize! : defaultIconSize;
+
+    final scoreText = Container(
+      height: widget.isReward ? null : (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 1.5,
+      padding: const EdgeInsets.only(right: AppSpacing.spacing4),
+      child: Center(
+        child: ScaleTransition(
+          scale: _scale,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.isReward) ...[
+                Text("+ ", style: style),
+              ],
+              AnimatedFlipCounter(
+                value: widget.value,
+                duration: const Duration(milliseconds: 420),
+                curve: Curves.easeOutCubic,
+                textStyle: style,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    final diamondIcon = ScaleTransition(
+      scale: _scale,
+      child: SvgPicture.asset(
+        AppIcons.diamondIconPath,
+        width: iconSize,
+        height: iconSize,
+        colorFilter: ColorFilter.mode(widget.iconColor, BlendMode.srcATop),
+      ),
+    );
+    final gainWidget = AnimatedSwitcher(
+      duration: const Duration(milliseconds: 520),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (child, anim) {
+        final slide = Tween<Offset>(
+          begin: const Offset(0, 0.6),
+          end: const Offset(0, -0.35),
+        ).animate(anim);
+
+        return FadeTransition(
+          opacity: anim,
+          child: SlideTransition(position: slide, child: child),
+        );
+      },
+      child: (_delta != null)
+          ? Container(
+              key: ValueKey(_delta),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: widget.iconColor,
+                borderRadius: BorderRadius.circular(999),
+                boxShadow: [
+                  BoxShadow(
+                    color: widget.iconColor.withOpacity(0.40),
+                    blurRadius: 12,
+                  ),
+                ],
+              ),
+              child: Text(
+                "+$_delta",
+                style: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+              ),
+            )
+          : const SizedBox(key: ValueKey("empty")),
+    );
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 160),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.only(right: 8, top: 4, bottom: 4),
       decoration: BoxDecoration(
         color: _flash ? widget.iconColor.withOpacity(0.10) : Colors.transparent,
         borderRadius: BorderRadius.circular(14),
@@ -142,93 +219,63 @@ class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStat
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // ✅ SCORE + ICON
-          Row(
-            children: [
-              Container(
-                height: widget.isReward ? null : (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 1.5,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing4),
-                child: Center(
-                  child: ScaleTransition(
-                    scale: _scale,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (widget.isReward) ...[
-                          Text("+ ", style: style),
-                        ],
-                        AnimatedFlipCounter(
-                          value: widget.value,
-                          duration: const Duration(milliseconds: 420),
-                          curve: Curves.easeOutCubic,
-                          textStyle: style,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              AppSpacing.spacing4_Box,
-              ScaleTransition(
-                scale: _scale,
-                child: SvgPicture.asset(
-                  AppIcons.diamondIconPath,
-                  width: iconSize,
-                  height: iconSize,
-                  colorFilter: ColorFilter.mode(widget.iconColor, BlendMode.srcIn),
-                ),
-              ),
-            ],
-          ),
-
-          // ✅ +X FLOATING (effet arcade)
-          Positioned(
-            right: -6,
-            top: -18,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 520),
-              switchInCurve: Curves.easeOutCubic,
-              switchOutCurve: Curves.easeInCubic,
-              transitionBuilder: (child, anim) {
-                final slide = Tween<Offset>(
-                  begin: const Offset(0, 0.6),
-                  end: const Offset(0, -0.35),
-                ).animate(anim);
-
-                return FadeTransition(
-                  opacity: anim,
-                  child: SlideTransition(position: slide, child: child),
-                );
-              },
-              child: (_delta != null)
-                  ? Container(
-                      key: ValueKey(_delta),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: widget.iconColor,
-                        borderRadius: BorderRadius.circular(999),
-                        boxShadow: [
-                          BoxShadow(
-                            color: widget.iconColor.withOpacity(0.40),
-                            blurRadius: 12,
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        "+$_delta",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    )
-                  : const SizedBox(key: ValueKey("empty")),
+          if (widget.reverse == false) ...[
+            // ✅ SCORE + ICON
+            Row(
+              children: [
+                scoreText,
+                AppSpacing.spacing12_Box,
+                diamondIcon,
+              ],
             ),
-          ),
+            // ✅ +X FLOATING (effet arcade)
+            Positioned(
+              right: -6,
+              top: -18,
+              child: gainWidget,
+            ),
+          ] else ...[
+            // ✅ ICON + SCORE
+            Row(
+              children: [
+                diamondIcon,
+                AppSpacing.spacing12_Box,
+                scoreText,
+              ],
+            ),
+            // ✅ +X FLOATING (effet arcade)
+            Positioned(
+              left: -6,
+              top: -18,
+              child: gainWidget,
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  double _getDefaultIconSize(bool isMobile) {
+    if (widget.iconSize != null) {
+      return widget.iconSize!;
+    }
+    if (isMobile) {
+      if (widget.isReward) {
+        return 20;
+      } else if (widget.isLandingPage) {
+        return 14;
+      } else {
+        return 18;
+      }
+    } else {
+      if (widget.isReward) {
+        return 24;
+      } else if (widget.isLandingPage) {
+        return tabletAndAboveCTAHeight / (widget.compact ? 3 : 2.5) * (widget.isReward ? 1.75 : 1);
+      } else {
+        return 20;
+      }
+    }
   }
 }
 
@@ -244,7 +291,7 @@ class GoalWidget extends StatelessWidget {
     required this.value,
     this.compact = false,
     this.isLandingPage = false,
-    this.textColor = AppColors.primaryDefault,
+    this.textColor = AppColors.textPrimary,
     this.iconColor = AppColors.primaryFocus,
   });
 
@@ -286,7 +333,7 @@ class GoalWidget extends StatelessWidget {
           height: iconSize,
           colorFilter: ColorFilter.mode(
             iconColor,
-            BlendMode.srcIn,
+            BlendMode.srcATop,
           ),
         ),
       ],
@@ -307,7 +354,7 @@ class FavoritesWidget extends StatelessWidget {
     required this.value,
     this.compact = false,
     this.isLandingPage = false,
-    this.textColor = AppColors.primaryDefault,
+    this.textColor = AppColors.textPrimary,
     this.iconColor = AppColors.primaryFocus,
     this.isReward = false,
   });
@@ -357,8 +404,46 @@ class FavoritesWidget extends StatelessWidget {
           height: iconSize,
           colorFilter: ColorFilter.mode(
             iconColor,
-            BlendMode.srcIn,
+            BlendMode.srcATop,
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class StreakWidget extends StatelessWidget {
+  final int streakDays;
+  final bool isLandingPage;
+  final double? iconSize;
+
+  const StreakWidget({super.key, required this.streakDays, this.isLandingPage = false, this.iconSize});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isMobile = DeviceHelper.isMobile(context);
+    const textColor = AppColors.textSecondary;
+    const iconColor = AppButtonColors.primarySurfaceDefault;
+    final locale = AppLocalizations.of(context);
+
+    final double defaultIconSize = isLandingPage ? (isMobile ? 16 : 20) : 16;
+    final double finalIconSize = iconSize != null ? iconSize! : defaultIconSize;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SvgPicture.asset(
+          AppIcons.streakPath,
+          width: finalIconSize,
+          height: finalIconSize,
+          colorFilter: const ColorFilter.mode(iconColor, BlendMode.srcATop),
+        ),
+        AppSpacing.spacing4_Box,
+        Text(
+          locale.streakDays(streakDays),
+          style: isLandingPage
+              ? _landingPageStyle(isMobile, theme, textColor)
+              : theme.textTheme.labelLarge?.copyWith(color: textColor),
         ),
       ],
     );

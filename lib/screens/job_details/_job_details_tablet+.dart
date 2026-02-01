@@ -344,14 +344,14 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
-                    child: Text(
-                      locale.skillsDiagramTitle,
-                      style: GoogleFonts.anton(
-                        fontSize: 32,
-                        color: AppColors.primaryDefault,
-                        letterSpacing: -0.6,
-                      ),
+                  child: Text(
+                    locale.skillsDiagramTitle,
+                    style: GoogleFonts.anton(
+                      fontSize: 32,
+                      color: AppColors.textPrimary,
+                      letterSpacing: -0.6,
                     ),
+                  ),
                   ),
                   AppXDropdown<int>(
                     controller: TextEditingController(text: options[_detailsLevel.index]),
@@ -367,7 +367,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                     // labelInside: null,
                     shrinkWrap: false,
                     maxDropdownWidth: 150,
-                    fgColor: AppColors.primaryDefault,
+                    fgColor: AppColors.textPrimary,
                     bgColor: AppColors.backgroundColor,
                   ),
                 ],

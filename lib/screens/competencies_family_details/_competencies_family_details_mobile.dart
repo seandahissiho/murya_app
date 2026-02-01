@@ -69,11 +69,11 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                             color: AppColors.textTertiary,
                           ),
                           inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                            color: AppColors.primaryDefault, // hover
+                            color: AppColors.textPrimary, // hover
                             decoration: TextDecoration.underline, // optionnel
                           ),
                           activeTextStyle: theme.textTheme.labelMedium?.copyWith(
-                            color: AppColors.primaryDefault,
+                            color: AppColors.textPrimary,
                           ),
                           scrollable: true,
                         ),
@@ -157,11 +157,11 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                             _cf.description ?? '',
                             // FAKER.lorem.sentences(10).join(' '),
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: AppColors.primaryDefault,
+                              color: AppColors.textPrimary,
                               overflow: TextOverflow.ellipsis,
                             ),
                             linkStyle: theme.textTheme.labelMedium?.copyWith(
-                              color: AppColors.primaryDefault,
+                              color: AppColors.textPrimary,
                               decoration: TextDecoration.underline,
                             ),
                             maxLines: 4,

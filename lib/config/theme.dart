@@ -84,7 +84,7 @@ class AppTheme {
       errorContainer: AppColors.errorDefault,
       onErrorContainer: AppColors.whiteSwatch,
       surface: AppColors.whiteSwatch,
-      onSurface: AppColors.primaryDefault,
+      onSurface: AppColors.textPrimary,
       onSurfaceVariant: null,
       outline: null,
       outlineVariant: null,
@@ -119,51 +119,51 @@ class AppTheme {
     textTheme: GoogleFonts.interTextTheme(
       const TextTheme(
         displayLarge: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w400,
         ),
         displayMedium: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w400,
         ),
         displaySmall: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w700,
         ),
         titleLarge: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w700,
         ),
         titleMedium: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w700,
         ),
         titleSmall: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w800,
         ),
         bodyLarge: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w500,
         ),
         bodyMedium: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w400,
         ),
         bodySmall: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w300,
         ),
         labelLarge: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w700,
         ),
         labelMedium: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w600,
         ),
         labelSmall: TextStyle(
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -172,7 +172,7 @@ class AppTheme {
     actionIconTheme: null,
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.whiteSwatch,
-      foregroundColor: AppColors.primaryDefault,
+      foregroundColor: AppColors.textPrimary,
       elevation: 0,
       scrolledUnderElevation: null,
       shadowColor: AppColors.primaryDefault,

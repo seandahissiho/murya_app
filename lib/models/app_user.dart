@@ -1,6 +1,7 @@
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/l10n/l10n.dart';
+import 'package:murya/models/diploma.dart';
 
 class User {
   final String? id;
@@ -11,6 +12,9 @@ class User {
   final String? photoURL;
   final String? firstName;
   final String? lastName;
+  final Diploma? diploma;
+  final DiplomaYear? diplomaYear;
+  final DiplomaSchool? diplomaSchool;
 
   final int diamonds;
 
@@ -24,6 +28,9 @@ class User {
     this.photoURL,
     this.firstName,
     this.lastName,
+    this.diploma,
+    this.diplomaYear,
+    this.diplomaSchool,
     this.diamonds = 0,
   });
 
@@ -57,7 +64,7 @@ class User {
 
   @override
   String toString() {
-    return 'AppUser{id: $id, email: $email, photoURL: $photoURL, firstName: $firstName, lastName: $lastName, phone: $phone}';
+    return 'AppUser{id: $id, email: $email, photoURL: $photoURL, firstName: $firstName, lastName: $lastName, phone: $phone, diploma: $diploma, diplomaYear: $diplomaYear, diplomaSchool: $diplomaSchool}';
   }
 
   @override
@@ -70,6 +77,9 @@ class User {
         photoURL == otherUser.photoURL &&
         firstName == otherUser.firstName &&
         lastName == otherUser.lastName &&
+        diploma == otherUser.diploma &&
+        diplomaYear == otherUser.diplomaYear &&
+        diplomaSchool == otherUser.diplomaSchool &&
         phone == otherUser.phone &&
         diamonds == otherUser.diamonds;
   }
@@ -81,6 +91,9 @@ class User {
         (photoURL?.hashCode ?? 0) ^
         firstName.hashCode ^
         lastName.hashCode ^
+        diploma.hashCode ^
+        diplomaYear.hashCode ^
+        diplomaSchool.hashCode ^
         phone.hashCode ^
         diamonds.hashCode;
   }
@@ -92,6 +105,9 @@ class User {
       photoURL: null,
       firstName: '',
       lastName: '',
+      diploma: null,
+      diplomaYear: null,
+      diplomaSchool: null,
       phone: '',
       deviceId: '',
       diamonds: 0,
@@ -107,6 +123,9 @@ class User {
     final String? firstName = json['firstname'];
     final String? lastName = json['lastname'];
     final int diamonds = json['diamonds'] ?? 0;
+    final Diploma? diploma = diplomaFromJson(json['diploma']);
+    final DiplomaYear? diplomaYear = diplomaYearFromJson(json['diplomaYear']);
+    final DiplomaSchool? diplomaSchool = diplomaSchoolFromJson(json['diplomaSchool']);
 
     return User(
       id: id,
@@ -116,6 +135,9 @@ class User {
       photoURL: photoURL,
       firstName: firstName,
       lastName: lastName,
+      diploma: diploma,
+      diplomaYear: diplomaYear,
+      diplomaSchool: diplomaSchool,
       diamonds: diamonds,
     );
   }
@@ -134,6 +156,9 @@ class User {
       'lastName': lastName,
       'phone': phone,
       'deviceId': deviceId,
+      'diploma': diploma?.name,
+      'diplomaYear': diplomaYear?.name,
+      'diplomaSchool': diplomaSchool?.name,
       'diamonds': diamonds,
     };
   }
@@ -143,6 +168,34 @@ class User {
     final String first = firstName ?? locale.user_firstName_placeholder;
     final String last = lastName ?? locale.user_lastName_placeholder;
     return '$first $last';
+  }
+
+  User copyWith({
+    String? id,
+    String? email,
+    String? phone,
+    String? deviceId,
+    String? photoURL,
+    String? firstName,
+    String? lastName,
+    Diploma? diploma,
+    DiplomaYear? diplomaYear,
+    DiplomaSchool? diplomaSchool,
+    int? diamonds,
+  }) {
+    return User(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      deviceId: deviceId ?? this.deviceId,
+      photoURL: photoURL ?? this.photoURL,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      diploma: diploma ?? this.diploma,
+      diplomaYear: diplomaYear ?? this.diplomaYear,
+      diplomaSchool: diplomaSchool ?? this.diplomaSchool,
+      diamonds: diamonds ?? this.diamonds,
+    );
   }
 }
 

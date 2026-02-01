@@ -52,6 +52,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       ));
     });
     on<ProfileLoadEvent>(_onProfileLoadEvent);
+    on<ProfileUpdateEvent>(_onProfileUpdateEvent);
     on<ProfileLoadQuestsEvent>(_onProfileLoadQuestsEvent);
     on<ProfileLoadQuestGroupsEvent>(_onProfileLoadQuestGroupsEvent);
     on<ProfileClaimQuestEvent>(_onProfileClaimQuestEvent);
@@ -483,6 +484,55 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       questTimezone: state.questTimezone,
       questScope: state.questScope,
       claimingQuestId: null,
+      leaderboardUsers: state.leaderboardUsers,
+      leaderboardLoading: state.leaderboardLoading,
+      leaderboardError: state.leaderboardError,
+      leaderboardJobId: state.leaderboardJobId,
+      leaderboardFrom: state.leaderboardFrom,
+      leaderboardTo: state.leaderboardTo,
+    ));
+  }
+
+  FutureOr<void> _onProfileUpdateEvent(ProfileUpdateEvent event, Emitter<ProfileState> emit) async {
+    _userProfile = event.user;
+    emit(ProfileLoaded(
+      user: _userProfile,
+      quests: state.quests,
+      questGroups: state.questGroups,
+      questsLoading: state.questsLoading,
+      questGroupsLoading: state.questGroupsLoading,
+      questsError: state.questsError,
+      questGroupsError: state.questGroupsError,
+      questUserJobId: state.questUserJobId,
+      questTimezone: state.questTimezone,
+      questScope: state.questScope,
+      claimingQuestId: state.claimingQuestId,
+      leaderboardUsers: state.leaderboardUsers,
+      leaderboardLoading: state.leaderboardLoading,
+      leaderboardError: state.leaderboardError,
+      leaderboardJobId: state.leaderboardJobId,
+      leaderboardFrom: state.leaderboardFrom,
+      leaderboardTo: state.leaderboardTo,
+    ));
+
+    final result = await profileRepository.updateMe(event.user);
+    if (result.isError) {
+      notificationBloc.add(ErrorNotificationEvent(message: result.error));
+      return;
+    }
+    _userProfile = result.data!;
+    emit(ProfileLoaded(
+      user: _userProfile,
+      quests: state.quests,
+      questGroups: state.questGroups,
+      questsLoading: state.questsLoading,
+      questGroupsLoading: state.questGroupsLoading,
+      questsError: state.questsError,
+      questGroupsError: state.questGroupsError,
+      questUserJobId: state.questUserJobId,
+      questTimezone: state.questTimezone,
+      questScope: state.questScope,
+      claimingQuestId: state.claimingQuestId,
       leaderboardUsers: state.leaderboardUsers,
       leaderboardLoading: state.leaderboardLoading,
       leaderboardError: state.leaderboardError,

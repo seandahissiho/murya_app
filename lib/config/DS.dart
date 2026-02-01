@@ -92,13 +92,32 @@ class AppSpacing {
 
   AppSpacing({required this.context});
 
+  // 8 * 0.25
   static const double spacing2 = 2.0;
+  // 8 * 0.5
   static const double spacing4 = 4.0;
+  // 8 * 1
   static const double spacing8 = 8.0;
+  // 8 * 1.5
   static const double spacing12 = 12.0;
+  // 8 * 2
   static const double spacing16 = 16.0;
+  // 8 * 2.5
+  static const double spacing20 = 20.0;
+  // 8 * 3
   static const double spacing24 = 24;
+  // 8 * 3.5
+  static const double spacing28 = 28.0;
+  // 8 * 4
+  static const double spacing32 = 32.0;
+  // 8 * 4.5
+  static const double spacing36 = 36.0;
+  // 8 * 5
   static const double spacing40 = 40.0;
+  // 8 * 5.5
+  static const double spacing44 = 44.0;
+  // 8 * 6
+  static const double spacing48 = 48.0;
   static const double pageMargin = spacing16;
   static const double buttonHorizontalPadding = spacing12;
   static const double buttonVerticalPadding = spacing8;
@@ -108,8 +127,14 @@ class AppSpacing {
   static const SizedBox spacing8_Box = SizedBox.square(dimension: spacing8);
   static const SizedBox spacing12_Box = SizedBox.square(dimension: spacing12);
   static const SizedBox spacing16_Box = SizedBox.square(dimension: spacing16);
+  static const SizedBox spacing20_Box = SizedBox.square(dimension: spacing20);
   static const SizedBox spacing24_Box = SizedBox.square(dimension: spacing24);
+  static const SizedBox spacing28_Box = SizedBox.square(dimension: spacing28);
+  static const SizedBox spacing32_Box = SizedBox.square(dimension: spacing32);
+  static const SizedBox spacing36_Box = SizedBox.square(dimension: spacing36);
   static const SizedBox spacing40_Box = SizedBox.square(dimension: spacing40);
+  static const SizedBox spacing44_Box = SizedBox.square(dimension: spacing44);
+  static const SizedBox spacing48_Box = SizedBox.square(dimension: spacing48);
   static const SizedBox pageMarginBox = SizedBox.square(dimension: pageMargin);
 }
 
@@ -199,7 +224,8 @@ class AppColors {
   // ================== Primitive tokens ==================
 
   // Text
-  static const Color textPrimary = Color(0xFF0D0D0D);
+  // rgba(31, 22, 51, 1)
+  static const Color textPrimary = Color.fromRGBO(31, 22, 51, 1);
   static const Color textSecondary = Color(0xFF4D4D4D);
   static const Color textTertiary = Color(0xFF7A7A7A);
   static const Color textInverted = Color(0xFFFFFFFF);
@@ -730,7 +756,7 @@ class AppButtonThemeData {
     errorContainer: AppColors.errorDefault,
     onErrorContainer: AppColors.secondary,
     surface: AppColors.secondary,
-    onSurface: AppColors.primaryDefault,
+    onSurface: AppColors.textPrimary,
     onSurfaceVariant: AppColors.secondary,
     outline: Colors.transparent,
     outlineVariant: AppColors.secondary,
@@ -859,77 +885,77 @@ class AppTextThemeData {
         displayLarge: TextStyle(
           fontSize: textSize.displayLarge,
           fontWeight: FontWeight.w400,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         displayMedium: TextStyle(
           fontSize: textSize.displayMedium,
           fontWeight: FontWeight.w600,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         displaySmall: TextStyle(
           fontSize: textSize.displaySmall,
           fontWeight: FontWeight.w400,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         headlineLarge: TextStyle(
           fontSize: textSize.headingLarge,
           fontWeight: FontWeight.w600,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         headlineMedium: TextStyle(
           fontSize: textSize.headingMedium,
           fontWeight: FontWeight.w600,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         headlineSmall: TextStyle(
           fontSize: textSize.headingSmall,
           fontWeight: FontWeight.w600,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         titleLarge: TextStyle(
           fontSize: textSize.titleLarge,
           fontWeight: FontWeight.w400,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         titleMedium: TextStyle(
           fontSize: textSize.titleMedium,
           fontWeight: FontWeight.w400,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         titleSmall: TextStyle(
           fontSize: textSize.titleSmall,
           fontWeight: FontWeight.w400,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         labelLarge: TextStyle(
           fontSize: textSize.labelLarge,
           fontWeight: FontWeight.w600,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         labelMedium: TextStyle(
           fontSize: textSize.labelMedium,
           fontWeight: FontWeight.w600,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         labelSmall: TextStyle(
           fontSize: textSize.labelSmall,
           fontWeight: FontWeight.w600,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         bodyLarge: TextStyle(
           fontSize: textSize.bodyLarge,
           fontWeight: FontWeight.w400,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         bodyMedium: TextStyle(
           fontSize: textSize.bodyMedium,
           fontWeight: FontWeight.w400,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
         bodySmall: TextStyle(
           fontSize: textSize.bodySmall,
           fontWeight: FontWeight.w400,
-          color: AppColors.primaryDefault,
+          color: AppColors.textPrimary,
         ),
       ),
     );
@@ -1114,7 +1140,7 @@ class AppTabBarTheme {
   static double dividerHeight = 3;
 
   static Color labelColor = AppColors.primaryFocus;
-  static Color unselectedLabelColor = AppColors.primaryDefault;
+  static Color unselectedLabelColor = AppColors.textPrimary;
   static EdgeInsetsGeometry labelPadding = const EdgeInsets.only(
     left: AppSpacing.spacing16,
     right: AppSpacing.spacing16,
@@ -1145,7 +1171,7 @@ class AppTabBarTheme {
         color: AppColors.primaryFocus,
       ),
       unselectedLabelStyle: themeData.textTheme.labelLarge?.copyWith(
-        color: AppColors.primaryDefault,
+        color: AppColors.textPrimary,
       ),
     );
   }

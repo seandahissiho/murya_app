@@ -119,6 +119,9 @@ class AppIcons {
 
   // books.svg
   static const String booksPath = '$basePath/books.svg';
+
+  // streak.svg
+  static const String streakPath = '$basePath/streak.svg';
 }
 
 class AppImages {

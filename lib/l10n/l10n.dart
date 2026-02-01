@@ -1069,6 +1069,54 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Prénom Nom'**
   String get user_anonymous_placeholder;
+
+  /// Message de série de jours consécutifs
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0 {Premier jour, beau départ !} =1 {Premier jour, beau départ !} other {{count} jours consécutifs}}'**
+  String streakDays(int count);
+
+  /// Libellé pour le champ e-mail
+  ///
+  /// In fr, this message translates to:
+  /// **'E-mail'**
+  String get email_label;
+
+  /// Message d'erreur pour un e-mail invalide
+  ///
+  /// In fr, this message translates to:
+  /// **'E-mail invalide'**
+  String get email_invalid_error;
+
+  /// Libellé du diplôme
+  ///
+  /// In fr, this message translates to:
+  /// **'Diplôme'**
+  String get diploma_label;
+
+  /// Libellé de l'année de promotion
+  ///
+  /// In fr, this message translates to:
+  /// **'Promotion'**
+  String get diplomaYear_label;
+
+  /// Libellé de l'établissement
+  ///
+  /// In fr, this message translates to:
+  /// **'Établissement'**
+  String get diplomaSchool_label;
+
+  /// Libellé du bouton d'enregistrement
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get saveChanges_button;
+
+  /// Libellé du bouton de modification
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get editChanges_button;
 }
 
 class _AppLocalizationsDelegate

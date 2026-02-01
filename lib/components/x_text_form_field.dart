@@ -28,11 +28,17 @@ class AppXTextFormField extends StatefulWidget {
     this.onEditingComplete,
     this.focusNode,
     this.keyboardType = TextInputType.text,
-    this.fillColor,
+    this.fillColor = const Color(0xFFE7E5DD),
     this.minLines,
     this.maxLines,
     this.autoResize = false,
-    this.borderColor,
+    this.borderColor = const Color(0xFFA8A8A8),
+    this.enabledBorderColor = const Color(0xFFA8A8A8),
+    this.disabledBorderColor = const Color(0xFFA8A8A8),
+    this.focusedBorderColor = const Color(0xFF6246EA),
+    // #D93025
+    this.errorBorderColor = const Color(0xFFD93025),
+    this.focusedErrorBorderColor = const Color(0xFFD93025),
     this.decoration,
     this.identifier = "",
     this.inputFormatters,
@@ -73,11 +79,16 @@ class AppXTextFormField extends StatefulWidget {
   final void Function()? onEditingComplete;
   final FocusNode? focusNode;
   final TextInputType keyboardType;
-  final Color? fillColor;
+  final Color fillColor;
   final int? minLines;
   final int? maxLines;
   final bool autoResize;
-  final Color? borderColor;
+  final Color borderColor;
+  final Color enabledBorderColor;
+  final Color focusedBorderColor;
+  final Color disabledBorderColor;
+  final Color errorBorderColor;
+  final Color focusedErrorBorderColor;
   final InputDecoration? decoration;
   final String identifier;
   final List<TextInputFormatter>? inputFormatters;
@@ -103,6 +114,7 @@ class _AppXTextFormFieldState extends State<AppXTextFormField> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final bool isMobile = DeviceHelper.isMobile(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -111,145 +123,141 @@ class _AppXTextFormFieldState extends State<AppXTextFormField> {
         if (widget.labelInside == false) ...[
           Text(
             widget.labelText ?? '',
-            style: theme.textTheme.labelMedium,
+            style: theme.textTheme.labelMedium!.copyWith(
+              color: widget.disabled ? AppButtonColors.primaryTextDisabled : AppColors.textPrimary,
+            ),
           ),
           AppSpacing.spacing8_Box,
         ],
-        SizedBox(
-          height: 44,
-          child: MouseRegion(
-            onEnter: (value) {
-              setState(() {
-                isHovering = true;
-              });
-            },
-            onExit: (value) {
-              setState(() {
-                isHovering = false;
-              });
-            },
-            cursor: widget.cursor,
-            child: Semantics(
-              identifier: widget.identifier,
-              label: widget.identifier,
-              child: Focus(
-                onFocusChange: widget.onFocusChanged,
-                child: Container(
-                  child: TextFormField(
-                    textAlignVertical: widget.textAlignVertical,
-                    // minLines: widget.minLines ?? (widget.expands ? null : 1),
-                    // expands: widget.expands,
-                    // maxLines: widget.maxLines ?? (widget.expands ? null : 4),
-                    maxLength: widget.maxLength,
-                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                    keyboardType: widget.keyboardType,
-                    inputFormatters: widget.inputFormatters,
-                    readOnly: widget.readOnly,
-                    style: theme.textTheme.bodyMedium,
-                    focusNode: widget.focusNode,
-                    controller: widget.controller,
-                    enabled: !widget.disabled,
-                    obscureText: widget.obscureText,
-                    decoration: widget.decoration ??
-                        InputDecoration(
-                          isDense: true,
-                          errorStyle: widget.errorStyle,
-                          floatingLabelBehavior: widget.floatingLabelBehavior,
-                          floatingLabelAlignment: FloatingLabelAlignment.start,
-                          labelText: widget.labelInside == true ? widget.labelText : null,
-                          labelStyle: theme.textTheme.labelSmall,
-                          constraints: BoxConstraints(maxWidth: 200, minWidth: 100),
-                          // constraints: widget.constraints ??
-                          //     (widget.maxWidth != null
-                          //         ? BoxConstraints(
-                          //             minHeight: theme.inputDecorationTheme.constraints!.minHeight,
-                          //             maxHeight: theme.inputDecorationTheme.constraints!.maxHeight,
-                          //             minWidth: maths.min(
-                          //               theme.inputDecorationTheme.constraints!.minWidth,
-                          //               widget.maxWidth ?? double.infinity,
-                          //             ),
-                          //             maxWidth: widget.maxWidth!,
-                          //           )
-                          //         : (widget.autoResize == true
-                          //             ? null
-                          //             : const BoxConstraints(
-                          //                 maxHeight: double.infinity,
-                          //                 maxWidth: double.infinity,
-                          //               ))),
-                          floatingLabelStyle: theme.textTheme.labelSmall,
-                          prefixIcon: widget.prefixIconPath != null
-                              ? GestureDetector(
-                                  onTap: widget.onPrefixIconPressed,
-                                  child: SizedBox.square(
-                                    dimension: widget.iconSize,
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: SvgPicture.asset(
-                                        widget.prefixIconPath!,
-                                        fit: BoxFit.scaleDown,
-                                        height: widget.iconSize,
-                                        width: widget.iconSize,
-                                        colorFilter: ColorFilter.mode(
-                                          theme.inputDecorationTheme.prefixIconColor ?? AppColors.secondary.shade900,
-                                          BlendMode.srcATop,
-                                        ),
-                                      ),
+        MouseRegion(
+          onEnter: (value) {
+            setState(() {
+              isHovering = true;
+            });
+          },
+          onExit: (value) {
+            setState(() {
+              isHovering = false;
+            });
+          },
+          cursor: widget.cursor,
+          child: Semantics(
+            identifier: widget.identifier,
+            label: widget.identifier,
+            child: Focus(
+              onFocusChange: widget.onFocusChanged,
+              child: TextFormField(
+                textAlignVertical: widget.textAlignVertical,
+                maxLength: widget.maxLength,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                keyboardType: widget.keyboardType,
+                inputFormatters: widget.inputFormatters,
+                readOnly: widget.readOnly,
+                style: theme.textTheme.bodyLarge,
+                focusNode: widget.focusNode,
+                controller: widget.controller,
+                enabled: !widget.disabled,
+                obscureText: widget.obscureText,
+                decoration: widget.decoration ??
+                    InputDecoration(
+                      isDense: true,
+                      errorStyle: widget.errorStyle,
+                      floatingLabelBehavior: widget.floatingLabelBehavior,
+                      floatingLabelAlignment: FloatingLabelAlignment.start,
+                      labelText: widget.labelInside == true ? widget.labelText : null,
+                      labelStyle: theme.textTheme.labelSmall,
+                      constraints: const BoxConstraints(maxWidth: 864, minWidth: 100),
+                      floatingLabelStyle: theme.textTheme.labelSmall,
+                      prefixIcon: widget.prefixIconPath != null
+                          ? GestureDetector(
+                              onTap: widget.onPrefixIconPressed,
+                              child: SizedBox.square(
+                                dimension: widget.iconSize,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: SvgPicture.asset(
+                                    widget.prefixIconPath!,
+                                    fit: BoxFit.scaleDown,
+                                    height: widget.iconSize,
+                                    width: widget.iconSize,
+                                    colorFilter: ColorFilter.mode(
+                                      theme.inputDecorationTheme.prefixIconColor ?? AppColors.secondary.shade900,
+                                      BlendMode.srcATop,
                                     ),
                                   ),
-                                )
-                              : widget.prefixIcon,
-                          suffixIcon: widget.suffixIconPath != null
-                              ? GestureDetector(
-                                  onTap: widget.onSuffixIconPressed,
-                                  child: SizedBox.square(
-                                    dimension: widget.iconSize,
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: SvgPicture.asset(
-                                        widget.suffixIconPath!,
-                                        fit: BoxFit.scaleDown,
-                                        height: widget.iconSize,
-                                        width: widget.iconSize,
-                                        colorFilter: ColorFilter.mode(
-                                          theme.inputDecorationTheme.suffixIconColor ?? AppColors.secondary.shade900,
-                                          BlendMode.srcATop,
-                                        ),
-                                      ),
+                                ),
+                              ),
+                            )
+                          : widget.prefixIcon,
+                      suffixIcon: widget.suffixIconPath != null
+                          ? GestureDetector(
+                              onTap: widget.onSuffixIconPressed,
+                              child: SizedBox.square(
+                                dimension: widget.iconSize,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: SvgPicture.asset(
+                                    widget.suffixIconPath!,
+                                    fit: BoxFit.scaleDown,
+                                    height: widget.iconSize,
+                                    width: widget.iconSize,
+                                    colorFilter: ColorFilter.mode(
+                                      theme.inputDecorationTheme.suffixIconColor ?? AppColors.secondary.shade900,
+                                      BlendMode.srcATop,
                                     ),
                                   ),
-                                )
-                              : widget.suffixIcon,
-                          errorMaxLines: widget.errorMaxLines ?? 5,
-                          fillColor: Colors.transparent,
-                          // fillColor: widget.disabled ? (widget.fillColor ?? AppColors.primary.shade50) : widget.fillColor,
-                          hintText: widget.hintText ?? 'Placeholder',
-                          hintStyle: theme.textTheme.bodySmall?.copyWith(
-                            color: AppColors.whiteSwatch.shade500,
-                          ),
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          focusedErrorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.spacing24 / 3,
-                            vertical: AppSpacing.spacing24 / 6,
-                          ),
-                        ),
-                    validator: widget.validator,
-                    onChanged: widget.onChanged,
-                    onFieldSubmitted: widget.onSubmitted,
-                    onEditingComplete: widget.onEditingComplete,
-                    onTap: () {
-                      widget.onTap?.call();
-                      widget.onFocusChanged?.call(true);
-                    },
-                    onTapOutside: (_) {
-                      widget.onFocusChanged?.call(false);
-                    },
-                  ),
-                ),
+                                ),
+                              ),
+                            )
+                          : widget.suffixIcon,
+                      errorMaxLines: widget.errorMaxLines ?? 5,
+                      hintText: widget.hintText ?? 'Placeholder',
+                      hintStyle: theme.textTheme.bodyLarge?.copyWith(
+                        color: AppButtonColors.primaryTextDisabled,
+                        fontWeight: FontWeight.w300,
+                      ),
+                      filled: true,
+                      fillColor: widget.fillColor,
+                      border: OutlineInputBorder(
+                        borderRadius: widget.borderRadius,
+                        borderSide: BorderSide(color: widget.borderColor, width: 1),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: widget.borderRadius,
+                        borderSide: BorderSide(color: widget.enabledBorderColor, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: widget.borderRadius,
+                        borderSide: BorderSide(color: widget.focusedBorderColor, width: 1),
+                      ),
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: widget.borderRadius,
+                        borderSide: BorderSide(color: widget.disabledBorderColor, width: 1),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: widget.borderRadius,
+                        borderSide: BorderSide(color: widget.errorBorderColor, width: 1),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: widget.borderRadius,
+                        borderSide: BorderSide(color: widget.focusedErrorBorderColor, width: 1),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: AppSpacing.spacing12,
+                        vertical: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 3 - (isMobile ? 1 : 2),
+                      ),
+                    ),
+                validator: widget.validator,
+                onChanged: widget.onChanged,
+                onFieldSubmitted: widget.onSubmitted,
+                onEditingComplete: widget.onEditingComplete,
+                onTap: () {
+                  widget.onTap?.call();
+                  widget.onFocusChanged?.call(true);
+                },
+                onTapOutside: (_) {
+                  widget.onFocusChanged?.call(false);
+                },
               ),
             ),
           ),

@@ -15,7 +15,7 @@ class AppXDropdown<T> extends StatefulWidget {
     this.rightIconPath = AppIcons.angleDownPath,
     this.rightIcon,
     this.leftIcon,
-    this.bgColor = AppColors.backgroundCard,
+    this.bgColor = const Color(0xFFE7E5DD),
     this.fgColor,
     this.borderColor,
     this.shrinkWrap = false,
@@ -96,63 +96,78 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
       Directionality.of(context),
     );
 
-    return SizedBox(
-      height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-      child: FormField(
-          initialValue: widget.controller.text,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) {
-            if (widget.excludeNull && (value)?.isEmpty != false) {
-              return null;
-            }
-            if (value == null || (value).isEmpty) {
-              return 'Veuillez saisir ${widget.labelText.isNotEmptyOrNull ? "votre ${widget.labelText}" : "une donnée"}';
-            }
-            return null;
-          },
-          builder: (FormFieldState<String> state) {
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  key: _anchorKey,
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () async {
-                    if (widget.disabled || widget.readOnly) {
-                      return;
-                    }
-                    if (widget.onTap != null) {
-                      widget.onTap!();
-                      return;
-                    }
-                    FocusScope.of(context).unfocus();
-                    if (!mounted || !context.mounted) return;
-                    await _showMenuAnchored(
-                      context: context,
-                      theme: theme,
-                      isMobile: isMobile,
-                      state: state,
-                      shrinkWrapWidth: shrinkWrapWidth,
-                    );
-                  },
-                  child: widget.child ?? _defaultChild(theme, isMobile, state),
-                ),
-                if (state.hasError) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.spacing8, left: AppSpacing.spacing8),
-                    child: Text(
-                      state.errorText ?? '',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.error.shade500,
-                      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (widget.labelInside == false) ...[
+          Text(
+            widget.labelText ?? '',
+            style: theme.textTheme.labelMedium!.copyWith(
+              color: widget.disabled ? AppButtonColors.primaryTextDisabled : AppColors.textPrimary,
+            ),
+          ),
+          AppSpacing.spacing8_Box,
+        ],
+        SizedBox(
+          height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+          child: FormField(
+              initialValue: widget.controller.text,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) {
+                if (widget.excludeNull && (value)?.isEmpty != false) {
+                  return null;
+                }
+                if (value == null || (value).isEmpty) {
+                  return 'Veuillez saisir ${widget.labelText.isNotEmptyOrNull ? "votre ${widget.labelText}" : "une donnée"}';
+                }
+                return null;
+              },
+              builder: (FormFieldState<String> state) {
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      key: _anchorKey,
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () async {
+                        if (widget.disabled || widget.readOnly) {
+                          return;
+                        }
+                        if (widget.onTap != null) {
+                          widget.onTap!();
+                          return;
+                        }
+                        FocusScope.of(context).unfocus();
+                        if (!mounted || !context.mounted) return;
+                        await _showMenuAnchored(
+                          context: context,
+                          theme: theme,
+                          isMobile: isMobile,
+                          state: state,
+                          shrinkWrapWidth: shrinkWrapWidth,
+                        );
+                      },
+                      child: widget.child ?? _defaultChild(theme, isMobile, state),
                     ),
-                  ),
-                ],
-              ],
-            );
-          }),
+                    if (state.hasError) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(top: AppSpacing.spacing8, left: AppSpacing.spacing8),
+                        child: Text(
+                          state.errorText ?? '',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: AppColors.error.shade500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                );
+              }),
+        ),
+      ],
     );
   }
 
@@ -207,6 +222,10 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
               widget.rightIconPath!,
               height: isMobile ? 20 : 24,
               width: isMobile ? 20 : 24,
+              colorFilter: ColorFilter.mode(
+                widget.disabled ? AppButtonColors.primaryTextDisabled : AppColors.textPrimary,
+                BlendMode.srcATop,
+              ),
             ),
           ),
         );
@@ -248,9 +267,11 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                 ? widget.controller.text
                 : (widget.hintTextForced ? widget.hintText! : "Sélectionnez ${widget.hintText ?? "une option"}"),
             style: (isMobile ? theme.textTheme.labelSmall : theme.textTheme.bodyMedium)?.copyWith(
-              color: widget.controller.text.isNotEmpty
-                  ? (widget.fgColor ?? AppColors.primaryDefault)
-                  : AppColors.textSecondary,
+              color: widget.disabled
+                  ? AppButtonColors.primaryTextDisabled
+                  : widget.controller.text.isNotEmpty
+                      ? (widget.fgColor ?? AppColors.textPrimary)
+                      : AppColors.textSecondary,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -704,7 +725,7 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
 
     final textStyle = (isMobile ? theme.textTheme.labelSmall : theme.textTheme.bodyMedium)?.copyWith(
       color: widget.controller.text.isNotEmpty
-          ? (widget.foregroundColor ?? AppColors.primaryDefault)
+          ? (widget.foregroundColor ?? AppColors.textPrimary)
           : AppColors.textSecondary,
     );
 
