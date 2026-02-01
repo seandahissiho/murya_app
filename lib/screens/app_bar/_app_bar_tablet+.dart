@@ -46,7 +46,7 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
             ],
           ),
         ),
-        AppSpacing.sectionMarginBox,
+        AppSpacing.spacing40_Box,
       ],
     );
   }

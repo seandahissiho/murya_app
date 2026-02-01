@@ -141,11 +141,11 @@ class _RankingChartState extends State<RankingChart> {
                       Container(
                         height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
                         margin: const EdgeInsets.only(
-                          top: AppSpacing.containerInsideMargin,
+                          top: AppSpacing.spacing24,
                         ),
                         padding: const EdgeInsets.only(
-                          left: AppSpacing.containerInsideMargin,
-                          right: AppSpacing.containerInsideMargin,
+                          left: AppSpacing.spacing24,
+                          right: AppSpacing.spacing24,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
@@ -254,7 +254,7 @@ class _RankingChartState extends State<RankingChart> {
                           ],
                         ),
                       ),
-                      AppSpacing.containerInsideMarginSmallBox,
+                      AppSpacing.spacing12_Box,
                     ],
                   );
                 },
@@ -376,10 +376,10 @@ class RankingCard extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.only(
-            left: AppSpacing.containerInsideMarginSmall,
-            right: AppSpacing.containerInsideMarginSmall,
-            top: AppSpacing.containerInsideMarginSmall,
-            bottom: AppSpacing.elementMargin,
+            left: AppSpacing.spacing12,
+            right: AppSpacing.spacing12,
+            top: AppSpacing.spacing12,
+            bottom: AppSpacing.spacing8,
           ),
           decoration: BoxDecoration(
             color: color,
@@ -429,7 +429,7 @@ class RankingCard extends StatelessWidget {
                   ),
                 ),
               ),
-              AppSpacing.elementMarginBox,
+              AppSpacing.spacing8_Box,
               Text("#$rank", style: theme.textTheme.labelMedium?.copyWith(color: textColor)),
             ],
           ),
@@ -448,10 +448,10 @@ class RankingCard extends StatelessWidget {
         ],
         Container(
           padding: const EdgeInsets.only(
-            left: AppSpacing.containerInsideMarginSmall,
-            right: AppSpacing.containerInsideMarginSmall,
-            top: AppSpacing.containerInsideMarginSmall,
-            bottom: AppSpacing.elementMargin,
+            left: AppSpacing.spacing12,
+            right: AppSpacing.spacing12,
+            top: AppSpacing.spacing12,
+            bottom: AppSpacing.spacing8,
           ),
           decoration: const BoxDecoration(
             color: Colors.transparent,
@@ -494,7 +494,7 @@ class RankingCard extends StatelessWidget {
                   ),
                 ),
               ),
-              AppSpacing.elementMarginBox,
+              AppSpacing.spacing8_Box,
               Container(
                 color: color,
                 child: Text("#$rank", style: theme.textTheme.labelMedium?.copyWith(color: textColor)),

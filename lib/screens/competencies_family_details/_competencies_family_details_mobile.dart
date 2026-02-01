@@ -52,7 +52,7 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                           destination: AppRoutes.jobDetails.replaceFirst(':id', jobId),
                           data: {'jobTitle': _job.title},
                         ),
-                        AppSpacing.groupMarginBox,
+                        AppSpacing.spacing16_Box,
                         AppBreadcrumb(
                           items: [
                             BreadcrumbItem(
@@ -83,7 +83,7 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                   const AppXCloseButton(),
                 ],
               ),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               Row(
                 children: [
                   Container(
@@ -99,7 +99,7 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                       colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
                     ),
                   ),
-                  AppSpacing.elementMarginBox,
+                  AppSpacing.spacing8_Box,
                   Flexible(
                     child: RichText(
                       text: TextSpan(
@@ -145,7 +145,7 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                   ),
                 ],
               ),
-              AppSpacing.containerInsideMarginBox,
+              AppSpacing.spacing24_Box,
               Expanded(
                 child: SingleChildScrollView(
                   child: LayoutBuilder(builder: (context, constraints) {
@@ -169,25 +169,25 @@ class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
                             collapseText: '\n\n${locale.show_less}',
                             linkEllipsis: false,
                           ),
-                          AppSpacing.containerInsideMarginBox,
+                          AppSpacing.spacing24_Box,
                         ],
                         Container(
                           decoration: const BoxDecoration(
                             color: AppColors.backgroundCard,
                             borderRadius: AppRadius.borderRadius20,
                           ),
-                          padding: const EdgeInsets.all(AppSpacing.groupMargin),
+                          padding: const EdgeInsets.all(AppSpacing.spacing16),
                           child: Column(
                             children: _cf.competencies.map((competency) {
                               bool isLast = _cf.competencies.indexOf(competency) == _cf.competencies.length - 1;
                               return Padding(
-                                padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.groupMargin),
+                                padding: EdgeInsets.only(bottom: isLast ? 0 : AppSpacing.spacing16),
                                 child: CompetencyCard(competency: competency),
                               );
                             }).toList(),
                           ),
                         ),
-                        AppSpacing.sectionMarginBox,
+                        AppSpacing.spacing40_Box,
                         const AppFooter(),
                       ],
                     );

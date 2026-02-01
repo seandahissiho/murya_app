@@ -24,13 +24,13 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
                 flex: 4,
                 child: UserListBox(),
               ),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               InvitationBox(),
               Spacer(),
             ],
           ),
         ),
-        AppSpacing.groupMarginBox,
+        AppSpacing.spacing16_Box,
         Expanded(
           flex: 1,
           child: SizedBox(
@@ -40,13 +40,13 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   UserInfoBox(),
-                  AppSpacing.groupMarginBox,
+                  AppSpacing.spacing16_Box,
                   QuestInfoBox(),
-                  AppSpacing.groupMarginBox,
+                  AppSpacing.spacing16_Box,
                   PossibleRewardsBox(),
-                  AppSpacing.groupMarginBox,
+                  AppSpacing.spacing16_Box,
                   RecentActivitiesBox(),
-                  AppSpacing.groupMarginBox,
+                  AppSpacing.spacing16_Box,
                 ],
               ),
             ),
@@ -148,8 +148,8 @@ class UserListBox extends StatelessWidget {
         return TableCell(
             child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: AppSpacing.containerInsideMargin,
-            horizontal: index == 0 ? AppSpacing.containerInsideMargin : 0,
+            vertical: AppSpacing.spacing24,
+            horizontal: index == 0 ? AppSpacing.spacing24 : 0,
           ),
           child: Text(
             header,
@@ -232,7 +232,7 @@ class UserListBox extends StatelessWidget {
             child: SizedBox(
           height: _userRowHeight,
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.containerInsideMarginSmall),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,19 +257,19 @@ class UserListBox extends StatelessWidget {
             child: SizedBox(
           height: _userRowHeight,
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.containerInsideMarginSmall),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                AppSpacing.elementMarginBox,
+                AppSpacing.spacing8_Box,
                 Text(
                   '${user.diamonds}',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: AppColors.textPrimary,
                   ),
                 ),
-                AppSpacing.elementMarginBox,
+                AppSpacing.spacing8_Box,
                 SvgPicture.asset(
                   AppIcons.diamondIconPath,
                   height: 14,
@@ -283,7 +283,7 @@ class UserListBox extends StatelessWidget {
             child: SizedBox(
           height: _userRowHeight,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.containerInsideMarginSmall),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
             child: Align(
               alignment: Alignment.centerLeft,
               child: user.completedQuizzes > 0
@@ -304,12 +304,12 @@ class UserListBox extends StatelessWidget {
             child: SizedBox(
           height: _userRowHeight,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.containerInsideMarginSmall),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                if (user.completedQuizzes > 0) AppSpacing.elementMarginBox,
+                if (user.completedQuizzes > 0) AppSpacing.spacing8_Box,
                 user.completedQuizzes > 0
                     ? Text(
                         '${user.percentage.toStringAsFixed(0)}%',
@@ -329,8 +329,8 @@ class UserListBox extends StatelessWidget {
   Widget pendingChip(ThemeData theme, String text) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.elementMargin,
-        vertical: AppSpacing.tinyMargin,
+        horizontal: AppSpacing.spacing8,
+        vertical: AppSpacing.spacing4,
       ),
       decoration: const BoxDecoration(
         // rgba(245, 163, 63, 0.2)
@@ -364,7 +364,7 @@ class InvitationBox extends StatelessWidget {
         borderRadius: AppRadius.small,
         border: Border.all(color: AppColors.borderLight, width: 2),
       ),
-      padding: const EdgeInsets.all(AppSpacing.containerInsideMargin),
+      padding: const EdgeInsets.all(AppSpacing.spacing24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -379,7 +379,7 @@ class InvitationBox extends StatelessWidget {
               color: AppButtonColors.secondaryTextDefault,
             ),
           ),
-          AppSpacing.groupMarginBox,
+          AppSpacing.spacing16_Box,
           RichText(
               text: TextSpan(
             text: '${locale.inviteFriends_description}\n',
@@ -397,7 +397,7 @@ class InvitationBox extends StatelessWidget {
               ),
             ],
           )),
-          AppSpacing.containerInsideMarginBox,
+          AppSpacing.spacing24_Box,
           AppXButton(
             leftIcon: const Icon(
               Icons.person_add_alt_1_outlined,
@@ -432,7 +432,7 @@ class UserInfoBox extends StatelessWidget {
             borderRadius: AppRadius.small,
             border: Border.all(color: AppColors.borderLight, width: 2),
           ),
-          padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
+          padding: const EdgeInsets.all(AppSpacing.spacing12),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -449,7 +449,7 @@ class UserInfoBox extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              AppSpacing.elementMarginBox,
+              AppSpacing.spacing8_Box,
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -502,7 +502,7 @@ class QuestInfoBox extends StatelessWidget {
                 border: Border.all(color: AppColors.borderMedium),
                 borderRadius: AppRadius.small,
               ),
-              padding: const EdgeInsets.all(AppSpacing.containerInsideMargin * scale),
+              padding: const EdgeInsets.all(AppSpacing.spacing24 * scale),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -515,7 +515,7 @@ class QuestInfoBox extends StatelessWidget {
                       fontSize: 14 * scale,
                     ),
                   ),
-                  AppSpacing.tinyMarginBox,
+                  AppSpacing.spacing4_Box,
                   Flexible(
                     child: AutoSizeText(
                       (questGroup.group?.title ?? '').toString(),
@@ -528,7 +528,7 @@ class QuestInfoBox extends StatelessWidget {
                       maxLines: 2,
                     ),
                   ),
-                  AppSpacing.groupMarginBox,
+                  AppSpacing.spacing16_Box,
                   // Progress bar
                   Stack(
                     children: [
@@ -541,7 +541,7 @@ class QuestInfoBox extends StatelessWidget {
                       ),
                       Container(
                         height: 16 * scale,
-                        width: (constraints.maxWidth - 2 * AppSpacing.containerInsideMargin * scale) *
+                        width: (constraints.maxWidth - 2 * AppSpacing.spacing24 * scale) *
                             (completionPercentage(questGroup)),
                         decoration: BoxDecoration(
                           color: AppColors.primaryFocus,
@@ -686,10 +686,10 @@ class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
         border: Border.all(color: AppColors.borderLight, width: 2),
       ),
       padding: const EdgeInsets.only(
-        top: AppSpacing.containerInsideMargin,
-        right: AppSpacing.containerInsideMargin,
-        left: AppSpacing.containerInsideMargin,
-        bottom: AppSpacing.containerInsideMarginSmall + AppSpacing.tinyMargin,
+        top: AppSpacing.spacing24,
+        right: AppSpacing.spacing24,
+        left: AppSpacing.spacing24,
+        bottom: AppSpacing.spacing12 + AppSpacing.spacing4,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -742,7 +742,7 @@ class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
               ),
             ],
           ),
-          AppSpacing.textFieldMarginBox,
+          AppSpacing.spacing16_Box,
           Flexible(
             child: ListView.builder(
               shrinkWrap: true,
@@ -753,7 +753,7 @@ class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
                 final reward = demoRewards[index];
                 return Padding(
                   padding: EdgeInsets.only(
-                    bottom: index == math.min(demoRewards.length, 3) - 1 ? 0 : AppSpacing.textFieldMargin,
+                    bottom: index == math.min(demoRewards.length, 3) - 1 ? 0 : AppSpacing.spacing16,
                   ),
                   child: RewardListItem(reward: reward),
                 );
@@ -822,7 +822,7 @@ class _RewardListItemState extends State<RewardListItem> {
                     )
                   : null,
             ),
-            padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
+            padding: const EdgeInsets.all(AppSpacing.spacing12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
@@ -852,7 +852,7 @@ class _RewardListItemState extends State<RewardListItem> {
                     ),
                   ),
                 ),
-                AppSpacing.groupMarginBox,
+                AppSpacing.spacing16_Box,
                 Expanded(
                   flex: 100,
                   child: Column(
@@ -874,7 +874,7 @@ class _RewardListItemState extends State<RewardListItem> {
                           // height: 1 / 3.8,
                         ),
                       ),
-                      AppSpacing.tinyTinyMarginBox,
+                      AppSpacing.spacing2_Box,
                       Text(
                         "${widget.reward.kind.label(locale)} • ${widget.reward.city}",
                         style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(

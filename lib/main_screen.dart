@@ -17,22 +17,19 @@ import 'package:murya/realtime/realtime_coordinator.dart';
 import 'package:murya/realtime/sse_service.dart';
 
 class AppScaffold extends StatefulWidget {
-  const AppScaffold({super.key});
+  final Widget child;
+
+  const AppScaffold({
+    super.key,
+    required this.child,
+  });
 
   @override
   State<AppScaffold> createState() => _AppScaffoldState();
 }
 
 class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
-  final _beamerKey = GlobalKey<BeamerState>();
   late final RealtimeCoordinator _realtimeCoordinator;
-  final beamerDelegate = BeamerDelegate(
-    initialPath: AppRoutes.landing, // Define the initial path
-    transitionDelegate: const NoAnimationTransitionDelegate(),
-    locationBuilder: BeamerLocationBuilder(
-      beamLocations: beamLocations,
-    ),
-  );
 
   get _isAuthPath {
     final state = context.read<AppBloc>().state;
@@ -90,13 +87,11 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
       }
       if (!mounted || !context.mounted) return; // Exit if the widget is not mounted
       context.read<AuthenticationBloc>().updateRepositoriesContext(context);
-      beamerDelegate.addListener(_setStateListener);
     });
   }
 
   @override
   void dispose() {
-    beamerDelegate.removeListener(_setStateListener);
     _realtimeCoordinator.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -109,18 +104,6 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
     //   setState(() {});
     // });
     super.didChangeMetrics();
-  }
-
-  void _setStateListener() {
-    // final RouteInformation currentLocation = Beamer.of(context).currentBeamLocation.state.routeInformation;
-    // String currentRoute = currentLocation.uri.path;
-    // context.read<AppAppBloc>().add(ChangeRouteEvent(
-    //   route: currentRoute,
-    //   context: context,
-    // ));
-    // if (context.mounted && mounted) {
-    //   setState(() {});
-    // }
   }
 
   @override
@@ -165,10 +148,7 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Expanded(
-                              child: Beamer(
-                                key: _beamerKey,
-                                routerDelegate: beamerDelegate,
-                              ),
+                              child: widget.child,
                             ),
                           ],
                         ),
@@ -205,16 +185,24 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
     // }
 
     if (state.isAuthenticated) {
-      Beamer.of(context).beamToNamed(AppRoutes.landing);
-    } else {
-      context.read<AppBloc>().add(
-            AppChangeRoute(
-              currentRoute: AppRoutes.landing,
-              nextRoute: AppRoutes.landing,
-            ),
-          );
-      Beamer.of(context).beamToNamed(AppRoutes.landing);
+      final currentPath = Beamer.of(context).currentBeamLocation.state.routeInformation.uri.path;
+      final isAuthOrLanding = currentPath.startsWith(AppRoutes.landing) ||
+          currentPath.startsWith(AppRoutes.login) ||
+          currentPath.startsWith(AppRoutes.register) ||
+          currentPath.startsWith(AppRoutes.forgotPassword);
+      if (isAuthOrLanding) {
+        Beamer.of(context).beamToNamed(AppRoutes.landing);
+      }
+      return;
     }
+
+    context.read<AppBloc>().add(
+          AppChangeRoute(
+            currentRoute: AppRoutes.landing,
+            nextRoute: AppRoutes.landing,
+          ),
+        );
+    Beamer.of(context).beamToNamed(AppRoutes.landing);
   }
 }
 

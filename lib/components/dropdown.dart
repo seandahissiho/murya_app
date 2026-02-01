@@ -141,7 +141,7 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                 ),
                 if (state.hasError) ...[
                   Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.elementMargin, left: AppSpacing.elementMargin),
+                    padding: const EdgeInsets.only(top: AppSpacing.spacing8, left: AppSpacing.spacing8),
                     child: Text(
                       state.errorText ?? '',
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -176,9 +176,9 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
         maxLines: 1,
       )..layout();
 
-      double itemWidth = painter.width + (AppSpacing.tinyMargin * 2.5);
+      double itemWidth = painter.width + (AppSpacing.spacing4 * 2.5);
       if (item.leadingIcon != null) {
-        itemWidth += 14 + AppSpacing.elementMargin;
+        itemWidth += 14 + AppSpacing.spacing8;
       }
       if (itemWidth > maxWidth) {
         maxWidth = itemWidth;
@@ -262,11 +262,11 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
             children: [
               if (widget.leftIcon != null || widget.leftIconPath != null) ...[
                 widget.leftIcon ?? SvgPicture.asset(widget.leftIconPath!),
-                const SizedBox(width: AppSpacing.elementMargin),
+                const SizedBox(width: AppSpacing.spacing8),
               ],
               if (widget.shrinkWrap || !hasBoundedWidth) textWidget else Expanded(child: textWidget),
-              if (widget.shrinkWrap) AppSpacing.elementMarginBox,
-              if (!widget.shrinkWrap) const SizedBox(width: AppSpacing.elementMargin),
+              if (widget.shrinkWrap) AppSpacing.spacing8_Box,
+              if (!widget.shrinkWrap) const SizedBox(width: AppSpacing.spacing8),
               _dropdownIcon(context),
             ],
           );
@@ -357,7 +357,7 @@ class _AppXDropdownState<T> extends State<AppXDropdown<T>> {
                   height: 16,
                   child: FittedBox(fit: BoxFit.contain, child: item.leadingIcon!),
                 ),
-                const SizedBox(width: AppSpacing.elementMargin),
+                const SizedBox(width: AppSpacing.spacing8),
               ],
               Expanded(
                 child: Text(

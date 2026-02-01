@@ -26,7 +26,7 @@ class AppFooter extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
+          padding: const EdgeInsets.all(AppSpacing.spacing12),
           decoration: const BoxDecoration(
             color: AppColors.backgroundHover,
             borderRadius: BorderRadius.all(Radius.circular(AppRadius.largeRadius)),
@@ -114,7 +114,7 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                       );
                 },
               ),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               TextWithLinks(
                 textsLinks: [
                   TextLink(
@@ -153,7 +153,7 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               Text(
                 local.footer_copyright,
                 style: GoogleFonts.inter(
@@ -242,7 +242,7 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
                       );
                 },
               ),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               TextWithLinks(
                 textsLinks: [
                   TextLink(
@@ -281,7 +281,7 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               Text(
                 local.footer_copyright,
                 style: GoogleFonts.inter(

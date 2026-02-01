@@ -114,6 +114,10 @@
   "@skillsDiagramTitle": {
     "description": "Titre du diagramme des compétences"
   },
+  "profile_account_title": "Compte",
+  "@profile_account_title": {
+    "description": "Titre de la section compte dans le profil"
+  },
   "skillLevel_easy": "Junior",
   "@skillLevel_easy": {
     "description": "Niveau de compétence facile"

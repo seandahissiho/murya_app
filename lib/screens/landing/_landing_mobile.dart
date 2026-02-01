@@ -41,9 +41,9 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
         safeAreaPadding.bottom -
         (AppSpacing.pageMargin * 2) -
         27 -
-        AppSpacing.sectionMargin;
+        AppSpacing.spacing40;
     if (DeviceHelper.isMobile(context)) {
-      return (availableHeight + AppSpacing.sectionMargin) / 4;
+      return (availableHeight + AppSpacing.spacing40) / 4;
     } else {
       return math.max((availableHeight) / 2 - 90, 225);
     }
@@ -70,7 +70,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                 height: double.infinity,
                 child: LayoutBuilder(builder: (context, constraints) {
                   double mainBodyHeight = constraints.maxHeight -
-                      AppSpacing.sectionMargin -
+                      AppSpacing.spacing40 -
                       footerHey +
                       AppSpacing.pageMargin +
                       MediaQuery.of(context).padding.bottom;
@@ -136,12 +136,12 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                                       bool isFirstOfRow = i == 0 ||
                                           (i > 0 && concats.contains(i - 1)) ||
                                           (i > 1 && concats.contains(i - 2));
-                                      double left = isFirstOfRow ? 0 : AppSpacing.elementMargin / 2;
+                                      double left = isFirstOfRow ? 0 : AppSpacing.spacing8 / 2;
 
                                       return Padding(
                                         padding: EdgeInsets.only(
                                           left: left,
-                                          right: AppSpacing.elementMargin / 2,
+                                          right: AppSpacing.spacing8 / 2,
                                         ),
                                         child: SingleChildScrollView(
                                           physics: const NeverScrollableScrollPhysics(),
@@ -155,17 +155,17 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: [
                                                       _test(module, i),
-                                                      AppSpacing.elementMarginBox,
+                                                      AppSpacing.spacing8_Box,
                                                       _test(nextModule!, i + 1),
                                                     ],
                                                   ),
                                                 )
                                               else
                                                 _test(module, i),
-                                              AppSpacing.elementMarginBox,
+                                              AppSpacing.spacing8_Box,
                                               if (concatColumn) ...[
                                                 _test(nextModule!, i + 1),
-                                                AppSpacing.elementMarginBox,
+                                                AppSpacing.spacing8_Box,
                                               ],
                                             ],
                                           ),
@@ -178,7 +178,7 @@ class _MobileLandingScreenState extends State<MobileLandingScreen> {
                             ),
                           ),
                           const SliverToBoxAdapter(
-                            child: AppSpacing.sectionMarginBox,
+                            child: AppSpacing.spacing40_Box,
                           ),
                           SliverToBoxAdapter(
                             child: AppFooter(key: _footerWrapKey, isLanding: true),

@@ -123,12 +123,12 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
           builder: (context, constraints) {
             return Wrap(
               alignment: WrapAlignment.start,
-              spacing: AppSpacing.textFieldMargin,
-              runSpacing: AppSpacing.textFieldMargin,
+              spacing: AppSpacing.spacing16,
+              runSpacing: AppSpacing.spacing16,
               children: rewards.map((reward) {
                 return Container(
                   height: 325,
-                  width: (constraints.maxWidth / 4) - 3 * AppSpacing.textFieldMargin,
+                  width: (constraints.maxWidth / 4) - 3 * AppSpacing.spacing16,
                   constraints: const BoxConstraints(
                     maxWidth: 313,
                     minWidth: 250,
@@ -190,7 +190,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                                         height: 16,
                                         width: 16,
                                       ),
-                                      AppSpacing.elementMarginBox,
+                                      AppSpacing.spacing8_Box,
                                       Text(
                                         locale.reward_remainingPlaces(reward.remainingPlaces),
                                         style: theme.textTheme.labelSmall?.copyWith(
@@ -206,9 +206,9 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                             ],
                           ),
                         ),
-                        AppSpacing.textFieldMarginBox,
+                        AppSpacing.spacing16_Box,
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.textFieldMargin),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
                           child: Text(
                             reward.title,
                             style: theme.textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -216,7 +216,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.textFieldMargin),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
                           child: Text(
                             "${reward.kind.label(locale)} • ${reward.city}",
                             style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
@@ -224,7 +224,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                         ),
                         const Spacer(),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.textFieldMargin),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
                           child: AppXButton(
                             shrinkWrap: false,
                             text: locale.reward_unlock_cta,
@@ -237,7 +237,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                             isLoading: state is RewardsLoading,
                           ),
                         ),
-                        AppSpacing.textFieldMarginBox,
+                        AppSpacing.spacing16_Box,
                       ],
                     ),
                   ),

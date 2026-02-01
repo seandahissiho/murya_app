@@ -182,8 +182,8 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                                           if (columnCursor >= maxColumns) {
                                             columnCursor = 0;
                                           }
-                                          double left = isFirstOfRow ? 0 : AppSpacing.elementMargin / 2;
-                                          double right = isLastOfRow ? 0 : AppSpacing.elementMargin / 2;
+                                          double left = isFirstOfRow ? 0 : AppSpacing.spacing8 / 2;
+                                          double right = isLastOfRow ? 0 : AppSpacing.spacing8 / 2;
 
                                           return Padding(
                                             padding: EdgeInsets.only(
@@ -193,21 +193,21 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                                             child: Column(
                                               children: [
                                                 _test(module, i),
-                                                AppSpacing.elementMarginBox,
+                                                AppSpacing.spacing8_Box,
                                                 if (concat2) ...[
                                                   _test(nextModule!, i + 1),
-                                                  AppSpacing.elementMarginBox,
+                                                  AppSpacing.spacing8_Box,
                                                 ],
                                                 if (concat3) ...[
                                                   Row(
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: [
                                                       _test(nextModule!, i + 1),
-                                                      AppSpacing.elementMarginBox,
+                                                      AppSpacing.spacing8_Box,
                                                       _test(nextNextModule!, i + 2),
                                                     ],
                                                   ),
-                                                  AppSpacing.elementMarginBox,
+                                                  AppSpacing.spacing8_Box,
                                                 ],
                                               ],
                                             ),
@@ -219,7 +219,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
                                 ),
                               ),
                               const SliverToBoxAdapter(
-                                child: AppSpacing.containerInsideMarginSmallBox,
+                                child: AppSpacing.spacing12_Box,
                               ),
                               SliverToBoxAdapter(
                                 child: AppFooter(key: _footerWrapKey, isLanding: true),

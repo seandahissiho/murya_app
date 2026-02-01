@@ -54,7 +54,7 @@ class _AppDatePickerState extends State<AppDatePicker> {
 // 3. Estimate dialog size (you can measure it offstage if dynamic)
           const dialogWidth = 400.0;
           const dialogHeight = 400.0;
-          const margin = AppSpacing.tinyMargin;
+          const margin = AppSpacing.spacing4;
 
 // 4. Compute available space on each side
           final spaceAbove = widgetTopLeft.dy;
@@ -144,7 +144,7 @@ class _AppDatePickerState extends State<AppDatePicker> {
 // 3. Estimate dialog size (you can measure it offstage if dynamic)
         const dialogWidth = 400.0;
         const dialogHeight = 400.0;
-        const margin = AppSpacing.tinyMargin;
+        const margin = AppSpacing.spacing4;
 
 // 4. Compute available space on each side
         final spaceAbove = widgetTopLeft.dy;

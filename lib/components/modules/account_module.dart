@@ -149,7 +149,7 @@ class _AccountBodyContentState extends State<AccountBodyContent> {
                     _AvatarPhoto(photoUrl: photoUrl, module: widget.module, scale: scale),
                     if (widget.module.boxType == AppModuleType.type1 ||
                         widget.module.boxType == AppModuleType.type1_2) ...[
-                      SizedBox(height: AppSpacing.groupMargin * scale, width: AppSpacing.groupMargin * scale),
+                      SizedBox(height: AppSpacing.spacing16 * scale, width: AppSpacing.spacing16 * scale),
                       AutoSizeText(
                         fullName,
                         style: GoogleFonts.anton(
@@ -186,7 +186,7 @@ class _AccountBodyContentState extends State<AccountBodyContent> {
                       border: Border.all(color: AppColors.borderMedium),
                       borderRadius: AppRadius.small,
                     ),
-                    padding: EdgeInsets.all(AppSpacing.containerInsideMargin * scale / 2),
+                    padding: EdgeInsets.all(AppSpacing.spacing24 * scale / 2),
                     child: Column(
                       mainAxisSize:
                           widget.module.boxType == AppModuleType.type1_2 ? MainAxisSize.max : MainAxisSize.min,
@@ -200,7 +200,7 @@ class _AccountBodyContentState extends State<AccountBodyContent> {
                             fontSize: 14 * scale,
                           ),
                         ),
-                        AppSpacing.tinyMarginBox,
+                        AppSpacing.spacing4_Box,
                         Flexible(
                           child: AutoSizeText(
                             (questGroup.group?.title ?? '').toString(),
@@ -213,7 +213,7 @@ class _AccountBodyContentState extends State<AccountBodyContent> {
                             maxLines: 2,
                           ),
                         ),
-                        AppSpacing.groupMarginBox,
+                        AppSpacing.spacing16_Box,
                         // Progress bar
                         Stack(
                           children: [
@@ -226,7 +226,7 @@ class _AccountBodyContentState extends State<AccountBodyContent> {
                             ),
                             Container(
                               height: 16 * scale,
-                              width: (constraints.maxWidth - 2 * AppSpacing.containerInsideMargin * scale) *
+                              width: (constraints.maxWidth - 2 * AppSpacing.spacing24 * scale) *
                                   (completionPercentage(questGroup)),
                               decoration: BoxDecoration(
                                 color: AppColors.primaryFocus,

@@ -89,7 +89,7 @@ class _BaseScreenState extends State<BaseScreen> {
               top: AppSpacing.pageMargin,
               left: AppSpacing.pageMargin,
               right: AppSpacing.pageMargin,
-              bottom: AppSpacing.elementMargin,
+              bottom: AppSpacing.spacing8,
             ),
             child: widget.mobileScreen ?? Container(),
           ),

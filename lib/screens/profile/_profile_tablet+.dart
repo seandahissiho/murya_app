@@ -36,7 +36,7 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
                 const AppXCloseButton(),
               ],
             ),
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             Expanded(
               child: _tabs(theme, locale),
             ),
@@ -62,7 +62,7 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
 
   _tabs(ThemeData theme, AppLocalizations locale) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Column(
         children: [
           SizedBox(
@@ -73,7 +73,7 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
                 Tab(text: AppLocalizations.of(context).parcoursTab_profile),
                 Tab(text: AppLocalizations.of(context).parcoursTab_objectives),
                 Tab(text: AppLocalizations.of(context).parcoursTab_rewards),
-                // Tab(text: AppLocalizations.of(context).parcoursTab_settings),
+                Tab(text: AppLocalizations.of(context).parcoursTab_settings),
               ],
             ),
           ),
@@ -85,7 +85,7 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
                 TabletJourneyInfoTab(),
                 TabletJourneyObjectivesTab(),
                 TabletJourneyRewardsTab(),
-                // TabletJourneySettingsTab(),
+                TabletJourneySettingsTab(),
               ],
             ),
           ),

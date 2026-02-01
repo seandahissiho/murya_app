@@ -79,7 +79,7 @@ class CompetencyCard extends StatelessWidget {
           borderRadius: AppRadius.medium,
           color: Colors.white,
         ),
-        padding: const EdgeInsets.all(AppSpacing.groupMargin),
+        padding: const EdgeInsets.all(AppSpacing.spacing16),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,14 +99,14 @@ class CompetencyCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  AppSpacing.elementMarginBox,
+                  AppSpacing.spacing8_Box,
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       TagWidget(type: competency.type),
-                      AppSpacing.elementMarginBox,
+                      AppSpacing.spacing8_Box,
                       TagWidget(type: competency.level),
                       if (isMobile) ...[
                         const Spacer(),
@@ -144,7 +144,7 @@ class CompetencyCard extends StatelessWidget {
               ),
             ),
             if (!isMobile) ...[
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -160,7 +160,7 @@ class CompetencyCard extends StatelessWidget {
                       text: locale.consult,
                     ),
                   ),
-                  AppSpacing.groupMarginBox,
+                  AppSpacing.spacing16_Box,
                   Tooltip(
                     decoration: const BoxDecoration(
                       color: AppColors.primaryDefault,
@@ -211,8 +211,8 @@ class TagWidget extends StatelessWidget {
         borderRadius: AppRadius.medium,
       ),
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.elementMargin,
-        vertical: AppSpacing.tinyMargin,
+        horizontal: AppSpacing.spacing8,
+        vertical: AppSpacing.spacing4,
       ),
       child: Text(
         _getTypeLabel(type, context),

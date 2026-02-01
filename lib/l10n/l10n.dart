@@ -254,6 +254,12 @@ abstract class AppLocalizations {
   /// **'Diagramme'**
   String get skillsDiagramTitle;
 
+  /// Titre de la section compte dans le profil
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte'**
+  String get profile_account_title;
+
   /// Niveau de compétence facile
   ///
   /// In fr, this message translates to:

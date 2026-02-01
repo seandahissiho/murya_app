@@ -100,7 +100,7 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                       height: 32,
                     ),
                   ),
-                  AppSpacing.elementMarginBox,
+                  AppSpacing.spacing8_Box,
                   Expanded(
                     child: SizedBox(
                       height: 8,
@@ -133,14 +133,14 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                       ),
                     ),
                   ),
-                  AppSpacing.elementMarginBox,
+                  AppSpacing.spacing8_Box,
                   ScoreWidget(
                     value: answers.fold(0, (int previousValue, element) => 0),
                   ),
                 ],
               ),
             ),
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             Expanded(
               child: Stack(
                 children: [
@@ -154,7 +154,7 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                           "Question ${currentQuestionIndex + 1 > quiz.questionResponses.length ? quiz.questionResponses.length : currentQuestionIndex + 1}/${quiz.questionResponses.length}",
                           style: theme.textTheme.labelMedium,
                         ),
-                        AppSpacing.tinyMarginBox,
+                        AppSpacing.spacing4_Box,
                         const Spacer(),
                         Expanded(
                           flex: 15,
@@ -171,7 +171,7 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                             ),
                           ),
                         ),
-                        AppSpacing.tinyMarginBox,
+                        AppSpacing.spacing4_Box,
                         const Spacer(),
                         AutoSizeText(
                           currentQuestion?.question.text ?? '',
@@ -179,7 +179,7 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                           maxLines: 3,
                           textAlign: TextAlign.center,
                         ),
-                        AppSpacing.tinyMarginBox,
+                        AppSpacing.spacing4_Box,
                         const Spacer(),
                         Container(
                           constraints: BoxConstraints(
@@ -188,8 +188,8 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                           ),
                           child: LayoutBuilder(builder: (context, constraints) {
                             return Wrap(
-                              spacing: AppSpacing.elementMargin,
-                              runSpacing: AppSpacing.elementMargin,
+                              spacing: AppSpacing.spacing8,
+                              runSpacing: AppSpacing.spacing8,
                               children: List.generate(4, (index) {
                                 return answerCard(index, constraints, theme);
                               }),
@@ -269,8 +269,8 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
 
   _card(dynamic constraints, int index, dynamic theme, {required String type}) {
     return Container(
-      height: constraints.maxHeight / 2 - AppSpacing.elementMargin / 2,
-      width: constraints.maxWidth / 2 - AppSpacing.elementMargin / 2,
+      height: constraints.maxHeight / 2 - AppSpacing.spacing8 / 2,
+      width: constraints.maxWidth / 2 - AppSpacing.spacing8 / 2,
       decoration: BoxDecoration(
         color: type == 'normal'
             ? AppColors.backgroundCard
@@ -288,8 +288,8 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
         borderRadius: AppRadius.borderRadius20,
       ),
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.groupMargin,
-        vertical: AppSpacing.tinyTinyMargin,
+        horizontal: AppSpacing.spacing16,
+        vertical: AppSpacing.spacing2,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -313,7 +313,7 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
                 width: 2,
               ),
             ),
-            padding: const EdgeInsets.all(AppSpacing.elementMargin + AppSpacing.tinyMargin),
+            padding: const EdgeInsets.all(AppSpacing.spacing8 + AppSpacing.spacing4),
             child: Text(
               '${index + 1}',
               // String.fromCharCode(65 + index),
@@ -328,7 +328,7 @@ class _MobileJobEvaluationScreenState extends State<MobileJobEvaluationScreen> w
               textAlign: TextAlign.center,
             ),
           ),
-          AppSpacing.tinyTinyMarginBox,
+          AppSpacing.spacing2_Box,
           Expanded(
             child: Center(
               child: AutoSizeText(

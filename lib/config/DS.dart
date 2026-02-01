@@ -92,26 +92,24 @@ class AppSpacing {
 
   AppSpacing({required this.context});
 
-  static const double tinyTinyMargin = 2.0;
-  static const double tinyMargin = 4.0;
-  static const double elementMargin = 8.0;
-  static const double groupMargin = 16.0;
-  static const double textFieldMargin = 16;
-  static const double containerInsideMarginSmall = 12;
-  static const double containerInsideMargin = 24;
-  static const double sectionMargin = 40.0;
-  static const double pageMargin = 16.0;
-  static const double buttonHorizontalPadding = 12.0;
-  static const double buttonVerticalPadding = 8.0;
+  static const double spacing2 = 2.0;
+  static const double spacing4 = 4.0;
+  static const double spacing8 = 8.0;
+  static const double spacing12 = 12.0;
+  static const double spacing16 = 16.0;
+  static const double spacing24 = 24;
+  static const double spacing40 = 40.0;
+  static const double pageMargin = spacing16;
+  static const double buttonHorizontalPadding = spacing12;
+  static const double buttonVerticalPadding = spacing8;
 
-  static const SizedBox tinyTinyMarginBox = SizedBox.square(dimension: tinyTinyMargin);
-  static const SizedBox tinyMarginBox = SizedBox.square(dimension: tinyMargin);
-  static const SizedBox elementMarginBox = SizedBox.square(dimension: elementMargin);
-  static const SizedBox groupMarginBox = SizedBox.square(dimension: groupMargin);
-  static const SizedBox textFieldMarginBox = SizedBox.square(dimension: textFieldMargin);
-  static const SizedBox containerInsideMarginSmallBox = SizedBox.square(dimension: containerInsideMarginSmall);
-  static const SizedBox containerInsideMarginBox = SizedBox.square(dimension: containerInsideMargin);
-  static const SizedBox sectionMarginBox = SizedBox.square(dimension: sectionMargin);
+  static const SizedBox spacing2_Box = SizedBox.square(dimension: spacing2);
+  static const SizedBox spacing4_Box = SizedBox.square(dimension: spacing4);
+  static const SizedBox spacing8_Box = SizedBox.square(dimension: spacing8);
+  static const SizedBox spacing12_Box = SizedBox.square(dimension: spacing12);
+  static const SizedBox spacing16_Box = SizedBox.square(dimension: spacing16);
+  static const SizedBox spacing24_Box = SizedBox.square(dimension: spacing24);
+  static const SizedBox spacing40_Box = SizedBox.square(dimension: spacing40);
   static const SizedBox pageMarginBox = SizedBox.square(dimension: pageMargin);
 }
 
@@ -639,8 +637,8 @@ class AppDropdownMenuThemeData {
     border: baseInputBorder,
     alignLabelWithHint: false,
     contentPadding: const EdgeInsets.only(
-      left: AppSpacing.elementMargin + AppSpacing.tinyMargin,
-      right: AppSpacing.elementMargin + AppSpacing.tinyMargin,
+      left: AppSpacing.spacing8 + AppSpacing.spacing4,
+      right: AppSpacing.spacing8 + AppSpacing.spacing4,
       top: 0,
       bottom: 0,
     ),
@@ -1089,7 +1087,7 @@ class AppScrollbarThemeData {
     },
   );
 
-  static double? crossAxisMargin = -AppSpacing.sectionMargin / 2;
+  static double? crossAxisMargin = -AppSpacing.spacing40 / 2;
 
   static double? mainAxisMargin = 5.w;
 
@@ -1118,8 +1116,8 @@ class AppTabBarTheme {
   static Color labelColor = AppColors.primaryFocus;
   static Color unselectedLabelColor = AppColors.primaryDefault;
   static EdgeInsetsGeometry labelPadding = const EdgeInsets.only(
-    left: AppSpacing.groupMargin,
-    right: AppSpacing.groupMargin,
+    left: AppSpacing.spacing16,
+    right: AppSpacing.spacing16,
   );
 
   static TextStyle? labelStyle;
@@ -1155,7 +1153,7 @@ class AppTabBarTheme {
 
 bool isDesktop = AppBreakpoints.isDesktop || AppBreakpoints.isLargeDesktop || AppBreakpoints.isTablet;
 // Equivalent to the width of an iphone X
-double kMainBodyWidth = (isDesktop ? 350 : 410) - AppSpacing.pageMargin - AppSpacing.sectionMargin;
+double kMainBodyWidth = (isDesktop ? 350 : 410) - AppSpacing.pageMargin - AppSpacing.spacing40;
 
 enum DeviceType {
   mobile,

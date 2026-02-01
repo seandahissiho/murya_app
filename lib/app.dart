@@ -155,10 +155,9 @@ class _MyAppState extends State<MyApp> {
 
   final beamerDelegate = BeamerDelegate(
     transitionDelegate: const NoAnimationTransitionDelegate(),
-    initialPath: AppRoutes.landing, // Define the initial path
-    locationBuilder: RoutesLocationBuilder(routes: {
-      '*': (context, state, data) => const AppScaffold(),
-    }),
+    locationBuilder: BeamerLocationBuilder(
+      beamLocations: beamLocations,
+    ),
     guards: [
       BeamGuard(
         pathPatterns: AppRoutes.unguardedRoutes,
@@ -200,16 +199,20 @@ class _MyAppState extends State<MyApp> {
           // scrollBehavior: MyCustomScrollBehavior(),
           routerDelegate: beamerDelegate,
           routeInformationParser: BeamerParser(),
-          builder: (context, child) => ResponsiveBreakpoints.builder(
-            child: MultiRepositoryProvider(
-              providers: getRepositoryProviders(context),
-              child: MultiBlocProvider(
-                providers: getBlocProviders(context),
-                child: child!,
+          builder: (context, child) => BeamerProvider(
+            routerDelegate: beamerDelegate,
+            child: ResponsiveBreakpoints.builder(
+              child: MultiRepositoryProvider(
+                providers: getRepositoryProviders(context),
+                child: MultiBlocProvider(
+                  providers: getBlocProviders(context),
+                  child: AppScaffold(
+                    child: child ?? const SizedBox.shrink(),
+                  ),
+                ),
               ),
+              breakpoints: _buildResponsiveBreakpoints,
             ),
-            // child: child!,
-            breakpoints: _buildResponsiveBreakpoints,
           ),
           theme: buildLightTheme(context),
           darkTheme: buildDarkTheme(context),

@@ -147,7 +147,7 @@ class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStat
             children: [
               Container(
                 height: widget.isReward ? null : (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 1.5,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.tinyMargin),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing4),
                 child: Center(
                   child: ScaleTransition(
                     scale: _scale,
@@ -168,7 +168,7 @@ class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStat
                   ),
                 ),
               ),
-              AppSpacing.tinyMarginBox,
+              AppSpacing.spacing4_Box,
               ScaleTransition(
                 scale: _scale,
                 child: SvgPicture.asset(
@@ -270,7 +270,7 @@ class GoalWidget extends StatelessWidget {
         Container(
           height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 1.5,
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.tinyMargin,
+            horizontal: AppSpacing.spacing4,
           ),
           child: Center(
             child: Text(
@@ -279,7 +279,7 @@ class GoalWidget extends StatelessWidget {
             ),
           ),
         ),
-        AppSpacing.tinyMarginBox,
+        AppSpacing.spacing4_Box,
         SvgPicture.asset(
           AppIcons.targetGoalIconPath,
           width: iconSize,
@@ -342,7 +342,7 @@ class FavoritesWidget extends StatelessWidget {
       children: [
         Container(
           height: isReward ? null : (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 1.5,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.tinyMargin),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing4),
           child: Center(
             child: Text(
               "${isReward ? "+ " : ""}$value",
@@ -350,7 +350,7 @@ class FavoritesWidget extends StatelessWidget {
             ),
           ),
         ),
-        AppSpacing.tinyMarginBox,
+        AppSpacing.spacing4_Box,
         SvgPicture.asset(
           AppIcons.starIconPath,
           width: iconSize,

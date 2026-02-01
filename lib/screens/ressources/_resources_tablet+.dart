@@ -38,7 +38,7 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                 const AppXCloseButton(),
               ],
             ),
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             Expanded(
               child: SingleChildScrollView(
                 child: AppSkeletonizer(
@@ -62,9 +62,9 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                           ),
                         ],
                       ),
-                      AppSpacing.groupMarginBox,
+                      AppSpacing.spacing16_Box,
                       ResourcesCarousel(resources: context.read<ResourcesBloc>().articles, type: ResourceType.article),
-                      AppSpacing.containerInsideMarginBox,
+                      AppSpacing.spacing24_Box,
                       Row(
                         children: [
                           RichText(
@@ -79,9 +79,9 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                           ),
                         ],
                       ),
-                      AppSpacing.groupMarginBox,
+                      AppSpacing.spacing16_Box,
                       ResourcesCarousel(resources: context.read<ResourcesBloc>().podcasts, type: ResourceType.podcast),
-                      AppSpacing.containerInsideMarginBox,
+                      AppSpacing.spacing24_Box,
                       // Videos Section
                       Row(
                         children: [
@@ -97,7 +97,7 @@ class _TabletResourcesScreenState extends State<TabletResourcesScreen> {
                           ),
                         ],
                       ),
-                      AppSpacing.groupMarginBox,
+                      AppSpacing.spacing16_Box,
                       ResourcesCarousel(resources: context.read<ResourcesBloc>().videos, type: ResourceType.video),
                     ],
                   ),

@@ -1,4 +1,6 @@
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:murya/config/custom_classes.dart';
+import 'package:murya/l10n/l10n.dart';
 
 class User {
   final String? id;
@@ -134,6 +136,13 @@ class User {
       'deviceId': deviceId,
       'diamonds': diamonds,
     };
+  }
+
+  String contextName(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    final String first = firstName ?? locale.user_firstName_placeholder;
+    final String last = lastName ?? locale.user_lastName_placeholder;
+    return '$first $last';
   }
 }
 

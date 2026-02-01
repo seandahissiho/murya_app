@@ -123,7 +123,7 @@ class _CFCardState extends State<CFCard> {
             colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
           ),
         ),
-        AppSpacing.groupMarginBox,
+        AppSpacing.spacing16_Box,
         Expanded(
           flex: 100,
           child: Column(
@@ -141,7 +141,7 @@ class _CFCardState extends State<CFCard> {
                   // height: 1 / 3.8,
                 ),
               ),
-              AppSpacing.tinyTinyMarginBox,
+              AppSpacing.spacing2_Box,
               Text(
                 locale.competencies_count(nbCompetencies),
                 style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
@@ -213,7 +213,7 @@ class _CFCardState extends State<CFCard> {
                   )
                 : null,
           ),
-          padding: const EdgeInsets.all(AppSpacing.containerInsideMarginSmall),
+          padding: const EdgeInsets.all(AppSpacing.spacing12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
@@ -231,7 +231,7 @@ class _CFCardState extends State<CFCard> {
                   colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
                 ),
               ),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               Expanded(
                 flex: 100,
                 child: Column(
@@ -250,7 +250,7 @@ class _CFCardState extends State<CFCard> {
                         // height: 1 / 3.8,
                       ),
                     ),
-                    AppSpacing.tinyTinyMarginBox,
+                    AppSpacing.spacing2_Box,
                     Text(
                       locale.competencies_count(nbCompetencies),
                       style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(

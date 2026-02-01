@@ -39,7 +39,7 @@ class _NoBorderDropdownState<T> extends State<NoBorderDropdown> {
       },
       child: Container(
         height: 36,
-        padding: const EdgeInsets.only(bottom: AppSpacing.tinyMargin),
+        padding: const EdgeInsets.only(bottom: AppSpacing.spacing4),
         child: Theme(
           data: ThemeData(),
           child: DropdownButton<T?>(
@@ -63,7 +63,7 @@ class _NoBorderDropdownState<T> extends State<NoBorderDropdown> {
               ],
             ),
             style: theme.textTheme.bodyMedium,
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.sectionMargin),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.spacing40),
             onChanged: (newValue) {
               setState(() {
                 selectedValue = newValue;

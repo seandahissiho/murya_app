@@ -156,7 +156,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                 const AppXCloseButton(),
                               ],
                             ),
-                            AppSpacing.sectionMarginBox,
+                            AppSpacing.spacing40_Box,
                             Expanded(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -217,7 +217,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                               ),
                                             ),
                                             if (_user.isNotEmpty) ...[
-                                              AppSpacing.groupMarginBox,
+                                              AppSpacing.spacing16_Box,
                                               Padding(
                                                 padding: const EdgeInsets.only(top: 20.0),
                                                 child: ScoreWidget(value: _user.diamonds),
@@ -225,7 +225,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                             ],
                                           ],
                                         ),
-                                        AppSpacing.containerInsideMarginBox,
+                                        AppSpacing.spacing24_Box,
                                         AppXButton(
                                           onPressed: () {
                                             navigateToPath(
@@ -241,7 +241,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                               : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
                                           shrinkWrap: false,
                                         ),
-                                        AppSpacing.containerInsideMarginBox,
+                                        AppSpacing.spacing24_Box,
                                         Expanded(
                                           child: MarkdownWidget(
                                             data: _job?.description ?? '',
@@ -250,7 +250,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                       ],
                                     ),
                                   ),
-                                  AppSpacing.groupMarginBox,
+                                  AppSpacing.spacing16_Box,
                                   Flexible(
                                     child: ScrollConfiguration(
                                       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
@@ -262,7 +262,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                                 (_job?.id.isNotEmptyOrNull ?? false) &&
                                                 (_userJob.jobId == _job?.id || _userJob.jobFamilyId == _job?.id) &&
                                                 _userJob.completedQuizzes > 0) ...[
-                                              AppSpacing.groupMarginBox,
+                                              AppSpacing.spacing16_Box,
                                               _rankingBuilder(locale, theme),
                                             ],
                                           ],
@@ -270,7 +270,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                       ),
                                     ),
                                   ),
-                                  AppSpacing.groupMarginBox,
+                                  AppSpacing.spacing16_Box,
                                   Flexible(
                                     child: ScrollConfiguration(
                                       behavior: ScrollConfiguration.of(context).copyWith(
@@ -292,7 +292,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                           ],
                         ),
                       ),
-                      AppSpacing.sectionMarginBox,
+                      AppSpacing.spacing40_Box,
                       const AppFooter(),
                     ],
                   ),
@@ -309,7 +309,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
     final List<Widget> widgets = [];
     for (final family in (_job?.competenciesFamilies ?? [])) {
       widgets.add(CFCard(job: _job ?? Job.empty(), family: family));
-      widgets.add(AppSpacing.groupMarginBox);
+      widgets.add(AppSpacing.spacing16_Box);
     }
     return widgets;
   }
@@ -323,9 +323,9 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
       ),
       padding: const EdgeInsets.only(
         // top: AppSpacing.containerInsideMargin,
-        left: AppSpacing.elementMargin,
-        right: AppSpacing.elementMargin,
-        bottom: AppSpacing.containerInsideMargin,
+        left: AppSpacing.spacing8,
+        right: AppSpacing.spacing8,
+        bottom: AppSpacing.spacing24,
       ),
       child: LayoutBuilder(builder: (context, constraints) {
         return Column(
@@ -335,9 +335,9 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.only(
-                top: AppSpacing.containerInsideMargin,
-                left: AppSpacing.containerInsideMargin - AppSpacing.elementMargin,
-                right: AppSpacing.containerInsideMargin - AppSpacing.elementMargin,
+                top: AppSpacing.spacing24,
+                left: AppSpacing.spacing24 - AppSpacing.spacing8,
+                right: AppSpacing.spacing24 - AppSpacing.spacing8,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
@@ -373,7 +373,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                 ],
               ),
             ),
-            AppSpacing.groupMarginBox,
+            AppSpacing.spacing16_Box,
             SizedBox(
               height: constraints.maxWidth,
               width: constraints.maxWidth,

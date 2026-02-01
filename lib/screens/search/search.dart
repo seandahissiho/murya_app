@@ -90,15 +90,15 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                   focusNode: focusNode,
                   onChanged: _onSearchChanged,
                   width:
-                      isMobile ? null : constraints.maxWidth / (constraints.maxWidth ~/ (340)) - AppSpacing.groupMargin,
+                      isMobile ? null : constraints.maxWidth / (constraints.maxWidth ~/ (340)) - AppSpacing.spacing16,
                 ),
               ),
-              AppSpacing.groupMarginBox,
+              AppSpacing.spacing16_Box,
               // const Spacer(),
               const AppXCloseButton(),
             ],
           ),
-          if (isMobile) AppSpacing.sectionMarginBox else AppSpacing.pageMarginBox,
+          if (isMobile) AppSpacing.spacing40_Box else AppSpacing.pageMarginBox,
           Expanded(
             child: BlocConsumer<JobBloc, JobState>(
               listener: (context, state) {
@@ -110,8 +110,8 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                   // physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: isMobile ? 2 : constraints.maxWidth ~/ 340,
-                    mainAxisSpacing: isMobile ? AppSpacing.elementMargin : AppSpacing.groupMargin,
-                    crossAxisSpacing: isMobile ? AppSpacing.elementMargin : AppSpacing.groupMargin,
+                    mainAxisSpacing: isMobile ? AppSpacing.spacing8 : AppSpacing.spacing16,
+                    crossAxisSpacing: isMobile ? AppSpacing.spacing8 : AppSpacing.spacing16,
                     childAspectRatio: isMobile ? 1.618 : 2.42857143,
                   ),
                   itemCount: state.jobs.length,
@@ -150,8 +150,8 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                   },
                 );
                 return Wrap(
-                  spacing: AppSpacing.elementMargin,
-                  runSpacing: AppSpacing.elementMargin,
+                  spacing: AppSpacing.spacing8,
+                  runSpacing: AppSpacing.spacing8,
                   children: state.jobs.map((module) {
                     return SizedBox(
                       width: DeviceHelper.isMobile(context) ? 140 : 314,

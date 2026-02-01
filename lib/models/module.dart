@@ -584,7 +584,7 @@ Future<void> contentNotAvailablePopup(BuildContext context) async {
               ),
             ],
           ),
-          AppSpacing.elementMarginBox,
+          AppSpacing.spacing8_Box,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -594,7 +594,7 @@ Future<void> contentNotAvailablePopup(BuildContext context) async {
                   textAlign: TextAlign.start,
                   style: theme.textTheme.labelLarge,
                 ),
-                AppSpacing.elementMarginBox,
+                AppSpacing.spacing8_Box,
                 Text(
                   locale.popup_contentNotAvailable_body,
                   textAlign: TextAlign.start,
@@ -605,7 +605,7 @@ Future<void> contentNotAvailablePopup(BuildContext context) async {
           ),
         ],
       ),
-      AppSpacing.sectionMarginBox,
+      AppSpacing.spacing40_Box,
       Align(
         alignment: Alignment.centerRight,
         child: AppXButton(
