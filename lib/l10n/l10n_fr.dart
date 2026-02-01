@@ -493,15 +493,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get parcoursRecentActivities_title => 'Activités récentes';
 
   @override
-  String get inviteFriends_title => 'Inviter des amis';
-
-  @override
-  String get inviteFriends_description =>
-      'Dis à tes amis quapprendre avec Murya, cest simple, intelligent et récompensé.';
+  String get inviteFriends_title => 'Challenge tes amis !';
 
   @override
   String inviteFriends_bonus(int amount) {
-    return 'Invite-les et gagne $amount 💎 dès leur inscription.';
+    return 'Chaque ami qui te rejoint, c\'est $amount 💎 offerts.';
   }
 
   @override

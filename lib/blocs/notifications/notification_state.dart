@@ -49,8 +49,8 @@ class NewNotificationState extends NotificationState {
     this.isImportant = false,
     required super.unreadCount,
   }) {
-    if (notification.body.contains('inconnu')) return;
-    showNotification(context);
+    // if (notification.body.contains('inconnu')) return;
+    // showNotification(context);
   }
 
   void showNotification(BuildContext context) {

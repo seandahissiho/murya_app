@@ -10,7 +10,7 @@ class TabletJourneyInfoTab extends StatefulWidget {
 class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -20,13 +20,12 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              InvitationBox(),
+              AppSpacing.spacing16_Box,
               Expanded(
                 flex: 4,
                 child: UserListBox(),
               ),
-              AppSpacing.spacing16_Box,
-              InvitationBox(),
-              Spacer(),
             ],
           ),
         ),
@@ -364,39 +363,36 @@ class InvitationBox extends StatelessWidget {
         borderRadius: AppRadius.small,
         border: Border.all(color: AppColors.borderLight, width: 2),
       ),
-      padding: const EdgeInsets.all(AppSpacing.spacing24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.all(AppSpacing.spacing12),
+      child: Row(
         children: [
-          const Row(mainAxisSize: MainAxisSize.max, children: []),
-          Text(
-            locale.inviteFriends_title,
-            style: GoogleFonts.anton(
-              fontSize: 28,
-              fontWeight: FontWeight.w400,
-              height: 44 / 28,
-              letterSpacing: -0.56,
-              color: AppButtonColors.secondaryTextDefault,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  locale.inviteFriends_title,
+                  style: GoogleFonts.anton(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w400,
+                    height: 44 / 28,
+                    letterSpacing: -0.56,
+                    color: AppButtonColors.secondaryTextDefault,
+                  ),
+                ),
+                AppSpacing.spacing4_Box,
+                RichText(
+                  text: TextSpan(
+                    text: locale.inviteFriends_bonus(500),
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: AppColors.textSecondary,
+                      height: 24 / theme.textTheme.bodyLarge!.fontSize!,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          AppSpacing.spacing16_Box,
-          RichText(
-              text: TextSpan(
-            text: '${locale.inviteFriends_description}\n',
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: AppColors.textSecondary,
-              height: 24 / theme.textTheme.bodyLarge!.fontSize!,
-            ),
-            children: [
-              TextSpan(
-                text: locale.inviteFriends_bonus(1000),
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textSecondary,
-                  height: 24 / theme.textTheme.bodyLarge!.fontSize!,
-                ),
-              ),
-            ],
-          )),
           AppSpacing.spacing24_Box,
           AppXButton(
             leftIcon: const Icon(

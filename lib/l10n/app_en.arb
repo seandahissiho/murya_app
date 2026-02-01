@@ -583,11 +583,7 @@
   "@inviteFriends_title": {
     "description": "Title of the Invite friends module"
   },
-  "inviteFriends_description": "Tell your friends that learning with Murya is simple, smart, and rewarding.",
-  "@inviteFriends_description": {
-    "description": "Description text in the Invite friends module"
-  },
-  "inviteFriends_bonus": "Invite them and earn {amount} 💎 as soon as they sign up.",
+  "inviteFriends_bonus": "Each friend who joins you earns you {amount} 💎.",
   "@inviteFriends_bonus": {
     "description": "Referral bonus text (points/diamonds)",
     "placeholders": {

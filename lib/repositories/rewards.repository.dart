@@ -41,7 +41,7 @@ class RewardsRepository extends BaseRepository {
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get(
-          '/api/rewards',
+          '/rewards',
           queryParameters: {
             if (city != null && city.isNotEmpty) 'city': city,
             if (kind != null && kind.isNotEmpty) 'kind': kind,
@@ -52,10 +52,8 @@ class RewardsRepository extends BaseRepository {
         );
         final raw = _extractData(response.data);
         if (raw is List) {
-          final items = raw
-              .whereType<Map>()
-              .map((item) => RewardItem.fromJson(Map<String, dynamic>.from(item)))
-              .toList();
+          final items =
+              raw.whereType<Map>().map((item) => RewardItem.fromJson(Map<String, dynamic>.from(item))).toList();
           await cacheService.save(
             _rewardsCacheKey(
               city: city,
@@ -125,7 +123,7 @@ class RewardsRepository extends BaseRepository {
   Future<Result<RewardItem>> getRewardById(String rewardId) async {
     return AppResponse.execute(
       action: () async {
-        final response = await api.dio.get('/api/rewards/$rewardId');
+        final response = await api.dio.get('/rewards/$rewardId');
         final raw = _extractData(response.data);
         final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
         await cacheService.save(_rewardItemKey(rewardId), data);
@@ -169,7 +167,7 @@ class RewardsRepository extends BaseRepository {
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get(
-          '/api/me/reward-purchases',
+          '/me/reward-purchases',
           queryParameters: {
             'page': page,
             'limit': limit,
@@ -177,10 +175,8 @@ class RewardsRepository extends BaseRepository {
         );
         final raw = _extractData(response.data);
         if (raw is List) {
-          final items = raw
-              .whereType<Map>()
-              .map((item) => RewardPurchase.fromJson(Map<String, dynamic>.from(item)))
-              .toList();
+          final items =
+              raw.whereType<Map>().map((item) => RewardPurchase.fromJson(Map<String, dynamic>.from(item))).toList();
           await cacheService.save(
             _purchasesKey(page: page, limit: limit),
             {
@@ -224,7 +220,7 @@ class RewardsRepository extends BaseRepository {
   Future<Result<RewardPurchase>> getPurchaseById(String purchaseId) async {
     return AppResponse.execute(
       action: () async {
-        final response = await api.dio.get('/api/me/reward-purchases/$purchaseId');
+        final response = await api.dio.get('/me/reward-purchases/$purchaseId');
         final raw = _extractData(response.data);
         final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
         await cacheService.save(_purchaseKey(purchaseId), data);
@@ -261,7 +257,7 @@ class RewardsRepository extends BaseRepository {
   }) async {
     try {
       final response = await api.dio.post(
-        '/api/rewards/$rewardId/purchase',
+        '/rewards/$rewardId/purchase',
         data: {
           'quantity': quantity,
         },
@@ -288,7 +284,7 @@ class RewardsRepository extends BaseRepository {
   Future<Result<Wallet>> getWallet() async {
     return AppResponse.execute(
       action: () async {
-        final response = await api.dio.get('/api/me/wallet');
+        final response = await api.dio.get('/me/wallet');
         final raw = _extractData(response.data);
         final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
         await cacheService.save(_walletKey(), data);

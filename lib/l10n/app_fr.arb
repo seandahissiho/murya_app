@@ -579,15 +579,11 @@
   "@parcoursRecentActivities_title": {
     "description": "Titre du bloc Activités récentes"
   },
-  "inviteFriends_title": "Inviter des amis",
+  "inviteFriends_title": "Challenge tes amis !",
   "@inviteFriends_title": {
     "description": "Titre du module d'invitation d'amis"
   },
-  "inviteFriends_description": "Dis à tes amis qu'apprendre avec Murya, c'est simple, intelligent et récompensé.",
-  "@inviteFriends_description": {
-    "description": "Texte descriptif du module d'invitation d'amis"
-  },
-  "inviteFriends_bonus": "Invite-les et gagne {amount} 💎 dès leur inscription.",
+  "inviteFriends_bonus": "Chaque ami qui te rejoint, c''est {amount} 💎 offerts.",
   "@inviteFriends_bonus": {
     "description": "Texte du bonus de parrainage (points/diamants)",
     "placeholders": {
