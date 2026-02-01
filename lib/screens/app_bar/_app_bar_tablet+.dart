@@ -56,26 +56,30 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
                   duration: _animationDuration,
                   right: isSearching ? maxWidth - 320 : 0,
                   curve: _animationCurve,
-                  child: SizedBox(
-                    width: 320,
-                    child: AppXTextFormField(
-                      focusNode: _searchFocusNode,
-                      readOnly: !isSearching,
-                      disabled: false,
-                      onTap: isSearching
-                          ? null
-                          : () {
-                              setState(() {
-                                isSearching = true;
-                              });
-                              Future.delayed(_animationDuration, () {
-                                _searchFocusNode.requestFocus();
-                              });
-                            },
-                      controller: _searchController,
-                      labelText: null,
-                      hintText: locale.search_placeholder,
-                      prefixIconPath: AppIcons.homeSearchIcon2Path,
+                  child: Hero(
+                    tag: 'main-search-bar',
+                    child: SizedBox(
+                      width: 320,
+                      child: AppXTextFormField(
+                        focusNode: _searchFocusNode,
+                        readOnly: !isSearching,
+                        disabled: false,
+                        onTap: isSearching
+                            ? null
+                            : () async {
+                                context.read<JobBloc>().add(SearchJobs(query: "", context: context));
+                                setState(() {
+                                  isSearching = true;
+                                });
+                                await Future.delayed(_animationDuration);
+                                if (!mounted) return;
+                                navigateToPath(context, to: AppRoutes.jobModule);
+                              },
+                        controller: _searchController,
+                        labelText: null,
+                        hintText: locale.search_placeholder,
+                        prefixIconPath: AppIcons.homeSearchIcon2Path,
+                      ),
                     ),
                   ),
                 ),
