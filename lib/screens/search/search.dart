@@ -159,6 +159,11 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                                   child: JobsSearchResultsList(
                                     searchState: state,
                                     seeAll: selectedFilter == locale.search_filter_job,
+                                    switchFilter: () {
+                                      setState(() {
+                                        selectedFilter = locale.search_filter_job;
+                                      });
+                                    },
                                   ),
                                 ),
                                 if (selectedFilter == locale.search_filter_all) AppSpacing.spacing40_Box,
@@ -169,6 +174,11 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                                   child: ResourcesSearchResultsList(
                                     searchState: state,
                                     seeAll: selectedFilter == locale.search_filter_resource,
+                                    switchFilter: () {
+                                      setState(() {
+                                        selectedFilter = locale.search_filter_resource;
+                                      });
+                                    },
                                   ),
                                 ),
                                 if (selectedFilter == locale.search_filter_all) AppSpacing.spacing40_Box,
@@ -179,6 +189,11 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                                   child: ProfilesSearchResultsList(
                                     searchState: state,
                                     seeAll: selectedFilter == locale.search_filter_profile,
+                                    switchFilter: () {
+                                      setState(() {
+                                        selectedFilter = locale.search_filter_profile;
+                                      });
+                                    },
                                   ),
                                 ),
                               ],
@@ -261,8 +276,9 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
 class JobsSearchResultsList extends StatefulWidget {
   final SearchState searchState;
   final bool seeAll;
+  final VoidCallback switchFilter;
 
-  const JobsSearchResultsList({super.key, required this.searchState, this.seeAll = false});
+  const JobsSearchResultsList({super.key, required this.searchState, this.seeAll = false, required this.switchFilter});
 
   @override
   State<JobsSearchResultsList> createState() => _JobsSearchResultsListState();
@@ -297,22 +313,28 @@ class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
                 ),
               ),
               AppSpacing.spacing16_Box,
-              MouseRegion(
-                onEnter: (event) {
-                  _isHovering = true;
-                  setState(() {});
-                },
-                onExit: (event) {
-                  _isHovering = false;
-                  setState(() {});
-                },
-                child: Text(
-                  locale.parcoursRewards_seeAll,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+              if (widget.seeAll == false)
+                MouseRegion(
+                  onEnter: (event) {
+                    _isHovering = true;
+                    setState(() {});
+                  },
+                  onExit: (event) {
+                    _isHovering = false;
+                    setState(() {});
+                  },
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.switchFilter();
+                    },
+                    child: Text(
+                      locale.parcoursRewards_seeAll,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+                      ),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           AppSpacing.spacing16_Box,
@@ -399,8 +421,9 @@ class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
 class ResourcesSearchResultsList extends StatefulWidget {
   final SearchState searchState;
   final bool seeAll;
+  final VoidCallback? switchFilter;
 
-  const ResourcesSearchResultsList({super.key, required this.searchState, this.seeAll = false});
+  const ResourcesSearchResultsList({super.key, required this.searchState, this.seeAll = false, this.switchFilter});
 
   @override
   State<ResourcesSearchResultsList> createState() => _ResourcesSearchResultsListState();
@@ -434,22 +457,28 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
                 ),
               ),
               AppSpacing.spacing16_Box,
-              MouseRegion(
-                onEnter: (event) {
-                  _isHovering = true;
-                  setState(() {});
-                },
-                onExit: (event) {
-                  _isHovering = false;
-                  setState(() {});
-                },
-                child: Text(
-                  locale.parcoursRewards_seeAll,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+              if (widget.seeAll == false)
+                MouseRegion(
+                  onEnter: (event) {
+                    _isHovering = true;
+                    setState(() {});
+                  },
+                  onExit: (event) {
+                    _isHovering = false;
+                    setState(() {});
+                  },
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.switchFilter?.call();
+                    },
+                    child: Text(
+                      locale.parcoursRewards_seeAll,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+                      ),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           AppSpacing.spacing16_Box,
@@ -502,8 +531,9 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
 class ProfilesSearchResultsList extends StatefulWidget {
   final SearchState searchState;
   final bool seeAll;
+  final VoidCallback? switchFilter;
 
-  const ProfilesSearchResultsList({super.key, required this.searchState, this.seeAll = false});
+  const ProfilesSearchResultsList({super.key, required this.searchState, this.seeAll = false, this.switchFilter});
 
   @override
   State<ProfilesSearchResultsList> createState() => _ProfilesSearchResultsListState();
@@ -537,22 +567,28 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
                 ),
               ),
               AppSpacing.spacing16_Box,
-              MouseRegion(
-                onEnter: (event) {
-                  _isHovering = true;
-                  setState(() {});
-                },
-                onExit: (event) {
-                  _isHovering = false;
-                  setState(() {});
-                },
-                child: Text(
-                  locale.parcoursRewards_seeAll,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+              if (widget.seeAll == false)
+                MouseRegion(
+                  onEnter: (event) {
+                    _isHovering = true;
+                    setState(() {});
+                  },
+                  onExit: (event) {
+                    _isHovering = false;
+                    setState(() {});
+                  },
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.switchFilter?.call();
+                    },
+                    child: Text(
+                      locale.parcoursRewards_seeAll,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+                      ),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           AppSpacing.spacing16_Box,
