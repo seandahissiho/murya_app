@@ -120,25 +120,25 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                 textsLinks: [
                   TextLink(
                       text: '${local.footer_legal_mentions} · ',
-                      isLink: true,
+                      isLink: false,
                       onTap: () {
                         // navigateToPath(context, to: AppRoutes.legalMentions);
                       }),
                   TextLink(
                       text: '${local.footer_privacy_policy} · ',
-                      isLink: true,
+                      isLink: false,
                       onTap: () {
                         // navigateToPath(context, to: AppRoutes.privacyPolicy);
                       }),
                   TextLink(
                       text: '${local.footer_cookie_settings} · ',
-                      isLink: true,
+                      isLink: false,
                       onTap: () {
                         // navigateToPath(context, to: AppRoutes.cookieSettings);
                       }),
                   TextLink(
                       text: local.footer_accessibility,
-                      isLink: true,
+                      isLink: false,
                       onTap: () {
                         // navigateToPath(context, to: AppRoutes.accessibility);
                       }),
@@ -248,25 +248,25 @@ class _TabletAppFooterState extends State<TabletAppFooter> {
                 textsLinks: [
                   TextLink(
                       text: '${local.footer_legal_mentions} · ',
-                      isLink: true,
+                      isLink: false,
                       onTap: () {
                         // navigateToPath(context, to: AppRoutes.legalMentions);
                       }),
                   TextLink(
                       text: '${local.footer_privacy_policy} · ',
-                      isLink: true,
+                      isLink: false,
                       onTap: () {
                         // navigateToPath(context, to: AppRoutes.privacyPolicy);
                       }),
                   TextLink(
                       text: '${local.footer_cookie_settings} · ',
-                      isLink: true,
+                      isLink: false,
                       onTap: () {
                         // navigateToPath(context, to: AppRoutes.cookieSettings);
                       }),
                   TextLink(
                       text: local.footer_accessibility,
-                      isLink: true,
+                      isLink: false,
                       onTap: () {
                         // navigateToPath(context, to: AppRoutes.accessibility);
                       }),

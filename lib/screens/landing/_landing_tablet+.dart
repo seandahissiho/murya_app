@@ -334,9 +334,12 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
 
   _getTileForModule(Module module, {Widget? dragHandle, GlobalKey? tileKey}) {
     const cardMargin = EdgeInsets.zero;
+    final languageCode = context.read<AppBloc>().appLanguage.code;
+    log('Building module ${module.slug} with key module-${module.id}-$languageCode');
     switch (module.slug) {
       case 'leaderboard':
         return AccountModuleWidget(
+          key: ValueKey('module-${module.id}-$languageCode'),
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
@@ -345,6 +348,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
         );
       case 'daily-quiz':
         return JobModuleWidget(
+          key: ValueKey('module-${module.id}-$languageCode'),
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
@@ -353,6 +357,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
         );
       case 'learning-resources':
         return RessourcesModuleWidget(
+          key: ValueKey('module-${module.id}-$languageCode'),
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,

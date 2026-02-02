@@ -22,18 +22,9 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
   final Set<String> _readResourceIds = {};
   final Map<String, double> _lastReadProgress = {};
 
-  final List<Resource> _articles = [
-    Resource.empty(),
-    Resource.empty(),
-  ];
-  final List<Resource> _videos = [
-    Resource.empty(),
-    Resource.empty(),
-  ];
-  final List<Resource> _podcasts = [
-    Resource.empty(),
-    Resource.empty(),
-  ];
+  final List<Resource> _articles = [];
+  final List<Resource> _videos = [];
+  final List<Resource> _podcasts = [];
 
   List<Resource> get articles => _articles;
 
