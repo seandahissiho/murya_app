@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
@@ -338,14 +339,60 @@ class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
             ],
           ),
           AppSpacing.spacing16_Box,
-          Flexible(child: (widget.seeAll) ? fullView(appSize) : previewView(appSize, theme, isMobile)),
+          Flexible(child: (widget.seeAll) ? fullView(appSize, theme) : previewView(appSize, theme, isMobile)),
         ],
       ),
     );
   }
 
-  fullView(AppSize appSize) {
-    return const Placeholder();
+  fullView(AppSize appSize, ThemeData theme) {
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, 320).toDouble();
+      return Wrap(
+        spacing: AppSpacing.spacing16,
+        runSpacing: AppSpacing.spacing16 * 1.5,
+        children: widget.searchState.response.sections.jobs.items.map((e) {
+          return SizedBox(
+            width: width,
+            height: 140,
+            child: AppXButton(
+              height: 140,
+              shrinkWrap: false,
+              text: e.title,
+              onPressed: () {
+                // Navigate to job details
+                navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', e.id));
+              },
+              isLoading: false,
+              bgColor: AppButtonColors.secondarySurfaceDefault,
+              hoverColor: AppButtonColors.secondarySurfaceHover,
+              shadowColor: AppButtonColors.secondaryShadowDefault,
+              borderColor: AppButtonColors.secondaryBorderDefault,
+              onPressedColor: AppButtonColors.secondarySurfaceDefault,
+              children: [
+                Flexible(
+                  child: Center(
+                    child: Text(
+                      e.title,
+                      style: GoogleFonts.anton(
+                        color: AppColors.textPrimary,
+                        fontSize: theme.textTheme.headlineSmall!.fontSize,
+                        fontWeight: FontWeight.w400,
+                        height: 44 / theme.textTheme.headlineSmall!.fontSize!,
+                        letterSpacing: -0.02 * theme.textTheme.headlineSmall!.fontSize!,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        }).toList(),
+      );
+    });
   }
 
   previewView(AppSize appSize, ThemeData theme, bool isMobile) {
@@ -489,7 +536,22 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
   }
 
   fullView(AppSize appSize) {
-    return const Placeholder();
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, 320 + AppSpacing.spacing16).toDouble();
+      return Wrap(
+        spacing: AppSpacing.spacing4,
+        runSpacing: AppSpacing.spacing16,
+        children: widget.searchState.response.sections.learningResources.items.map((e) {
+          final resource = e.toResource();
+          final index = widget.searchState.response.sections.learningResources.items.indexOf(e);
+          return SizedBox(
+            width: width,
+            height: 300,
+            child: ResourceItemWidget(resource: resource, index: index, fixedSize: true),
+          );
+        }).toList(),
+      );
+    });
   }
 
   previewView(AppSize appSize) {
@@ -497,7 +559,7 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
     List<SearchItem> data = widget.searchState.response.sections.learningResources.items.takeUpTo(upTo);
     return ConstrainedBox(
       constraints: const BoxConstraints(
-        maxHeight: 288,
+        maxHeight: 300,
       ),
       child: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
@@ -592,14 +654,58 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
             ],
           ),
           AppSpacing.spacing16_Box,
-          Flexible(child: (widget.seeAll) ? fullView(appSize) : previewView(appSize, theme, locale)),
+          Flexible(child: (widget.seeAll) ? fullView(appSize, theme, locale) : previewView(appSize, theme, locale)),
         ],
       ),
     );
   }
 
-  fullView(AppSize appSize) {
-    return const Placeholder();
+  fullView(AppSize appSize, ThemeData theme, AppLocalizations locale) {
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, 204).toDouble();
+      return Wrap(
+        spacing: AppSpacing.spacing16,
+        runSpacing: AppSpacing.spacing16 * 1.5,
+        children: widget.searchState.response.sections.users.items.map((e) {
+          return SizedBox(
+            width: width,
+            child: Column(
+              children: [
+                Container(
+                  height: 204,
+                  width: 204,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(102),
+                    child: e.imageUrl != null
+                        ? Image.network(
+                            e.imageUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return SvgPicture.asset(AppIcons.avatarPlaceholderPath);
+                            },
+                          )
+                        : SvgPicture.asset(AppIcons.avatarPlaceholderPath),
+                  ),
+                ),
+                AppSpacing.spacing8_Box,
+                Text(
+                  e.title == "Utilisateur" ? locale.user_anonymous_placeholder : e.title,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      );
+    });
   }
 
   previewView(AppSize appSize, ThemeData theme, AppLocalizations locale) {
