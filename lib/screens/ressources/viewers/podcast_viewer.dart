@@ -30,12 +30,29 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
   List<double>? _waveformPeaks;
   double _lastProgress = 0.0;
   bool _readSent = false;
+  bool fromSearch = false;
 
   @override
   void initState() {
     super.initState();
-    _loadWaveform();
-    _initAudio();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadWaveform();
+      _initAudio();
+      final history = Beamer.of(context).beamingHistory;
+      if (history.length > 1) {
+        final lastBeamState = history[history.length - 2];
+        final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
+        fromSearch = lastPath == AppRoutes.searchModule;
+        setState(() {});
+        // load resource content if needed
+        if (fromSearch) {
+          final resourceId = widget.resource.id;
+          if (resourceId != null && resourceId.isNotEmpty) {
+            context.read<ResourcesBloc>().add(LoadResourceDetails(resourceId: resourceId));
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -85,7 +102,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
         children: [
           Row(
             children: [
-              const AppXReturnButton(destination: AppRoutes.userRessourcesModule),
+              AppXReturnButton(destination: fromSearch ? AppRoutes.searchModule : AppRoutes.userRessourcesModule),
               AppSpacing.spacing16_Box,
               Expanded(
                 child: AppBreadcrumb(

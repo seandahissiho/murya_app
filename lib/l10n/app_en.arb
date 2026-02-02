@@ -719,5 +719,21 @@
   "editChanges_button": "Edit",
   "@editChanges_button": {
     "description": "Label for edit changes button"
+  },
+  "search_filter_all": "All",
+  "@search_filter_all": {
+    "description": "Search filter: all"
+  },
+  "search_filter_job": "Jobs",
+  "@search_filter_job": {
+    "description": "Search filter: jobs"
+  },
+  "search_filter_resource": "Resources",
+  "@search_filter_resource": {
+    "description": "Search filter: resources"
+  },
+  "search_filter_profile": "Profiles",
+  "@search_filter_profile": {
+    "description": "Search filter: profiles"
   }
 }

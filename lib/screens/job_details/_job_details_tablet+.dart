@@ -95,7 +95,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                           children: [
                             Row(
                               children: [
-                                if (!hideBackButton) const AppXReturnButton(destination: AppRoutes.landing),
+                                if (!hideBackButton) const AppXReturnButton(destination: AppRoutes.searchModule),
                                 // AppSpacing.groupMarginBox,
                                 // Expanded(
                                 //   flex: 10,

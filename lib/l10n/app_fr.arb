@@ -719,5 +719,21 @@
   "editChanges_button": "Modifier",
   "@editChanges_button": {
     "description": "Libellé du bouton de modification"
+  },
+  "search_filter_all": "Tous",
+  "@search_filter_all": {
+    "description": "Filtre de recherche : tous"
+  },
+  "search_filter_job": "Métiers",
+  "@search_filter_job": {
+    "description": "Filtre de recherche : métiers"
+  },
+  "search_filter_resource": "Ressources",
+  "@search_filter_resource": {
+    "description": "Filtre de recherche : ressources"
+  },
+  "search_filter_profile": "Profils",
+  "@search_filter_profile": {
+    "description": "Filtre de recherche : profils"
   }
 }

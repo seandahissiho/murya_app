@@ -559,9 +559,17 @@ class ResourceItemWidget extends StatelessWidget {
   final int index;
   final Module? module;
   final double scale;
+  final bool fixedSize;
 
-  const ResourceItemWidget(
-      {super.key, required this.resource, this.thumbnailUrl, required this.index, this.module, this.scale = 1.0});
+  const ResourceItemWidget({
+    super.key,
+    required this.resource,
+    this.thumbnailUrl,
+    required this.index,
+    this.module,
+    this.scale = 1.0,
+    this.fixedSize = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -591,8 +599,8 @@ class ResourceItemWidget extends StatelessWidget {
           }
         },
         child: Container(
-          height: constraints.maxHeight,
-          width: constraints.maxHeight,
+          height: fixedSize ? constraints.maxHeight : null,
+          width: fixedSize ? constraints.maxHeight : null,
           margin: const EdgeInsets.only(right: AppSpacing.spacing16),
           decoration: BoxDecoration(
             color: AppColors.backgroundCard,
@@ -647,7 +655,7 @@ class ResourceItemWidget extends StatelessWidget {
                     style: GoogleFonts.anton(
                       color: AppColors.primaryDefault,
                       fontSize: isMobile ? 20 : 28,
-                      height: 1.8,
+                      height: 44 / (isMobile ? 20 : 28),
                       letterSpacing: -0.02,
                     ),
                     maxLines: 3,
@@ -658,7 +666,7 @@ class ResourceItemWidget extends StatelessWidget {
                 const Spacer()
               ],
               if (constraints.maxWidth > 100) ...[
-                AppSpacing.spacing4_Box,
+                AppSpacing.spacing8_Box,
                 Text(
                   resource.createdAt?.formattedDate() ?? '',
                   style: theme.textTheme.labelMedium?.copyWith(

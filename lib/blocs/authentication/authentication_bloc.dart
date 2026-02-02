@@ -15,11 +15,13 @@ import 'package:murya/repositories/notifications.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
 import 'package:murya/repositories/quiz.repository.dart';
 import 'package:murya/repositories/rewards.repository.dart';
+import 'package:murya/repositories/search.repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   late final NotificationBloc notificationBloc;
   late final AuthenticationRepository authenticationRepository;
   late final JobRepository jobRepository;
@@ -69,7 +71,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<TempRegisterEvent>(_onTempRegisterEvent);
 
     notificationBloc = BlocProvider.of<NotificationBloc>(context);
-    authenticationRepository = RepositoryProvider.of<AuthenticationRepository>(context);
+    authenticationRepository =
+        RepositoryProvider.of<AuthenticationRepository>(context);
     jobRepository = RepositoryProvider.of<JobRepository>(context);
   }
 
@@ -91,7 +94,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     return false;
   }
 
-  FutureOr<void> _onTryAutoLogin(TryAutoLogin event, Emitter<AuthenticationState> emit) async {
+  FutureOr<void> _onTryAutoLogin(
+      TryAutoLogin event, Emitter<AuthenticationState> emit) async {
     // await Future.delayed(const Duration(milliseconds: 15500));
     final result = await authenticationRepository.getToken();
     if (result.isError) {
@@ -143,7 +147,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
-  FutureOr<void> _onSignInEvent(SignInEvent event, Emitter<AuthenticationState> emit) async {
+  FutureOr<void> _onSignInEvent(
+      SignInEvent event, Emitter<AuthenticationState> emit) async {
     final result = await authenticationRepository.signIn(
       data: event.toJson(),
     );
@@ -162,7 +167,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       await unAuthenticate(emit);
       return;
     }
-    notificationBloc.add(SuccessNotificationEvent(message: 'Connexion réussie.'));
+    notificationBloc
+        .add(SuccessNotificationEvent(message: 'Connexion réussie.'));
     emit(const Authenticated(
       // user: _user,
       justLoggedIn: true,
@@ -201,13 +207,16 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
 
     RepositoryProvider.of<AppRepository>(context).updateDio(token, context);
-    RepositoryProvider.of<AuthenticationRepository>(context).updateDio(token, context);
-    RepositoryProvider.of<NotificationRepository>(context).updateDio(token, context);
+    RepositoryProvider.of<AuthenticationRepository>(context)
+        .updateDio(token, context);
+    RepositoryProvider.of<NotificationRepository>(context)
+        .updateDio(token, context);
     RepositoryProvider.of<ProfileRepository>(context).updateDio(token, context);
     RepositoryProvider.of<JobRepository>(context).updateDio(token, context);
     RepositoryProvider.of<ModulesRepository>(context).updateDio(token, context);
     RepositoryProvider.of<QuizRepository>(context).updateDio(token, context);
     RepositoryProvider.of<RewardsRepository>(context).updateDio(token, context);
+    RepositoryProvider.of<SearchRepository>(context).updateDio(token, context);
   }
 
   void updateRepositoriesContext(BuildContext context) {
@@ -251,7 +260,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     emit(const Unauthenticated());
   }
 
-  FutureOr<void> _onSignOutEvent(SignOutEvent event, Emitter<AuthenticationState> emit) async {
+  FutureOr<void> _onSignOutEvent(
+      SignOutEvent event, Emitter<AuthenticationState> emit) async {
     final result = await authenticationRepository.signOut();
     if (result.isError) {
       notificationBloc.add(ErrorNotificationEvent(
@@ -259,11 +269,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       ));
       return;
     }
-    notificationBloc.add(SuccessNotificationEvent(message: 'Déconnexion réussie.'));
+    notificationBloc
+        .add(SuccessNotificationEvent(message: 'Déconnexion réussie.'));
     await unAuthenticate(emit);
   }
 
-  FutureOr<void> _onTempRegisterEvent(TempRegisterEvent event, Emitter<AuthenticationState> emit) async {
+  FutureOr<void> _onTempRegisterEvent(
+      TempRegisterEvent event, Emitter<AuthenticationState> emit) async {
     final result = await authenticationRepository.registerTemp(
       data: event.toJson(),
     );
@@ -286,7 +298,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     emit(const Authenticated(justLoggedIn: false));
   }
 
-  FutureOr<void> _onRegisterEvent(RegisterEvent event, Emitter<AuthenticationState> emit) async {
+  FutureOr<void> _onRegisterEvent(
+      RegisterEvent event, Emitter<AuthenticationState> emit) async {
     final result = await authenticationRepository.register(
       data: event.toJson(),
     );
@@ -305,7 +318,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       await unAuthenticate(emit);
       return;
     }
-    notificationBloc.add(SuccessNotificationEvent(message: 'Inscription réussie.'));
+    notificationBloc
+        .add(SuccessNotificationEvent(message: 'Inscription réussie.'));
     emit(const Authenticated(justLoggedIn: true));
   }
 }

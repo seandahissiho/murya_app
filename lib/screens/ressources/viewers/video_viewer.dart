@@ -30,11 +30,30 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
   bool _isYoutube = false;
   double _lastProgress = 0.0;
   bool _readSent = false;
+  bool fromSearch = false;
+  Resource resource = Resource();
 
   @override
   void initState() {
+    resource = widget.resource;
     super.initState();
-    _initVideo();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initVideo();
+      final history = Beamer.of(context).beamingHistory;
+      if (history.length > 1) {
+        final lastBeamState = history[history.length - 2];
+        final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
+        fromSearch = lastPath == AppRoutes.searchModule;
+        setState(() {});
+        // load resource content if needed
+        if (fromSearch) {
+          final resourceId = resource.id;
+          if (resourceId != null && resourceId.isNotEmpty) {
+            context.read<ResourcesBloc>().add(LoadResourceDetails(resourceId: resourceId));
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -46,7 +65,11 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
   }
 
   Future<void> _initVideo() async {
-    final url = widget.resource.url;
+    _error = null;
+    _isYoutube = false;
+    _youtubeController = null;
+    _controller = null;
+    final url = resource.url;
     if (url == null || url.isEmpty) {
       setState(() {
         _error = _VideoViewerError.missingUrl;
@@ -99,43 +122,55 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SafeArea(
-      child: Column(
-        children: [
-          Row(
+      child: BlocConsumer<ResourcesBloc, ResourcesState>(
+        listener: (context, state) {
+          if (state is ResourceDetailsLoaded) {
+            if (state.resource.id == resource.id) {
+              resource = state.resource;
+              _initVideo();
+            }
+          }
+        },
+        builder: (context, state) {
+          return Column(
             children: [
-              const AppXReturnButton(destination: AppRoutes.userRessourcesModule),
+              Row(
+                children: [
+                  AppXReturnButton(destination: fromSearch ? AppRoutes.searchModule : AppRoutes.userRessourcesModule),
+                  AppSpacing.spacing16_Box,
+                  Expanded(
+                    child: AppBreadcrumb(
+                      items: [
+                        BreadcrumbItem(
+                          label: AppLocalizations.of(context).mediaLibrary,
+                          onTap: () => navigateToPath(context, to: AppRoutes.userRessourcesModule),
+                        ),
+                        BreadcrumbItem(label: resource.title ?? ''),
+                      ],
+                      inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textTertiary,
+                      ),
+                      inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textPrimary, // hover
+                        decoration: TextDecoration.underline, // optionnel
+                      ),
+                      activeTextStyle: theme.textTheme.labelMedium?.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                      scrollable: true,
+                    ),
+                  ),
+                  const AppXCloseButton(),
+                ],
+              ),
               AppSpacing.spacing16_Box,
               Expanded(
-                child: AppBreadcrumb(
-                  items: [
-                    BreadcrumbItem(
-                      label: AppLocalizations.of(context).mediaLibrary,
-                      onTap: () => navigateToPath(context, to: AppRoutes.userRessourcesModule),
-                    ),
-                    BreadcrumbItem(label: widget.resource.title ?? ''),
-                  ],
-                  inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textTertiary,
-                  ),
-                  inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textPrimary, // hover
-                    decoration: TextDecoration.underline, // optionnel
-                  ),
-                  activeTextStyle: theme.textTheme.labelMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                  scrollable: true,
-                ),
+                child: _body(),
               ),
-              const AppXCloseButton(),
+              AppSpacing.spacing40_Box,
             ],
-          ),
-          AppSpacing.spacing16_Box,
-          Expanded(
-            child: _body(),
-          ),
-          AppSpacing.spacing40_Box,
-        ],
+          );
+        },
       ),
     );
   }
@@ -233,11 +268,10 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
 
   void _sendReadIfNeeded() {
     if (_readSent) return;
-    final resourceId = widget.resource.id;
+    final resourceId = resource.id;
     if (resourceId == null || resourceId.isEmpty) return;
-    final existingProgress = widget.resource.userState?.progress;
-    if (widget.resource.userState?.readAt != null &&
-        (existingProgress == null || _lastProgress <= existingProgress + 0.01)) {
+    final existingProgress = resource.userState?.progress;
+    if (resource.userState?.readAt != null && (existingProgress == null || _lastProgress <= existingProgress + 0.01)) {
       return;
     }
     _readSent = true;

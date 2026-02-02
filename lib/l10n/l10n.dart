@@ -1111,6 +1111,30 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier'**
   String get editChanges_button;
+
+  /// Filtre de recherche : tous
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous'**
+  String get search_filter_all;
+
+  /// Filtre de recherche : métiers
+  ///
+  /// In fr, this message translates to:
+  /// **'Métiers'**
+  String get search_filter_job;
+
+  /// Filtre de recherche : ressources
+  ///
+  /// In fr, this message translates to:
+  /// **'Ressources'**
+  String get search_filter_resource;
+
+  /// Filtre de recherche : profils
+  ///
+  /// In fr, this message translates to:
+  /// **'Profils'**
+  String get search_filter_profile;
 }
 
 class _AppLocalizationsDelegate
