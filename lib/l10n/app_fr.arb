@@ -143,23 +143,23 @@
       }
     }
   },
-  "competencyRatingVeryGoodTooltip": "Cet indicateur reflète votre évolution.",
+  "competencyRatingVeryGoodTooltip": "Cet indicateur reflète votre évolution",
   "@competencyRatingVeryGoodTooltip": {
     "description": "Infobulle pour une compétence très bonne"
   },
-  "competencyRatingGoodTooltip": "Cet indicateur reflète votre évolution.",
+  "competencyRatingGoodTooltip": "Cet indicateur reflète votre évolution",
   "@competencyRatingGoodTooltip": {
     "description": "Infobulle pour une compétence bonne"
   },
-  "competencyRatingAverageTooltip": "Cet indicateur reflète votre évolution.",
+  "competencyRatingAverageTooltip": "Cet indicateur reflète votre évolution",
   "@competencyRatingAverageTooltip": {
     "description": "Infobulle pour une compétence moyenne"
   },
-  "competencyRatingBadTooltip": "Cet indicateur reflète votre évolution.",
+  "competencyRatingBadTooltip": "Cet indicateur reflète votre évolution",
   "@competencyRatingBadTooltip": {
     "description": "Infobulle pour une compétence mauvaise"
   },
-  "competencyRatingVeryBadTooltip": "Cet indicateur reflète votre évolution.",
+  "competencyRatingVeryBadTooltip": "Cet indicateur reflète votre évolution",
   "@competencyRatingVeryBadTooltip": {
     "description": "Infobulle pour une compétence très mauvaise"
   },

@@ -124,23 +124,23 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get competencyRatingVeryGoodTooltip =>
-      'Cet indicateur reflète votre évolution.';
+      'Cet indicateur reflète votre évolution';
 
   @override
   String get competencyRatingGoodTooltip =>
-      'Cet indicateur reflète votre évolution.';
+      'Cet indicateur reflète votre évolution';
 
   @override
   String get competencyRatingAverageTooltip =>
-      'Cet indicateur reflète votre évolution.';
+      'Cet indicateur reflète votre évolution';
 
   @override
   String get competencyRatingBadTooltip =>
-      'Cet indicateur reflète votre évolution.';
+      'Cet indicateur reflète votre évolution';
 
   @override
   String get competencyRatingVeryBadTooltip =>
-      'Cet indicateur reflète votre évolution.';
+      'Cet indicateur reflète votre évolution';
 
   @override
   String get show_more => 'Afficher plus';

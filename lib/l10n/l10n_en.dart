@@ -124,23 +124,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get competencyRatingVeryGoodTooltip =>
-      'This indicator reflects your progress.';
+      'This indicator reflects your progress';
 
   @override
   String get competencyRatingGoodTooltip =>
-      'This indicator reflects your progress.';
+      'This indicator reflects your progress';
 
   @override
   String get competencyRatingAverageTooltip =>
-      'This indicator reflects your progress.';
+      'This indicator reflects your progress';
 
   @override
   String get competencyRatingBadTooltip =>
-      'This indicator reflects your progress.';
+      'This indicator reflects your progress';
 
   @override
   String get competencyRatingVeryBadTooltip =>
-      'This indicator reflects your progress.';
+      'This indicator reflects your progress';
 
   @override
   String get show_more => 'Show more';
