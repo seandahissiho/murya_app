@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:beamer/beamer.dart';
 // import 'package:fl_chart/fl_chart.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -643,7 +644,7 @@ class ResourceItemWidget extends StatelessWidget {
               if (module?.boxType != AppModuleType.type1) ...[
                 AppSpacing.spacing8_Box,
                 Expanded(
-                  child: Text(
+                  child: AutoSizeText(
                     (resource.title ?? '').toUpperCase(),
                     // font-family: Anton;
                     // font-weight: 400;
@@ -660,6 +661,7 @@ class ResourceItemWidget extends StatelessWidget {
                     ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
+                    minFontSize: 12,
                   ),
                 ),
               ] else ...[
