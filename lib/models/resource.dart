@@ -228,7 +228,7 @@ class Resource {
     final dynamic userStateJson = json['userState'];
     final UserResourceState? userState =
         userStateJson is Map<String, dynamic> ? UserResourceState.fromJson(userStateJson) : null;
-    final bool isNew = userState?.openedAt == null;
+    final bool isNew = userState?.openedAt == null && json['source'] != 'SYSTEM_DEFAULT';
 
     return Resource(
       id: id,

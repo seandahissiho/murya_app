@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -583,7 +584,7 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
           final index = widget.searchState.response.sections.learningResources.items.indexOf(e);
           return SizedBox(
             width: width,
-            height: 300,
+            height: kIsWeb ? 350 : 300,
             child: ResourceItemWidget(resource: resource, index: index, fixedSize: true),
           );
         }).toList(),
@@ -596,7 +597,7 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
     List<SearchItem> data = widget.searchState.response.sections.learningResources.items.takeUpTo(upTo);
     return ConstrainedBox(
       constraints: const BoxConstraints(
-        maxHeight: 300,
+        maxHeight: kIsWeb ? 350 : 300,
       ),
       child: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(

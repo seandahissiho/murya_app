@@ -57,12 +57,13 @@ class _RessourcesModuleWidgetState extends State<RessourcesModuleWidget> {
             ];
             final List<Resource> validResources =
                 allResources.where((resource) => resource.id.isNotEmptyOrNull).toList();
-            validResources.sort(
-              (a, b) => (b.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0))
-                  .compareTo(a.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0)),
-            );
-            final List<Resource> latestResources =
-                validResources.isNotEmpty ? validResources.take(3).toList() : const <Resource>[];
+            if (validResources.isNotEmpty) {
+              validResources.sort(
+                (a, b) => (b.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0))
+                    .compareTo(a.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0)),
+              );
+            }
+            final List<Resource> latestResources = getLastOfEachType(validResources);
             return AppModuleWidget(
               module: widget.module,
               onCardTap: () {
@@ -91,6 +92,19 @@ class _RessourcesModuleWidgetState extends State<RessourcesModuleWidget> {
         );
       },
     );
+  }
+
+  List<Resource> getLastOfEachType(List<Resource> validResources) {
+    final Map<ResourceType, Resource> latestByType = {};
+
+    for (var resource in validResources) {
+      final type = resource.type;
+      if (type != null && !latestByType.containsKey(type)) {
+        latestByType[type] = resource;
+      }
+    }
+
+    return latestByType.values.toList();
   }
 }
 
