@@ -134,8 +134,11 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
               child: AppBreadcrumb(
                 items: [
                   BreadcrumbItem(
-                    label: AppLocalizations.of(context).mediaLibrary,
-                    onTap: () => navigateToPath(context, to: AppRoutes.userRessourcesModule),
+                    label: !fromSearch
+                        ? AppLocalizations.of(context).mediaLibrary
+                        : AppLocalizations.of(context).search_filter_resource,
+                    onTap: () => navigateToPath(context,
+                        to: !fromSearch ? AppRoutes.userRessourcesModule : AppRoutes.searchModule),
                   ),
                   BreadcrumbItem(label: widget.resource.title ?? ''),
                 ],

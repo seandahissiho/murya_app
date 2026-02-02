@@ -2,6 +2,7 @@ part of 'viewer_handler.dart';
 
 class PodcastViewer extends StatelessWidget {
   final Resource resource;
+
   const PodcastViewer({super.key, required this.resource});
 
   @override
@@ -31,9 +32,11 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
   double _lastProgress = 0.0;
   bool _readSent = false;
   bool fromSearch = false;
+  Resource resource = Resource();
 
   @override
   void initState() {
+    resource = widget.resource;
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadWaveform();
@@ -46,7 +49,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
         setState(() {});
         // load resource content if needed
         if (fromSearch) {
-          final resourceId = widget.resource.id;
+          final resourceId = resource.id;
           if (resourceId != null && resourceId.isNotEmpty) {
             context.read<ResourcesBloc>().add(LoadResourceDetails(resourceId: resourceId));
           }
@@ -63,7 +66,11 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
   }
 
   Future<void> _initAudio() async {
-    final url = widget.resource.url;
+    _error = null;
+    _duration = null;
+    _waveformPeaks = null;
+    setState(() {});
+    final url = resource.url;
     if (url == null || url.isEmpty) {
       setState(() {
         _error = _AudioViewerError.missingUrl;
@@ -98,43 +105,58 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SafeArea(
-      child: Column(
-        children: [
-          Row(
+      child: BlocConsumer<ResourcesBloc, ResourcesState>(
+        listener: (context, state) {
+          if (state is ResourceDetailsLoaded) {
+            if (state.resource.id == resource.id) {
+              resource = state.resource;
+              _initAudio();
+            }
+          }
+        },
+        builder: (context, state) {
+          return Column(
             children: [
-              AppXReturnButton(destination: fromSearch ? AppRoutes.searchModule : AppRoutes.userRessourcesModule),
-              AppSpacing.spacing16_Box,
-              Expanded(
-                child: AppBreadcrumb(
-                  items: [
-                    BreadcrumbItem(
-                      label: AppLocalizations.of(context).mediaLibrary,
-                      onTap: () => navigateToPath(context, to: AppRoutes.userRessourcesModule),
+              Row(
+                children: [
+                  AppXReturnButton(destination: fromSearch ? AppRoutes.searchModule : AppRoutes.userRessourcesModule),
+                  AppSpacing.spacing16_Box,
+                  Expanded(
+                    child: AppBreadcrumb(
+                      items: [
+                        BreadcrumbItem(
+                          label: !fromSearch
+                              ? AppLocalizations.of(context).mediaLibrary
+                              : AppLocalizations.of(context).search_filter_resource,
+                          onTap: () => navigateToPath(context,
+                              to: !fromSearch ? AppRoutes.userRessourcesModule : AppRoutes.searchModule),
+                        ),
+                        BreadcrumbItem(label: resource.title ?? ''),
+                      ],
+                      inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textTertiary,
+                      ),
+                      inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textPrimary, // hover
+                        decoration: TextDecoration.underline, // optionnel
+                      ),
+                      activeTextStyle: theme.textTheme.labelMedium?.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                      scrollable: true,
                     ),
-                    BreadcrumbItem(label: widget.resource.title ?? ''),
-                  ],
-                  inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textTertiary,
                   ),
-                  inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textPrimary, // hover
-                    decoration: TextDecoration.underline, // optionnel
-                  ),
-                  activeTextStyle: theme.textTheme.labelMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                  scrollable: true,
-                ),
+                  const AppXCloseButton(),
+                ],
               ),
-              const AppXCloseButton(),
+              AppSpacing.spacing40_Box,
+              Expanded(
+                child: _body(),
+              ),
+              AppSpacing.spacing40_Box,
             ],
-          ),
-          AppSpacing.spacing40_Box,
-          Expanded(
-            child: _body(),
-          ),
-          AppSpacing.spacing40_Box,
-        ],
+          );
+        },
       ),
     );
   }
@@ -182,7 +204,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
     return Column(
       children: [
         Text(
-          widget.resource.title ?? '',
+          resource.title ?? '',
           style: theme.textTheme.headlineSmall?.copyWith(
             color: AppColors.textPrimary,
           ),
@@ -192,7 +214,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
         ),
         AppSpacing.spacing12_Box,
         Text(
-          widget.resource.description ?? '',
+          resource.description ?? '',
           style: theme.textTheme.bodyMedium?.copyWith(
             color: AppColors.textSecondary,
           ),
@@ -362,11 +384,10 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
 
   void _sendReadIfNeeded() {
     if (_readSent) return;
-    final resourceId = widget.resource.id;
+    final resourceId = resource.id;
     if (resourceId == null || resourceId.isEmpty) return;
-    final existingProgress = widget.resource.userState?.progress;
-    if (widget.resource.userState?.readAt != null &&
-        (existingProgress == null || _lastProgress <= existingProgress + 0.01)) {
+    final existingProgress = resource.userState?.progress;
+    if (resource.userState?.readAt != null && (existingProgress == null || _lastProgress <= existingProgress + 0.01)) {
       return;
     }
     _readSent = true;
@@ -389,7 +410,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
   }
 
   void _loadWaveform() {
-    final metadata = widget.resource.metadata;
+    final metadata = resource.metadata;
     final waveform = metadata?['waveform'];
     if (waveform is Map) {
       final peaks = waveform['peaks'];
