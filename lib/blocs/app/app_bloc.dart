@@ -2,16 +2,24 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
+import 'package:murya/blocs/modules/modules_bloc.dart';
+import 'package:murya/blocs/modules/profile/profile_bloc.dart';
+import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/localization/locale_controller.dart';
 import 'package:murya/models/country.dart';
+import 'package:murya/models/quest.dart';
 import 'package:murya/repositories/app.repository.dart';
 import 'package:murya/repositories/authentication.repository.dart';
 import 'package:murya/repositories/jobs.repository.dart';
 import 'package:murya/repositories/modules.repository.dart';
 import 'package:murya/repositories/notifications.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
+import 'package:murya/repositories/quiz.repository.dart';
+import 'package:murya/repositories/resources.repository.dart';
 import 'package:murya/repositories/rewards.repository.dart';
+import 'package:murya/repositories/search.repository.dart';
 import 'package:provider/provider.dart';
 
 part 'app_event.dart';
@@ -134,9 +142,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   FutureOr<void> _onChangeLanguage(AppChangeLanguage event, Emitter<AppState> emit) {
-    if (event.language == state.language) {
-      return null;
-    }
+    // if (event.language == state.language) {
+    //   return null;
+    // }
     _appLanguage = event.language;
 
     RepositoryProvider.of<AuthenticationRepository>(event.context).updateLanguage(_appLanguage.code);
@@ -146,6 +154,32 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     RepositoryProvider.of<JobRepository>(event.context).updateLanguage(_appLanguage.code);
     RepositoryProvider.of<ModulesRepository>(event.context).updateLanguage(_appLanguage.code);
     RepositoryProvider.of<RewardsRepository>(event.context).updateLanguage(_appLanguage.code);
+    RepositoryProvider.of<AppRepository>(event.context).updateLanguage(_appLanguage.code);
+    RepositoryProvider.of<QuizRepository>(event.context).updateLanguage(_appLanguage.code);
+    RepositoryProvider.of<ResourcesRepository>(event.context).updateLanguage(_appLanguage.code);
+    RepositoryProvider.of<SearchRepository>(event.context).updateLanguage(_appLanguage.code);
+
+    final context = event.context;
+
+    // UserJob & Search
+    context.read<JobBloc>().add(LoadUserCurrentJob(context: context));
+    context.read<JobBloc>().add(SearchJobs(query: '', context: context));
+
+    context.read<ProfileBloc>().add(ProfileLoadQuestGroupsEvent(scope: QuestScope.all));
+
+    // // Data depending on UserJob
+    final userJob = context.read<JobBloc>().state.userCurrentJob;
+    final userJobId = userJob?.id;
+
+    if (userJobId != null) {
+      context.read<ResourcesBloc>().add(LoadResources(userJobId: userJobId));
+      //   context.read<QuestsBloc>().add(
+      //       QuestsLoadLineageEvent(scope: QuestScope.all, userJobId: userJobId));
+    }
+
+    // Modules
+    context.read<ModulesBloc>().add(LoadCatalogModules(force: true));
+    context.read<ModulesBloc>().add(LoadLandingModules(force: true));
 
     emit(AppRouteChanged(
       oldRoute: state.oldRoute,

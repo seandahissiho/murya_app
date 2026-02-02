@@ -71,6 +71,7 @@ class _RessourcesScreenState extends State<RessourcesScreen> {
 
   @override
   void initState() {
+    _pollResourcesOnce();
     super.initState();
     _sseService = context.read<SseService>();
     _sseConnected = _sseService.isConnected;
