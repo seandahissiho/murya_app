@@ -150,7 +150,9 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                       child: SingleChildScrollView(
                         child: Container(
                           constraints: BoxConstraints(
-                            maxHeight: isMobile ? constraints.maxHeight * 4 : constraints.maxHeight * 1.125,
+                            maxHeight: isMobile
+                                ? constraints.maxHeight * 4
+                                : constraints.maxHeight * (1.125 + (kIsWeb ? 0.125 : 0)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -584,7 +586,7 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
           final index = widget.searchState.response.sections.learningResources.items.indexOf(e);
           return SizedBox(
             width: width,
-            height: kIsWeb ? 350 : 300,
+            height: kIsWeb ? 400 : 300,
             child: ResourceItemWidget(resource: resource, index: index, fixedSize: true),
           );
         }).toList(),
@@ -597,7 +599,7 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
     List<SearchItem> data = widget.searchState.response.sections.learningResources.items.takeUpTo(upTo);
     return ConstrainedBox(
       constraints: const BoxConstraints(
-        maxHeight: kIsWeb ? 350 : 300,
+        maxHeight: kIsWeb ? 400 : 300,
       ),
       child: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
