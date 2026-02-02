@@ -8,7 +8,8 @@ import 'package:murya/services/cache.service.dart';
 class RewardsRepository extends BaseRepository {
   final CacheService cacheService;
 
-  RewardsRepository({CacheService? cacheService}) : cacheService = cacheService ?? CacheService();
+  RewardsRepository({CacheService? cacheService})
+      : cacheService = cacheService ?? CacheService();
 
   String _rewardsCacheKey({
     String? city,
@@ -16,20 +17,25 @@ class RewardsRepository extends BaseRepository {
     bool? onlyAvailable,
     int page = 1,
     int limit = 20,
+    required String languageCode,
   }) {
     final cityKey = city != null && city.isNotEmpty ? city : 'null';
     final kindKey = kind != null && kind.isNotEmpty ? kind : 'null';
     final availKey = onlyAvailable == null ? 'null' : onlyAvailable.toString();
-    return 'rewards_catalog_${cityKey}_${kindKey}_${availKey}_${page}_$limit';
+    return 'rewards_catalog_${cityKey}_${kindKey}_${availKey}_${page}_${limit}_$languageCode';
   }
 
-  String _rewardItemKey(String rewardId) => 'reward_item_$rewardId';
+  String _rewardItemKey(String rewardId, String languageCode) =>
+      'reward_item_${rewardId}_$languageCode';
 
-  String _purchasesKey({int page = 1, int limit = 20}) => 'reward_purchases_${page}_$limit';
+  String _purchasesKey(
+          {int page = 1, int limit = 20, required String languageCode}) =>
+      'reward_purchases_${page}_${limit}_$languageCode';
 
-  String _purchaseKey(String purchaseId) => 'reward_purchase_$purchaseId';
+  String _purchaseKey(String purchaseId, String languageCode) =>
+      'reward_purchase_${purchaseId}_$languageCode';
 
-  String _walletKey() => 'reward_wallet';
+  String _walletKey(String languageCode) => 'reward_wallet_$languageCode';
 
   Future<Result<RewardCatalog>> getRewards({
     String? city,
@@ -38,6 +44,8 @@ class RewardsRepository extends BaseRepository {
     int page = 1,
     int limit = 20,
   }) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get(
@@ -52,8 +60,11 @@ class RewardsRepository extends BaseRepository {
         );
         final raw = _extractData(response.data);
         if (raw is List) {
-          final items =
-              raw.whereType<Map>().map((item) => RewardItem.fromJson(Map<String, dynamic>.from(item))).toList();
+          final items = raw
+              .whereType<Map>()
+              .map((item) =>
+                  RewardItem.fromJson(Map<String, dynamic>.from(item)))
+              .toList();
           await cacheService.save(
             _rewardsCacheKey(
               city: city,
@@ -61,6 +72,7 @@ class RewardsRepository extends BaseRepository {
               onlyAvailable: onlyAvailable,
               page: page,
               limit: limit,
+              languageCode: languageCode,
             ),
             {
               'items': raw.whereType<Map>().toList(),
@@ -76,7 +88,9 @@ class RewardsRepository extends BaseRepository {
             total: items.length,
           );
         }
-        final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
+        final data = raw is Map
+            ? Map<String, dynamic>.from(raw)
+            : const <String, dynamic>{};
         await cacheService.save(
           _rewardsCacheKey(
             city: city,
@@ -84,6 +98,7 @@ class RewardsRepository extends BaseRepository {
             onlyAvailable: onlyAvailable,
             page: page,
             limit: limit,
+            languageCode: languageCode,
           ),
           data,
         );
@@ -101,6 +116,8 @@ class RewardsRepository extends BaseRepository {
     int page = 1,
     int limit = 20,
   }) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
       final cachedData = await cacheService.get(
         _rewardsCacheKey(
@@ -109,10 +126,13 @@ class RewardsRepository extends BaseRepository {
           onlyAvailable: onlyAvailable,
           page: page,
           limit: limit,
+          languageCode: languageCode,
         ),
       );
       if (cachedData != null) {
-        return Result.success(RewardCatalog.fromJson(Map<String, dynamic>.from(cachedData)), null);
+        return Result.success(
+            RewardCatalog.fromJson(Map<String, dynamic>.from(cachedData)),
+            null);
       }
     } catch (_) {
       // ignore cache errors
@@ -121,12 +141,16 @@ class RewardsRepository extends BaseRepository {
   }
 
   Future<Result<RewardItem>> getRewardById(String rewardId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/rewards/$rewardId');
         final raw = _extractData(response.data);
-        final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
-        await cacheService.save(_rewardItemKey(rewardId), data);
+        final data = raw is Map
+            ? Map<String, dynamic>.from(raw)
+            : const <String, dynamic>{};
+        await cacheService.save(_rewardItemKey(rewardId, languageCode), data);
         return RewardItem.fromJson(data);
       },
       parentFunctionName: 'RewardsRepository.getRewardById',
@@ -149,10 +173,14 @@ class RewardsRepository extends BaseRepository {
   }
 
   Future<Result<RewardItem>> getRewardByIdCached(String rewardId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get(_rewardItemKey(rewardId));
+      final cachedData =
+          await cacheService.get(_rewardItemKey(rewardId, languageCode));
       if (cachedData != null) {
-        return Result.success(RewardItem.fromJson(Map<String, dynamic>.from(cachedData)), null);
+        return Result.success(
+            RewardItem.fromJson(Map<String, dynamic>.from(cachedData)), null);
       }
     } catch (_) {
       // ignore cache errors
@@ -164,6 +192,8 @@ class RewardsRepository extends BaseRepository {
     int page = 1,
     int limit = 20,
   }) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get(
@@ -175,10 +205,13 @@ class RewardsRepository extends BaseRepository {
         );
         final raw = _extractData(response.data);
         if (raw is List) {
-          final items =
-              raw.whereType<Map>().map((item) => RewardPurchase.fromJson(Map<String, dynamic>.from(item))).toList();
+          final items = raw
+              .whereType<Map>()
+              .map((item) =>
+                  RewardPurchase.fromJson(Map<String, dynamic>.from(item)))
+              .toList();
           await cacheService.save(
-            _purchasesKey(page: page, limit: limit),
+            _purchasesKey(page: page, limit: limit, languageCode: languageCode),
             {
               'items': raw.whereType<Map>().toList(),
               'page': page,
@@ -193,8 +226,12 @@ class RewardsRepository extends BaseRepository {
             total: items.length,
           );
         }
-        final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
-        await cacheService.save(_purchasesKey(page: page, limit: limit), data);
+        final data = raw is Map
+            ? Map<String, dynamic>.from(raw)
+            : const <String, dynamic>{};
+        await cacheService.save(
+            _purchasesKey(page: page, limit: limit, languageCode: languageCode),
+            data);
         return RewardPurchaseList.fromJson(data);
       },
       parentFunctionName: 'RewardsRepository.getPurchases',
@@ -206,10 +243,15 @@ class RewardsRepository extends BaseRepository {
     int page = 1,
     int limit = 20,
   }) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get(_purchasesKey(page: page, limit: limit));
+      final cachedData = await cacheService.get(
+          _purchasesKey(page: page, limit: limit, languageCode: languageCode));
       if (cachedData != null) {
-        return Result.success(RewardPurchaseList.fromJson(Map<String, dynamic>.from(cachedData)), null);
+        return Result.success(
+            RewardPurchaseList.fromJson(Map<String, dynamic>.from(cachedData)),
+            null);
       }
     } catch (_) {
       // ignore cache errors
@@ -218,12 +260,16 @@ class RewardsRepository extends BaseRepository {
   }
 
   Future<Result<RewardPurchase>> getPurchaseById(String purchaseId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/me/reward-purchases/$purchaseId');
         final raw = _extractData(response.data);
-        final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
-        await cacheService.save(_purchaseKey(purchaseId), data);
+        final data = raw is Map
+            ? Map<String, dynamic>.from(raw)
+            : const <String, dynamic>{};
+        await cacheService.save(_purchaseKey(purchaseId, languageCode), data);
         return RewardPurchase.fromJson(data);
       },
       parentFunctionName: 'RewardsRepository.getPurchaseById',
@@ -238,11 +284,17 @@ class RewardsRepository extends BaseRepository {
     );
   }
 
-  Future<Result<RewardPurchase>> getPurchaseByIdCached(String purchaseId) async {
+  Future<Result<RewardPurchase>> getPurchaseByIdCached(
+      String purchaseId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get(_purchaseKey(purchaseId));
+      final cachedData =
+          await cacheService.get(_purchaseKey(purchaseId, languageCode));
       if (cachedData != null) {
-        return Result.success(RewardPurchase.fromJson(Map<String, dynamic>.from(cachedData)), null);
+        return Result.success(
+            RewardPurchase.fromJson(Map<String, dynamic>.from(cachedData)),
+            null);
       }
     } catch (_) {
       // ignore cache errors
@@ -268,26 +320,33 @@ class RewardsRepository extends BaseRepository {
         ),
       );
       final raw = _extractData(response.data);
-      final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
+      final data = raw is Map
+          ? Map<String, dynamic>.from(raw)
+          : const <String, dynamic>{};
       return Result.success(RewardPurchaseResult.fromJson(data), null);
     } on DioException catch (error) {
       final replay = _extractReplayPurchase(error);
       if (replay != null) {
         return Result.success(replay, null);
       }
-      return Result.failure(_extractErrorMessage(error) ?? "Une erreur est survenue");
+      return Result.failure(
+          _extractErrorMessage(error) ?? "Une erreur est survenue");
     } catch (_) {
       return Result.failure("Une erreur est survenue");
     }
   }
 
   Future<Result<Wallet>> getWallet() async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/me/wallet');
         final raw = _extractData(response.data);
-        final data = raw is Map ? Map<String, dynamic>.from(raw) : const <String, dynamic>{};
-        await cacheService.save(_walletKey(), data);
+        final data = raw is Map
+            ? Map<String, dynamic>.from(raw)
+            : const <String, dynamic>{};
+        await cacheService.save(_walletKey(languageCode), data);
         return Wallet.fromJson(data);
       },
       parentFunctionName: 'RewardsRepository.getWallet',
@@ -296,10 +355,13 @@ class RewardsRepository extends BaseRepository {
   }
 
   Future<Result<Wallet>> getWalletCached() async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get(_walletKey());
+      final cachedData = await cacheService.get(_walletKey(languageCode));
       if (cachedData != null) {
-        return Result.success(Wallet.fromJson(Map<String, dynamic>.from(cachedData)), null);
+        return Result.success(
+            Wallet.fromJson(Map<String, dynamic>.from(cachedData)), null);
       }
     } catch (_) {
       // ignore cache errors

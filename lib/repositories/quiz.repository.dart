@@ -13,13 +13,15 @@ class QuizRepository extends BaseRepository {
   bool initialized = false;
   final CacheService cacheService;
 
-  QuizRepository({CacheService? cacheService}) : cacheService = cacheService ?? CacheService() {
+  QuizRepository({CacheService? cacheService})
+      : cacheService = cacheService ?? CacheService() {
     initPrefs().then((_) {
       initialized = true;
     });
   }
 
-  String _quizCacheKey(String jobId) => 'quiz_$jobId';
+  String _quizCacheKey(String jobId, String languageCode) =>
+      'quiz_${jobId}_$languageCode';
 
   Future<void> initPrefs() async {
     prefs = await SharedPreferences.getInstance();
@@ -53,6 +55,8 @@ class QuizRepository extends BaseRepository {
   }
 
   Future<Result<Quiz?>> getQuizForJob(String jobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         while (!initialized) {
@@ -62,12 +66,12 @@ class QuizRepository extends BaseRepository {
 
         final data = response.data["data"];
         if (data is Map<String, dynamic>) {
-          await cacheService.save(_quizCacheKey(jobId), data);
+          await cacheService.save(_quizCacheKey(jobId, languageCode), data);
           return Quiz.fromJson(data);
         }
         if (data is Map) {
           final map = Map<String, dynamic>.from(data);
-          await cacheService.save(_quizCacheKey(jobId), map);
+          await cacheService.save(_quizCacheKey(jobId, languageCode), map);
           return Quiz.fromJson(map);
         }
         return Quiz.fromJson(response.data["data"]);
@@ -77,10 +81,14 @@ class QuizRepository extends BaseRepository {
   }
 
   Future<Result<Quiz?>> getQuizForJobCached(String jobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get(_quizCacheKey(jobId));
+      final cachedData =
+          await cacheService.get(_quizCacheKey(jobId, languageCode));
       if (cachedData != null) {
-        return Result.success(Quiz.fromJson(Map<String, dynamic>.from(cachedData)), null);
+        return Result.success(
+            Quiz.fromJson(Map<String, dynamic>.from(cachedData)), null);
       }
     } catch (e) {
       // ignore cache errors

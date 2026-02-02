@@ -10,7 +10,8 @@ class ResourcesRepository extends BaseRepository {
   bool initialized = false;
   final CacheService cacheService;
 
-  ResourcesRepository({CacheService? cacheService}) : cacheService = cacheService ?? CacheService() {
+  ResourcesRepository({CacheService? cacheService})
+      : cacheService = cacheService ?? CacheService() {
     initPrefs().then((_) {
       initialized = true;
     });
@@ -20,7 +21,8 @@ class ResourcesRepository extends BaseRepository {
     prefs = await SharedPreferences.getInstance();
   }
 
-  Future<Result<Resource?>> generateResource({required ResourceType type, required String userJobId}) async {
+  Future<Result<Resource?>> generateResource(
+      {required ResourceType type, required String userJobId}) async {
     return AppResponse.execute(
       action: () async {
         while (!initialized) {
@@ -37,15 +39,20 @@ class ResourcesRepository extends BaseRepository {
   }
 
   Future<Result<List<Resource>>> fetchResources(String userJobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/userJobs/$userJobId/resources');
 
         if (response.data["data"] != null) {
-          await cacheService.save('user_job_resources_$userJobId', response.data);
+          await cacheService.save(
+              'user_job_resources_${userJobId}_$languageCode', response.data);
         }
 
-        final List<Resource> resources = (response.data["data"] as List).map((e) => Resource.fromJson(e)).toList();
+        final List<Resource> resources = (response.data["data"] as List)
+            .map((e) => Resource.fromJson(e))
+            .toList();
         return resources;
       },
       parentFunctionName: 'ResourcesRepository -> fetchResources',
@@ -62,7 +69,8 @@ class ResourcesRepository extends BaseRepository {
         if (timezone != null && timezone.isNotEmpty) {
           payload['timezone'] = timezone;
         }
-        final response = await api.dio.post('/resources/$resourceId/open', data: payload.isEmpty ? null : payload);
+        final response = await api.dio.post('/resources/$resourceId/open',
+            data: payload.isEmpty ? null : payload);
         return _resourceFromTrackingResponse(response.data);
       },
       parentFunctionName: 'ResourcesRepository -> openResource',
@@ -83,7 +91,8 @@ class ResourcesRepository extends BaseRepository {
         if (progress != null) {
           payload['progress'] = progress;
         }
-        final response = await api.dio.post('/resources/$resourceId/read', data: payload.isEmpty ? null : payload);
+        final response = await api.dio.post('/resources/$resourceId/read',
+            data: payload.isEmpty ? null : payload);
         return _resourceFromTrackingResponse(response.data);
       },
       parentFunctionName: 'ResourcesRepository -> readResource',
@@ -91,10 +100,15 @@ class ResourcesRepository extends BaseRepository {
   }
 
   Future<Result<List<Resource>>> fetchResourcesCached(String userJobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get('user_job_resources_$userJobId');
+      final cachedData = await cacheService
+          .get('user_job_resources_${userJobId}_$languageCode');
       if (cachedData != null && cachedData['data'] != null) {
-        final List<Resource> resources = (cachedData["data"] as List).map((e) => Resource.fromJson(e)).toList();
+        final List<Resource> resources = (cachedData["data"] as List)
+            .map((e) => Resource.fromJson(e))
+            .toList();
         return Result.success(resources, null);
       }
     } catch (e) {
@@ -107,8 +121,11 @@ class ResourcesRepository extends BaseRepository {
     required String userJobId,
     required Resource updated,
   }) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get('user_job_resources_$userJobId');
+      final cachedData = await cacheService
+          .get('user_job_resources_${userJobId}_$languageCode');
       if (cachedData == null || cachedData['data'] == null) return;
       if (updated.userState == null) return;
 
@@ -130,7 +147,8 @@ class ResourcesRepository extends BaseRepository {
 
       if (updatedAny) {
         cachedData['data'] = rawList;
-        await cacheService.save('user_job_resources_$userJobId', cachedData);
+        await cacheService.save(
+            'user_job_resources_${userJobId}_$languageCode', cachedData);
       }
     } catch (_) {
       // ignore cache update errors
@@ -138,7 +156,8 @@ class ResourcesRepository extends BaseRepository {
   }
 
   Resource _resourceFromTrackingResponse(dynamic responseData) {
-    final data = responseData is Map<String, dynamic> ? responseData['data'] : null;
+    final data =
+        responseData is Map<String, dynamic> ? responseData['data'] : null;
     if (data is Map<String, dynamic>) {
       final resourceJson = data['resource'] as Map<String, dynamic>?;
       final userStateJson = data['userState'] as Map<String, dynamic>?;

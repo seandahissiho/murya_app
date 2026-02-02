@@ -8,12 +8,13 @@ import 'package:murya/services/cache.service.dart';
 class JobRepository extends BaseRepository {
   final CacheService cacheService;
 
-  JobRepository({CacheService? cacheService}) : cacheService = cacheService ?? CacheService();
+  JobRepository({CacheService? cacheService})
+      : cacheService = cacheService ?? CacheService();
 
   String _normalizeQuery(String query) => query.trim().toLowerCase();
 
-  String _searchCacheKey(String normalizedQuery) {
-    return 'job_search_${Uri.encodeComponent(normalizedQuery)}';
+  String _searchCacheKey(String normalizedQuery, String languageCode) {
+    return 'job_search_${Uri.encodeComponent(normalizedQuery)}_$languageCode';
   }
 
   List<Job> _filterJobs(List<Job> jobs, String normalizedQuery) {
@@ -32,6 +33,8 @@ class JobRepository extends BaseRepository {
     if (normalizedQuery.isEmpty) {
       return Result.success(<Job>[], null);
     }
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get(
@@ -41,13 +44,16 @@ class JobRepository extends BaseRepository {
           },
         );
 
-        final List<Job> jobs =
-            (response.data["data"]['items'] as List).map((jobJson) => Job.fromJson(jobJson)).toList();
+        final List<Job> jobs = (response.data["data"]['items'] as List)
+            .map((jobJson) => Job.fromJson(jobJson))
+            .toList();
         final filtered = _filterJobs(jobs, normalizedQuery);
         await cacheService.save(
-          _searchCacheKey(normalizedQuery),
+          _searchCacheKey(normalizedQuery, languageCode),
           {
-            'items': (response.data["data"]['items'] as List).whereType<Map>().toList(),
+            'items': (response.data["data"]['items'] as List)
+                .whereType<Map>()
+                .toList(),
           },
         );
         return filtered;
@@ -64,11 +70,17 @@ class JobRepository extends BaseRepository {
     if (normalizedQuery.isEmpty) {
       return Result.success(<Job>[], null);
     }
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get(_searchCacheKey(normalizedQuery));
+      final cachedData = await cacheService
+          .get(_searchCacheKey(normalizedQuery, languageCode));
       final raw = cachedData?['items'];
       if (raw is List) {
-        final jobs = raw.whereType<Map>().map((jobJson) => Job.fromJson(Map<String, dynamic>.from(jobJson))).toList();
+        final jobs = raw
+            .whereType<Map>()
+            .map((jobJson) => Job.fromJson(Map<String, dynamic>.from(jobJson)))
+            .toList();
         return Result.success(_filterJobs(jobs, normalizedQuery), null);
       }
     } catch (e) {
@@ -78,12 +90,15 @@ class JobRepository extends BaseRepository {
   }
 
   Future<Result<AppJob>> getJobDetails(String jobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/jobs/$jobId/');
 
         if (response.data["data"] != null) {
-          await cacheService.save('job_details_$jobId', response.data["data"]);
+          await cacheService.save(
+              'job_details_${jobId}_$languageCode', response.data["data"]);
         }
         final data = response.data["data"];
         if (data['scope'] == 'JOB_FAMILY') {
@@ -102,8 +117,11 @@ class JobRepository extends BaseRepository {
   }
 
   Future<Result<Job>> getJobDetailsCached(String jobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get('job_details_$jobId');
+      final cachedData =
+          await cacheService.get('job_details_${jobId}_$languageCode');
       if (cachedData != null) {
         final Job job = Job.fromJson(cachedData);
         return Result.success(job, null);
@@ -116,15 +134,20 @@ class JobRepository extends BaseRepository {
 
   // getUserCurrentJob
   Future<Result<UserJob?>> getUserCurrentJob() async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/userJobs/current/');
 
         if (response.data["data"] != null) {
-          await cacheService.save('user_current_job', response.data["data"]);
+          await cacheService.save(
+              'user_current_job_$languageCode', response.data["data"]);
         }
 
-        final UserJob? job = response.data["data"] != null ? UserJob.fromJson(response.data["data"]) : null;
+        final UserJob? job = response.data["data"] != null
+            ? UserJob.fromJson(response.data["data"])
+            : null;
         return job;
       },
       parentFunctionName: 'JobRepository -> getUserCurrentJob',
@@ -132,8 +155,11 @@ class JobRepository extends BaseRepository {
   }
 
   Future<Result<UserJob?>> getUserCurrentJobCached() async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get('user_current_job');
+      final cachedData =
+          await cacheService.get('user_current_job_$languageCode');
       if (cachedData != null) {
         final UserJob job = UserJob.fromJson(cachedData);
         return Result.success(job, null);
@@ -145,15 +171,20 @@ class JobRepository extends BaseRepository {
   }
 
   Future<Result<UserJob?>> setUserCurrentJob(String jobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.post('/userJobs/current/$jobId');
 
         if (response.data["data"] != null) {
-          await cacheService.save('user_current_job', response.data["data"]);
+          await cacheService.save(
+              'user_current_job_$languageCode', response.data["data"]);
         }
 
-        final UserJob? job = response.data["data"] != null ? UserJob.fromJson(response.data["data"]) : null;
+        final UserJob? job = response.data["data"] != null
+            ? UserJob.fromJson(response.data["data"])
+            : null;
         return job;
       },
       parentFunctionName: 'JobRepository -> setUserCurrentJob',
@@ -162,12 +193,15 @@ class JobRepository extends BaseRepository {
 
   // getUserJobDetails
   Future<Result<UserJob>> getUserJobDetails(String jobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/userJobs/$jobId/');
 
         if (response.data["data"] != null) {
-          await cacheService.save('user_job_details_$jobId', response.data["data"]);
+          await cacheService.save(
+              'user_job_details_${jobId}_$languageCode', response.data["data"]);
         }
 
         final UserJob job = UserJob.fromJson(response.data["data"]);
@@ -178,8 +212,11 @@ class JobRepository extends BaseRepository {
   }
 
   Future<Result<UserJob>> getUserJobDetailsCached(String jobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get('user_job_details_$jobId');
+      final cachedData =
+          await cacheService.get('user_job_details_${jobId}_$languageCode');
       if (cachedData != null) {
         final UserJob job = UserJob.fromJson(cachedData);
         return Result.success(job, null);
@@ -191,10 +228,15 @@ class JobRepository extends BaseRepository {
   }
 
   // getCFDetails
-  Future<Result<(CompetencyFamily, AppJob)>> getCFDetails(String jobId, String cfId, {String? userJobId}) async {
+  Future<Result<(CompetencyFamily, AppJob)>> getCFDetails(
+      String jobId, String cfId,
+      {String? userJobId}) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
-        final String? resolvedUserJobId = userJobId != null && userJobId.isNotEmpty ? userJobId : null;
+        final String? resolvedUserJobId =
+            userJobId != null && userJobId.isNotEmpty ? userJobId : null;
         final String endpoint = resolvedUserJobId != null
             ? '/userJobs/$resolvedUserJobId/competency_families/$cfId/'
             : '/jobs/$jobId/competency_families/$cfId/';
@@ -202,8 +244,8 @@ class JobRepository extends BaseRepository {
 
         if (response.data["data"] != null) {
           final cacheKey = resolvedUserJobId != null
-              ? 'cf_details_userjob_${resolvedUserJobId}_$cfId'
-              : 'cf_details_${jobId}_$cfId';
+              ? 'cf_details_userjob_${resolvedUserJobId}_${cfId}_$languageCode'
+              : 'cf_details_${jobId}_${cfId}_$languageCode';
           await cacheService.save(cacheKey, response.data["data"]);
         }
 
@@ -216,15 +258,21 @@ class JobRepository extends BaseRepository {
     );
   }
 
-  Future<Result<(CompetencyFamily, AppJob)>> getCFDetailsCached(String jobId, String cfId, {String? userJobId}) async {
+  Future<Result<(CompetencyFamily, AppJob)>> getCFDetailsCached(
+      String jobId, String cfId,
+      {String? userJobId}) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final String? resolvedUserJobId = userJobId != null && userJobId.isNotEmpty ? userJobId : null;
+      final String? resolvedUserJobId =
+          userJobId != null && userJobId.isNotEmpty ? userJobId : null;
       final cacheKey = resolvedUserJobId != null
-          ? 'cf_details_userjob_${resolvedUserJobId}_$cfId'
-          : 'cf_details_${jobId}_$cfId';
+          ? 'cf_details_userjob_${resolvedUserJobId}_${cfId}_$languageCode'
+          : 'cf_details_${jobId}_${cfId}_$languageCode';
       final cachedData = await cacheService.get(cacheKey);
       if (cachedData != null) {
-        return Result.success(_parseCFDetailsData(cachedData as Map<String, dynamic>), null);
+        return Result.success(
+            _parseCFDetailsData(cachedData as Map<String, dynamic>), null);
       }
     } catch (e) {
       // ignore cache errors
@@ -233,16 +281,21 @@ class JobRepository extends BaseRepository {
   }
 
   // /leaderboard/job/:jobId
-  Future<Result<JobRankings>> getRankingForJob(String jobId, DateTime? from, DateTime? to) async {
+  Future<Result<JobRankings>> getRankingForJob(
+      String jobId, DateTime? from, DateTime? to) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
-        final response = await api.dio.get('/userJobs/leaderboard/job/$jobId/', queryParameters: {
+        final response = await api.dio
+            .get('/userJobs/leaderboard/job/$jobId/', queryParameters: {
           if (from != null) 'from': from.toDbString(),
           if (to != null) 'to': to.toDbString(),
         });
 
         if (response.data["data"] != null) {
-          await cacheService.save('job_ranking_$jobId-${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}',
+          await cacheService.save(
+              'job_ranking_${jobId}-${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}_$languageCode',
               response.data["data"]);
         }
 
@@ -254,10 +307,13 @@ class JobRepository extends BaseRepository {
     );
   }
 
-  Future<Result<JobRankings>> getRankingForJobCached(String jobId, DateTime? from, DateTime? to) async {
+  Future<Result<JobRankings>> getRankingForJobCached(
+      String jobId, DateTime? from, DateTime? to) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData =
-          await cacheService.get('job_ranking_$jobId-${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}');
+      final cachedData = await cacheService.get(
+          'job_ranking_${jobId}-${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}_$languageCode');
       if (cachedData != null) {
         final JobRankings ranking = JobRankings.fromJson(cachedData);
         return Result.success(ranking, null);
@@ -269,27 +325,39 @@ class JobRepository extends BaseRepository {
   }
 
   // Future<Result<UserJobCompetencyProfile>> fetchUserJobCompetencyProfile
-  Future<Result<UserJobCompetencyProfile>> fetchUserJobCompetencyProfile(String userJobId) async {
+  Future<Result<UserJobCompetencyProfile>> fetchUserJobCompetencyProfile(
+      String userJobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
-        final response = await api.dio.get('/userJobs/$userJobId/competenciesProfile/');
+        final response =
+            await api.dio.get('/userJobs/$userJobId/competenciesProfile/');
 
         if (response.data["data"] != null) {
-          await cacheService.save('user_job_competency_profile_$userJobId', response.data["data"]);
+          await cacheService.save(
+              'user_job_competency_profile_${userJobId}_$languageCode',
+              response.data["data"]);
         }
 
-        final UserJobCompetencyProfile profile = UserJobCompetencyProfile.fromJson(response.data["data"]);
+        final UserJobCompetencyProfile profile =
+            UserJobCompetencyProfile.fromJson(response.data["data"]);
         return profile;
       },
       parentFunctionName: 'JobRepository -> fetchUserJobCompetencyProfile',
     );
   }
 
-  Future<Result<UserJobCompetencyProfile>> fetchUserJobCompetencyProfileCached(String userJobId) async {
+  Future<Result<UserJobCompetencyProfile>> fetchUserJobCompetencyProfileCached(
+      String userJobId) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get('user_job_competency_profile_$userJobId');
+      final cachedData = await cacheService
+          .get('user_job_competency_profile_${userJobId}_$languageCode');
       if (cachedData != null) {
-        final UserJobCompetencyProfile profile = UserJobCompetencyProfile.fromJson(cachedData);
+        final UserJobCompetencyProfile profile =
+            UserJobCompetencyProfile.fromJson(cachedData);
         return Result.success(profile, null);
       }
     } catch (e) {
@@ -299,7 +367,8 @@ class JobRepository extends BaseRepository {
   }
 
   (CompetencyFamily, AppJob) _parseCFDetailsData(Map<String, dynamic> data) {
-    final familyJson = Map<String, dynamic>.from(data['family'] as Map? ?? <String, dynamic>{});
+    final familyJson = Map<String, dynamic>.from(
+        data['family'] as Map? ?? <String, dynamic>{});
     familyJson['competencies'] = data['competencies'] ?? [];
     final CompetencyFamily cfamily = CompetencyFamily.fromJson(familyJson);
 
