@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:beamer/beamer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -701,7 +702,7 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
       final width = math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, 204).toDouble();
       return Wrap(
         spacing: AppSpacing.spacing16,
-        runSpacing: AppSpacing.spacing16 * 1.5,
+        runSpacing: AppSpacing.spacing16,
         children: widget.searchState.response.sections.users.items.map((e) {
           return SizedBox(
             width: width,
@@ -716,10 +717,10 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(102),
                     child: e.imageUrl != null
-                        ? Image.network(
-                            e.imageUrl!,
+                        ? CachedNetworkImage(
+                            imageUrl: e.imageUrl!,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
+                            errorWidget: (context, url, error) {
                               return SvgPicture.asset(AppIcons.avatarPlaceholderPath);
                             },
                           )
@@ -774,10 +775,10 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(102),
                         child: e.imageUrl != null
-                            ? Image.network(
-                                e.imageUrl!,
+                            ? CachedNetworkImage(
+                                imageUrl: e.imageUrl!,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
+                                errorWidget: (context, url, error) {
                                   return SvgPicture.asset(AppIcons.avatarPlaceholderPath);
                                 },
                               )
