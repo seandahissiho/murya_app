@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:beamer/beamer.dart';
 // import 'package:fl_chart/fl_chart.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -632,8 +631,16 @@ class ResourceItemWidget extends StatelessWidget {
                         color: AppColors.backgroundCard,
                         border: Border.all(color: AppColors.primaryDefault, width: 2),
                       ),
-                      padding: const EdgeInsets.all(8),
-                      child: FittedBox(fit: BoxFit.scaleDown, child: SvgPicture.asset(resource.iconPath)),
+                      padding: const EdgeInsets.all(4),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: SvgPicture.asset(
+                          resource.iconPath,
+                          height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
+                          width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
+                          colorFilter: const ColorFilter.mode(AppColors.textPrimary, BlendMode.srcIn),
+                        ),
+                      ),
                     ),
                     const Spacer(),
                     if (resource.isNew) ...[
@@ -645,7 +652,7 @@ class ResourceItemWidget extends StatelessWidget {
               if (module?.boxType != AppModuleType.type1) ...[
                 AppSpacing.spacing8_Box,
                 Expanded(
-                  child: AutoSizeText(
+                  child: Text(
                     (resource.title ?? '').toUpperCase(),
                     // font-family: Anton;
                     // font-weight: 400;
@@ -662,7 +669,6 @@ class ResourceItemWidget extends StatelessWidget {
                     ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    minFontSize: 12,
                   ),
                 ),
               ] else ...[

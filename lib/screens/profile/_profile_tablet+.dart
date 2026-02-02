@@ -8,6 +8,8 @@ class TabletProfileScreen extends StatefulWidget {
 }
 
 class _TabletProfileScreenState extends State<TabletProfileScreen> {
+  int hoveredTabIndex = -1;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -68,12 +70,48 @@ class _TabletProfileScreenState extends State<TabletProfileScreen> {
           SizedBox(
             height: 50,
             child: TabBar(
+              onHover: (value, index) {
+                if (value) {
+                  hoveredTabIndex = index;
+                } else {
+                  hoveredTabIndex = -1;
+                }
+                setState(() {});
+              },
               isScrollable: true,
               tabs: [
-                Tab(text: AppLocalizations.of(context).parcoursTab_profile),
-                Tab(text: AppLocalizations.of(context).parcoursTab_objectives),
-                Tab(text: AppLocalizations.of(context).parcoursTab_rewards),
-                Tab(text: AppLocalizations.of(context).parcoursTab_settings),
+                Tab(
+                  child: Text(
+                    AppLocalizations.of(context).parcoursTab_profile,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: hoveredTabIndex == 0 ? AppColors.primaryFocus : AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    AppLocalizations.of(context).parcoursTab_objectives,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: hoveredTabIndex == 1 ? AppColors.primaryFocus : AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    AppLocalizations.of(context).parcoursTab_rewards,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: hoveredTabIndex == 2 ? AppColors.primaryFocus : AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    AppLocalizations.of(context).parcoursTab_settings,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: hoveredTabIndex == 3 ? AppColors.primaryFocus : AppColors.textPrimary,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

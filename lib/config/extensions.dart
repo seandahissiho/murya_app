@@ -267,7 +267,7 @@ extension ExtensionDateTime on DateTime {
 
   String ddMMMyyyy() {
     // Use Intl to format dates based on the current locale.
-    return intl.DateFormat('dd MMM. yy').format(this);
+    return intl.DateFormat('dd MMM yyyy').format(this).firstLetterUpperCase();
   }
 
   String toDbString() {
@@ -360,6 +360,22 @@ extension StringExtension on String {
   String get snakeCase {
     final regex = RegExp(r'(?<!^)(?=[A-Z])');
     return toLowerCase().split(regex).join('_').replaceAll(' ', '_').replaceAll('__', '_');
+  }
+
+  String firstLetterUpperCase() {
+    if (isEmpty) return this;
+    // remove leading and trailing spaces
+    String trimmed = trim();
+    if (trimmed.isEmpty) return this;
+    // remove multiple spaces
+    trimmed = trimmed.replaceAll(RegExp(r'\s+'), ' ');
+    List<String> words = trimmed.split(' ');
+    // The first letter of each word is capitalized
+    List<String> capitalizedWords = words.map((word) {
+      if (word.isEmpty) return word;
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).toList();
+    return capitalizedWords.join(' ');
   }
 }
 
