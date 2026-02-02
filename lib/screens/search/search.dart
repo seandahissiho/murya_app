@@ -163,6 +163,7 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                                     switchFilter: () {
                                       setState(() {
                                         selectedFilter = locale.search_filter_job;
+                                        _triggerSearchForFilter(selectedFilter);
                                       });
                                     },
                                   ),
@@ -178,6 +179,7 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                                     switchFilter: () {
                                       setState(() {
                                         selectedFilter = locale.search_filter_resource;
+                                        _triggerSearchForFilter(selectedFilter);
                                       });
                                     },
                                   ),
@@ -193,6 +195,7 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                                     switchFilter: () {
                                       setState(() {
                                         selectedFilter = locale.search_filter_profile;
+                                        _triggerSearchForFilter(selectedFilter);
                                       });
                                     },
                                   ),
@@ -251,6 +254,7 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
         setState(() {
           selectedFilter = title;
         });
+        _triggerSearchForFilter(title);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -271,6 +275,34 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
         ),
       ),
     );
+  }
+
+  void _triggerSearchForFilter(String filter) {
+    final locale = AppLocalizations.of(context);
+    final query = _searchController.text;
+    if (!mounted) return;
+    if (filter == locale.search_filter_all) {
+      context.read<SearchBloc>().add(SearchQueryChanged(query: query, context: context));
+      return;
+    }
+
+    List<String> sections;
+    if (filter == locale.search_filter_job) {
+      sections = const ['jobs', 'jobFamilies'];
+    } else if (filter == locale.search_filter_resource) {
+      sections = const ['learningResources'];
+    } else if (filter == locale.search_filter_profile) {
+      sections = const ['users'];
+    } else {
+      sections = const ['jobs', 'jobFamilies', 'learningResources', 'users'];
+    }
+
+    context.read<SearchBloc>().add(SearchQueryChanged(
+          query: query,
+          context: context,
+          limit: 30,
+          sections: sections,
+        ));
   }
 }
 
@@ -348,10 +380,12 @@ class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
   fullView(AppSize appSize, ThemeData theme) {
     return LayoutBuilder(builder: (context, constraints) {
       final width = math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, 320).toDouble();
+      final items =
+          widget.searchState.response.sections.jobs.items + widget.searchState.response.sections.jobFamilies.items;
       return Wrap(
         spacing: AppSpacing.spacing16,
         runSpacing: AppSpacing.spacing16 * 1.5,
-        children: widget.searchState.response.sections.jobs.items.map((e) {
+        children: items.map((e) {
           return SizedBox(
             width: width,
             height: 140,
@@ -397,7 +431,9 @@ class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
 
   previewView(AppSize appSize, ThemeData theme, bool isMobile) {
     final int upTo = appSize.screenWidth ~/ 320;
-    List<SearchItem> data = widget.searchState.response.sections.jobs.items.takeUpTo(upTo);
+    final items =
+        widget.searchState.response.sections.jobs.items + widget.searchState.response.sections.jobFamilies.items;
+    List<SearchItem> data = items.takeUpTo(upTo);
     return LayoutBuilder(builder: (context, constraints) {
       return ConstrainedBox(
         constraints: const BoxConstraints(
