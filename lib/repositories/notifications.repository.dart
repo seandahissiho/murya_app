@@ -6,18 +6,22 @@ import 'package:murya/services/cache.service.dart';
 class NotificationRepository extends BaseRepository {
   final CacheService cacheService;
 
-  NotificationRepository({CacheService? cacheService}) : cacheService = cacheService ?? CacheService();
+  NotificationRepository({CacheService? cacheService})
+      : cacheService = cacheService ?? CacheService();
 
-  String _notificationsCacheKey(List<AppNotificationCategory> categories, int page) {
+  String _notificationsCacheKey(
+      List<AppNotificationCategory> categories, int page, String languageCode) {
     final sorted = [...categories]..sort((a, b) => a.value.compareTo(b.value));
     final key = sorted.map((c) => c.value).join(',');
-    return 'notifications_${key}_$page';
+    return 'notifications_${key}_${page}_$languageCode';
   }
 
   Future<Result<(List<AppNotification>, int, int)>> getNotifications({
     required List<AppNotificationCategory> selectedCategories,
     required int page,
   }) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     return AppResponse.execute(
       action: () async {
         Map<String, dynamic> queryParams = {};
@@ -27,11 +31,16 @@ class NotificationRepository extends BaseRepository {
         }
 
         if (selectedCategories.isNotEmpty) {
-          queryParams["categories[]"] = selectedCategories.map((category) => category.value).toSet().toList();
+          queryParams["categories[]"] = selectedCategories
+              .map((category) => category.value)
+              .toSet()
+              .toList();
         }
-        if (selectedCategories.contains(AppNotificationCategory.reservationRead)) {
+        if (selectedCategories
+            .contains(AppNotificationCategory.reservationRead)) {
           queryParams["status"] = "READ";
-        } else if (selectedCategories.contains(AppNotificationCategory.reservationUnread)) {
+        } else if (selectedCategories
+            .contains(AppNotificationCategory.reservationUnread)) {
           queryParams["status"] = "UNREAD";
         }
 
@@ -40,7 +49,8 @@ class NotificationRepository extends BaseRepository {
           queryParameters: queryParams,
         );
 
-        final List<Map<String, dynamic>> data = List<Map<String, dynamic>>.from(response.data["data"]["notifications"]);
+        final List<Map<String, dynamic>> data = List<Map<String, dynamic>>.from(
+            response.data["data"]["notifications"]);
         final int unreadCount = response.data["data"]["unread"] as int;
 
         final List<AppNotification> notifications = data.map((notification) {
@@ -50,7 +60,7 @@ class NotificationRepository extends BaseRepository {
         final totalPages = response.data["pagination"]["totalPages"];
 
         await cacheService.save(
-          _notificationsCacheKey(selectedCategories, page),
+          _notificationsCacheKey(selectedCategories, page, languageCode),
           {
             'notifications': data,
             'totalPages': totalPages,
@@ -72,15 +82,21 @@ class NotificationRepository extends BaseRepository {
     required List<AppNotificationCategory> selectedCategories,
     required int page,
   }) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
     try {
-      final cachedData = await cacheService.get(_notificationsCacheKey(selectedCategories, page));
+      final cachedData = await cacheService
+          .get(_notificationsCacheKey(selectedCategories, page, languageCode));
       if (cachedData != null) {
         final raw = cachedData['notifications'];
         final totalPages = cachedData['totalPages'] as int? ?? 0;
         final unread = cachedData['unread'] as int? ?? 0;
         if (raw is List) {
-          final data =
-              raw.whereType<Map>().map((item) => AppNotification.fromJson(Map<String, dynamic>.from(item))).toList();
+          final data = raw
+              .whereType<Map>()
+              .map((item) =>
+                  AppNotification.fromJson(Map<String, dynamic>.from(item)))
+              .toList();
           return Result.success((data, totalPages, unread), null);
         }
       }
@@ -90,7 +106,8 @@ class NotificationRepository extends BaseRepository {
     return Result.success((<AppNotification>[], 0, 0), null);
   }
 
-  Future<Result<bool>> markNotificationAsRead(AppNotification notification) async {
+  Future<Result<bool>> markNotificationAsRead(
+      AppNotification notification) async {
     return AppResponse.execute(
       action: () async {
         await api.dio.post(
