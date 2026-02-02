@@ -14,6 +14,7 @@ import 'package:murya/blocs/modules/quests/quests_bloc.dart';
 import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/blocs/modules/rewards/rewards_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
+import 'package:murya/blocs/search/search_bloc.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/config/theme.dart';
 import 'package:murya/localization/locale_controller.dart';
@@ -28,6 +29,7 @@ import 'package:murya/repositories/profile.repository.dart';
 import 'package:murya/repositories/quiz.repository.dart';
 import 'package:murya/repositories/resources.repository.dart';
 import 'package:murya/repositories/rewards.repository.dart';
+import 'package:murya/repositories/search.repository.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:sizer/sizer.dart';
@@ -37,7 +39,8 @@ import 'config/DS.dart';
 import 'l10n/l10n.dart';
 
 List<BlocProvider> getBlocProviders(BuildContext context) {
-  final List<BlocProvider<StateStreamableSource<Object?>>> sharedBlocProviders = [
+  final List<BlocProvider<StateStreamableSource<Object?>>> sharedBlocProviders =
+      [
     BlocProvider<NotificationBloc>(
       lazy: false,
       create: (BuildContext context) => NotificationBloc(context: context),
@@ -72,7 +75,8 @@ List<BlocProvider> getBlocProviders(BuildContext context) {
     // ModulesBloc
     BlocProvider<ModulesBloc>(
       lazy: false,
-      create: (BuildContext context) => ModulesBloc(context: context)..add(InitializeModules(context: context)),
+      create: (BuildContext context) => ModulesBloc(context: context)
+        ..add(InitializeModules(context: context)),
     ),
     // ResourcesBloc
     BlocProvider<ResourcesBloc>(
@@ -88,6 +92,11 @@ List<BlocProvider> getBlocProviders(BuildContext context) {
       lazy: false,
       create: (BuildContext context) => QuestsBloc(context: context),
     ),
+    // Search Bloc
+    BlocProvider<SearchBloc>(
+      lazy: false,
+      create: (BuildContext context) => SearchBloc(context: context),
+    ),
   ];
   return sharedBlocProviders;
 }
@@ -102,7 +111,8 @@ List<RepositoryProvider> getRepositoryProviders(BuildContext context) {
     ),
     RepositoryProvider<SseService>(
       create: (BuildContext context) {
-        final authRepository = RepositoryProvider.of<AuthenticationRepository>(context);
+        final authRepository =
+            RepositoryProvider.of<AuthenticationRepository>(context);
         return SseService(
           tokenProvider: () async {
             final cached = await authRepository.getCachedAccessToken();
@@ -138,6 +148,9 @@ List<RepositoryProvider> getRepositoryProviders(BuildContext context) {
     ),
     RepositoryProvider<RewardsRepository>(
       create: (BuildContext context) => RewardsRepository(),
+    ),
+    RepositoryProvider<SearchRepository>(
+      create: (BuildContext context) => SearchRepository(),
     ),
   ];
   return sharedRepositoryProviders;
@@ -190,7 +203,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final provider = Provider.of<LocaleProvider>(context);
     beamerDelegate.addListener(() {
-      debugPrint('📍 Current route: ${beamerDelegate.currentBeamLocation.state.routeInformation.uri}');
+      debugPrint(
+          '📍 Current route: ${beamerDelegate.currentBeamLocation.state.routeInformation.uri}');
     });
     return ResponsiveSizer(
       builder: (context, orientation, deviceType) {
@@ -289,7 +303,8 @@ ThemeData buildLightTheme(BuildContext context, {double fontSizeIndex = 0}) {
     textButtonTheme: AppTextButtonStyle.buildTheme(lightTheme, context),
     popupMenuTheme: AppPopupMenuThemeData.buildTheme(lightTheme, context),
     dropdownMenuTheme: AppDropdownMenuThemeData.buildTheme(lightTheme, context),
-    inputDecorationTheme: AppInputDecorationTheme.buildTheme(lightTheme, context),
+    inputDecorationTheme:
+        AppInputDecorationTheme.buildTheme(lightTheme, context),
     tabBarTheme: AppTabBarTheme.buildTheme(lightTheme, context),
   );
   return lightTheme;
@@ -305,7 +320,8 @@ ThemeData buildDarkTheme(BuildContext context, {double fontSizeIndex = 0}) {
     textButtonTheme: AppTextButtonStyle.buildTheme(darkTheme, context),
     popupMenuTheme: AppPopupMenuThemeData.buildTheme(darkTheme, context),
     dropdownMenuTheme: AppDropdownMenuThemeData.buildTheme(darkTheme, context),
-    inputDecorationTheme: AppInputDecorationTheme.buildTheme(darkTheme, context),
+    inputDecorationTheme:
+        AppInputDecorationTheme.buildTheme(darkTheme, context),
     tabBarTheme: AppTabBarTheme.buildTheme(darkTheme, context),
   );
   return darkTheme;

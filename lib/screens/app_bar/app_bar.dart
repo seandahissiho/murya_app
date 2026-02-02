@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
+import 'package:murya/blocs/search/search_bloc.dart';
 import 'package:murya/components/x_text_form_field.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';

@@ -83,6 +83,14 @@ extension ExtensionList<T> on Iterable<T> {
     final randomIndex = math.Random().nextInt(length);
     return elementAt(randomIndex);
   }
+
+  // takeUpTo(int i)
+  List<T> takeUpTo(int i) {
+    if (i >= length) {
+      return toList();
+    }
+    return take(i).toList();
+  }
 }
 
 extension ExtensionDateTime on DateTime {

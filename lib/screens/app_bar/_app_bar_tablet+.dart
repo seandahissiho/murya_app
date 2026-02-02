@@ -67,13 +67,16 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
                         onTap: isSearching
                             ? null
                             : () async {
-                                context.read<JobBloc>().add(SearchJobs(query: "", context: context));
+                                context.read<SearchBloc>().add(
+                                    SearchQueryChanged(
+                                        query: "", context: context));
                                 setState(() {
                                   isSearching = true;
                                 });
                                 await Future.delayed(_animationDuration);
                                 if (!mounted) return;
-                                navigateToPath(context, to: AppRoutes.searchModule);
+                                navigateToPath(context,
+                                    to: AppRoutes.searchModule);
                               },
                         controller: _searchController,
                         labelText: null,

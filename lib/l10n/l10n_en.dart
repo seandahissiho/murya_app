@@ -595,4 +595,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editChanges_button => 'Edit';
+
+  @override
+  String get search_filter_all => 'All';
+
+  @override
+  String get search_filter_job => 'Jobs';
+
+  @override
+  String get search_filter_resource => 'Resources';
+
+  @override
+  String get search_filter_profile => 'Profiles';
 }

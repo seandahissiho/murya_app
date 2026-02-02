@@ -602,4 +602,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get editChanges_button => 'Modifier';
+
+  @override
+  String get search_filter_all => 'Tous';
+
+  @override
+  String get search_filter_job => 'Métiers';
+
+  @override
+  String get search_filter_resource => 'Ressources';
+
+  @override
+  String get search_filter_profile => 'Profils';
 }

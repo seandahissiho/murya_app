@@ -3,16 +3,21 @@ import 'dart:async';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
-import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
+import 'package:murya/blocs/search/search_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/x_text_form_field.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
+import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
+import 'package:murya/models/search_response.dart';
 import 'package:murya/screens/base.dart';
+import 'package:murya/screens/ressources/resources.dart';
 
 class MainSearchLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
@@ -52,13 +57,27 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
   final FocusNode focusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
-  static const _debounceDuration = Duration(milliseconds: 250);
+  static const _debounceDuration = Duration(milliseconds: 550);
+
+  String selectedFilter = '';
 
   @override
   initState() {
-    context.read<JobBloc>().add(SearchJobs(query: "", context: context));
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final history = Beamer.of(context).beamingHistory;
+
+      if (history.length > 1) {
+        final lastBeamState = history[history.length - 2];
+        final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
+        bool fromLanding = lastPath == AppRoutes.landing;
+        if (!fromLanding) {
+          context.read<SearchBloc>().add(SearchQueryChanged(query: "", context: context));
+        }
+      } else {
+        context.read<SearchBloc>().add(SearchQueryChanged(query: "", context: context));
+      }
+      selectedFilter = AppLocalizations.of(context).search_filter_all;
       FocusScope.of(context).requestFocus(focusNode);
     });
   }
@@ -110,76 +129,65 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                   ),
                 ),
               ),
-              AppSpacing.spacing16_Box,
-              // const Spacer(),
               const AppXCloseButton(),
             ],
           ),
           if (isMobile) AppSpacing.spacing40_Box else AppSpacing.pageMarginBox,
           Expanded(
-            child: BlocConsumer<JobBloc, JobState>(
+            child: BlocConsumer<SearchBloc, SearchState>(
               listener: (context, state) {
                 setState(() {});
               },
               builder: (context, state) {
-                return GridView.builder(
-                  shrinkWrap: true,
-                  // physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: isMobile ? 2 : constraints.maxWidth ~/ 340,
-                    mainAxisSpacing: isMobile ? AppSpacing.spacing8 : AppSpacing.spacing16,
-                    crossAxisSpacing: isMobile ? AppSpacing.spacing8 : AppSpacing.spacing16,
-                    childAspectRatio: isMobile ? 1.618 : 2.42857143,
-                  ),
-                  itemCount: state.jobs.length,
-                  itemBuilder: (context, index) {
-                    final job = state.jobs[index];
-                    return MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        onTap: () {
-                          navigateToPath(
-                            context,
-                            to: AppRoutes.jobDetails.replaceAll(':id', job.id!),
-                            data: {'jobTitle': job.title},
-                          );
-                        },
+                return Column(
+                  children: [
+                    selectorBar(isMobile, locale, theme),
+                    AppSpacing.spacing40_Box,
+                    Flexible(
+                      child: SingleChildScrollView(
                         child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.backgroundInverted),
-                            color: AppColors.backgroundInverted,
-                            borderRadius: BorderRadius.circular(8),
+                          constraints: BoxConstraints(
+                            maxHeight: isMobile ? constraints.maxHeight * 4 : constraints.maxHeight * 1.125,
                           ),
-                          child: Center(
-                            child: Text(
-                              job.title,
-                              textAlign: TextAlign.center,
-                              style: (isMobile ? theme.textTheme.labelLarge! : theme.textTheme.displayMedium!).copyWith(
-                                fontWeight: FontWeight.w900,
-                                color: AppColors.whiteSwatch,
-                              ),
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (selectedFilter == locale.search_filter_all ||
+                                  selectedFilter == locale.search_filter_job) ...[
+                                Flexible(
+                                  child: JobsSearchResultsList(
+                                    searchState: state,
+                                    seeAll: selectedFilter == locale.search_filter_job,
+                                  ),
+                                ),
+                                if (selectedFilter == locale.search_filter_all) AppSpacing.spacing40_Box,
+                              ],
+                              if (selectedFilter == locale.search_filter_all ||
+                                  selectedFilter == locale.search_filter_resource) ...[
+                                Flexible(
+                                  child: ResourcesSearchResultsList(
+                                    searchState: state,
+                                    seeAll: selectedFilter == locale.search_filter_resource,
+                                  ),
+                                ),
+                                if (selectedFilter == locale.search_filter_all) AppSpacing.spacing40_Box,
+                              ],
+                              if (selectedFilter == locale.search_filter_all ||
+                                  selectedFilter == locale.search_filter_profile) ...[
+                                Flexible(
+                                  child: ProfilesSearchResultsList(
+                                    searchState: state,
+                                    seeAll: selectedFilter == locale.search_filter_profile,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         ),
                       ),
-                    );
-                  },
-                );
-                return Wrap(
-                  spacing: AppSpacing.spacing8,
-                  runSpacing: AppSpacing.spacing8,
-                  children: state.jobs.map((module) {
-                    return SizedBox(
-                      width: DeviceHelper.isMobile(context) ? 140 : 314,
-                      height: 140,
-                      child: Card(
-                        child: Center(
-                          child: Text(module.id!),
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                    ),
+                  ],
                 );
               },
             ),
@@ -195,7 +203,426 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
     // schedule a new one
     _debounce = Timer(_debounceDuration, () {
       if (!mounted) return;
-      context.read<JobBloc>().add(SearchJobs(query: value, context: context));
+      context.read<SearchBloc>().add(SearchQueryChanged(query: value, context: context));
     });
+  }
+
+  selectorBar(bool isMobile, AppLocalizations locale, ThemeData theme) {
+    return Container(
+      height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+      child: Row(
+        children: [
+          // Tout
+          selectorItem(locale.search_filter_all, theme),
+          AppSpacing.spacing8_Box,
+          // Metier
+          selectorItem(locale.search_filter_job, theme),
+          AppSpacing.spacing8_Box,
+          // Ressource
+          selectorItem(locale.search_filter_resource, theme),
+          AppSpacing.spacing8_Box,
+          // Profils
+          selectorItem(locale.search_filter_profile, theme),
+        ],
+      ),
+    );
+  }
+
+  selectorItem(String title, ThemeData theme) {
+    bool isSelected = title == selectedFilter;
+    return InkWell(
+      onTap: () {
+        setState(() {
+          selectedFilter = title;
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primaryFocus : Colors.transparent,
+          borderRadius: AppRadius.tiny,
+          border: Border.all(
+            color: isSelected ? AppColors.primaryFocus : const Color(0xFFA8A8A8),
+            width: 2,
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Text(
+          title,
+          style: theme.textTheme.labelLarge?.copyWith(
+            height: 1,
+            color: isSelected ? AppColors.textInverted : AppColors.textPrimary,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class JobsSearchResultsList extends StatefulWidget {
+  final SearchState searchState;
+  final bool seeAll;
+
+  const JobsSearchResultsList({super.key, required this.searchState, this.seeAll = false});
+
+  @override
+  State<JobsSearchResultsList> createState() => _JobsSearchResultsListState();
+}
+
+class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
+  bool _isHovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final AppSize appSize = AppSize(context);
+    bool isMobile = DeviceHelper.isMobile(context);
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                locale.search_filter_job,
+                style: GoogleFonts.anton(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 32,
+                  height: 38 / 32,
+                  letterSpacing: -0.02 * 32,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              AppSpacing.spacing16_Box,
+              MouseRegion(
+                onEnter: (event) {
+                  _isHovering = true;
+                  setState(() {});
+                },
+                onExit: (event) {
+                  _isHovering = false;
+                  setState(() {});
+                },
+                child: Text(
+                  locale.parcoursRewards_seeAll,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          AppSpacing.spacing16_Box,
+          Flexible(child: (widget.seeAll) ? fullView(appSize) : previewView(appSize, theme, isMobile)),
+        ],
+      ),
+    );
+  }
+
+  fullView(AppSize appSize) {
+    return const Placeholder();
+  }
+
+  previewView(AppSize appSize, ThemeData theme, bool isMobile) {
+    final int upTo = appSize.screenWidth ~/ 320;
+    List<SearchItem> data = widget.searchState.response.sections.jobs.items.takeUpTo(upTo);
+    return LayoutBuilder(builder: (context, constraints) {
+      return ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxHeight: 140,
+        ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: data.map((e) {
+              return Container(
+                constraints: const BoxConstraints(
+                  maxWidth: 320,
+                ),
+                margin: EdgeInsets.only(
+                  right: e != data.last ? AppSpacing.spacing16 : 0,
+                  bottom: 5,
+                ),
+                child: AppXButton(
+                  height: 140,
+                  shrinkWrap: false,
+                  text: e.title,
+                  onPressed: () {
+                    // Navigate to job details
+                    navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', e.id));
+                  },
+                  isLoading: false,
+                  bgColor: AppButtonColors.secondarySurfaceDefault,
+                  hoverColor: AppButtonColors.secondarySurfaceHover,
+                  shadowColor: AppButtonColors.secondaryShadowDefault,
+                  borderColor: AppButtonColors.secondaryBorderDefault,
+                  onPressedColor: AppButtonColors.secondarySurfaceDefault,
+                  children: [
+                    Flexible(
+                      child: Center(
+                        child: Text(
+                          e.title,
+                          style: GoogleFonts.anton(
+                            color: AppColors.textPrimary,
+                            fontSize: isMobile
+                                ? theme.textTheme.displayMedium!.fontSize
+                                : theme.textTheme.headlineSmall!.fontSize,
+                            fontWeight: FontWeight.w400,
+                            height: isMobile
+                                ? 44 / theme.textTheme.displayMedium!.fontSize!
+                                : 44 / theme.textTheme.headlineSmall!.fontSize!,
+                            letterSpacing: -0.02 *
+                                (isMobile
+                                    ? theme.textTheme.displayMedium!.fontSize!
+                                    : theme.textTheme.headlineSmall!.fontSize!),
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    });
+  }
+}
+
+class ResourcesSearchResultsList extends StatefulWidget {
+  final SearchState searchState;
+  final bool seeAll;
+
+  const ResourcesSearchResultsList({super.key, required this.searchState, this.seeAll = false});
+
+  @override
+  State<ResourcesSearchResultsList> createState() => _ResourcesSearchResultsListState();
+}
+
+class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList> {
+  bool _isHovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final AppSize appSize = AppSize(context);
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                locale.search_filter_resource,
+                style: GoogleFonts.anton(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 32,
+                  height: 38 / 32,
+                  letterSpacing: -0.02 * 32,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              AppSpacing.spacing16_Box,
+              MouseRegion(
+                onEnter: (event) {
+                  _isHovering = true;
+                  setState(() {});
+                },
+                onExit: (event) {
+                  _isHovering = false;
+                  setState(() {});
+                },
+                child: Text(
+                  locale.parcoursRewards_seeAll,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          AppSpacing.spacing16_Box,
+          Flexible(child: (widget.seeAll) ? fullView(appSize) : previewView(appSize)),
+        ],
+      ),
+    );
+  }
+
+  fullView(AppSize appSize) {
+    return const Placeholder();
+  }
+
+  previewView(AppSize appSize) {
+    final int upTo = appSize.screenWidth ~/ 320;
+    List<SearchItem> data = widget.searchState.response.sections.learningResources.items.takeUpTo(upTo);
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        maxHeight: 288,
+      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: data.map((e) {
+              final item = widget.searchState.response.sections.learningResources.items
+                  .firstWhereOrNull((element) => element.id == e.id);
+              if (item == null) {
+                return const SizedBox.shrink();
+              }
+              final resource = item.toResource();
+              final index = widget.searchState.response.sections.learningResources.items.indexOf(item);
+              return Container(
+                constraints: const BoxConstraints(
+                  maxWidth: 320 + AppSpacing.spacing16,
+                ),
+                margin: EdgeInsets.only(
+                  right: e != data.last ? 0 : 0,
+                ),
+                child: ResourceItemWidget(resource: resource, index: index, fixedSize: false),
+              );
+            }).toList(),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class ProfilesSearchResultsList extends StatefulWidget {
+  final SearchState searchState;
+  final bool seeAll;
+
+  const ProfilesSearchResultsList({super.key, required this.searchState, this.seeAll = false});
+
+  @override
+  State<ProfilesSearchResultsList> createState() => _ProfilesSearchResultsListState();
+}
+
+class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
+  bool _isHovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final AppSize appSize = AppSize(context);
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                locale.search_filter_profile,
+                style: GoogleFonts.anton(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 32,
+                  height: 38 / 32,
+                  letterSpacing: -0.02 * 32,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              AppSpacing.spacing16_Box,
+              MouseRegion(
+                onEnter: (event) {
+                  _isHovering = true;
+                  setState(() {});
+                },
+                onExit: (event) {
+                  _isHovering = false;
+                  setState(() {});
+                },
+                child: Text(
+                  locale.parcoursRewards_seeAll,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          AppSpacing.spacing16_Box,
+          Flexible(child: (widget.seeAll) ? fullView(appSize) : previewView(appSize, theme, locale)),
+        ],
+      ),
+    );
+  }
+
+  fullView(AppSize appSize) {
+    return const Placeholder();
+  }
+
+  previewView(AppSize appSize, ThemeData theme, AppLocalizations locale) {
+    final int upTo = appSize.screenWidth ~/ 204;
+    List<SearchItem> data = widget.searchState.response.sections.users.items.takeUpTo(upTo);
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        maxHeight: 235,
+      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: data.map((e) {
+              return Container(
+                constraints: const BoxConstraints(
+                  maxWidth: 204,
+                ),
+                margin: EdgeInsets.only(
+                  right: e != data.last ? AppSpacing.spacing16 : 0,
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 204,
+                      width: 204,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(102),
+                        child: e.imageUrl != null
+                            ? Image.network(
+                                e.imageUrl!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return SvgPicture.asset(AppIcons.avatarPlaceholderPath);
+                                },
+                              )
+                            : SvgPicture.asset(AppIcons.avatarPlaceholderPath),
+                      ),
+                    ),
+                    AppSpacing.spacing8_Box,
+                    Text(
+                      e.title == "Utilisateur" ? locale.user_anonymous_placeholder : e.title,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        );
+      }),
+    );
   }
 }
