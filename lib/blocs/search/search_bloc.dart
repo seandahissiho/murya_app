@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:murya/models/search_response.dart';
@@ -30,7 +32,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     );
     if (cachedResult.data != null) {
       emit(SearchLoaded(cachedResult.data!));
+      log("SearchBloc: Emitted cached result for query '${event.query}'");
     }
+
+    if (!context.mounted) return;
 
     final result = await _searchRepository.search(
       query: event.query,
