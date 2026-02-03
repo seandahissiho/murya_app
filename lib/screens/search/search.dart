@@ -586,7 +586,7 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
           final index = widget.searchState.response.sections.learningResources.items.indexOf(e);
           return SizedBox(
             width: width,
-            height: kIsWeb ? 400 : 300,
+            height: kIsWeb ? 300 : 300,
             child: ResourceItemWidget(resource: resource, index: index, fixedSize: true),
           );
         }).toList(),
