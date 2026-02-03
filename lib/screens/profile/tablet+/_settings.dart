@@ -140,7 +140,9 @@ class _TabletJourneySettingsTabState extends State<TabletJourneySettingsTab> {
                   builder: (formContext) {
                     return AppXButton(
                       text: modificationEnabled == false ? locale.editChanges_button : locale.saveChanges_button,
-                      onPressed: () {
+                      onPressed: () async {
+                        await contentNotAvailablePopup(context);
+                        return;
                         if (modificationEnabled == false) {
                           // Enable modification
                           setState(() {
