@@ -83,10 +83,12 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
   int currentIndex = 0;
   bool _readSent = false;
   bool fromSearch = false;
+  bool _isLiked = false;
 
   @override
   void initState() {
     super.initState();
+    _syncLikeState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final history = Beamer.of(context).beamingHistory;
       if (history.length > 1) {
@@ -103,6 +105,18 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
         }
       }
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant TabletArticleViewerScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.resource.userState?.isLikedAt != widget.resource.userState?.isLikedAt) {
+      _syncLikeState();
+    }
+  }
+
+  void _syncLikeState() {
+    _isLiked = widget.resource.userState?.isLikedAt != null;
   }
 
   @override
@@ -341,13 +355,6 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                   AppSpacing.spacing16_Box,
                                   Text(
                                     (widget.resource.title ?? ''),
-                                    // font-family: Anton;
-                                    // font-weight: 400;
-                                    // font-style: Regular;
-                                    // font-size: 40px;
-                                    // leading-trim: NONE;
-                                    // line-height: 56px;
-                                    // letter-spacing: -2%;
                                     style: GoogleFonts.anton(
                                       color: AppColors.whiteSwatch,
                                       fontSize: 48,
@@ -371,6 +378,25 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                         style: theme.textTheme.bodyMedium?.copyWith(
                                           color: AppColors.whiteSwatch,
                                         ),
+                                      ),
+                                      const Spacer(),
+                                      // like button
+                                      AppXLikeButton(
+                                        liked: _isLiked,
+                                        onPressed: () {
+                                          final resourceId = widget.resource.id ?? '';
+                                          if (resourceId.isEmpty) return;
+                                          final nextLiked = !_isLiked;
+                                          setState(() {
+                                            _isLiked = nextLiked;
+                                          });
+                                          context.read<ResourcesBloc>().add(
+                                                LikeResource(
+                                                  resourceId: resourceId,
+                                                  like: nextLiked,
+                                                ),
+                                              );
+                                        },
                                       ),
                                     ],
                                   )

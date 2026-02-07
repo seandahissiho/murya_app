@@ -72,6 +72,7 @@ class UserResourceState {
   final DateTime? openedAt;
   final DateTime? readAt;
   final DateTime? lastViewedAt;
+  final DateTime? isLikedAt;
   final int viewsCount;
   final double? progress;
 
@@ -79,16 +80,14 @@ class UserResourceState {
     this.openedAt,
     this.readAt,
     this.lastViewedAt,
+    this.isLikedAt,
     this.viewsCount = 0,
     this.progress,
   });
 
   factory UserResourceState.fromJson(Map<String, dynamic> json) {
     DateTime? parseDate(dynamic value) {
-      if (value is String && value.isNotEmpty) {
-        return DateTime.tryParse(value);
-      }
-      return null;
+      return DateTime.tryParse(value.toString());
     }
 
     final progressValue = json['progress'];
@@ -100,6 +99,7 @@ class UserResourceState {
       openedAt: parseDate(json['openedAt']),
       readAt: parseDate(json['readAt']),
       lastViewedAt: parseDate(json['lastViewedAt']),
+      isLikedAt: parseDate(json['isLikedAt']),
       viewsCount: (json['viewsCount'] as num?)?.toInt() ?? 0,
       progress: progress,
     );
@@ -110,6 +110,7 @@ class UserResourceState {
       'openedAt': openedAt?.toIso8601String(),
       'readAt': readAt?.toIso8601String(),
       'lastViewedAt': lastViewedAt?.toIso8601String(),
+      'isLikedAt': isLikedAt?.toIso8601String(),
       'viewsCount': viewsCount,
       'progress': progress,
     };

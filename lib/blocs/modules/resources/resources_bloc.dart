@@ -21,6 +21,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
   final Set<String> _openedResourceIds = {};
   final Set<String> _readResourceIds = {};
   final Map<String, double> _lastReadProgress = {};
+  final Set<String> _likingResourceIds = {};
 
   final List<Resource> _articles = [];
   final List<Resource> _videos = [];
@@ -37,7 +38,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
   ResourcesBloc({required this.context}) : super(ResourcesInitial()) {
     on<ResourcesEvent>((event, emit) {
-      if (event is OpenResource || event is ReadResource) return;
+      if (event is OpenResource || event is ReadResource || event is LikeResource) return;
       emit(ResourcesLoading());
     });
     on<GenerateResource>(_onGenerateResource);
@@ -45,6 +46,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     on<LoadResources>(_onLoadResources);
     on<OpenResource>(_onOpenResource);
     on<ReadResource>(_onReadResource);
+    on<LikeResource>(_onLikeResource);
 
     resourceRepository = RepositoryProvider.of<ResourcesRepository>(context);
     profileBloc = BlocProvider.of<ProfileBloc>(context);
@@ -181,6 +183,31 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     _updateResource(updated);
     _updateCacheUserState(updated);
     emit(ResourcesLoaded(resources: [..._articles, ..._videos, ..._podcasts]));
+  }
+
+  FutureOr<void> _onLikeResource(LikeResource event, Emitter<ResourcesState> emit) async {
+    if (event.resourceId.isEmpty) return;
+
+    if (_likingResourceIds.contains(event.resourceId)) return;
+
+    _likingResourceIds.add(event.resourceId);
+
+    try {
+      final result = await resourceRepository.likeResource(
+        resourceId: event.resourceId,
+        like: event.like,
+        timezone: _timezone(),
+      );
+      if (result.isError || result.data == null) {
+        return;
+      }
+      final updated = result.data!;
+      _updateResource(updated);
+      _updateCacheUserState(updated);
+      emit(ResourcesLoaded(resources: [..._articles, ..._videos, ..._podcasts]));
+    } finally {
+      _likingResourceIds.remove(event.resourceId);
+    }
   }
 
   FutureOr<void> _onLoadResources(LoadResources event, Emitter<ResourcesState> emit) async {

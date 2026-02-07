@@ -153,7 +153,6 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
               Expanded(
                 child: _body(),
               ),
-              AppSpacing.spacing40_Box,
             ],
           );
         },
@@ -167,6 +166,127 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
     if (_error != null) {
       message = _errorMessage(context);
     }
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.whiteSwatch,
+        borderRadius: AppRadius.small,
+        border: Border.all(
+          color: AppColors.borderLight,
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.spacing24),
+            child: Text("Podcast", style: theme.textTheme.labelLarge),
+          ),
+          const Divider(
+            height: 0,
+            color: AppColors.borderLight,
+            thickness: 1,
+          ),
+          AppSpacing.spacing40_Box,
+          Expanded(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 811),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      resource.title ?? '',
+                      // font-family: Anton;
+                      // font-weight: 400;
+                      // font-style: Regular;
+                      // font-size: 40px;
+                      // leading-trim: NONE;
+                      // line-height: 56px;
+                      // letter-spacing: -2%;
+                      style: GoogleFonts.anton(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 40,
+                        height: 56 / 40,
+                        letterSpacing: -0.02 * 40,
+                        color: AppColors.textPrimary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    AppSpacing.spacing4_Box,
+                    // 6 nov.  2025
+                    Text(
+                      resource.createdAt?.formattedDate() ?? '',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    AppSpacing.spacing24_Box,
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.whiteSwatch,
+                          borderRadius: AppRadius.small,
+                          border: Border.all(
+                            color: AppColors.borderMedium,
+                            width: 1,
+                          ),
+                        ),
+                        child: LayoutBuilder(builder: (context, constraints) {
+                          return Stack(
+                            children: [
+                              // Default background (image from assets)
+                              Positioned.fill(
+                                child: ClipRRect(
+                                  borderRadius: AppRadius.small,
+                                  child: Image.asset(
+                                    AppImages.articleHeaderPath,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              // Cover image
+                              if (resource.thumbnailUrl != null && resource.thumbnailUrl!.isNotEmpty)
+                                Positioned.fill(
+                                  child: ClipRRect(
+                                    borderRadius: AppRadius.small,
+                                    child: Image.network(
+                                      resource.thumbnailUrl!,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) => Container(
+                                        color: AppColors.borderLight,
+                                        child: const Icon(Icons.broken_image, color: AppColors.textTertiary),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              // Player controls and timeline box overlaid at the bottom
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                child: _builderControlsAndTimeline(
+                                  height: 80,
+                                  width: constraints.maxWidth,
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          AppSpacing.spacing40_Box,
+          AppSpacing.spacing48_Box,
+        ],
+      ),
+    );
 
     return Container(
       width: double.infinity,
@@ -270,23 +390,38 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
         final maxMillis = duration.inMilliseconds.toDouble().clamp(1.0, double.infinity);
         final value = position.inMilliseconds.toDouble().clamp(0.0, maxMillis);
         _updateProgress(position, duration);
-        return Column(
-          children: [
-            Slider(
-              value: value,
-              max: maxMillis,
-              onChanged: (newValue) {
-                _player.seek(Duration(milliseconds: newValue.round()));
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(_formatDuration(position)),
-                Text(_formatDuration(duration)),
-              ],
-            ),
-          ],
+        return Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.spacing4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Slider(
+                  padding: EdgeInsetsGeometry.zero,
+                  value: value,
+                  max: maxMillis,
+                  activeColor: AppButtonColors.primarySurfaceDefault,
+                  inactiveColor: AppButtonColors.secondarySurfacePressed,
+                  onChanged: (newValue) {
+                    _player.seek(Duration(milliseconds: newValue.round()));
+                  },
+                ),
+              ),
+              AppSpacing.spacing4_Box,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text("${_formatDuration(position)} / ${_formatDuration(duration)}"),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -350,6 +485,7 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
     } else {
       _player.play();
     }
+    setState(() {});
   }
 
   void _seekBack() {
@@ -418,6 +554,43 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
         _waveformPeaks = peaks.whereType<num>().map((value) => value.toDouble().clamp(0.0, 1.0)).toList();
       }
     }
+  }
+
+  _builderControlsAndTimeline({required double height, required double width}) {
+    return Container(
+      height: height,
+      width: width,
+      decoration: BoxDecoration(
+        color: AppColors.whiteSwatch,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(AppRadius.smallRadius),
+          bottomRight: Radius.circular(AppRadius.smallRadius),
+        ),
+        border: Border.all(
+          color: AppColors.borderMedium,
+          width: 1,
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16, vertical: AppSpacing.spacing16),
+      child: Row(
+        children: [
+          AppXPlayButton(
+            isPlaying: _player.playing,
+            onPressed: () {
+              if (_error != null) return;
+              _togglePlay();
+            },
+          ),
+          AppSpacing.spacing16_Box,
+          Expanded(
+            child: SizedBox(
+              width: double.infinity,
+              child: _timeline(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

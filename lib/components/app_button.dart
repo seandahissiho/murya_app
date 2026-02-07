@@ -89,6 +89,7 @@ class _AppXButtonState extends State<AppXButton> {
   bool _focused = false;
   bool _pressed = false;
   int _pressSeq = 0;
+
   // = 100ms (ton AnimatedContainer) + un petit buffer
   static const Duration _pressAnim = Duration(milliseconds: 150);
   static const Duration _pressHold = Duration(milliseconds: 110); // = ton AnimatedContainer (100ms) + marge
@@ -599,6 +600,7 @@ class _ButtonBody extends StatelessWidget {
 
 class AppXCloseButton extends StatelessWidget {
   final String destination;
+
   const AppXCloseButton({super.key, this.destination = AppRoutes.landing});
 
   @override
@@ -640,6 +642,7 @@ class AppXCloseButton extends StatelessWidget {
 class AppXReturnButton extends StatelessWidget {
   final String destination;
   final Object? data;
+
   const AppXReturnButton({super.key, required this.destination, this.data});
 
   @override
@@ -673,6 +676,79 @@ class AppXReturnButton extends StatelessWidget {
         borderColor: AppColors.borderMedium,
         hoverColor: AppButtonColors.secondarySurfaceHover,
         onPressedColor: AppButtonColors.secondarySurfacePressed,
+      ),
+    );
+  }
+}
+
+class AppXLikeButton extends StatelessWidget {
+  final bool liked;
+  final VoidCallback? onPressed;
+
+  const AppXLikeButton({super.key, required this.liked, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    return SizedBox(
+      width: ctaHeight,
+      height: ctaHeight,
+      child: AppXButton(
+        onPressed: onPressed,
+        isLoading: false,
+        // leftIconPath: AppIcons.searchBarCloseIconPath,
+        removePaddings: true,
+        leftIcon: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SvgPicture.asset(
+            liked ? AppIcons.heartIconPath : AppIcons.heartDisabledIconPath,
+            width: ctaHeight,
+            height: ctaHeight,
+          ),
+        ),
+        shadowColor: AppColors.borderMedium,
+        bgColor: AppColors.backgroundColor,
+        fgColor: AppButtonColors.secondarySurfaceDefault,
+        borderColor: AppColors.borderMedium,
+        hoverColor: AppButtonColors.secondarySurfaceHover,
+        onPressedColor: AppButtonColors.secondarySurfacePressed,
+      ),
+    );
+  }
+}
+
+class AppXPlayButton extends StatelessWidget {
+  final bool isPlaying;
+  final VoidCallback? onPressed;
+
+  const AppXPlayButton({super.key, required this.isPlaying, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    return SizedBox(
+      width: ctaHeight,
+      height: ctaHeight,
+      child: AppXButton(
+        onPressed: onPressed,
+        isLoading: false,
+        // leftIconPath: AppIcons.searchBarCloseIconPath,
+        removePaddings: true,
+        leftIcon: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SvgPicture.asset(
+            isPlaying ? AppIcons.pauseIconPath : AppIcons.playIconPath,
+            width: ctaHeight,
+            height: ctaHeight,
+            colorFilter: ColorFilter.mode(AppColors.whiteSwatch, BlendMode.srcATop),
+          ),
+        ),
+        // shadowColor: AppColors.borderMedium,
+        // bgColor: AppColors.backgroundColor,
+        // fgColor: AppColors.whiteSwatch,
+        // borderColor: AppColors.borderMedium,
+        // hoverColor: AppButtonColors.secondarySurfaceHover,
+        // onPressedColor: AppButtonColors.secondarySurfacePressed,
       ),
     );
   }

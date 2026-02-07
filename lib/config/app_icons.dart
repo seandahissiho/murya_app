@@ -122,6 +122,17 @@ class AppIcons {
 
   // streak.svg
   static const String streakPath = '$basePath/streak.svg';
+
+  // heartIconPath
+  static const String heartIconPath = '$basePath/heart-syle-1.svg';
+
+  // heartDisabledIconPath
+  static const String heartDisabledIconPath = '$basePath/heart-syle-2.svg';
+
+  // pause.svg
+  static const String pauseIconPath = '$basePath/pause.svg';
+  // play.svg
+  static const String playIconPath = '$basePath/play.svg';
 }
 
 class AppImages {

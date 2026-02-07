@@ -2,6 +2,7 @@ part of 'viewer_handler.dart';
 
 class VideoViewer extends StatelessWidget {
   final Resource resource;
+
   const VideoViewer({super.key, required this.resource});
 
   @override
@@ -32,6 +33,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
   bool _readSent = false;
   bool fromSearch = false;
   Resource resource = Resource();
+  ResourcesBloc? _resourcesBloc;
 
   @override
   void initState() {
@@ -54,6 +56,12 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
         }
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _resourcesBloc ??= context.read<ResourcesBloc>();
   }
 
   @override
@@ -95,6 +103,10 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
           flags: const YoutubePlayerFlags(
             autoPlay: false,
             mute: false,
+            hideControls: true,
+            controlsVisibleAtStart: false,
+            showLiveFullscreenButton: false,
+            enableCaption: false,
           ),
         );
       });
@@ -191,50 +203,183 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
       );
     }
 
-    if (_isYoutube) {
-      final youtubeController = _youtubeController;
-      if (youtubeController == null) {
-        return const Center(child: CircularProgressIndicator());
-      }
-      _updateYoutubeProgress(youtubeController);
-      return Center(
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: YoutubePlayer(
-            controller: youtubeController,
-            showVideoProgressIndicator: true,
-          ),
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColors.whiteSwatch,
+        borderRadius: AppRadius.small,
+        border: Border.all(
+          color: AppColors.borderLight,
+          width: 1,
         ),
-      );
-    }
-
-    final controller = _controller;
-    if (controller == null || !controller.value.isInitialized) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    final double aspectRatio = controller.value.aspectRatio == 0 ? 16 / 9 : controller.value.aspectRatio;
-    _updateVideoProgress(controller);
-
-    return Center(
-      child: AspectRatio(
-        aspectRatio: aspectRatio,
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            VideoPlayer(controller),
-            _VideoControlsOverlay(controller: controller),
-            VideoProgressIndicator(
-              controller,
-              allowScrubbing: true,
-              colors: const VideoProgressColors(
-                playedColor: AppColors.primaryFocus,
-                bufferedColor: AppColors.borderMedium,
-                backgroundColor: AppColors.borderLight,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(AppSpacing.spacing24),
+            child: Text("Podcast", style: theme.textTheme.labelLarge),
+          ),
+          const Divider(
+            height: 0,
+            color: AppColors.borderLight,
+            thickness: 1,
+          ),
+          AppSpacing.spacing40_Box,
+          Expanded(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 811),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      resource.title ?? '',
+                      // font-family: Anton;
+                      // font-weight: 400;
+                      // font-style: Regular;
+                      // font-size: 40px;
+                      // leading-trim: NONE;
+                      // line-height: 56px;
+                      // letter-spacing: -2%;
+                      style: GoogleFonts.anton(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 40,
+                        height: 56 / 40,
+                        letterSpacing: -0.02 * 40,
+                        color: AppColors.textPrimary,
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    AppSpacing.spacing4_Box,
+                    // 6 nov.  2025
+                    Text(
+                      resource.createdAt?.formattedDate() ?? '',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    AppSpacing.spacing24_Box,
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.whiteSwatch,
+                          borderRadius: AppRadius.small,
+                          border: Border.all(
+                            color: AppColors.borderMedium,
+                            width: 1,
+                          ),
+                        ),
+                        child: LayoutBuilder(builder: (context, constraints) {
+                          final youtubeController = _youtubeController;
+                          final controller = _controller;
+                          final bool showYoutube = _isYoutube && youtubeController != null;
+                          final bool showVideo = !_isYoutube && controller != null && controller.value.isInitialized;
+                          return Stack(
+                            children: [
+                              // Default background (image from assets)
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 80,
+                                child: SizedBox(
+                                  height: constraints.maxHeight - 80, // leave space for controls
+                                  child: ClipRRect(
+                                    borderRadius: AppRadius.small,
+                                    child: Image.asset(
+                                      AppImages.articleHeaderPath,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Cover image (fallback)
+                              // if (!showYoutube && !showVideo && resource.thumbnailUrl != null && resource.thumbnailUrl!.isNotEmpty)
+                              //   Positioned.fill(
+                              //     child: ClipRRect(
+                              //       borderRadius: AppRadius.small,
+                              //       child: Image.network(
+                              //         resource.thumbnailUrl!,
+                              //         fit: BoxFit.cover,
+                              //         errorBuilder: (context, error, stackTrace) => Container(
+                              //           color: AppColors.borderLight,
+                              //           child: const Icon(Icons.broken_image, color: AppColors.textTertiary),
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
+                              if (showYoutube)
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 80,
+                                  child: SizedBox(
+                                    height: constraints.maxHeight - 80, // leave space for controls
+                                    child: ClipRRect(
+                                      // only top corners rounded to match background
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(AppRadius.smallRadius),
+                                        topRight: Radius.circular(AppRadius.smallRadius),
+                                      ),
+                                      child: YoutubePlayer(
+                                        controller: youtubeController,
+                                        showVideoProgressIndicator: false,
+                                        thumbnail: SizedBox(
+                                          height: constraints.maxHeight - 80, // leave space for controls
+                                          child: ClipRRect(
+                                            borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(AppRadius.smallRadius),
+                                              topRight: Radius.circular(AppRadius.smallRadius),
+                                            ),
+                                            child: Image.asset(
+                                              AppImages.articleHeaderPath,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              if (showVideo)
+                                Positioned.fill(
+                                  child: ClipRRect(
+                                    borderRadius: AppRadius.small,
+                                    child: Center(
+                                      child: AspectRatio(
+                                        aspectRatio:
+                                            controller.value.aspectRatio == 0 ? 16 / 9 : controller.value.aspectRatio,
+                                        child: VideoPlayer(controller),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              // Player controls and timeline box overlaid at the bottom
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                child: _builderControlsAndTimeline(
+                                  height: 80,
+                                  width: constraints.maxWidth,
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+          AppSpacing.spacing40_Box,
+          AppSpacing.spacing48_Box,
+        ],
       ),
     );
   }
@@ -279,7 +424,181 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
     }
     _readSent = true;
     final progress = _lastProgress > 0 ? _lastProgress : null;
-    context.read<ResourcesBloc>().add(ReadResource(resourceId: resourceId, progress: progress));
+    _resourcesBloc?.add(ReadResource(resourceId: resourceId, progress: progress));
+  }
+
+  _builderControlsAndTimeline({required double height, required double width}) {
+    return Container(
+      height: height,
+      width: width,
+      decoration: BoxDecoration(
+        color: AppColors.whiteSwatch,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(AppRadius.smallRadius),
+          bottomRight: Radius.circular(AppRadius.smallRadius),
+        ),
+        border: Border.all(
+          color: AppColors.borderMedium,
+          width: 1,
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16, vertical: AppSpacing.spacing16),
+      child: Row(
+        children: [
+          _buildPlayButton(),
+          AppSpacing.spacing16_Box,
+          Expanded(
+            child: SizedBox(
+              width: double.infinity,
+              child: _timeline(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlayButton() {
+    final youtubeController = _youtubeController;
+    if (_isYoutube && youtubeController != null) {
+      return ValueListenableBuilder<YoutubePlayerValue>(
+        valueListenable: youtubeController,
+        builder: (context, value, child) {
+          return AppXPlayButton(
+            isPlaying: value.isPlaying,
+            onPressed: value.isReady ? _togglePlay : null,
+          );
+        },
+      );
+    }
+
+    final controller = _controller;
+    if (controller != null) {
+      return ValueListenableBuilder<VideoPlayerValue>(
+        valueListenable: controller,
+        builder: (context, value, child) {
+          return AppXPlayButton(
+            isPlaying: value.isPlaying,
+            onPressed: value.isInitialized ? _togglePlay : null,
+          );
+        },
+      );
+    }
+
+    return const AppXPlayButton(isPlaying: false, onPressed: null);
+  }
+
+  void _togglePlay() {
+    if (_error != null) return;
+    if (_isYoutube) {
+      final youtubeController = _youtubeController;
+      if (youtubeController == null || !youtubeController.value.isReady) return;
+      if (youtubeController.value.isPlaying) {
+        youtubeController.pause();
+      } else {
+        youtubeController.play();
+      }
+      return;
+    }
+
+    final controller = _controller;
+    if (controller == null || !controller.value.isInitialized) return;
+    if (controller.value.isPlaying) {
+      controller.pause();
+    } else {
+      controller.play();
+    }
+  }
+
+  Widget _timeline() {
+    final youtubeController = _youtubeController;
+    if (_isYoutube && youtubeController != null) {
+      return ValueListenableBuilder<YoutubePlayerValue>(
+        valueListenable: youtubeController,
+        builder: (context, value, child) {
+          final position = value.position;
+          final duration = youtubeController.metadata.duration;
+          return _buildTimelineUi(
+            position,
+            duration,
+            onSeek: (newValue) => youtubeController.seekTo(Duration(milliseconds: newValue.round())),
+          );
+        },
+      );
+    }
+
+    final controller = _controller;
+    if (controller != null) {
+      return ValueListenableBuilder<VideoPlayerValue>(
+        valueListenable: controller,
+        builder: (context, value, child) {
+          final position = value.position;
+          final duration = value.duration;
+          return _buildTimelineUi(
+            position,
+            duration,
+            onSeek: (newValue) => controller.seekTo(Duration(milliseconds: newValue.round())),
+          );
+        },
+      );
+    }
+
+    return _buildTimelineUi(Duration.zero, Duration.zero);
+  }
+
+  Widget _buildTimelineUi(Duration position, Duration duration, {void Function(double)? onSeek}) {
+    final maxMillis = duration.inMilliseconds.toDouble().clamp(1.0, double.infinity);
+    final value = position.inMilliseconds.toDouble().clamp(0.0, maxMillis);
+    _updateProgress(position, duration);
+    final canSeek = onSeek != null && duration.inMilliseconds > 0;
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.spacing4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            child: Slider(
+              padding: EdgeInsetsGeometry.zero,
+              value: value,
+              max: maxMillis,
+              activeColor: AppButtonColors.primarySurfaceDefault,
+              inactiveColor: AppButtonColors.secondarySurfacePressed,
+              onChanged: canSeek ? (newValue) => onSeek(newValue) : null,
+            ),
+          ),
+          AppSpacing.spacing4_Box,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text("${_formatDuration(position)} / ${_formatDuration(duration)}"),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
+    if (hours > 0) {
+      return '${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}';
+    }
+    return '${twoDigits(minutes)}:${twoDigits(seconds)}';
+  }
+
+  void _updateProgress(Duration position, Duration duration) {
+    if (duration.inMilliseconds <= 0) return;
+    final progress = position.inMilliseconds / duration.inMilliseconds;
+    _lastProgress = progress.clamp(0.0, 1.0);
   }
 }
 

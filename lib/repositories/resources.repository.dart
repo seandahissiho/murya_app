@@ -99,6 +99,27 @@ class ResourcesRepository extends BaseRepository {
     );
   }
 
+  Future<Result<Resource>> likeResource({
+    required String resourceId,
+    required bool like,
+    String? timezone,
+  }) async {
+    return AppResponse.execute(
+      action: () async {
+        final payload = <String, dynamic>{'like': like};
+        if (timezone != null && timezone.isNotEmpty) {
+          payload['timezone'] = timezone;
+        }
+        final response = await api.dio.post(
+          '/resources/$resourceId/like',
+          data: payload,
+        );
+        return _resourceFromTrackingResponse(response.data);
+      },
+      parentFunctionName: 'ResourcesRepository -> likeResource',
+    );
+  }
+
   Future<Result<List<Resource>>> fetchResourcesCached(String userJobId) async {
     final languageCode =
         api.dio.options.headers['accept-language']?.toString() ?? 'fr';
