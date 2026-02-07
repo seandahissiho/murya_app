@@ -1,6 +1,11 @@
+import 'dart:collection';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart' as just_audio;
 import 'package:markdown_widget/markdown_widget.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
@@ -8,19 +13,41 @@ import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/fil_arianne.dart';
 import 'package:murya/config/DS.dart';
+import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/resource.dart';
 import 'package:murya/screens/base.dart';
+import 'package:murya/screens/ressources/resources.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 part 'article_viewer.dart';
 part 'podcast_viewer.dart';
 part 'video_viewer.dart';
+
+String _formatDurationFromSeconds(AppLocalizations locale, int totalSeconds) {
+  final int safeSeconds = totalSeconds < 0 ? 0 : totalSeconds;
+  final int hours = safeSeconds ~/ 3600;
+  final int minutes = (safeSeconds % 3600) ~/ 60;
+  final int seconds = safeSeconds % 60;
+
+  final List<String> parts = [];
+  if (hours > 0) {
+    parts.add(locale.duration_hours(hours));
+  }
+  if (minutes > 0) {
+    parts.add(locale.duration_minutes(minutes));
+  }
+  if (seconds > 0 || parts.isEmpty) {
+    parts.add(locale.duration_seconds(seconds));
+  }
+  return parts.join(' ');
+}
 
 class ResourceViewerLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override

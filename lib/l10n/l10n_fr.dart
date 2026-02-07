@@ -263,6 +263,54 @@ class AppLocalizationsFr extends AppLocalizations {
   String get article => 'Article';
 
   @override
+  String duration_hours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count heures',
+      one: '1 heure',
+      zero: '0 heure',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String duration_minutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes',
+      one: '1 minute',
+      zero: '0 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String duration_seconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count secondes',
+      one: '1 seconde',
+      zero: '0 seconde',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String estimated_action_time(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+      zero: '0 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get quiz_ready_to_evaluate => 'Prêt(e) à vous évaluer ?';
 
   @override

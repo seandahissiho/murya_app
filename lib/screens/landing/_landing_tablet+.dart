@@ -339,7 +339,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
     switch (module.slug) {
       case 'leaderboard':
         return AccountModuleWidget(
-          key: ValueKey('module-${module.id}-$languageCode'),
+          // key: ValueKey('module-${module.id}-$languageCode'),
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
@@ -348,7 +348,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
         );
       case 'daily-quiz':
         return JobModuleWidget(
-          key: ValueKey('module-${module.id}-$languageCode'),
+          // key: ValueKey('module-${module.id}-$languageCode'),
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,
@@ -357,7 +357,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
         );
       case 'learning-resources':
         return RessourcesModuleWidget(
-          key: ValueKey('module-${module.id}-$languageCode'),
+          // key: ValueKey('module-${module.id}-$languageCode'),
           module: module,
           onSizeChanged: onSizeChanged,
           dragHandle: dragHandle,

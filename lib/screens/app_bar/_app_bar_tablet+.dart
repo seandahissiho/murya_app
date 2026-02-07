@@ -13,7 +13,7 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
   final FocusNode _searchFocusNode = FocusNode();
 
   static const Duration _animationDuration = Duration(milliseconds: 1600);
-  static const Curve _animationCurve = Curves.easeInOutBack;
+  static const Curve _animationCurve = Curves.easeInOut;
 
   @override
   void dispose() {
@@ -25,6 +25,7 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
+    final isMobile = DeviceHelper.isMobile(context);
     return Column(
       children: [
         LayoutBuilder(builder: (context, constraints) {
@@ -54,12 +55,19 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
                 ),
                 AnimatedPositioned(
                   duration: _animationDuration,
-                  right: isSearching ? maxWidth - 320 : 0,
+                  right: isSearching
+                      ? maxWidth -
+                          (isMobile
+                              ? maxWidth
+                              : constraints.maxWidth / (constraints.maxWidth ~/ (340)) - AppSpacing.spacing16)
+                      : 0,
                   curve: _animationCurve,
                   child: Hero(
                     tag: 'main-search-bar',
                     child: SizedBox(
-                      width: 320,
+                      width: isMobile
+                          ? maxWidth
+                          : constraints.maxWidth / (constraints.maxWidth ~/ (340)) - AppSpacing.spacing16,
                       child: AppXTextFormField(
                         focusNode: _searchFocusNode,
                         readOnly: !isSearching,
@@ -67,16 +75,13 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
                         onTap: isSearching
                             ? null
                             : () async {
-                                context.read<SearchBloc>().add(
-                                    SearchQueryChanged(
-                                        query: "", context: context));
+                                context.read<SearchBloc>().add(SearchQueryChanged(query: "", context: context));
                                 setState(() {
                                   isSearching = true;
                                 });
                                 await Future.delayed(_animationDuration);
                                 if (!mounted) return;
-                                navigateToPath(context,
-                                    to: AppRoutes.searchModule);
+                                navigateToPath(context, to: AppRoutes.searchModule);
                               },
                         controller: _searchController,
                         labelText: null,

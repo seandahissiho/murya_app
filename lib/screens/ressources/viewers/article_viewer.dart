@@ -165,8 +165,8 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
               Expanded(
                 // child: TocWidget(controller: controller),
                 child: Container(
-                  decoration: const BoxDecoration(
-                    color: AppColors.backgroundCard,
+                  decoration: BoxDecoration(
+                    color: AppColors.whiteSwatch,
                     borderRadius: AppRadius.large,
                   ),
                   child: Column(
@@ -180,7 +180,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                       ),
                       const Divider(
                         height: 0,
-                        color: AppColors.borderMedium,
+                        color: AppColors.borderLight,
                         thickness: 1,
                       ),
                       Expanded(
@@ -287,8 +287,8 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
               Expanded(
                 flex: 2,
                 child: Container(
-                  decoration: const BoxDecoration(
-                    color: AppColors.backgroundCard,
+                  decoration: BoxDecoration(
+                    color: AppColors.whiteSwatch,
                     borderRadius: AppRadius.large,
                   ),
                   child: Column(
@@ -302,18 +302,84 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                       ),
                       const Divider(
                         height: 0,
-                        color: AppColors.borderMedium,
+                        color: AppColors.borderLight,
                         thickness: 1,
                       ),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.all(AppSpacing.spacing24),
-                          child: MarkdownWidget(
+                          child: _ArticleScrollableContent(
                             tocController: tocController,
                             data: widget.resource.content ?? '',
+                            header: Container(
+                              height: 348,
+                              width: double.infinity,
+                              decoration: const BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: AppRadius.small,
+                                border: Border(
+                                  top: BorderSide(
+                                    // rgba(255, 214, 0, 1)
+                                    color: Color.fromRGBO(255, 214, 0, 1),
+                                    width: AppRadius.smallRadius + 10,
+                                  ),
+                                ),
+                                // asset image
+                                image: DecorationImage(
+                                  image: AssetImage(AppImages.articleHeaderPath),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              padding: const EdgeInsets.all(AppSpacing.spacing24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  AppSpacing.spacing20_Box,
+                                  ResourceIconWidget(
+                                      resource: widget.resource, outlined: true, color: AppColors.whiteSwatch),
+                                  AppSpacing.spacing16_Box,
+                                  Text(
+                                    (widget.resource.title ?? ''),
+                                    // font-family: Anton;
+                                    // font-weight: 400;
+                                    // font-style: Regular;
+                                    // font-size: 40px;
+                                    // leading-trim: NONE;
+                                    // line-height: 56px;
+                                    // letter-spacing: -2%;
+                                    style: GoogleFonts.anton(
+                                      color: AppColors.whiteSwatch,
+                                      fontSize: 48,
+                                      fontWeight: FontWeight.w400,
+                                      height: 64 / 48,
+                                      letterSpacing: -0.02 * 48,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  AppSpacing.spacing16_Box,
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      // 3 minutes - Mardi 6 janvier 2026
+                                      Text(
+                                        (() {
+                                          final locale = AppLocalizations.of(context);
+                                          return '${_formatDurationFromSeconds(locale, widget.resource.estimatedDuration)} - ${DateFormat('EEEE d MMMM y', locale.localeName).format(widget.resource.createdAt ?? DateTime.now())}';
+                                        })(),
+                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                          color: AppColors.whiteSwatch,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -322,6 +388,117 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ArticleScrollableContent extends StatefulWidget {
+  final TocController tocController;
+  final String data;
+  final Widget header;
+  final MarkdownConfig? config;
+  final MarkdownGenerator? markdownGenerator;
+
+  const _ArticleScrollableContent({
+    required this.tocController,
+    required this.data,
+    required this.header,
+    this.config,
+    this.markdownGenerator,
+  });
+
+  @override
+  State<_ArticleScrollableContent> createState() => _ArticleScrollableContentState();
+}
+
+class _ArticleScrollableContentState extends State<_ArticleScrollableContent> {
+  static const int _headerCount = 1;
+  final AutoScrollController _controller = AutoScrollController();
+  final SplayTreeSet<int> _indexTreeSet = SplayTreeSet<int>((a, b) => a - b);
+  final List<Widget> _widgets = [];
+  late MarkdownGenerator _markdownGenerator;
+  bool _isForward = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.tocController.jumpToIndexCallback = (index) {
+      _controller.scrollToIndex(index + _headerCount, preferPosition: AutoScrollPosition.begin);
+    };
+    _updateState();
+  }
+
+  void _updateState() {
+    _indexTreeSet.clear();
+    _markdownGenerator = widget.markdownGenerator ?? MarkdownGenerator();
+    final result = _markdownGenerator.buildWidgets(
+      widget.data,
+      onTocList: (tocList) {
+        widget.tocController.setTocList(tocList);
+      },
+      config: widget.config,
+    );
+    _widgets.addAll(result);
+  }
+
+  void _clearState() {
+    _indexTreeSet.clear();
+    _widgets.clear();
+  }
+
+  @override
+  void didUpdateWidget(covariant _ArticleScrollableContent oldWidget) {
+    _clearState();
+    _updateState();
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    _clearState();
+    _controller.dispose();
+    widget.tocController.jumpToIndexCallback = null;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final listView = NotificationListener<UserScrollNotification>(
+      onNotification: (notification) {
+        _isForward = notification.direction == ScrollDirection.forward;
+        return true;
+      },
+      child: ListView.builder(
+        controller: _controller,
+        itemCount: _widgets.length + _headerCount,
+        itemBuilder: (ctx, index) {
+          if (index == 0) {
+            return widget.header;
+          }
+          final mdIndex = index - _headerCount;
+          final child = _widgets[mdIndex];
+          return wrapByAutoScroll(index, _wrapByVisibilityDetector(mdIndex, child), _controller);
+        },
+      ),
+    );
+    return SelectionArea(child: listView);
+  }
+
+  Widget _wrapByVisibilityDetector(int index, Widget child) {
+    return VisibilityDetector(
+      key: ValueKey('md-$index'),
+      onVisibilityChanged: (info) {
+        final visibleFraction = info.visibleFraction;
+        if (_isForward) {
+          visibleFraction == 0 ? _indexTreeSet.remove(index) : _indexTreeSet.add(index);
+        } else {
+          visibleFraction == 1.0 ? _indexTreeSet.add(index) : _indexTreeSet.remove(index);
+        }
+        if (_indexTreeSet.isNotEmpty) {
+          widget.tocController.onIndexChanged(_indexTreeSet.first);
+        }
+      },
+      child: child,
     );
   }
 }

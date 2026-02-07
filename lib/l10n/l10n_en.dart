@@ -260,6 +260,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get article => 'Article';
 
   @override
+  String duration_hours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours',
+      one: '1 hour',
+      zero: '0 hours',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String duration_minutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes',
+      one: '1 minute',
+      zero: '0 minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String duration_seconds(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count seconds',
+      one: '1 second',
+      zero: '0 seconds',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String estimated_action_time(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: '$minutes minutes',
+      one: '1 minute',
+      zero: '0 minutes',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get quiz_ready_to_evaluate => 'Ready to assess yourself?';
 
   @override

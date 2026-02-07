@@ -142,4 +142,6 @@ class AppImages {
   static const String resourceFallback2 = '$basePath/93d4152ff0431e91e55321d66f736559248e055a.webp';
   static const String resourceFallback3 = '$basePath/3196d2ef4d8a5ddc89bf3054643568508a65599c.jpg';
   static const String resourceFallback4 = '$basePath/414debc092d5b8c1dd730a1c5ca8e7b13651da77.jpg';
+  // articleHeader
+  static const String articleHeaderPath = '$basePath/article_header.jpg';
 }
