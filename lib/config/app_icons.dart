@@ -133,6 +133,9 @@ class AppIcons {
   static const String pauseIconPath = '$basePath/pause.svg';
   // play.svg
   static const String playIconPath = '$basePath/play.svg';
+
+  // window_resize_left.svg
+  static const String windowResizeLeftPath = '$basePath/window_resize_left.svg';
 }
 
 class AppImages {

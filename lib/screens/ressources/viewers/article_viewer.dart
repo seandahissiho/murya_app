@@ -77,13 +77,13 @@ class TabletArticleViewerScreen extends StatefulWidget {
 
 class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
   int hoveredIndex = -1;
-  int selectedIndex = -1;
   final TocController tocController = TocController();
   final AutoScrollController controller = AutoScrollController();
-  int currentIndex = 0;
   bool _readSent = false;
   bool fromSearch = false;
   bool _isLiked = false;
+  bool _isSummaryCollapsed = false;
+  bool _showSummaryText = true;
 
   @override
   void initState() {
@@ -174,243 +174,313 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
         ),
         AppSpacing.spacing40_Box,
         Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                // child: TocWidget(controller: controller),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.whiteSwatch,
-                    borderRadius: AppRadius.large,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(AppSpacing.spacing24),
-                        child: Text(AppLocalizations.of(context).summary, style: theme.textTheme.labelLarge),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final double maxWidth = constraints.maxWidth;
+              const double gap = AppSpacing.spacing16;
+              const double collapsedWidth = 10.0;
+              final double availableWidth = (maxWidth - gap).clamp(0.0, maxWidth).toDouble();
+              final double expandedWidth = availableWidth / 3;
+              final double summaryWidth =
+                  (_isSummaryCollapsed ? collapsedWidth : expandedWidth).clamp(72.0, availableWidth).toDouble();
+              return Row(
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    curve: Curves.easeInOut,
+                    width: summaryWidth,
+                    onEnd: () async {
+                      _showSummaryText = false;
+                      setState(() {});
+                      await Future.delayed(const Duration(milliseconds: 500), () {
+                        if (mounted) {
+                          setState(() {
+                            _showSummaryText = !_isSummaryCollapsed;
+                          });
+                        }
+                      });
+                    },
+                    // child: TocWidget(controller: controller),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.whiteSwatch,
+                        borderRadius: AppRadius.large,
                       ),
-                      const Divider(
-                        height: 0,
-                        color: AppColors.borderLight,
-                        thickness: 1,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.spacing24),
-                          child: TocWidget(
-                            controller: tocController,
-                            itemBuilder: (data) {
-                              final index = data.index;
-                              final toc = data.toc;
-                              final node = toc.node;
-                              final level = headingTag2Level[node.headingConfig.tag] ?? 1;
-
-                              final bool isHovered = hoveredIndex == index;
-                              final bool isSelected = selectedIndex == index;
-
-                              return MouseRegion(
-                                onHover: (_) {
-                                  setState(() {
-                                    hoveredIndex = index;
-                                  });
-                                },
-                                onExit: (_) {
-                                  setState(() {
-                                    hoveredIndex = -1;
-                                  });
-                                },
-                                child: InkWell(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: _isSummaryCollapsed
+                                ? const EdgeInsets.all(AppSpacing.spacing16)
+                                : const EdgeInsets.all(AppSpacing.spacing24),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (!_isSummaryCollapsed) ...[
+                                  Text(AppLocalizations.of(context).summary, style: theme.textTheme.labelLarge),
+                                  const Spacer(),
+                                ],
+                                // retract summary button
+                                InkWell(
                                   onTap: () {
-                                    // scroll markdown to the corresponding heading
-                                    tocController.jumpToIndex(toc.widgetIndex);
-
-                                    // update TocWidget's current index
-                                    data.refreshIndexCallback(index);
-
-                                    // your own selected state
                                     setState(() {
-                                      selectedIndex = index;
+                                      _isSummaryCollapsed = !_isSummaryCollapsed;
                                     });
                                   },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: (isHovered || isSelected) ? AppColors.secondaryHover : null,
-                                      borderRadius: AppRadius.tiny,
-                                    ),
-                                    padding: const EdgeInsets.all(
-                                      AppSpacing.spacing12,
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 12.0 * (level - 1) * 0),
-                                      child: Row(
-                                        children: [
-                                          // bullet
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColors.secondaryDefault,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: AppColors.borderMedium,
-                                                width: 1,
-                                              ),
-                                            ),
-                                            padding: const EdgeInsets.all(AppSpacing.spacing8 + AppSpacing.spacing2),
-                                            child: Center(
-                                              child: Text((index + 1).toString()),
-                                            ),
-                                          ),
-                                          AppSpacing.spacing8_Box,
-
-                                          // actual heading title from markdown
-                                          Expanded(
-                                            child: ProxyRichText(
-                                              node
-                                                  .copy(
-                                                    headingConfig: _TocHeadingConfig(
-                                                      // use your theme style but you can switch for selected if you want
-                                                      (isSelected
-                                                              ? theme.textTheme.bodyLarge
-                                                                  ?.copyWith(color: AppColors.textPrimary)
-                                                              : theme.textTheme.bodyLarge
-                                                                  ?.copyWith(color: AppColors.textPrimary)) ??
-                                                          defaultTocTextStyle,
-                                                      node.headingConfig.tag,
-                                                    ),
-                                                  )
-                                                  .build(),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                  child: Transform.scale(
+                                    scaleX: _isSummaryCollapsed ? -1.0 : 1.0,
+                                    scaleY: 1.0,
+                                    child: SvgPicture.asset(
+                                      AppIcons.windowResizeLeftPath,
+                                      colorFilter: const ColorFilter.mode(AppColors.textPrimary, BlendMode.srcATop),
                                     ),
                                   ),
                                 ),
-                              );
-                            },
+                              ],
+                            ),
                           ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              AppSpacing.spacing16_Box,
-              Expanded(
-                flex: 2,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.whiteSwatch,
-                    borderRadius: AppRadius.large,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(AppSpacing.spacing24),
-                        child: Text(AppLocalizations.of(context).article, style: theme.textTheme.labelLarge),
-                      ),
-                      const Divider(
-                        height: 0,
-                        color: AppColors.borderLight,
-                        thickness: 1,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.spacing24),
-                          child: _ArticleScrollableContent(
-                            tocController: tocController,
-                            data: widget.resource.content ?? '',
-                            header: Container(
-                              height: 348,
-                              width: double.infinity,
-                              decoration: const BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: AppRadius.small,
-                                border: Border(
-                                  top: BorderSide(
-                                    // rgba(255, 214, 0, 1)
-                                    color: Color.fromRGBO(255, 214, 0, 1),
-                                    width: AppRadius.smallRadius + 10,
-                                  ),
-                                ),
-                                // asset image
-                                image: DecorationImage(
-                                  image: AssetImage(AppImages.articleHeaderPath),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              padding: const EdgeInsets.all(AppSpacing.spacing24),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  AppSpacing.spacing20_Box,
-                                  ResourceIconWidget(
-                                      resource: widget.resource, outlined: true, color: AppColors.whiteSwatch),
-                                  AppSpacing.spacing16_Box,
-                                  Text(
-                                    (widget.resource.title ?? ''),
-                                    style: GoogleFonts.anton(
-                                      color: AppColors.whiteSwatch,
-                                      fontSize: 48,
-                                      fontWeight: FontWeight.w400,
-                                      height: 64 / 48,
-                                      letterSpacing: -0.02 * 48,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  AppSpacing.spacing16_Box,
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      // 3 minutes - Mardi 6 janvier 2026
-                                      Text(
-                                        (() {
-                                          final locale = AppLocalizations.of(context);
-                                          return '${_formatDurationFromSeconds(locale, widget.resource.estimatedDuration)} - ${DateFormat('EEEE d MMMM y', locale.localeName).format(widget.resource.createdAt ?? DateTime.now())}';
-                                        })(),
-                                        style: theme.textTheme.bodyMedium?.copyWith(
-                                          color: AppColors.whiteSwatch,
+                          const Divider(
+                            height: 0,
+                            color: AppColors.borderLight,
+                            thickness: 1,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: _isSummaryCollapsed
+                                  ? const EdgeInsets.symmetric(
+                                      vertical: AppSpacing.spacing16,
+                                      horizontal: AppSpacing.spacing8,
+                                    )
+                                  : const EdgeInsets.all(AppSpacing.spacing24),
+                              child: TocWidget(
+                                controller: tocController,
+                                itemBuilder: (data) {
+                                  final index = data.index;
+                                  final toc = data.toc;
+                                  final node = toc.node;
+                                  final level = headingTag2Level[node.headingConfig.tag] ?? 1;
+
+                                  final bool isHovered = hoveredIndex == index;
+                                  final bool isSelected = data.currentIndex == index;
+
+                                  return MouseRegion(
+                                    onHover: (_) {
+                                      setState(() {
+                                        hoveredIndex = index;
+                                      });
+                                    },
+                                    onExit: (_) {
+                                      setState(() {
+                                        hoveredIndex = -1;
+                                      });
+                                    },
+                                    child: InkWell(
+                                      onTap: () {
+                                        // scroll markdown to the corresponding heading
+                                        tocController.jumpToIndex(toc.widgetIndex);
+
+                                        // update TocWidget's current index
+                                        data.refreshIndexCallback(index);
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          // rgba(98, 70, 234, 0.15)
+                                          color: (isSelected)
+                                              ? const Color.fromRGBO(98, 70, 234, 0.15)
+                                              : (isHovered
+                                                  ? const Color.fromRGBO(98, 70, 234, .05)
+                                                  : Colors.transparent),
+                                          borderRadius: AppRadius.tiny,
+                                          border: Border.all(
+                                            color: isSelected
+                                                ? const Color.fromRGBO(98, 70, 234, 1)
+                                                : (isHovered
+                                                    ? const Color.fromRGBO(98, 70, 234, .25)
+                                                    : Colors.transparent),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: AppSpacing.spacing12,
+                                          horizontal: _isSummaryCollapsed ? AppSpacing.spacing8 : AppSpacing.spacing12,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 12.0 * (level - 1) * 0),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment: _isSummaryCollapsed
+                                                ? MainAxisAlignment.center
+                                                : MainAxisAlignment.start,
+                                            children: [
+                                              // bullet
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.secondaryDefault,
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: AppColors.borderMedium,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.all(AppSpacing.spacing8 + AppSpacing.spacing2),
+                                                child: Center(
+                                                  child: Text((index + 1).toString()),
+                                                ),
+                                              ),
+                                              if (_showSummaryText && !_isSummaryCollapsed) ...[
+                                                AppSpacing.spacing8_Box,
+                                                // actual heading title from markdown
+                                                Expanded(
+                                                  child: ProxyRichText(
+                                                    node
+                                                        .copy(
+                                                          headingConfig: _TocHeadingConfig(
+                                                            // use your theme style but you can switch for selected if you want
+                                                            (isSelected
+                                                                    ? theme.textTheme.bodyLarge
+                                                                        ?.copyWith(color: AppColors.textPrimary)
+                                                                    : theme.textTheme.bodyLarge
+                                                                        ?.copyWith(color: AppColors.textPrimary)) ??
+                                                                defaultTocTextStyle,
+                                                            node.headingConfig.tag,
+                                                          ),
+                                                        )
+                                                        .build(),
+                                                  ),
+                                                ),
+                                              ],
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      const Spacer(),
-                                      // like button
-                                      AppXLikeButton(
-                                        liked: _isLiked,
-                                        onPressed: () {
-                                          final resourceId = widget.resource.id ?? '';
-                                          if (resourceId.isEmpty) return;
-                                          final nextLiked = !_isLiked;
-                                          setState(() {
-                                            _isLiked = nextLiked;
-                                          });
-                                          context.read<ResourcesBloc>().add(
-                                                LikeResource(
-                                                  resourceId: resourceId,
-                                                  like: nextLiked,
-                                                ),
-                                              );
-                                        },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  AppSpacing.spacing16_Box,
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.whiteSwatch,
+                        borderRadius: AppRadius.large,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(AppSpacing.spacing24),
+                            child: Text(AppLocalizations.of(context).article, style: theme.textTheme.labelLarge),
+                          ),
+                          const Divider(
+                            height: 0,
+                            color: AppColors.borderLight,
+                            thickness: 1,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(AppSpacing.spacing24),
+                              child: _ArticleScrollableContent(
+                                tocController: tocController,
+                                data: widget.resource.content ?? '',
+                                header: Container(
+                                  height: 348,
+                                  width: double.infinity,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.transparent,
+                                    borderRadius: AppRadius.small,
+                                    border: Border(
+                                      top: BorderSide(
+                                        // rgba(255, 214, 0, 1)
+                                        color: Color.fromRGBO(255, 214, 0, 1),
+                                        width: AppRadius.smallRadius + 10,
                                       ),
+                                    ),
+                                    // asset image
+                                    image: DecorationImage(
+                                      image: AssetImage(AppImages.articleHeaderPath),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.all(AppSpacing.spacing24),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      AppSpacing.spacing20_Box,
+                                      ResourceIconWidget(
+                                          resource: widget.resource, outlined: true, color: AppColors.whiteSwatch),
+                                      AppSpacing.spacing16_Box,
+                                      Text(
+                                        (widget.resource.title ?? ''),
+                                        style: GoogleFonts.anton(
+                                          color: AppColors.whiteSwatch,
+                                          fontSize: 48,
+                                          fontWeight: FontWeight.w400,
+                                          height: 64 / 48,
+                                          letterSpacing: -0.02 * 48,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      AppSpacing.spacing16_Box,
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          // 3 minutes - Mardi 6 janvier 2026
+                                          Text(
+                                            (() {
+                                              final locale = AppLocalizations.of(context);
+                                              return '${_formatDurationFromSeconds(locale, widget.resource.estimatedDuration)} - ${DateFormat('EEEE d MMMM y', locale.localeName).format(widget.resource.createdAt ?? DateTime.now())}';
+                                            })(),
+                                            style: theme.textTheme.bodyMedium?.copyWith(
+                                              color: AppColors.whiteSwatch,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          // like button
+                                          AppXLikeButton(
+                                            liked: _isLiked,
+                                            onPressed: () {
+                                              final resourceId = widget.resource.id ?? '';
+                                              if (resourceId.isEmpty) return;
+                                              final nextLiked = !_isLiked;
+                                              setState(() {
+                                                _isLiked = nextLiked;
+                                              });
+                                              context.read<ResourcesBloc>().add(
+                                                    LikeResource(
+                                                      resourceId: resourceId,
+                                                      like: nextLiked,
+                                                    ),
+                                                  );
+                                            },
+                                          ),
+                                        ],
+                                      )
                                     ],
-                                  )
-                                ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         ),
       ],
