@@ -298,6 +298,42 @@
   "@article": {
     "description": "Label for the Article section"
   },
+  "duration_hours": "{count, plural, =0 {0 hours} =1 {1 hour} other {{count} hours}}",
+  "@duration_hours": {
+    "description": "Duration in hours",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "duration_minutes": "{count, plural, =0 {0 minutes} =1 {1 minute} other {{count} minutes}}",
+  "@duration_minutes": {
+    "description": "Duration in minutes",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "duration_seconds": "{count, plural, =0 {0 seconds} =1 {1 second} other {{count} seconds}}",
+  "@duration_seconds": {
+    "description": "Duration in seconds",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "estimated_action_time": "{minutes, plural, =0 {0 minutes} =1 {1 minute} other {{minutes} minutes}}",
+  "@estimated_action_time": {
+    "description": "Estimated action time label",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "quiz_ready_to_evaluate": "Ready to assess yourself?",
   "@quiz_ready_to_evaluate": {
     "description": "Title of the popup before starting the quiz"

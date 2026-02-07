@@ -536,6 +536,30 @@ abstract class AppLocalizations {
   /// **'Article'**
   String get article;
 
+  /// Durée en heures
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0 {0 heure} =1 {1 heure} other {{count} heures}}'**
+  String duration_hours(int count);
+
+  /// Durée en minutes
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0 {0 minute} =1 {1 minute} other {{count} minutes}}'**
+  String duration_minutes(int count);
+
+  /// Durée en secondes
+  ///
+  /// In fr, this message translates to:
+  /// **'{count, plural, =0 {0 seconde} =1 {1 seconde} other {{count} secondes}}'**
+  String duration_seconds(int count);
+
+  /// Libellé pour le temps d'action estimé
+  ///
+  /// In fr, this message translates to:
+  /// **'{minutes, plural, =0 {0 minute} =1 {1 minute} other {{minutes} minutes}}'**
+  String estimated_action_time(int minutes);
+
   /// Titre de la popup avant de commencer le quiz
   ///
   /// In fr, this message translates to:

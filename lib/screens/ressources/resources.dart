@@ -623,25 +623,7 @@ class ResourceItemWidget extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Container(
-                      height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
-                      width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
-                      decoration: BoxDecoration(
-                        borderRadius: AppRadius.small,
-                        color: AppColors.backgroundCard,
-                        border: Border.all(color: AppColors.primaryDefault, width: 2),
-                      ),
-                      padding: const EdgeInsets.all(4),
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: SvgPicture.asset(
-                          resource.iconPath,
-                          height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
-                          width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
-                          colorFilter: const ColorFilter.mode(AppColors.textPrimary, BlendMode.srcIn),
-                        ),
-                      ),
-                    ),
+                    ResourceIconWidget(resource: resource, scale: scale),
                     const Spacer(),
                     if (resource.isNew) ...[
                       const AppXChip(type: ChipType.newItem),
@@ -740,6 +722,52 @@ class AppXChip extends StatelessWidget {
         text(context),
         style: theme.textTheme.bodyMedium?.copyWith(
           color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class ResourceIconWidget extends StatelessWidget {
+  final Resource resource;
+  final double scale;
+  final bool outlined;
+  final Color color;
+
+  const ResourceIconWidget({
+    super.key,
+    required this.resource,
+    this.scale = 1.0,
+    this.outlined = false,
+    this.color = AppColors.textPrimary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isMobile = DeviceHelper.isMobile(context);
+    return Container(
+      height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
+      width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
+      decoration: BoxDecoration(
+        borderRadius: AppRadius.small,
+        color: outlined ? color.withValues(alpha: 0.2) : AppColors.backgroundCard,
+        border: Border.all(
+          color: color,
+          width: 2,
+        ),
+      ),
+      padding: const EdgeInsets.all(4),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: SvgPicture.asset(
+          resource.iconPath,
+          height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
+          width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
+          colorFilter: ColorFilter.mode(
+            color,
+            BlendMode.srcIn,
+          ),
         ),
       ),
     );

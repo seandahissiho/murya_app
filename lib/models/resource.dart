@@ -185,6 +185,7 @@ class Resource {
   final Map<String, dynamic>? metadata;
   final bool isNew;
   final UserResourceState? userState;
+  final int estimatedDuration; // in seconds
 
   Resource({
     this.id,
@@ -202,6 +203,7 @@ class Resource {
     this.metadata,
     this.isNew = false,
     this.userState,
+    this.estimatedDuration = 0,
   });
 
   factory Resource.fromJson(Map<String, dynamic> json) {
@@ -229,6 +231,9 @@ class Resource {
     final UserResourceState? userState =
         userStateJson is Map<String, dynamic> ? UserResourceState.fromJson(userStateJson) : null;
     final bool isNew = userState?.openedAt == null && json['source'] != 'SYSTEM_DEFAULT';
+    final int estimatedDuration = json['estimatedDuration'] is num
+        ? (json['estimatedDuration'] as num).toInt()
+        : 5 * 60; // default to 5 minutes if not provided
 
     return Resource(
       id: id,
@@ -245,6 +250,7 @@ class Resource {
       metadata: metadata,
       userState: userState,
       isNew: isNew,
+      estimatedDuration: estimatedDuration,
     );
   }
 
@@ -264,6 +270,7 @@ class Resource {
     Map<String, dynamic>? metadata,
     bool? isNew,
     UserResourceState? userState,
+    int? estimatedDuration,
   }) {
     if (userState != null) {
       isNew = userState.openedAt == null;
@@ -284,6 +291,7 @@ class Resource {
       metadata: metadata ?? this.metadata,
       isNew: isNew ?? this.isNew,
       userState: userState ?? this.userState,
+      estimatedDuration: estimatedDuration ?? this.estimatedDuration,
     );
   }
 
