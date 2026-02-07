@@ -34,3 +34,10 @@ final class ReadResource extends ResourcesEvent {
 
   ReadResource({required this.resourceId, this.progress});
 }
+
+final class LikeResource extends ResourcesEvent {
+  final String resourceId;
+  final bool like;
+
+  LikeResource({required this.resourceId, required this.like});
+}
