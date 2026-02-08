@@ -190,21 +190,21 @@
   "@profile_account_title": {
     "description": "Titre de la section compte dans le profil"
   },
-  "skillLevel_easy": "Junior",
+  "skillLevel_easy": "Débutant",
   "@skillLevel_easy": {
-    "description": "Niveau de compétence facile"
+    "description": "Niveau de progression débutant"
   },
-  "skillLevel_medium": "Intermédiaire",
+  "skillLevel_medium": "Junior",
   "@skillLevel_medium": {
-    "description": "Niveau de compétence moyen"
+    "description": "Niveau de progression junior"
   },
-  "skillLevel_hard": "Senior",
+  "skillLevel_hard": "Intermédiaire",
   "@skillLevel_hard": {
-    "description": "Niveau de compétence difficile"
+    "description": "Niveau de progression intermédiaire"
   },
-  "skillLevel_expert": "Expert",
+  "skillLevel_expert": "Senior",
   "@skillLevel_expert": {
-    "description": "Niveau de compétence expert"
+    "description": "Niveau de progression senior"
   },
   "competencies_count": "{count, plural, =0 {Aucune compétence} =1 {1 compétence} other {{count} compétences}}",
   "@competencies_count": {

@@ -368,28 +368,28 @@ abstract class AppLocalizations {
   /// **'Compte'**
   String get profile_account_title;
 
-  /// Niveau de compétence facile
+  /// Niveau de progression débutant
+  ///
+  /// In fr, this message translates to:
+  /// **'Débutant'**
+  String get skillLevel_easy;
+
+  /// Niveau de progression junior
   ///
   /// In fr, this message translates to:
   /// **'Junior'**
-  String get skillLevel_easy;
+  String get skillLevel_medium;
 
-  /// Niveau de compétence moyen
+  /// Niveau de progression intermédiaire
   ///
   /// In fr, this message translates to:
   /// **'Intermédiaire'**
-  String get skillLevel_medium;
+  String get skillLevel_hard;
 
-  /// Niveau de compétence difficile
+  /// Niveau de progression senior
   ///
   /// In fr, this message translates to:
   /// **'Senior'**
-  String get skillLevel_hard;
-
-  /// Niveau de compétence expert
-  ///
-  /// In fr, this message translates to:
-  /// **'Expert'**
   String get skillLevel_expert;
 
   /// Affiche le nombre de compétences avec une gestion plurielle

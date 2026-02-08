@@ -208,7 +208,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
           child: Center(
             child: InteractiveRoundedRadarChart(
               labels: families.map((cf) => cf.name).toList(),
-              defaultValues: (_job ?? _jobFamily ?? Job.empty()).kiviatValues(JobProgressionLevel.JUNIOR),
+              defaultValues: (_job ?? _jobFamily ?? Job.empty()).kiviatValues(JobProgressionLevel.BEGINNER),
               userValues: _userJob.kiviatValues(families),
               isLandingPageChart: true,
               // labelBgColor: AppColors.whiteSwatch,

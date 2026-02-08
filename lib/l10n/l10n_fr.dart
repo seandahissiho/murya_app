@@ -154,16 +154,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profile_account_title => 'Compte';
 
   @override
-  String get skillLevel_easy => 'Junior';
+  String get skillLevel_easy => 'Débutant';
 
   @override
-  String get skillLevel_medium => 'Intermédiaire';
+  String get skillLevel_medium => 'Junior';
 
   @override
-  String get skillLevel_hard => 'Senior';
+  String get skillLevel_hard => 'Intermédiaire';
 
   @override
-  String get skillLevel_expert => 'Expert';
+  String get skillLevel_expert => 'Senior';
 
   @override
   String competencies_count(int count) {
