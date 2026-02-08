@@ -178,7 +178,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
                   const AppXCloseButton(),
                 ],
               ),
-              AppSpacing.spacing16_Box,
+              AppSpacing.spacing40_Box,
               Expanded(
                 child: _body(),
               ),

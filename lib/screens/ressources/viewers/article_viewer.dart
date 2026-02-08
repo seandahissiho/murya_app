@@ -204,7 +204,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: AppColors.whiteSwatch,
-                        borderRadius: AppRadius.large,
+                        borderRadius: AppRadius.small,
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -371,7 +371,7 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: AppColors.whiteSwatch,
-                        borderRadius: AppRadius.large,
+                        borderRadius: AppRadius.small,
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
