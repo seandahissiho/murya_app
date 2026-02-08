@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:beamer/beamer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,8 @@ import 'package:murya/screens/ressources/resources.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart' as yt_flutter;
+import 'package:youtube_player_iframe/youtube_player_iframe.dart' as yt_iframe;
 
 part 'article_viewer.dart';
 part 'podcast_viewer.dart';
