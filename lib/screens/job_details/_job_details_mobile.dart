@@ -13,7 +13,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
   UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
   User _user = User.empty();
 
-  JobProgressionLevel _detailsLevel = JobProgressionLevel.JUNIOR;
+  JobProgressionLevel _detailsLevel = JobProgressionLevel.BEGINNER;
   Duration? nextQuizAvailableIn;
   Timer? _countdownTimer;
 

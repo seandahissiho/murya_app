@@ -1,10 +1,10 @@
 import 'package:murya/models/Job.dart';
 
 enum JobProgressionLevel {
+  BEGINNER,
   JUNIOR,
   MIDLEVEL,
   SENIOR,
-  EXPERT,
 }
 
 class JobKiviat {
