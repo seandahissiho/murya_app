@@ -218,7 +218,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(AppSpacing.spacing24),
-            child: Text("Podcast", style: theme.textTheme.labelLarge),
+            child: Text("Video", style: theme.textTheme.labelLarge),
           ),
           const Divider(
             height: 0,
