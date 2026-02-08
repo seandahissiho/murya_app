@@ -147,7 +147,7 @@ class _BaseScreenState extends State<BaseScreen> {
 
     return Container(
       color: widget.useBackgroundColor ? AppColors.backgroundColor : null,
-      child: body,
+      child: PrimaryScrollController.none(child: body),
     );
   }
 }

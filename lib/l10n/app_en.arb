@@ -42,6 +42,78 @@
   "@landing_second_button": {
     "description": "Text of the button in the second box"
   },
+  "landing_browser_title": "Murya - Home page",
+  "@landing_browser_title": {
+    "description": "Landing page title shown in the browser tab"
+  },
+  "landing_customize_title": "Customize landing",
+  "@landing_customize_title": {
+    "description": "Title of the landing customization dialog"
+  },
+  "landing_customize_description": "Organize your modules, add new ones, or remove those that aren''t required.",
+  "@landing_customize_description": {
+    "description": "Description in the landing customization dialog"
+  },
+  "modules_empty_state": "No modules available.",
+  "@modules_empty_state": {
+    "description": "Empty state message for a modules list"
+  },
+  "landing_add_module": "Add a module",
+  "@landing_add_module": {
+    "description": "Button to add a module to the landing page"
+  },
+  "landing_view_audit": "View audit",
+  "@landing_view_audit": {
+    "description": "Button to view the landing audit"
+  },
+  "label_default": "Default",
+  "@label_default": {
+    "description": "Label indicating a default module"
+  },
+  "action_remove": "Remove",
+  "@action_remove": {
+    "description": "Generic label for remove action"
+  },
+  "modules_catalog_title": "Module catalog",
+  "@modules_catalog_title": {
+    "description": "Title of the modules catalog"
+  },
+  "status_added": "Added",
+  "@status_added": {
+    "description": "Label indicating an item is already added"
+  },
+  "landing_audit_title": "History",
+  "@landing_audit_title": {
+    "description": "Title of the landing audit section"
+  },
+  "landing_audit_empty": "No actions recorded.",
+  "@landing_audit_empty": {
+    "description": "Message shown when there are no audit events"
+  },
+  "landing_audit_actor_system": "SYSTEM",
+  "@landing_audit_actor_system": {
+    "description": "System actor label in the audit"
+  },
+  "landing_audit_actor_user": "USER",
+  "@landing_audit_actor_user": {
+    "description": "User actor label in the audit"
+  },
+  "landing_audit_action_removed": "removed",
+  "@landing_audit_action_removed": {
+    "description": "Action label for a removed module in the audit"
+  },
+  "landing_audit_action_added": "added",
+  "@landing_audit_action_added": {
+    "description": "Action label for an added module in the audit"
+  },
+  "landing_interactions_title": "Interactions",
+  "@landing_interactions_title": {
+    "description": "Title of the landing interactions section"
+  },
+  "action_add": "Add",
+  "@action_add": {
+    "description": "Generic label for add action"
+  },
   "footer_language_english": "🇬🇧 English",
   "@footer_language_english": {
     "description": "Label to switch language to English"

@@ -8,7 +8,7 @@ class TabletJobDetailsScreen extends StatefulWidget {
 }
 
 class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
-  AppJob? _job;
+  AppJob _job = AppJob.empty();
   JobProgressionLevel _detailsLevel = JobProgressionLevel.JUNIOR;
   UserJob _userJob = UserJob.empty();
   UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();

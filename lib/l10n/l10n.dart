@@ -158,6 +158,114 @@ abstract class AppLocalizations {
   /// **'Perfectionner'**
   String get landing_second_button;
 
+  /// Titre de la page d'accueil dans l'onglet du navigateur
+  ///
+  /// In fr, this message translates to:
+  /// **'Murya - Page d\'\'accueil'**
+  String get landing_browser_title;
+
+  /// Titre du dialogue de personnalisation de la landing
+  ///
+  /// In fr, this message translates to:
+  /// **'Personnaliser la landing'**
+  String get landing_customize_title;
+
+  /// Description dans le dialogue de personnalisation de la landing
+  ///
+  /// In fr, this message translates to:
+  /// **'Organisez vos modules, ajoutez-en de nouveaux, ou retirez ceux qui ne sont pas obligatoires.'**
+  String get landing_customize_description;
+
+  /// Message d'état vide pour une liste de modules
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun module disponible.'**
+  String get modules_empty_state;
+
+  /// Bouton pour ajouter un module sur la landing
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un module'**
+  String get landing_add_module;
+
+  /// Bouton pour consulter l'audit de la landing
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir l\'\'audit'**
+  String get landing_view_audit;
+
+  /// Libellé indiquant un module par défaut
+  ///
+  /// In fr, this message translates to:
+  /// **'Default'**
+  String get label_default;
+
+  /// Libellé générique pour l'action de suppression
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get action_remove;
+
+  /// Titre du catalogue des modules
+  ///
+  /// In fr, this message translates to:
+  /// **'Catalogue des modules'**
+  String get modules_catalog_title;
+
+  /// Libellé indiquant qu'un élément est déjà ajouté
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajoute'**
+  String get status_added;
+
+  /// Titre de la section audit de la landing
+  ///
+  /// In fr, this message translates to:
+  /// **'Historique'**
+  String get landing_audit_title;
+
+  /// Message affiché quand il n'y a pas d'événements d'audit
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune action enregistree.'**
+  String get landing_audit_empty;
+
+  /// Libellé de l'acteur système dans l'audit
+  ///
+  /// In fr, this message translates to:
+  /// **'SYSTEM'**
+  String get landing_audit_actor_system;
+
+  /// Libellé de l'acteur utilisateur dans l'audit
+  ///
+  /// In fr, this message translates to:
+  /// **'USER'**
+  String get landing_audit_actor_user;
+
+  /// Libellé d'action pour un module retiré dans l'audit
+  ///
+  /// In fr, this message translates to:
+  /// **'a retire'**
+  String get landing_audit_action_removed;
+
+  /// Libellé d'action pour un module ajouté dans l'audit
+  ///
+  /// In fr, this message translates to:
+  /// **'a ajoute'**
+  String get landing_audit_action_added;
+
+  /// Titre de la section interactions de la landing
+  ///
+  /// In fr, this message translates to:
+  /// **'Interactions'**
+  String get landing_interactions_title;
+
+  /// Libellé générique pour l'action d'ajout
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter'**
+  String get action_add;
+
   /// Libellé du changement de langue vers l'anglais
   ///
   /// In fr, this message translates to:

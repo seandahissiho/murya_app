@@ -127,7 +127,7 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
           },
           builder: (context, appState) {
             if (_isMainDashboardPath) {
-              log('At main dashboard path: ${appState.newRoute}');
+              // log('At main dashboard path: ${appState.newRoute}');
             }
             return Scaffold(
               backgroundColor: AppColors.backgroundColor,

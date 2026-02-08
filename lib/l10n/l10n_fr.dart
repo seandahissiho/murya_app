@@ -43,6 +43,61 @@ class AppLocalizationsFr extends AppLocalizations {
   String get landing_second_button => 'Perfectionner';
 
   @override
+  String get landing_browser_title => 'Murya - Page d\'accueil';
+
+  @override
+  String get landing_customize_title => 'Personnaliser la landing';
+
+  @override
+  String get landing_customize_description =>
+      'Organisez vos modules, ajoutez-en de nouveaux, ou retirez ceux qui ne sont pas obligatoires.';
+
+  @override
+  String get modules_empty_state => 'Aucun module disponible.';
+
+  @override
+  String get landing_add_module => 'Ajouter un module';
+
+  @override
+  String get landing_view_audit => 'Voir l\'audit';
+
+  @override
+  String get label_default => 'Default';
+
+  @override
+  String get action_remove => 'Supprimer';
+
+  @override
+  String get modules_catalog_title => 'Catalogue des modules';
+
+  @override
+  String get status_added => 'Ajoute';
+
+  @override
+  String get landing_audit_title => 'Historique';
+
+  @override
+  String get landing_audit_empty => 'Aucune action enregistree.';
+
+  @override
+  String get landing_audit_actor_system => 'SYSTEM';
+
+  @override
+  String get landing_audit_actor_user => 'USER';
+
+  @override
+  String get landing_audit_action_removed => 'a retire';
+
+  @override
+  String get landing_audit_action_added => 'a ajoute';
+
+  @override
+  String get landing_interactions_title => 'Interactions';
+
+  @override
+  String get action_add => 'Ajouter';
+
+  @override
   String get footer_language_english => '🇬🇧 English';
 
   @override

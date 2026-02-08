@@ -131,11 +131,24 @@ class AppIcons {
 
   // pause.svg
   static const String pauseIconPath = '$basePath/pause.svg';
+
   // play.svg
   static const String playIconPath = '$basePath/play.svg';
 
   // window_resize_left.svg
   static const String windowResizeLeftPath = '$basePath/window_resize_left.svg';
+
+  // plus.svg
+  static const String plusIconPath = '$basePath/plus.svg';
+
+  // down.svg
+  static const String downIconPath = '$basePath/down.svg';
+
+  // assets/icons/modules/personnality_test.svg
+  static const String personnalityTestIconPath = '$basePath/modules/personnality_test.svg';
+
+  // assets/icons/modules/tools_catalog.svg
+  static const String toolsCatalogIconPath = '$basePath/modules/tools_catalog.svg';
 }
 
 class AppImages {
@@ -156,6 +169,19 @@ class AppImages {
   static const String resourceFallback2 = '$basePath/93d4152ff0431e91e55321d66f736559248e055a.webp';
   static const String resourceFallback3 = '$basePath/3196d2ef4d8a5ddc89bf3054643568508a65599c.jpg';
   static const String resourceFallback4 = '$basePath/414debc092d5b8c1dd730a1c5ca8e7b13651da77.jpg';
+
   // articleHeader
   static const String articleHeaderPath = '$basePath/article_header.jpg';
+
+  // personnality_test.jpg
+  static const String personnalityTestPath = '$basePath/personnality_test.jpg';
+
+  // personnality_test.png
+  static const String personnalityTestPngPath = '$basePath/personnality_test.png';
+
+  // tools_catalog.jpg
+  static const String toolsCatalogPath = '$basePath/tools_catalog.jpg';
+
+  // tools_catalog.png
+  static const String toolsCatalogPngPath = '$basePath/tools_catalog.png';
 }

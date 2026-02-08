@@ -249,6 +249,25 @@ class Module {
     );
   }
 
+  String get defaultImagePath {
+    switch (slug) {
+      case 'leaderboard':
+        return AppImages.homeBox1Path;
+      case 'daily-quiz':
+        return AppImages.homeBox2Path;
+      case 'learning-resources':
+        return AppImages.homeBox4Path;
+      // personality-tests
+      case 'personality-tests':
+        return AppImages.personnalityTestPngPath;
+      // tool-catalog
+      case 'tool-catalog':
+        return AppImages.toolsCatalogPngPath;
+      default:
+        return AppImages.homeBox3Path;
+    }
+  }
+
   String title(BuildContext context) {
     final locale = AppLocalizations.of(context);
 

@@ -4,6 +4,8 @@ import 'dart:math' as math;
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
@@ -14,6 +16,7 @@ import 'package:murya/components/modules/app_module.dart';
 import 'package:murya/components/modules/job_module.dart';
 import 'package:murya/components/modules/ressources_module.dart';
 import 'package:murya/config/DS.dart';
+import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/l10n/l10n.dart';
@@ -32,11 +35,12 @@ class LandingLocation extends BeamLocation<RouteInformationSerializable<dynamic>
   @override
   List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
+    final locale = AppLocalizations.of(context);
     return [
-      const BeamPage(
-        key: ValueKey('landing-page'),
-        title: "Murya - Page d'accueil",
-        child: LandingScreen(),
+      BeamPage(
+        key: const ValueKey('landing-page'),
+        title: locale.landing_browser_title,
+        child: const LandingScreen(),
       ),
     ];
   }
@@ -54,7 +58,6 @@ class _LandingScreenState extends State<LandingScreen> {
   void initState() {
     context.read<ModulesBloc>().add(LoadCatalogModules(force: true));
     context.read<ModulesBloc>().add(LoadLandingModules(force: true));
-    // TODO: implement initState
     super.initState();
   }
 
@@ -80,21 +83,13 @@ class AddModuleButton extends StatelessWidget {
   const AddModuleButton({super.key});
 
   static const _colors = [
-    // #5F27CD
     Color(0xFF5F27CD),
-    // #9159E5
     Color(0xFF9159E5),
-    // #C26BFF
     Color(0xFFC26BFF),
-    // #FF4100
     Color(0xFFFF4100),
-    // #49B86C
     Color(0xFF49B86C),
-    // #05E7D2
     Color(0xFF05E7D2),
-    // #8CD9E5
     Color(0xFF8CD9E5),
-    // #3ED20D
     Color(0xFF3ED20D),
   ];
 
@@ -112,75 +107,33 @@ class AddModuleButton extends StatelessWidget {
         width: ctaHeight,
         height: ctaHeight,
         child: AppXButton(
-          leftIcon: const Icon(
-            Icons.add,
-            color: AppColors.textInverted,
-          ),
-          // leftIconPath: AppIcons.searchBarCloseIconPath,
+          leftIconPath: AppIcons.plusIconPath,
           shrinkWrap: true,
           onPressed: () async {
+            return await _openBottomSheet(context);
             return await contentNotAvailablePopup(context);
           },
           isLoading: false,
-          // borderColor: ,
         ),
       ),
-      // child: Blob.animatedRandom(
-      //   size: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 27,
-      //   edgesCount: 8,
-      //   minGrowth: 3,
-      //   duration: const Duration(milliseconds: 1000),
-      //   loop: true,
-      //   styles: BlobStyles(
-      //     // color: Colors.red,
-      //     gradient: const LinearGradient(
-      //       colors: _colors,
-      //       begin: Alignment.topLeft,
-      //       end: Alignment.bottomRight,
-      //     ).createShader(const Rect.fromLTRB(0, 0, 85, 85)),
-      //     fillType: BlobFillType.fill,
-      //     strokeWidth: 3,
-      //   ),
-      //   child: Center(
-      //     child: MouseRegion(
-      //       cursor: SystemMouseCursors.click,
-      //       child: InkWell(
-      //         onTap: () {
-      //           showDialog(
-      //             context: context,
-      //             barrierDismissible: true,
-      //             builder: (_) => const LandingCustomizationDialog(),
-      //           );
-      //         },
-      //         child: Container(
-      //           width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
-      //           height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + 10,
-      //           margin: const EdgeInsets.only(top: 10, left: 10),
-      //           decoration: const BoxDecoration(
-      //             shape: BoxShape.circle,
-      //             gradient: LinearGradient(
-      //               colors: _colors,
-      //               begin: Alignment.topLeft,
-      //               end: Alignment.bottomRight,
-      //             ),
-      //           ),
-      //           padding: const EdgeInsets.all(2),
-      //           child: Container(
-      //             decoration: const BoxDecoration(
-      //               shape: BoxShape.circle,
-      //               color: Colors.black,
-      //             ),
-      //             child: const Icon(
-      //               Icons.add,
-      //               color: AppColors.textInverted,
-      //               size: 32,
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      // ),
+    );
+  }
+
+  Future<void> _openBottomSheet(BuildContext context) async {
+    final AppSize screenSize = AppSize(context);
+    await showModalBottomSheet(
+      context: context,
+      constraints: BoxConstraints(
+        maxHeight: math.min(screenSize.screenHeight * 0.51, 530),
+        maxWidth: screenSize.screenWidth,
+      ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      ),
+      builder: (context) {
+        return const _BottomSheetContent();
+      },
     );
   }
 }
@@ -191,6 +144,7 @@ class LandingCustomizationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isMobile = DeviceHelper.isMobile(context);
+    final locale = AppLocalizations.of(context);
     return Dialog(
       insetPadding: const EdgeInsets.all(AppSpacing.pageMargin),
       child: Container(
@@ -211,7 +165,7 @@ class LandingCustomizationDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Personnaliser la landing',
+                      locale.landing_customize_title,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             color: AppColors.primary.shade900,
                           ),
@@ -221,7 +175,7 @@ class LandingCustomizationDialog extends StatelessWidget {
                 ),
                 AppSpacing.spacing16_Box,
                 Text(
-                  'Organisez vos modules, ajoutez-en de nouveaux, ou retirez ceux qui ne sont pas obligatoires.',
+                  locale.landing_customize_description,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -237,7 +191,7 @@ class LandingCustomizationDialog extends StatelessWidget {
                       ? Padding(
                           padding: const EdgeInsets.all(AppSpacing.spacing24),
                           child: Text(
-                            'Aucun module disponible.',
+                            locale.modules_empty_state,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         )
@@ -271,7 +225,7 @@ class LandingCustomizationDialog extends StatelessWidget {
                           );
                         },
                         isLoading: false,
-                        text: 'Ajouter un module',
+                        text: locale.landing_add_module,
                         shrinkWrap: false,
                       ),
                     ),
@@ -287,7 +241,7 @@ class LandingCustomizationDialog extends StatelessWidget {
                           );
                         },
                         isLoading: false,
-                        text: "Voir l'audit",
+                        text: locale.landing_view_audit,
                         shrinkWrap: false,
                         bgColor: AppColors.whiteSwatch,
                         borderColor: AppColors.primary.shade200,
@@ -313,6 +267,7 @@ class _LandingModuleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDefault = module.defaultOnLanding == true;
+    final locale = AppLocalizations.of(context);
     return Container(
       key: key,
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing8, vertical: AppSpacing.spacing4),
@@ -360,7 +315,7 @@ class _LandingModuleRow extends StatelessWidget {
                 border: Border.all(color: AppColors.borderMedium),
               ),
               child: Text(
-                'Default',
+                locale.label_default,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -372,7 +327,7 @@ class _LandingModuleRow extends StatelessWidget {
                 context.read<ModulesBloc>().add(RemoveLandingModule(moduleId: module.id ?? ''));
               },
               isLoading: false,
-              text: 'Supprimer',
+              text: locale.action_remove,
               shrinkWrap: true,
               bgColor: AppColors.whiteSwatch,
               borderColor: AppColors.borderMedium,
@@ -391,6 +346,7 @@ class ModuleCatalogDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isMobile = DeviceHelper.isMobile(context);
+    final locale = AppLocalizations.of(context);
     return Dialog(
       insetPadding: const EdgeInsets.all(AppSpacing.pageMargin),
       child: Container(
@@ -412,7 +368,7 @@ class ModuleCatalogDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Catalogue des modules',
+                      locale.modules_catalog_title,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             color: AppColors.primary.shade900,
                           ),
@@ -425,7 +381,7 @@ class ModuleCatalogDialog extends StatelessWidget {
                   const Center(child: CircularProgressIndicator())
                 else if (modules.isEmpty)
                   Text(
-                    'Aucun module disponible.',
+                    locale.modules_empty_state,
                     style: Theme.of(context).textTheme.bodyMedium,
                   )
                 else
@@ -486,7 +442,7 @@ class ModuleCatalogDialog extends StatelessWidget {
                                     border: Border.all(color: AppColors.borderMedium),
                                   ),
                                   child: Text(
-                                    'Default',
+                                    locale.label_default,
                                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                           color: AppColors.textSecondary,
                                         ),
@@ -499,7 +455,7 @@ class ModuleCatalogDialog extends StatelessWidget {
                                         context.read<ModulesBloc>().add(AddLandingModule(moduleId: module.id ?? ''));
                                       },
                                 isLoading: false,
-                                text: alreadyAdded ? 'Ajoute' : 'Ajouter',
+                                text: alreadyAdded ? locale.status_added : locale.action_add,
                                 shrinkWrap: true,
                                 disabled: alreadyAdded,
                                 height: 34,
@@ -525,6 +481,7 @@ class LandingAuditDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isMobile = DeviceHelper.isMobile(context);
+    final locale = AppLocalizations.of(context);
     return Dialog(
       insetPadding: const EdgeInsets.all(AppSpacing.pageMargin),
       child: Container(
@@ -545,7 +502,7 @@ class LandingAuditDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Historique',
+                      locale.landing_audit_title,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             color: AppColors.primary.shade900,
                           ),
@@ -558,7 +515,7 @@ class LandingAuditDialog extends StatelessWidget {
                   const Center(child: CircularProgressIndicator())
                 else if (events.isEmpty)
                   Text(
-                    'Aucune action enregistree.',
+                    locale.landing_audit_empty,
                     style: Theme.of(context).textTheme.bodyMedium,
                   )
                 else
@@ -571,8 +528,12 @@ class LandingAuditDialog extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final event = events[index];
                         final moduleName = _moduleNameForEvent(context, event, state.modules, state.catalogModules);
-                        final actorLabel = event.actor == LandingActor.system ? 'SYSTEM' : 'USER';
-                        final actionLabel = event.action == LandingAction.remove ? 'a retire' : 'a ajoute';
+                        final actorLabel = event.actor == LandingActor.system
+                            ? locale.landing_audit_actor_system
+                            : locale.landing_audit_actor_user;
+                        final actionLabel = event.action == LandingAction.remove
+                            ? locale.landing_audit_action_removed
+                            : locale.landing_audit_action_added;
                         final dateLabel = event.createdAt != null ? event.createdAt!.ddMMMyyyy() : '';
                         return Container(
                           padding: const EdgeInsets.all(AppSpacing.spacing12),
@@ -633,5 +594,209 @@ class LandingAuditDialog extends StatelessWidget {
     final fromCatalog = catalog.firstWhereOrNull((module) => module.id == event.moduleId);
     if (fromCatalog != null) return fromCatalog.title(context);
     return event.moduleId;
+  }
+}
+
+class _BottomSheetContent extends StatefulWidget {
+  const _BottomSheetContent({super.key});
+
+  @override
+  State<_BottomSheetContent> createState() => _BottomSheetContentState();
+}
+
+class _BottomSheetContentState extends State<_BottomSheetContent> {
+  final Map<String, bool> _pressedModules = {};
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final locale = AppLocalizations.of(context);
+    final AppSize screenSize = AppSize(context);
+    final bool isMobile = DeviceHelper.isMobile(context);
+    return BlocConsumer<ModulesBloc, ModulesState>(
+      listener: (context, state) {
+        setState(() {});
+      },
+      builder: (context, state) {
+        final modules = state.catalogModules
+            .whereOrEmpty(
+              (module) => !state.modules.any((landingModule) => landingModule.id == module.id),
+            )
+            .toList();
+        return ColoredBox(
+          color: const Color(0xFFE7E5DD),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Flexible(
+                child: Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFE7E5DD),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.tinyRadius)),
+                  ),
+                  padding: EdgeInsets.only(
+                    left: isMobile
+                        ? mobileCTAHeight + AppSpacing.spacing16
+                        : tabletAndAboveCTAHeight + AppSpacing.spacing16,
+                    right: isMobile
+                        ? mobileCTAHeight + AppSpacing.spacing16
+                        : tabletAndAboveCTAHeight + AppSpacing.spacing16,
+                    top: AppSpacing.spacing24,
+                    bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.spacing24,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Row(mainAxisSize: MainAxisSize.max, children: []),
+                      Text(
+                        locale.landing_interactions_title,
+                        style: GoogleFonts.anton(
+                          color: AppColors.textPrimary,
+                          fontSize: 40,
+                          fontWeight: FontWeight.w400,
+                          height: 56 / 40,
+                          letterSpacing: -0.02 * 40,
+                        ),
+                      ),
+                      AppSpacing.spacing24_Box,
+                      Expanded(
+                        child: LayoutBuilder(builder: (context, constraints) {
+                          return SingleChildScrollView(
+                            child: Wrap(
+                                spacing: AppSpacing.spacing16,
+                                runSpacing: AppSpacing.spacing16,
+                                children: modules
+                                    .map(
+                                      (module) => InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            _pressedModules[module.slug ?? ''] =
+                                                !(_pressedModules[module.slug] == true);
+                                          });
+                                        },
+                                        child: Container(
+                                          height: constraints.maxHeight,
+                                          width: constraints.maxHeight,
+                                          decoration: BoxDecoration(
+                                            color: AppButtonColors.secondarySurfaceDefault,
+                                            borderRadius: AppRadius.tiny,
+                                            border: Border.all(color: AppButtonColors.secondaryBorderDefault),
+                                          ),
+                                          padding: const EdgeInsets.all(AppSpacing.spacing24),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Text(
+                                                module.title(context),
+                                                textAlign: TextAlign.start,
+                                                // font-family: Anton;
+                                                // font-weight: 400;
+                                                // font-style: Regular;
+                                                // font-size: 32px;
+                                                // leading-trim: NONE;
+                                                // line-height: 38px;
+                                                // letter-spacing: -2%;
+                                                style: GoogleFonts.anton(
+                                                  color: AppColors.textPrimary,
+                                                  fontSize: 32,
+                                                  fontWeight: FontWeight.w400,
+                                                  height: 38 / 32,
+                                                  letterSpacing: -0.02 * 32,
+                                                ),
+                                              ),
+                                              AppSpacing.spacing24_Box,
+                                              Expanded(
+                                                child: _pressedModules[module.slug] != true
+                                                    ? _defaultModuleContent(module)
+                                                    : _detailledModuleContent(module, locale, theme),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList()),
+                          );
+                        }),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Divider(
+                indent: 0,
+                endIndent: 0,
+                color: AppColors.borderMedium,
+                height: 0,
+              ),
+              Container(
+                height:
+                    (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + AppSpacing.spacing40 / (isMobile ? 2 : 1),
+                width: double.infinity,
+                color: const Color(0xFFE7E5DD),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing24, vertical: AppSpacing.spacing16),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    AppXCloseBottomSheetButton(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  _defaultModuleContent(Module module) {
+    bool isSvg = module.defaultImagePath.toLowerCase().endsWith('.svg');
+    if (!isSvg) {
+      return Image.asset(
+        module.defaultImagePath ?? '',
+        width: double.infinity,
+        height: double.infinity,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) => const Center(
+          child: Icon(Icons.broken_image, size: 48, color: AppColors.textSecondary),
+        ),
+      );
+    }
+    return SvgPicture.asset(
+      module.defaultImagePath,
+      width: double.infinity,
+      height: double.infinity,
+      fit: BoxFit.contain,
+    );
+  }
+
+  _detailledModuleContent(Module module, AppLocalizations locale, ThemeData theme) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          module.description ?? '',
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: AppColors.textPrimary,
+          ),
+        ),
+        AppSpacing.spacing24_Box,
+        AppXButton(
+          onPressed: () async {
+            return await contentNotAvailablePopup(context);
+          },
+          isLoading: false,
+          shrinkWrap: false,
+          text: locale.action_add,
+        )
+      ],
+    );
   }
 }
