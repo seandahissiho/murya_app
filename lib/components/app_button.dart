@@ -281,7 +281,7 @@ class _AppXButtonState extends State<AppXButton> {
                         : 0,
           ),
           child: FittedBox(
-            fit: BoxFit.scaleDown,
+            fit: BoxFit.cover,
             child: widget.leftIcon != null
                 ? widget.leftIcon!
                 : SizedBox(
@@ -749,6 +749,44 @@ class AppXPlayButton extends StatelessWidget {
         // borderColor: AppColors.borderMedium,
         // hoverColor: AppButtonColors.secondarySurfaceHover,
         // onPressedColor: AppButtonColors.secondarySurfacePressed,
+      ),
+    );
+  }
+}
+
+class AppXCloseBottomSheetButton extends StatelessWidget {
+  const AppXCloseBottomSheetButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    return SizedBox(
+      width: ctaHeight,
+      height: ctaHeight,
+      child: AppXButton(
+        onPressed: () {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+            return;
+          }
+        },
+        isLoading: false,
+        // leftIconPath: AppIcons.searchBarCloseIconPath,
+        removePaddings: true,
+        leftIcon: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SvgPicture.asset(
+            AppIcons.downIconPath,
+            width: ctaHeight,
+            height: ctaHeight,
+          ),
+        ),
+        shadowColor: AppColors.borderMedium,
+        bgColor: AppColors.backgroundColor,
+        fgColor: AppButtonColors.secondarySurfaceDefault,
+        borderColor: AppColors.borderMedium,
+        hoverColor: AppButtonColors.secondarySurfaceHover,
+        onPressedColor: AppButtonColors.secondarySurfacePressed,
       ),
     );
   }

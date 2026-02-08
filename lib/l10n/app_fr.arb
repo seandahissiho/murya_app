@@ -42,6 +42,78 @@
   "@landing_second_button": {
     "description": "Texte du bouton de la deuxième boîte"
   },
+  "landing_browser_title": "Murya - Page d''accueil",
+  "@landing_browser_title": {
+    "description": "Titre de la page d'accueil dans l'onglet du navigateur"
+  },
+  "landing_customize_title": "Personnaliser la landing",
+  "@landing_customize_title": {
+    "description": "Titre du dialogue de personnalisation de la landing"
+  },
+  "landing_customize_description": "Organisez vos modules, ajoutez-en de nouveaux, ou retirez ceux qui ne sont pas obligatoires.",
+  "@landing_customize_description": {
+    "description": "Description dans le dialogue de personnalisation de la landing"
+  },
+  "modules_empty_state": "Aucun module disponible.",
+  "@modules_empty_state": {
+    "description": "Message d'état vide pour une liste de modules"
+  },
+  "landing_add_module": "Ajouter un module",
+  "@landing_add_module": {
+    "description": "Bouton pour ajouter un module sur la landing"
+  },
+  "landing_view_audit": "Voir l''audit",
+  "@landing_view_audit": {
+    "description": "Bouton pour consulter l'audit de la landing"
+  },
+  "label_default": "Default",
+  "@label_default": {
+    "description": "Libellé indiquant un module par défaut"
+  },
+  "action_remove": "Supprimer",
+  "@action_remove": {
+    "description": "Libellé générique pour l'action de suppression"
+  },
+  "modules_catalog_title": "Catalogue des modules",
+  "@modules_catalog_title": {
+    "description": "Titre du catalogue des modules"
+  },
+  "status_added": "Ajoute",
+  "@status_added": {
+    "description": "Libellé indiquant qu'un élément est déjà ajouté"
+  },
+  "landing_audit_title": "Historique",
+  "@landing_audit_title": {
+    "description": "Titre de la section audit de la landing"
+  },
+  "landing_audit_empty": "Aucune action enregistree.",
+  "@landing_audit_empty": {
+    "description": "Message affiché quand il n'y a pas d'événements d'audit"
+  },
+  "landing_audit_actor_system": "SYSTEM",
+  "@landing_audit_actor_system": {
+    "description": "Libellé de l'acteur système dans l'audit"
+  },
+  "landing_audit_actor_user": "USER",
+  "@landing_audit_actor_user": {
+    "description": "Libellé de l'acteur utilisateur dans l'audit"
+  },
+  "landing_audit_action_removed": "a retire",
+  "@landing_audit_action_removed": {
+    "description": "Libellé d'action pour un module retiré dans l'audit"
+  },
+  "landing_audit_action_added": "a ajoute",
+  "@landing_audit_action_added": {
+    "description": "Libellé d'action pour un module ajouté dans l'audit"
+  },
+  "landing_interactions_title": "Interactions",
+  "@landing_interactions_title": {
+    "description": "Titre de la section interactions de la landing"
+  },
+  "action_add": "Ajouter",
+  "@action_add": {
+    "description": "Libellé générique pour l'action d'ajout"
+  },
   "footer_language_english": "🇬🇧 English",
   "@footer_language_english": {
     "description": "Libellé du changement de langue vers l'anglais"

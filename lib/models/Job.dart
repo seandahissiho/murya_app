@@ -32,6 +32,10 @@ sealed class AppJob {
   kiviatValues(JobProgressionLevel level) {}
 
   competenciesPerFamily(CompetencyFamily family) {}
+
+  static AppJob empty() {
+    return Job.empty();
+  }
 }
 
 class Job extends AppJob {
@@ -122,8 +126,10 @@ class Job extends AppJob {
       id: '',
       title: FAKER.lorem.word(),
       slug: '',
-      description: '',
+      description: FAKER.lorem.sentence() * 5,
       competencies: List.generate(20, (_) => Competency.empty()),
+      competenciesFamilies: List.generate(5, (_) => CompetencyFamily.empty()),
+      competenciesSubFamilies: List.generate(5, (_) => CompetencyFamily.empty()),
     );
   }
 
@@ -542,11 +548,16 @@ class CompetencyFamily {
 
   // tous les scores doivent etre converti sur une echelle de 5
 
-  static CompetencyFamily empty() {
+  static CompetencyFamily empty({int depth = 0, int maxDepth = 1}) {
+    final canNest = depth < maxDepth;
     return CompetencyFamily(
       id: '',
-      name: FAKER.lorem.words(1).join(' '),
-      description: '',
+      name: FAKER.lorem.word(),
+      description: FAKER.lorem.sentence() * 5,
+      competencies: List.generate(20, (_) => Competency.empty()),
+      parent: null,
+      children:
+          canNest ? List.generate(3, (_) => CompetencyFamily.empty(depth: depth + 1, maxDepth: maxDepth)) : const [],
     );
   }
 }

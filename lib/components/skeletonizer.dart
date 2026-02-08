@@ -5,8 +5,14 @@ import 'package:skeletonizer/skeletonizer.dart';
 class AppSkeletonizer extends StatefulWidget {
   final bool enabled;
   final Widget child;
+  final bool enableSwitchAnimation;
 
-  const AppSkeletonizer({super.key, required this.enabled, required this.child});
+  const AppSkeletonizer({
+    super.key,
+    required this.enabled,
+    required this.child,
+    this.enableSwitchAnimation = true,
+  });
 
   @override
   State<AppSkeletonizer> createState() => _AppSkeletonizerState();
@@ -16,7 +22,7 @@ class _AppSkeletonizerState extends State<AppSkeletonizer> {
   @override
   Widget build(BuildContext context) {
     return Skeletonizer(
-      enableSwitchAnimation: true,
+      enableSwitchAnimation: widget.enableSwitchAnimation,
       enabled: widget.enabled,
       ignorePointers: false,
       ignoreContainers: false,

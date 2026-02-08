@@ -334,8 +334,7 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
 
   _getTileForModule(Module module, {Widget? dragHandle, GlobalKey? tileKey}) {
     const cardMargin = EdgeInsets.zero;
-    final languageCode = context.read<AppBloc>().appLanguage.code;
-    log('Building module ${module.slug} with key module-${module.id}-$languageCode');
+    // final languageCode = context.read<AppBloc>().appLanguage.code;
     switch (module.slug) {
       case 'leaderboard':
         return AccountModuleWidget(

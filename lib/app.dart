@@ -39,8 +39,7 @@ import 'config/DS.dart';
 import 'l10n/l10n.dart';
 
 List<BlocProvider> getBlocProviders(BuildContext context) {
-  final List<BlocProvider<StateStreamableSource<Object?>>> sharedBlocProviders =
-      [
+  final List<BlocProvider<StateStreamableSource<Object?>>> sharedBlocProviders = [
     BlocProvider<NotificationBloc>(
       lazy: false,
       create: (BuildContext context) => NotificationBloc(context: context),
@@ -75,8 +74,7 @@ List<BlocProvider> getBlocProviders(BuildContext context) {
     // ModulesBloc
     BlocProvider<ModulesBloc>(
       lazy: false,
-      create: (BuildContext context) => ModulesBloc(context: context)
-        ..add(InitializeModules(context: context)),
+      create: (BuildContext context) => ModulesBloc(context: context)..add(InitializeModules(context: context)),
     ),
     // ResourcesBloc
     BlocProvider<ResourcesBloc>(
@@ -111,8 +109,7 @@ List<RepositoryProvider> getRepositoryProviders(BuildContext context) {
     ),
     RepositoryProvider<SseService>(
       create: (BuildContext context) {
-        final authRepository =
-            RepositoryProvider.of<AuthenticationRepository>(context);
+        final authRepository = RepositoryProvider.of<AuthenticationRepository>(context);
         return SseService(
           tokenProvider: () async {
             final cached = await authRepository.getCachedAccessToken();
@@ -203,8 +200,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final provider = Provider.of<LocaleProvider>(context);
     beamerDelegate.addListener(() {
-      debugPrint(
-          '📍 Current route: ${beamerDelegate.currentBeamLocation.state.routeInformation.uri}');
+      // debugPrint(
+      //     '📍 Current route: ${beamerDelegate.currentBeamLocation.state.routeInformation.uri}');
     });
     return ResponsiveSizer(
       builder: (context, orientation, deviceType) {
@@ -303,8 +300,7 @@ ThemeData buildLightTheme(BuildContext context, {double fontSizeIndex = 0}) {
     textButtonTheme: AppTextButtonStyle.buildTheme(lightTheme, context),
     popupMenuTheme: AppPopupMenuThemeData.buildTheme(lightTheme, context),
     dropdownMenuTheme: AppDropdownMenuThemeData.buildTheme(lightTheme, context),
-    inputDecorationTheme:
-        AppInputDecorationTheme.buildTheme(lightTheme, context),
+    inputDecorationTheme: AppInputDecorationTheme.buildTheme(lightTheme, context),
     tabBarTheme: AppTabBarTheme.buildTheme(lightTheme, context),
   );
   return lightTheme;
@@ -320,8 +316,7 @@ ThemeData buildDarkTheme(BuildContext context, {double fontSizeIndex = 0}) {
     textButtonTheme: AppTextButtonStyle.buildTheme(darkTheme, context),
     popupMenuTheme: AppPopupMenuThemeData.buildTheme(darkTheme, context),
     dropdownMenuTheme: AppDropdownMenuThemeData.buildTheme(darkTheme, context),
-    inputDecorationTheme:
-        AppInputDecorationTheme.buildTheme(darkTheme, context),
+    inputDecorationTheme: AppInputDecorationTheme.buildTheme(darkTheme, context),
     tabBarTheme: AppTabBarTheme.buildTheme(darkTheme, context),
   );
   return darkTheme;
