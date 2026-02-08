@@ -26,7 +26,8 @@ class VideoViewerScreen extends StatefulWidget {
 
 class _VideoViewerScreenState extends State<VideoViewerScreen> {
   VideoPlayerController? _controller;
-  YoutubePlayerController? _youtubeController;
+  yt_flutter.YoutubePlayerController? _youtubeController;
+  yt_iframe.YoutubePlayerController? _youtubeWebController;
   _VideoViewerError? _error;
   bool _isYoutube = false;
   double _lastProgress = 0.0;
@@ -34,6 +35,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
   bool fromSearch = false;
   Resource resource = Resource();
   ResourcesBloc? _resourcesBloc;
+  bool _videoIsPlaying = false;
 
   @override
   void initState() {
@@ -69,6 +71,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
     _sendReadIfNeeded();
     _controller?.dispose();
     _youtubeController?.dispose();
+    _youtubeWebController?.close();
     super.dispose();
   }
 
@@ -76,6 +79,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
     _error = null;
     _isYoutube = false;
     _youtubeController = null;
+    _youtubeWebController = null;
     _controller = null;
     final url = resource.url;
     if (url == null || url.isEmpty) {
@@ -94,21 +98,37 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
       return;
     }
 
-    final youtubeId = YoutubePlayer.convertUrlToId(url);
+    final youtubeId = yt_iframe.YoutubePlayerController.convertUrlToId(url);
     if (youtubeId != null && youtubeId.isNotEmpty) {
       setState(() {
         _isYoutube = true;
-        _youtubeController = YoutubePlayerController(
-          initialVideoId: youtubeId,
-          flags: const YoutubePlayerFlags(
+        if (kIsWeb) {
+          _youtubeWebController = yt_iframe.YoutubePlayerController.fromVideoId(
+            videoId: youtubeId,
             autoPlay: false,
-            mute: false,
-            hideControls: true,
-            controlsVisibleAtStart: false,
-            showLiveFullscreenButton: false,
-            enableCaption: false,
-          ),
-        );
+            params: const yt_iframe.YoutubePlayerParams(
+              mute: false,
+              showControls: false,
+              showFullscreenButton: false,
+              enableCaption: false,
+              enableKeyboard: true,
+              showVideoAnnotations: false,
+              enableJavaScript: false,
+            ),
+          );
+        } else {
+          _youtubeController = yt_flutter.YoutubePlayerController(
+            initialVideoId: youtubeId,
+            flags: const yt_flutter.YoutubePlayerFlags(
+              autoPlay: false,
+              mute: false,
+              hideControls: true,
+              controlsVisibleAtStart: false,
+              showLiveFullscreenButton: false,
+              enableCaption: false,
+            ),
+          );
+        }
       });
       return;
     }
@@ -273,8 +293,10 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
                         ),
                         child: LayoutBuilder(builder: (context, constraints) {
                           final youtubeController = _youtubeController;
+                          final youtubeWebController = _youtubeWebController;
                           final controller = _controller;
-                          final bool showYoutube = _isYoutube && youtubeController != null;
+                          final bool showYoutube = _isYoutube &&
+                              ((kIsWeb && youtubeWebController != null) || (!kIsWeb && youtubeController != null));
                           final bool showVideo = !_isYoutube && controller != null && controller.value.isInitialized;
                           return Stack(
                             children: [
@@ -324,23 +346,51 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
                                         topLeft: Radius.circular(AppRadius.smallRadius),
                                         topRight: Radius.circular(AppRadius.smallRadius),
                                       ),
-                                      child: YoutubePlayer(
-                                        controller: youtubeController,
-                                        showVideoProgressIndicator: false,
-                                        thumbnail: SizedBox(
-                                          height: constraints.maxHeight - 80, // leave space for controls
-                                          child: ClipRRect(
-                                            borderRadius: const BorderRadius.only(
-                                              topLeft: Radius.circular(AppRadius.smallRadius),
-                                              topRight: Radius.circular(AppRadius.smallRadius),
+                                      child: kIsWeb
+                                          ? Stack(
+                                              children: [
+                                                Positioned.fill(
+                                                  child: yt_iframe.YoutubePlayer(
+                                                    controller: youtubeWebController!,
+                                                    keepAlive: true,
+                                                  ),
+                                                ),
+                                                // Thumbnail fallback while loading or video not playing
+                                                if (_videoIsPlaying != true)
+                                                  Positioned.fill(
+                                                    child: SizedBox(
+                                                      height: constraints.maxHeight - 80, // leave space for controls
+                                                      child: ClipRRect(
+                                                        borderRadius: const BorderRadius.only(
+                                                          topLeft: Radius.circular(AppRadius.smallRadius),
+                                                          topRight: Radius.circular(AppRadius.smallRadius),
+                                                        ),
+                                                        child: Image.asset(
+                                                          AppImages.articleHeaderPath,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
+                                            )
+                                          : yt_flutter.YoutubePlayer(
+                                              controller: youtubeController!,
+                                              showVideoProgressIndicator: false,
+                                              thumbnail: SizedBox(
+                                                height: constraints.maxHeight - 80, // leave space for controls
+                                                child: ClipRRect(
+                                                  borderRadius: const BorderRadius.only(
+                                                    topLeft: Radius.circular(AppRadius.smallRadius),
+                                                    topRight: Radius.circular(AppRadius.smallRadius),
+                                                  ),
+                                                  child: Image.asset(
+                                                    AppImages.articleHeaderPath,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                            child: Image.asset(
-                                              AppImages.articleHeaderPath,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
                                     ),
                                   ),
                                 ),
@@ -406,7 +456,7 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
     _lastProgress = progress.clamp(0.0, 1.0);
   }
 
-  void _updateYoutubeProgress(YoutubePlayerController controller) {
+  void _updateYoutubeProgress(yt_flutter.YoutubePlayerController controller) {
     final duration = controller.metadata.duration;
     if (duration.inMilliseconds <= 0) return;
     final position = controller.value.position;
@@ -459,17 +509,36 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
   }
 
   Widget _buildPlayButton() {
-    final youtubeController = _youtubeController;
-    if (_isYoutube && youtubeController != null) {
-      return ValueListenableBuilder<YoutubePlayerValue>(
-        valueListenable: youtubeController,
-        builder: (context, value, child) {
-          return AppXPlayButton(
-            isPlaying: value.isPlaying,
-            onPressed: value.isReady ? _togglePlay : null,
+    if (_isYoutube) {
+      if (kIsWeb) {
+        final youtubeWebController = _youtubeWebController;
+        if (youtubeWebController != null) {
+          return yt_iframe.YoutubeValueBuilder(
+            controller: youtubeWebController,
+            builder: (context, value) {
+              final isPlaying = value.playerState == yt_iframe.PlayerState.playing;
+              final isReady = value.playerState != yt_iframe.PlayerState.unknown;
+              return AppXPlayButton(
+                isPlaying: isPlaying,
+                onPressed: isReady ? _togglePlay : null,
+              );
+            },
           );
-        },
-      );
+        }
+      } else {
+        final youtubeController = _youtubeController;
+        if (youtubeController != null) {
+          return ValueListenableBuilder<yt_flutter.YoutubePlayerValue>(
+            valueListenable: youtubeController,
+            builder: (context, value, child) {
+              return AppXPlayButton(
+                isPlaying: value.isPlaying,
+                onPressed: value.isReady ? _togglePlay : null,
+              );
+            },
+          );
+        }
+      }
     }
 
     final controller = _controller;
@@ -491,40 +560,84 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
   void _togglePlay() {
     if (_error != null) return;
     if (_isYoutube) {
-      final youtubeController = _youtubeController;
-      if (youtubeController == null || !youtubeController.value.isReady) return;
-      if (youtubeController.value.isPlaying) {
-        youtubeController.pause();
+      if (kIsWeb) {
+        final youtubeWebController = _youtubeWebController;
+        if (youtubeWebController == null) return;
+        final isPlaying = youtubeWebController.value.playerState == yt_iframe.PlayerState.playing;
+        if (isPlaying) {
+          _videoIsPlaying = false;
+          youtubeWebController.pauseVideo();
+        } else {
+          _videoIsPlaying = true;
+          youtubeWebController.playVideo();
+        }
+        setState(() {});
+        return;
       } else {
-        youtubeController.play();
+        final youtubeController = _youtubeController;
+        if (youtubeController == null || !youtubeController.value.isReady) return;
+        if (youtubeController.value.isPlaying) {
+          _videoIsPlaying = false;
+          youtubeController.pause();
+        } else {
+          _videoIsPlaying = true;
+          youtubeController.play();
+        }
+        setState(() {});
+        return;
       }
-      return;
     }
 
     final controller = _controller;
     if (controller == null || !controller.value.isInitialized) return;
     if (controller.value.isPlaying) {
+      _videoIsPlaying = false;
       controller.pause();
     } else {
+      _videoIsPlaying = true;
       controller.play();
     }
+    setState(() {});
   }
 
   Widget _timeline() {
-    final youtubeController = _youtubeController;
-    if (_isYoutube && youtubeController != null) {
-      return ValueListenableBuilder<YoutubePlayerValue>(
-        valueListenable: youtubeController,
-        builder: (context, value, child) {
-          final position = value.position;
-          final duration = youtubeController.metadata.duration;
-          return _buildTimelineUi(
-            position,
-            duration,
-            onSeek: (newValue) => youtubeController.seekTo(Duration(milliseconds: newValue.round())),
+    if (_isYoutube) {
+      if (kIsWeb) {
+        final youtubeWebController = _youtubeWebController;
+        if (youtubeWebController != null) {
+          return StreamBuilder<yt_iframe.YoutubeVideoState>(
+            stream: youtubeWebController.videoStateStream,
+            builder: (context, snapshot) {
+              final position = snapshot.data?.position ?? Duration.zero;
+              final duration = youtubeWebController.metadata.duration;
+              return _buildTimelineUi(
+                position,
+                duration,
+                onSeek: (newValue) => youtubeWebController.seekTo(
+                  seconds: newValue / 1000.0,
+                  allowSeekAhead: true,
+                ),
+              );
+            },
           );
-        },
-      );
+        }
+      } else {
+        final youtubeController = _youtubeController;
+        if (youtubeController != null) {
+          return ValueListenableBuilder<yt_flutter.YoutubePlayerValue>(
+            valueListenable: youtubeController,
+            builder: (context, value, child) {
+              final position = value.position;
+              final duration = youtubeController.metadata.duration;
+              return _buildTimelineUi(
+                position,
+                duration,
+                onSeek: (newValue) => youtubeController.seekTo(Duration(milliseconds: newValue.round())),
+              );
+            },
+          );
+        }
+      }
     }
 
     final controller = _controller;
