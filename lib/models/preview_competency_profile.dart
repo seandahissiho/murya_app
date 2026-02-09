@@ -41,6 +41,21 @@ class PreviewCompetencyProfile {
       ranking: PreviewRanking.empty(),
     );
   }
+
+  copyWith({
+    String? userJobId,
+    String? userId,
+    PreviewUser? user,
+  }) {
+    return PreviewCompetencyProfile(
+      userJobId: userJobId ?? this.userJobId,
+      job: job,
+      user: userId != null ? PreviewUser(id: userId, diamonds: 0) : (user ?? this.user),
+      objective: objective,
+      kiviats: kiviats,
+      ranking: ranking,
+    );
+  }
 }
 
 class PreviewJob {
@@ -101,9 +116,9 @@ class PreviewUser {
     );
   }
 
-  String get firstName => firstname ?? '';
+  String? get firstName => firstname;
 
-  String get lastName => lastname ?? '';
+  String? get lastName => lastname;
 }
 
 class PreviewObjective {

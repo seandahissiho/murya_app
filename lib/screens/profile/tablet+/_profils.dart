@@ -10,19 +10,22 @@ class TabletJourneyInfoTab extends StatefulWidget {
 class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
   PreviewCompetencyProfile? _previewProfile;
   bool _previewRequested = false;
+  String? jobId;
 
   @override
   void initState() {
     super.initState();
-    final state = context.read<ProfileBloc>().state;
-    _previewProfile = state.previewCompetencyProfile;
-    _previewRequested = state.previewCompetencyRequested;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      jobId = context.read<JobBloc>().state.userCurrentJob?.jobId;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<ProfileBloc, ProfileState>(
       listenWhen: (previous, current) {
+        final isPreviewState = current is ProfilePreviewLoading || current is ProfilePreviewLoaded;
+        if (!isPreviewState) return false;
         return previous.previewCompetencyRequested != current.previewCompetencyRequested ||
             previous.previewCompetencyProfile != current.previewCompetencyProfile;
       },
@@ -68,23 +71,26 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
                     QuestInfoBox(
                       objective: _previewProfile?.objective,
                     ),
-                    if (_previewProfile != null && _previewRequested != true) ...[
+                    if (_previewProfile == null) ...[
                       AppSpacing.spacing16_Box,
                       const PossibleRewardsBox(),
                       AppSpacing.spacing16_Box,
                       const RecentActivitiesBox(),
-                      if (_previewRequested && _previewProfile == null) const SizedBox.shrink(),
                     ] else ...[
                       AppSpacing.spacing16_Box,
                       UserKiviatsBox(
                         kiviats: _previewProfile?.kiviats,
                         isLoading: _previewRequested && _previewProfile == null,
                       ),
-                      AppSpacing.spacing16_Box,
-                      UserRankingBox(
-                        ranking: _previewProfile?.ranking,
-                        isLoading: _previewRequested && _previewProfile == null,
-                      )
+                      if (jobId != null) ...[
+                        AppSpacing.spacing16_Box,
+                        UserRankingBox(
+                          ranking: _previewProfile?.ranking,
+                          isLoading: _previewRequested && _previewProfile == null,
+                          jobId: jobId!,
+                          userId: _previewProfile?.user.id,
+                        ),
+                      ],
                     ]
                   ],
                 ),
@@ -533,6 +539,10 @@ class UserListBox extends StatelessWidget {
     }
     context.read<ProfileBloc>().add(OpenProfilPreview(
           userId: user.id,
+          userDiamonds: user.diamonds,
+          userFirstName: user.firstName,
+          userLastName: user.lastName,
+          userAvatarUrl: user.profilePictureUrl ?? '',
           userJobId: userJobId,
         ));
   }
@@ -633,10 +643,31 @@ class UserInfoBox extends StatelessWidget {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: SvgPicture.asset(
-                  AppIcons.avatarPlaceholderPath,
-                  fit: BoxFit.cover,
-                ),
+                child: (user.profilePictureUrl as String?).isEmptyOrNull
+                    ? SvgPicture.asset(
+                        AppIcons.avatarPlaceholderPath,
+                        fit: BoxFit.cover,
+                      )
+                    : ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: user.profilePictureUrl!,
+                          fit: BoxFit.cover,
+                          width: 56,
+                          height: 56,
+                          placeholder: (context, url) {
+                            return SvgPicture.asset(
+                              AppIcons.avatarPlaceholderPath,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                          errorWidget: (context, url, error) {
+                            return SvgPicture.asset(
+                              AppIcons.avatarPlaceholderPath,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
+                      ),
               ),
               AppSpacing.spacing8_Box,
               Column(
@@ -1238,21 +1269,35 @@ class _UserKiviatsBoxState extends State<UserKiviatsBox> {
 }
 
 class UserRankingBox extends StatelessWidget {
+  final String jobId;
   final PreviewRanking? ranking;
   final bool isLoading;
+  final String? userId;
 
-  const UserRankingBox({super.key, this.ranking, this.isLoading = false});
+  const UserRankingBox({super.key, this.ranking, this.isLoading = false, required this.jobId, this.userId});
 
   @override
   Widget build(BuildContext context) {
-    return Container();
-    return Container(
-      constraints: const BoxConstraints(minHeight: 100, maxHeight: 500),
-      decoration: BoxDecoration(
-        color: AppColors.primaryDefault,
-        borderRadius: AppRadius.small,
-        border: Border.all(color: AppColors.borderLight, width: 2),
-      ),
-    );
+    final ThemeData theme = Theme.of(context);
+    final locale = AppLocalizations.of(context);
+    return LayoutBuilder(builder: (context, constraints) {
+      return Card(
+        elevation: 0,
+        color: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: AppRadius.large,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: constraints.maxWidth,
+              height: constraints.maxWidth / (1.618 * 1.5),
+              child: RankingChart(jobId: jobId, userId: userId),
+            )
+          ],
+        ),
+      );
+    });
   }
 }

@@ -22,8 +22,7 @@ class User {
   final int diamonds;
   final int streakDays;
 
-  static const User zero =
-      User(id: '', email: '', phone: '', deviceId: '', firstName: '', lastName: '');
+  static const User zero = User(id: '', email: '', phone: '', deviceId: '', firstName: '', lastName: '');
 
   const User({
     this.id,
@@ -42,6 +41,10 @@ class User {
     this.diamonds = 0,
     this.streakDays = 0,
   });
+
+  String get profilePictureUrl {
+    return avatarUrl ?? '';
+  }
 
   String get fullName {
     return '$firstName $lastName';
@@ -195,8 +198,7 @@ class User {
     }
 
     final String? birthDateValue = birthDate != null ? _formatDate(birthDate!) : null;
-    final String? birthDateBaseline =
-        baseline?.birthDate != null ? _formatDate(baseline!.birthDate!) : null;
+    final String? birthDateBaseline = baseline?.birthDate != null ? _formatDate(baseline!.birthDate!) : null;
 
     setField('firstname', firstName, baseline?.firstName);
     setField('lastname', lastName, baseline?.lastName);

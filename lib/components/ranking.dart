@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,8 +16,9 @@ import 'package:murya/models/job_ranking.dart';
 
 class RankingChart extends StatefulWidget {
   final String jobId;
+  final String? userId;
 
-  const RankingChart({super.key, required this.jobId});
+  const RankingChart({super.key, required this.jobId, this.userId});
 
   @override
   State<RankingChart> createState() => _RankingChartState();
@@ -56,7 +58,12 @@ class _RankingChartState extends State<RankingChart> {
 
   @override
   void initState() {
-    context.read<JobBloc>().add(LoadRankingForJob(context: context, jobId: widget.jobId, from: from, to: to));
+    context.read<JobBloc>().add(LoadRankingForJob(
+          context: context,
+          jobId: widget.jobId,
+          from: from,
+          to: to,
+        ));
     super.initState();
   }
 
@@ -92,7 +99,8 @@ class _RankingChartState extends State<RankingChart> {
               LayoutBuilder(
                 builder: (context, constraints) {
                   final isMobile = DeviceHelper.isMobile(context);
-                  final currentUserId = context.read<ProfileBloc>().state.user.id;
+                  final currentUserId = widget.userId ?? context.read<ProfileBloc>().state.user.id;
+                  log("Current user ID: $currentUserId");
                   JobRanking? firstRanking = _ranking.rankings.firstWhereOrNull((r) => r.rank == 1);
                   // first quartile
                   JobRanking? firstQuartileRanking =
