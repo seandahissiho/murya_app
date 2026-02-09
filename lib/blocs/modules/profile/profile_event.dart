@@ -77,3 +77,21 @@ final class ProfileLoadLeaderboardEvent extends ProfileEvent {
     this.notifyOnError = true,
   });
 }
+
+final class OpenProfilPreview extends ProfileEvent {
+  final String userId;
+  final String userJobId;
+  final DateTime? from;
+  final DateTime? to;
+  final String? timezone;
+  final bool notifyOnError;
+
+  OpenProfilPreview({
+    required this.userId,
+    required this.userJobId,
+    this.from,
+    this.to,
+    this.timezone,
+    this.notifyOnError = true,
+  });
+}

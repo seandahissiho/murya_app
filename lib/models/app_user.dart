@@ -284,6 +284,7 @@ class User {
 //         sinceDate: DateTime(2025, 12, 3),
 class LeaderBoardUser {
   final String id;
+  final String? userJobId;
   final String firstName;
   final String lastName;
   final String? profilePictureUrl;
@@ -298,6 +299,7 @@ class LeaderBoardUser {
 
   LeaderBoardUser({
     required this.id,
+    this.userJobId,
     required this.firstName,
     required this.lastName,
     this.profilePictureUrl,
@@ -333,6 +335,7 @@ class LeaderBoardUser {
     final double percentage = json['percentage'] != null ? _toDouble(json['percentage']) : performance * 100;
     return LeaderBoardUser(
       id: (json['id'] ?? json['userId'] ?? '').toString(),
+      userJobId: json['userJobId']?.toString(),
       firstName: firstName,
       lastName: lastName,
       profilePictureUrl: json['profilePictureUrl']?.toString() ?? json['avatarURL']?.toString(),

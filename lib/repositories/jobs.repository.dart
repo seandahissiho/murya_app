@@ -1,6 +1,7 @@
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/job_ranking.dart';
+import 'package:murya/models/preview_competency_profile.dart';
 import 'package:murya/models/user_job_competency_profile.dart';
 import 'package:murya/repositories/base.repository.dart';
 import 'package:murya/services/cache.service.dart';
@@ -364,6 +365,65 @@ class JobRepository extends BaseRepository {
       // ignore cache errors
     }
     return Result.success(UserJobCompetencyProfile.empty(), null);
+  }
+
+  Future<Result<PreviewCompetencyProfile>> fetchPreviewCompetencyProfile(
+      String userJobId,
+      {DateTime? from,
+      DateTime? to,
+      String? timezone}) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+    return AppResponse.execute(
+      action: () async {
+        final queryParameters = <String, dynamic>{};
+        if (from != null) queryParameters['from'] = from.toDbString();
+        if (to != null) queryParameters['to'] = to.toDbString();
+        if (timezone != null && timezone.isNotEmpty) {
+          queryParameters['timezone'] = timezone;
+        }
+
+        final response = await api.dio.get(
+          '/userJobs/$userJobId/previewCompetencyProfile',
+          queryParameters: queryParameters.isEmpty ? null : queryParameters,
+        );
+
+        if (response.data["data"] != null) {
+          final tzKey =
+              (timezone != null && timezone.isNotEmpty) ? timezone : 'null';
+          await cacheService.save(
+              'user_job_preview_competency_profile_${userJobId}_${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}_${tzKey}_$languageCode',
+              response.data["data"]);
+        }
+
+        final PreviewCompetencyProfile profile =
+            PreviewCompetencyProfile.fromJson(response.data["data"]);
+        return profile;
+      },
+      parentFunctionName: 'JobRepository -> fetchPreviewCompetencyProfile',
+      errorResult: PreviewCompetencyProfile.empty(),
+    );
+  }
+
+  Future<Result<PreviewCompetencyProfile>>
+      fetchPreviewCompetencyProfileCached(String userJobId,
+          {DateTime? from, DateTime? to, String? timezone}) async {
+    final languageCode =
+        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+    try {
+      final tzKey =
+          (timezone != null && timezone.isNotEmpty) ? timezone : 'null';
+      final cachedData = await cacheService.get(
+          'user_job_preview_competency_profile_${userJobId}_${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}_${tzKey}_$languageCode');
+      if (cachedData != null) {
+        final PreviewCompetencyProfile profile =
+            PreviewCompetencyProfile.fromJson(cachedData);
+        return Result.success(profile, null);
+      }
+    } catch (e) {
+      // ignore cache errors
+    }
+    return Result.success(PreviewCompetencyProfile.empty(), null);
   }
 
   (CompetencyFamily, AppJob) _parseCFDetailsData(Map<String, dynamic> data) {

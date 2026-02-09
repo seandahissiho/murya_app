@@ -25,10 +25,13 @@ import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/diploma.dart';
+import 'package:murya/models/job_kiviat.dart';
 import 'package:murya/models/module.dart';
+import 'package:murya/models/preview_competency_profile.dart';
 import 'package:murya/models/quest.dart';
 import 'package:murya/models/reward.dart';
 import 'package:murya/screens/base.dart';
+import 'package:murya/screens/job_details/job_details.dart';
 import 'package:murya/screens/profile/tablet+/quest_map.dart';
 
 part '_profile_mobile.dart';
