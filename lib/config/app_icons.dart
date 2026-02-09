@@ -149,6 +149,9 @@ class AppIcons {
 
   // assets/icons/modules/tools_catalog.svg
   static const String toolsCatalogIconPath = '$basePath/modules/tools_catalog.svg';
+
+  // business_chart.svg
+  static const String businessChartIconPath = '$basePath/business_chart.svg';
 }
 
 class AppImages {

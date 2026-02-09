@@ -6,6 +6,7 @@ import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/job_ranking.dart';
+import 'package:murya/models/preview_competency_profile.dart';
 import 'package:murya/models/quest.dart';
 import 'package:murya/models/reward.dart';
 import 'package:murya/repositories/jobs.repository.dart';
@@ -31,25 +32,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   ProfileBloc({required this.context}) : super(ProfileInitial()) {
     on<ProfileEvent>((event, emit) {
-      emit(ProfileLoading(
-        user: state.user,
-        quests: state.quests,
-        questGroups: state.questGroups,
-        questsLoading: state.questsLoading,
-        questGroupsLoading: state.questGroupsLoading,
-        questsError: state.questsError,
-        questGroupsError: state.questGroupsError,
-        questUserJobId: state.questUserJobId,
-        questTimezone: state.questTimezone,
-        questScope: state.questScope,
-        claimingQuestId: state.claimingQuestId,
-        leaderboardUsers: state.leaderboardUsers,
-        leaderboardLoading: state.leaderboardLoading,
-        leaderboardError: state.leaderboardError,
-        leaderboardJobId: state.leaderboardJobId,
-        leaderboardFrom: state.leaderboardFrom,
-        leaderboardTo: state.leaderboardTo,
-      ));
+      emit(state.copyWith(kind: ProfileStateKind.loading));
     });
     on<ProfileLoadEvent>(_onProfileLoadEvent);
     on<ProfileUpdateEvent>(_onProfileUpdateEvent);
@@ -57,6 +40,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileLoadQuestGroupsEvent>(_onProfileLoadQuestGroupsEvent);
     on<ProfileClaimQuestEvent>(_onProfileClaimQuestEvent);
     on<ProfileLoadLeaderboardEvent>(_onProfileLoadLeaderboardEvent);
+    on<OpenProfilPreview>(_onOpenProfilePreview);
 
     profileRepository = RepositoryProvider.of<ProfileRepository>(context);
     jobRepository = RepositoryProvider.of<JobRepository>(context);
@@ -77,25 +61,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     final cachedResult = await profileRepository.getMeCached();
     if (cachedResult.data != null && (cachedResult.data!.id?.isNotEmpty ?? false)) {
       _userProfile = cachedResult.data!;
-      emit(ProfileLoaded(
-        user: _userProfile,
-        quests: state.quests,
-        questGroups: state.questGroups,
-        questsLoading: state.questsLoading,
-        questGroupsLoading: state.questGroupsLoading,
-        questsError: state.questsError,
-        questGroupsError: state.questGroupsError,
-        questUserJobId: state.questUserJobId,
-        questTimezone: state.questTimezone,
-        questScope: state.questScope,
-        claimingQuestId: state.claimingQuestId,
-        leaderboardUsers: state.leaderboardUsers,
-        leaderboardLoading: state.leaderboardLoading,
-        leaderboardError: state.leaderboardError,
-        leaderboardJobId: state.leaderboardJobId,
-        leaderboardFrom: state.leaderboardFrom,
-        leaderboardTo: state.leaderboardTo,
-      ));
+      emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
     }
 
     if (!context.mounted) return;
@@ -109,25 +75,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
     _userProfile = result.data!;
-    emit(ProfileLoaded(
-      user: _userProfile,
-      quests: state.quests,
-      questGroups: state.questGroups,
-      questsLoading: state.questsLoading,
-      questGroupsLoading: state.questGroupsLoading,
-      questsError: state.questsError,
-      questGroupsError: state.questGroupsError,
-      questUserJobId: state.questUserJobId,
-      questTimezone: state.questTimezone,
-      questScope: state.questScope,
-      claimingQuestId: state.claimingQuestId,
-      leaderboardUsers: state.leaderboardUsers,
-      leaderboardLoading: state.leaderboardLoading,
-      leaderboardError: state.leaderboardError,
-      leaderboardJobId: state.leaderboardJobId,
-      leaderboardFrom: state.leaderboardFrom,
-      leaderboardTo: state.leaderboardTo,
-    ));
+    emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
     add(ProfileLoadQuestGroupsEvent(scope: QuestScope.all));
   }
 
@@ -135,24 +83,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
-    emit(ProfileLoading(
-      user: state.user,
-      quests: state.quests,
-      questGroups: state.questGroups,
+    emit(state.copyWith(
+      kind: ProfileStateKind.loading,
       questsLoading: true,
-      questGroupsLoading: state.questGroupsLoading,
       questsError: null,
-      questGroupsError: state.questGroupsError,
       questUserJobId: event.userJobId,
       questTimezone: event.timezone,
       questScope: event.scope,
-      claimingQuestId: state.claimingQuestId,
-      leaderboardUsers: state.leaderboardUsers,
-      leaderboardLoading: state.leaderboardLoading,
-      leaderboardError: state.leaderboardError,
-      leaderboardJobId: state.leaderboardJobId,
-      leaderboardFrom: state.leaderboardFrom,
-      leaderboardTo: state.leaderboardTo,
     ));
 
     final cachedResult = await profileRepository.getQuestsCached(
@@ -167,24 +104,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             cachedQuests.others.isNotEmpty ||
             cachedQuests.groups.isNotEmpty);
     if (hasCachedQuests) {
-      emit(ProfileLoaded(
-        user: state.user,
+      emit(state.copyWith(
+        kind: ProfileStateKind.loaded,
         quests: cachedQuests,
-        questGroups: state.questGroups,
         questsLoading: false,
-        questGroupsLoading: state.questGroupsLoading,
         questsError: null,
-        questGroupsError: state.questGroupsError,
         questUserJobId: event.userJobId,
         questTimezone: event.timezone,
         questScope: event.scope,
-        claimingQuestId: state.claimingQuestId,
-        leaderboardUsers: state.leaderboardUsers,
-        leaderboardLoading: state.leaderboardLoading,
-        leaderboardError: state.leaderboardError,
-        leaderboardJobId: state.leaderboardJobId,
-        leaderboardFrom: state.leaderboardFrom,
-        leaderboardTo: state.leaderboardTo,
       ));
     }
 
@@ -198,46 +125,25 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (event.notifyOnError) {
         notificationBloc.add(ErrorNotificationEvent(message: result.error));
       }
-      emit(ProfileLoaded(
-        user: state.user,
-        quests: state.quests,
-        questGroups: state.questGroups,
+      emit(state.copyWith(
+        kind: ProfileStateKind.loaded,
         questsLoading: false,
-        questGroupsLoading: state.questGroupsLoading,
         questsError: result.error,
-        questGroupsError: state.questGroupsError,
         questUserJobId: event.userJobId,
         questTimezone: event.timezone,
         questScope: event.scope,
-        claimingQuestId: state.claimingQuestId,
-        leaderboardUsers: state.leaderboardUsers,
-        leaderboardLoading: state.leaderboardLoading,
-        leaderboardError: state.leaderboardError,
-        leaderboardJobId: state.leaderboardJobId,
-        leaderboardFrom: state.leaderboardFrom,
-        leaderboardTo: state.leaderboardTo,
       ));
       return;
     }
 
-    emit(ProfileLoaded(
-      user: state.user,
+    emit(state.copyWith(
+      kind: ProfileStateKind.loaded,
       quests: result.data ?? const QuestList(),
-      questGroups: state.questGroups,
       questsLoading: false,
-      questGroupsLoading: state.questGroupsLoading,
       questsError: null,
-      questGroupsError: state.questGroupsError,
       questUserJobId: event.userJobId,
       questTimezone: event.timezone,
       questScope: event.scope,
-      claimingQuestId: state.claimingQuestId,
-      leaderboardUsers: state.leaderboardUsers,
-      leaderboardLoading: state.leaderboardLoading,
-      leaderboardError: state.leaderboardError,
-      leaderboardJobId: state.leaderboardJobId,
-      leaderboardFrom: state.leaderboardFrom,
-      leaderboardTo: state.leaderboardTo,
     ));
   }
 
@@ -245,24 +151,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
-    emit(ProfileLoading(
-      user: state.user,
-      quests: state.quests,
-      questGroups: state.questGroups,
-      questsLoading: state.questsLoading,
+    emit(state.copyWith(
+      kind: ProfileStateKind.loading,
       questGroupsLoading: true,
-      questsError: state.questsError,
       questGroupsError: null,
       questUserJobId: event.userJobId,
       questTimezone: event.timezone,
       questScope: event.scope,
-      claimingQuestId: state.claimingQuestId,
-      leaderboardUsers: state.leaderboardUsers,
-      leaderboardLoading: state.leaderboardLoading,
-      leaderboardError: state.leaderboardError,
-      leaderboardJobId: state.leaderboardJobId,
-      leaderboardFrom: state.leaderboardFrom,
-      leaderboardTo: state.leaderboardTo,
     ));
 
     final cachedResult = await profileRepository.getQuestGroupsCached(
@@ -273,24 +168,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     final cachedGroups = cachedResult.data;
     final hasCachedGroups = cachedGroups != null && cachedGroups.groups.isNotEmpty;
     if (hasCachedGroups) {
-      emit(ProfileLoaded(
-        user: state.user,
-        quests: state.quests,
+      emit(state.copyWith(
+        kind: ProfileStateKind.loaded,
         questGroups: cachedGroups,
-        questsLoading: state.questsLoading,
         questGroupsLoading: false,
-        questsError: state.questsError,
         questGroupsError: null,
         questUserJobId: event.userJobId,
         questTimezone: event.timezone,
         questScope: event.scope,
-        claimingQuestId: state.claimingQuestId,
-        leaderboardUsers: state.leaderboardUsers,
-        leaderboardLoading: state.leaderboardLoading,
-        leaderboardError: state.leaderboardError,
-        leaderboardJobId: state.leaderboardJobId,
-        leaderboardFrom: state.leaderboardFrom,
-        leaderboardTo: state.leaderboardTo,
       ));
     }
 
@@ -304,46 +189,25 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (event.notifyOnError) {
         notificationBloc.add(ErrorNotificationEvent(message: result.error));
       }
-      emit(ProfileLoaded(
-        user: state.user,
-        quests: state.quests,
-        questGroups: state.questGroups,
-        questsLoading: state.questsLoading,
+      emit(state.copyWith(
+        kind: ProfileStateKind.loaded,
         questGroupsLoading: false,
-        questsError: state.questsError,
         questGroupsError: result.error,
         questUserJobId: event.userJobId,
         questTimezone: event.timezone,
         questScope: event.scope,
-        claimingQuestId: state.claimingQuestId,
-        leaderboardUsers: state.leaderboardUsers,
-        leaderboardLoading: state.leaderboardLoading,
-        leaderboardError: state.leaderboardError,
-        leaderboardJobId: state.leaderboardJobId,
-        leaderboardFrom: state.leaderboardFrom,
-        leaderboardTo: state.leaderboardTo,
       ));
       return;
     }
 
-    emit(ProfileLoaded(
-      user: state.user,
-      quests: state.quests,
+    emit(state.copyWith(
+      kind: ProfileStateKind.loaded,
       questGroups: result.data ?? const QuestGroupList(),
-      questsLoading: state.questsLoading,
       questGroupsLoading: false,
-      questsError: state.questsError,
       questGroupsError: null,
       questUserJobId: event.userJobId,
       questTimezone: event.timezone,
       questScope: event.scope,
-      claimingQuestId: state.claimingQuestId,
-      leaderboardUsers: state.leaderboardUsers,
-      leaderboardLoading: state.leaderboardLoading,
-      leaderboardError: state.leaderboardError,
-      leaderboardJobId: state.leaderboardJobId,
-      leaderboardFrom: state.leaderboardFrom,
-      leaderboardTo: state.leaderboardTo,
     ));
   }
 
@@ -353,6 +217,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final String lastName = ranking.lastName ?? ranking.lastname ?? '';
       return LeaderBoardUser(
         id: ranking.userId,
+        userJobId: ranking.userJobId,
         firstName: firstName,
         lastName: lastName,
         profilePictureUrl: ranking.profilePictureUrl,
@@ -382,19 +247,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
     if (event.jobId.isEmpty) return;
 
-    emit(ProfileLoading(
-      user: state.user,
-      quests: state.quests,
-      questGroups: state.questGroups,
-      questsLoading: state.questsLoading,
-      questGroupsLoading: state.questGroupsLoading,
-      questsError: state.questsError,
-      questGroupsError: state.questGroupsError,
-      questUserJobId: state.questUserJobId,
-      questTimezone: state.questTimezone,
-      questScope: state.questScope,
-      claimingQuestId: state.claimingQuestId,
-      leaderboardUsers: state.leaderboardUsers,
+    emit(state.copyWith(
+      kind: ProfileStateKind.loading,
       leaderboardLoading: true,
       leaderboardError: null,
       leaderboardJobId: event.jobId,
@@ -404,18 +258,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     final cachedResult = await jobRepository.getRankingForJobCached(event.jobId, event.from, event.to);
     if (cachedResult.data != null) {
-      emit(ProfileLoaded(
-        user: state.user,
-        quests: state.quests,
-        questGroups: state.questGroups,
-        questsLoading: state.questsLoading,
-        questGroupsLoading: state.questGroupsLoading,
-        questsError: state.questsError,
-        questGroupsError: state.questGroupsError,
-        questUserJobId: state.questUserJobId,
-        questTimezone: state.questTimezone,
-        questScope: state.questScope,
-        claimingQuestId: state.claimingQuestId,
+      emit(state.copyWith(
+        kind: ProfileStateKind.loaded,
         leaderboardUsers: _mapLeaderboardUsers(cachedResult.data ?? JobRankings.empty()),
         leaderboardLoading: false,
         leaderboardError: null,
@@ -432,19 +276,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (event.notifyOnError) {
         notificationBloc.add(ErrorNotificationEvent(message: result.error));
       }
-      emit(ProfileLoaded(
-        user: state.user,
-        quests: state.quests,
-        questGroups: state.questGroups,
-        questsLoading: state.questsLoading,
-        questGroupsLoading: state.questGroupsLoading,
-        questsError: state.questsError,
-        questGroupsError: state.questGroupsError,
-        questUserJobId: state.questUserJobId,
-        questTimezone: state.questTimezone,
-        questScope: state.questScope,
-        claimingQuestId: state.claimingQuestId,
-        leaderboardUsers: state.leaderboardUsers,
+      emit(state.copyWith(
+        kind: ProfileStateKind.loaded,
         leaderboardLoading: false,
         leaderboardError: result.error,
         leaderboardJobId: event.jobId,
@@ -454,18 +287,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
 
-    emit(ProfileLoaded(
-      user: state.user,
-      quests: state.quests,
-      questGroups: state.questGroups,
-      questsLoading: state.questsLoading,
-      questGroupsLoading: state.questGroupsLoading,
-      questsError: state.questsError,
-      questGroupsError: state.questGroupsError,
-      questUserJobId: state.questUserJobId,
-      questTimezone: state.questTimezone,
-      questScope: state.questScope,
-      claimingQuestId: state.claimingQuestId,
+    emit(state.copyWith(
+      kind: ProfileStateKind.loaded,
       leaderboardUsers: _mapLeaderboardUsers(result.data ?? JobRankings.empty()),
       leaderboardLoading: false,
       leaderboardError: null,
@@ -480,24 +303,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
 
-    emit(ProfileLoading(
-      user: state.user,
-      quests: state.quests,
-      questGroups: state.questGroups,
-      questsLoading: state.questsLoading,
-      questGroupsLoading: state.questGroupsLoading,
-      questsError: state.questsError,
-      questGroupsError: state.questGroupsError,
-      questUserJobId: state.questUserJobId,
-      questTimezone: state.questTimezone,
-      questScope: state.questScope,
+    emit(state.copyWith(
+      kind: ProfileStateKind.loading,
       claimingQuestId: event.questId,
-      leaderboardUsers: state.leaderboardUsers,
-      leaderboardLoading: state.leaderboardLoading,
-      leaderboardError: state.leaderboardError,
-      leaderboardJobId: state.leaderboardJobId,
-      leaderboardFrom: state.leaderboardFrom,
-      leaderboardTo: state.leaderboardTo,
     ));
 
     final result = event.claimType == QuestClaimType.userJob
@@ -508,24 +316,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (event.notifyOnError) {
         notificationBloc.add(ErrorNotificationEvent(message: result.error));
       }
-      emit(ProfileLoaded(
-        user: state.user,
-        quests: state.quests,
-        questGroups: state.questGroups,
-        questsLoading: state.questsLoading,
-        questGroupsLoading: state.questGroupsLoading,
-        questsError: state.questsError,
-        questGroupsError: state.questGroupsError,
-        questUserJobId: state.questUserJobId,
-        questTimezone: state.questTimezone,
-        questScope: state.questScope,
+      emit(state.copyWith(
+        kind: ProfileStateKind.loaded,
         claimingQuestId: null,
-        leaderboardUsers: state.leaderboardUsers,
-        leaderboardLoading: state.leaderboardLoading,
-        leaderboardError: state.leaderboardError,
-        leaderboardJobId: state.leaderboardJobId,
-        leaderboardFrom: state.leaderboardFrom,
-        leaderboardTo: state.leaderboardTo,
       ));
       return;
     }
@@ -534,49 +327,18 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     final QuestList? updatedQuests = state.quests?.updateInstance(updated);
     final QuestGroupList? updatedGroups = state.questGroups?.updateInstance(updated);
 
-    emit(ProfileLoaded(
-      user: state.user,
+    emit(state.copyWith(
+      kind: ProfileStateKind.loaded,
       quests: updatedQuests ?? state.quests,
       questGroups: updatedGroups ?? state.questGroups,
-      questsLoading: state.questsLoading,
-      questGroupsLoading: state.questGroupsLoading,
-      questsError: state.questsError,
-      questGroupsError: state.questGroupsError,
-      questUserJobId: state.questUserJobId,
-      questTimezone: state.questTimezone,
-      questScope: state.questScope,
       claimingQuestId: null,
-      leaderboardUsers: state.leaderboardUsers,
-      leaderboardLoading: state.leaderboardLoading,
-      leaderboardError: state.leaderboardError,
-      leaderboardJobId: state.leaderboardJobId,
-      leaderboardFrom: state.leaderboardFrom,
-      leaderboardTo: state.leaderboardTo,
     ));
   }
 
   FutureOr<void> _onProfileUpdateEvent(ProfileUpdateEvent event, Emitter<ProfileState> emit) async {
     final User previousUser = state.user;
     _userProfile = event.user;
-    emit(ProfileLoaded(
-      user: _userProfile,
-      quests: state.quests,
-      questGroups: state.questGroups,
-      questsLoading: state.questsLoading,
-      questGroupsLoading: state.questGroupsLoading,
-      questsError: state.questsError,
-      questGroupsError: state.questGroupsError,
-      questUserJobId: state.questUserJobId,
-      questTimezone: state.questTimezone,
-      questScope: state.questScope,
-      claimingQuestId: state.claimingQuestId,
-      leaderboardUsers: state.leaderboardUsers,
-      leaderboardLoading: state.leaderboardLoading,
-      leaderboardError: state.leaderboardError,
-      leaderboardJobId: state.leaderboardJobId,
-      leaderboardFrom: state.leaderboardFrom,
-      leaderboardTo: state.leaderboardTo,
-    ));
+    emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
 
     final result = await profileRepository.updateMe(event.user, baseline: previousUser);
     if (result.isError) {
@@ -584,24 +346,80 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
     _userProfile = result.data!;
-    emit(ProfileLoaded(
-      user: _userProfile,
-      quests: state.quests,
-      questGroups: state.questGroups,
-      questsLoading: state.questsLoading,
-      questGroupsLoading: state.questGroupsLoading,
-      questsError: state.questsError,
-      questGroupsError: state.questGroupsError,
-      questUserJobId: state.questUserJobId,
-      questTimezone: state.questTimezone,
-      questScope: state.questScope,
-      claimingQuestId: state.claimingQuestId,
-      leaderboardUsers: state.leaderboardUsers,
-      leaderboardLoading: state.leaderboardLoading,
-      leaderboardError: state.leaderboardError,
-      leaderboardJobId: state.leaderboardJobId,
-      leaderboardFrom: state.leaderboardFrom,
-      leaderboardTo: state.leaderboardTo,
+    emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
+  }
+
+  FutureOr<void> _onOpenProfilePreview(OpenProfilPreview event, Emitter<ProfileState> emit) async {
+    if (!authBloc.state.isAuthenticated) {
+      return;
+    }
+    if (event.userJobId.isEmpty) return;
+
+    emit(state.copyWith(
+      kind: ProfileStateKind.loading,
+      previewCompetencyProfileLoading: true,
+      previewCompetencyProfileError: null,
+      previewCompetencyUserJobId: event.userJobId,
+      previewCompetencyFrom: event.from,
+      previewCompetencyTo: event.to,
+      previewCompetencyTimezone: event.timezone,
+      previewCompetencyRequested: true,
+    ));
+
+    final cachedResult = await jobRepository.fetchPreviewCompetencyProfileCached(
+      event.userJobId,
+      from: event.from,
+      to: event.to,
+      timezone: event.timezone,
+    );
+    final cachedProfile = cachedResult.data;
+    if (cachedProfile != null && cachedProfile.userJobId.isNotEmpty) {
+      emit(state.copyWith(
+        kind: ProfileStateKind.loaded,
+        previewCompetencyProfile: cachedProfile,
+        previewCompetencyProfileLoading: false,
+        previewCompetencyProfileError: null,
+        previewCompetencyUserJobId: event.userJobId,
+        previewCompetencyFrom: event.from,
+        previewCompetencyTo: event.to,
+        previewCompetencyTimezone: event.timezone,
+      ));
+    }
+
+    if (!context.mounted) return;
+
+    final result = await jobRepository.fetchPreviewCompetencyProfile(
+      event.userJobId,
+      from: event.from,
+      to: event.to,
+      timezone: event.timezone,
+    );
+
+    if (result.isError) {
+      if (event.notifyOnError) {
+        notificationBloc.add(ErrorNotificationEvent(message: result.error));
+      }
+      emit(state.copyWith(
+        kind: ProfileStateKind.loaded,
+        previewCompetencyProfileLoading: false,
+        previewCompetencyProfileError: result.error,
+        previewCompetencyUserJobId: event.userJobId,
+        previewCompetencyFrom: event.from,
+        previewCompetencyTo: event.to,
+        previewCompetencyTimezone: event.timezone,
+      ));
+      return;
+    }
+
+    emit(state.copyWith(
+      kind: ProfileStateKind.loaded,
+      previewCompetencyProfile: result.data,
+      previewCompetencyProfileLoading: false,
+      previewCompetencyProfileError: null,
+      previewCompetencyUserJobId: event.userJobId,
+      previewCompetencyFrom: event.from,
+      previewCompetencyTo: event.to,
+      previewCompetencyTimezone: event.timezone,
     ));
   }
 }

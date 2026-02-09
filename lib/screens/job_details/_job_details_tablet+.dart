@@ -378,8 +378,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
               height: constraints.maxWidth,
               width: constraints.maxWidth,
               child: InteractiveRoundedRadarChart(
-                labels: _job?.competenciesFamilies.map((cf) => cf.name).toList() ?? [],
-                defaultValues: _job?.kiviatValues(_detailsLevel) ?? [],
+                labels: _job.competenciesFamilies.map((cf) => cf.name).toList() ?? [],
+                defaultValues: _job.kiviatValues(_detailsLevel) ?? [],
                 userValues: _userJob.kiviatsValues,
               ),
             ),
