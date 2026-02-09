@@ -32,6 +32,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   bool locked = true;
 
   int indexToRotate = -1;
+  bool _isAnswerResolved = false;
 
   int get timeLeftInSeconds {
     return ((_countdown?.duration!.inSeconds ?? 0) * (_countdown?.value ?? 0)).ceil();
@@ -875,12 +876,18 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         ],
       ).then((value) {
         if (!mounted) return;
-        navigateToPath(context, to: AppRoutes.userRessourcesModule, data: {"openWaitingModal": true});
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Future.delayed(const Duration(milliseconds: 250), () {
+            if (!mounted) return;
+            navigateToPath(context, to: AppRoutes.userRessourcesModule, data: {"openWaitingModal": true});
+          });
+        });
       });
 
       // navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
       return;
     }
+    _isAnswerResolved = false;
     currentQuestion = quiz.questionResponses[currentQuestionIndex];
     _countdown?.removeStatusListener(_listener);
     // _countdown?.dispose();
@@ -897,11 +904,14 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   void _listener(status) {
     if (status == AnimationStatus.dismissed) {
       // time's up — move to next question, show dialog, etc.
+      if (_isAnswerResolved || locked) return;
       showCorrectAnswer();
     }
   }
 
   void showCorrectAnswer() {
+    if (_isAnswerResolved || locked) return;
+    _isAnswerResolved = true;
     final correctIndex = currentQuestion?.correctResponseIndex ?? -1;
     final bool isCorrect = (showVerificationState != -1 && showVerificationState == correctIndex);
     if (isCorrect) {
@@ -926,7 +936,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       _playConfetti(pointsEarned: questionScore);
     }
 
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    Future.delayed(const Duration(milliseconds: 2), () {
       if (!mounted) return;
       answers.add(currentQuestion!.toQuizResponse(
             selectedResponseIndex: showVerificationState,
