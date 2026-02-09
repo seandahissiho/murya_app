@@ -356,7 +356,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if (event.userJobId.isEmpty) return;
 
     emit(state.copyWith(
-      kind: ProfileStateKind.loading,
+      kind: ProfileStateKind.previewLoading,
+      previewCompetencyProfile: PreviewCompetencyProfile.empty().copyWith(
+        userJobId: event.userJobId,
+        user: PreviewUser(
+          id: event.userId,
+          diamonds: event.userDiamonds,
+          firstname: event.userFirstName,
+          lastname: event.userLastName,
+          profilePictureUrl: event.userAvatarUrl,
+        ),
+      ),
       previewCompetencyProfileLoading: true,
       previewCompetencyProfileError: null,
       previewCompetencyUserJobId: event.userJobId,
@@ -372,10 +382,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       to: event.to,
       timezone: event.timezone,
     );
+    if (!_isCurrentPreviewRequest(event)) return;
     final cachedProfile = cachedResult.data;
     if (cachedProfile != null && cachedProfile.userJobId.isNotEmpty) {
       emit(state.copyWith(
-        kind: ProfileStateKind.loaded,
+        kind: ProfileStateKind.previewLoaded,
         previewCompetencyProfile: cachedProfile,
         previewCompetencyProfileLoading: false,
         previewCompetencyProfileError: null,
@@ -386,6 +397,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       ));
     }
 
+    if (!_isCurrentPreviewRequest(event)) return;
     if (!context.mounted) return;
 
     final result = await jobRepository.fetchPreviewCompetencyProfile(
@@ -394,13 +406,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       to: event.to,
       timezone: event.timezone,
     );
+    if (!_isCurrentPreviewRequest(event)) return;
 
     if (result.isError) {
       if (event.notifyOnError) {
         notificationBloc.add(ErrorNotificationEvent(message: result.error));
       }
       emit(state.copyWith(
-        kind: ProfileStateKind.loaded,
+        kind: ProfileStateKind.previewLoaded,
         previewCompetencyProfileLoading: false,
         previewCompetencyProfileError: result.error,
         previewCompetencyUserJobId: event.userJobId,
@@ -412,7 +425,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
 
     emit(state.copyWith(
-      kind: ProfileStateKind.loaded,
+      kind: ProfileStateKind.previewLoaded,
       previewCompetencyProfile: result.data,
       previewCompetencyProfileLoading: false,
       previewCompetencyProfileError: null,
@@ -421,5 +434,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       previewCompetencyTo: event.to,
       previewCompetencyTimezone: event.timezone,
     ));
+  }
+
+  bool _isCurrentPreviewRequest(OpenProfilPreview event) {
+    return state.previewCompetencyUserJobId == event.userJobId &&
+        state.previewCompetencyFrom == event.from &&
+        state.previewCompetencyTo == event.to &&
+        state.previewCompetencyTimezone == event.timezone;
   }
 }

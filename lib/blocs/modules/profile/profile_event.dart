@@ -80,6 +80,10 @@ final class ProfileLoadLeaderboardEvent extends ProfileEvent {
 
 final class OpenProfilPreview extends ProfileEvent {
   final String userId;
+  final int userDiamonds;
+  final String userFirstName;
+  final String userLastName;
+  final String userAvatarUrl;
   final String userJobId;
   final DateTime? from;
   final DateTime? to;
@@ -88,6 +92,10 @@ final class OpenProfilPreview extends ProfileEvent {
 
   OpenProfilPreview({
     required this.userId,
+    required this.userDiamonds,
+    required this.userFirstName,
+    required this.userLastName,
+    required this.userAvatarUrl,
     required this.userJobId,
     this.from,
     this.to,

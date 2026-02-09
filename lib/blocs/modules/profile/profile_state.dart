@@ -1,6 +1,6 @@
 part of 'profile_bloc.dart';
 
-enum ProfileStateKind { initial, loading, loaded }
+enum ProfileStateKind { initial, loading, loaded, previewLoading, previewLoaded }
 
 @immutable
 sealed class ProfileState {
@@ -67,6 +67,8 @@ sealed class ProfileState {
       'ProfileState(user: $user, questsLoading: $questsLoading, questGroupsLoading: $questGroupsLoading)';
 
   ProfileStateKind get _kind {
+    if (this is ProfilePreviewLoading) return ProfileStateKind.previewLoading;
+    if (this is ProfilePreviewLoaded) return ProfileStateKind.previewLoaded;
     if (this is ProfileLoading) return ProfileStateKind.loading;
     if (this is ProfileLoaded) return ProfileStateKind.loaded;
     return ProfileStateKind.initial;
@@ -245,6 +247,64 @@ sealed class ProfileState {
           previewCompetencyTimezone: resolvedPreviewCompetencyTimezone,
           previewCompetencyRequested: resolvedPreviewCompetencyRequested,
         );
+      case ProfileStateKind.previewLoading:
+        return ProfilePreviewLoading(
+          user: resolvedUser,
+          quests: resolvedQuests,
+          questGroups: resolvedQuestGroups,
+          questsLoading: resolvedQuestsLoading,
+          questGroupsLoading: resolvedQuestGroupsLoading,
+          questsError: resolvedQuestsError,
+          questGroupsError: resolvedQuestGroupsError,
+          questUserJobId: resolvedQuestUserJobId,
+          questTimezone: resolvedQuestTimezone,
+          questScope: resolvedQuestScope,
+          claimingQuestId: resolvedClaimingQuestId,
+          leaderboardUsers: resolvedLeaderboardUsers,
+          leaderboardLoading: resolvedLeaderboardLoading,
+          leaderboardError: resolvedLeaderboardError,
+          leaderboardJobId: resolvedLeaderboardJobId,
+          leaderboardFrom: resolvedLeaderboardFrom,
+          leaderboardTo: resolvedLeaderboardTo,
+          rewards: resolvedRewards,
+          previewCompetencyProfile: resolvedPreviewCompetencyProfile,
+          previewCompetencyProfileLoading: resolvedPreviewCompetencyProfileLoading,
+          previewCompetencyProfileError: resolvedPreviewCompetencyProfileError,
+          previewCompetencyUserJobId: resolvedPreviewCompetencyUserJobId,
+          previewCompetencyFrom: resolvedPreviewCompetencyFrom,
+          previewCompetencyTo: resolvedPreviewCompetencyTo,
+          previewCompetencyTimezone: resolvedPreviewCompetencyTimezone,
+          previewCompetencyRequested: resolvedPreviewCompetencyRequested,
+        );
+      case ProfileStateKind.previewLoaded:
+        return ProfilePreviewLoaded(
+          user: resolvedUser,
+          quests: resolvedQuests,
+          questGroups: resolvedQuestGroups,
+          questsLoading: resolvedQuestsLoading,
+          questGroupsLoading: resolvedQuestGroupsLoading,
+          questsError: resolvedQuestsError,
+          questGroupsError: resolvedQuestGroupsError,
+          questUserJobId: resolvedQuestUserJobId,
+          questTimezone: resolvedQuestTimezone,
+          questScope: resolvedQuestScope,
+          claimingQuestId: resolvedClaimingQuestId,
+          leaderboardUsers: resolvedLeaderboardUsers,
+          leaderboardLoading: resolvedLeaderboardLoading,
+          leaderboardError: resolvedLeaderboardError,
+          leaderboardJobId: resolvedLeaderboardJobId,
+          leaderboardFrom: resolvedLeaderboardFrom,
+          leaderboardTo: resolvedLeaderboardTo,
+          rewards: resolvedRewards,
+          previewCompetencyProfile: resolvedPreviewCompetencyProfile,
+          previewCompetencyProfileLoading: resolvedPreviewCompetencyProfileLoading,
+          previewCompetencyProfileError: resolvedPreviewCompetencyProfileError,
+          previewCompetencyUserJobId: resolvedPreviewCompetencyUserJobId,
+          previewCompetencyFrom: resolvedPreviewCompetencyFrom,
+          previewCompetencyTo: resolvedPreviewCompetencyTo,
+          previewCompetencyTimezone: resolvedPreviewCompetencyTimezone,
+          previewCompetencyRequested: resolvedPreviewCompetencyRequested,
+        );
     }
   }
 }
@@ -346,4 +406,72 @@ final class ProfileLoaded extends ProfileState {
 
   @override
   String toString() => 'ProfileLoaded(user: $user)';
+}
+
+final class ProfilePreviewLoading extends ProfileLoading {
+  const ProfilePreviewLoading({
+    required super.user,
+    super.quests,
+    super.questGroups,
+    super.questsLoading,
+    super.questGroupsLoading,
+    super.questsError,
+    super.questGroupsError,
+    super.questUserJobId,
+    super.questTimezone,
+    super.questScope,
+    super.claimingQuestId,
+    super.leaderboardUsers,
+    super.leaderboardLoading,
+    super.leaderboardError,
+    super.leaderboardJobId,
+    super.leaderboardFrom,
+    super.leaderboardTo,
+    super.rewards,
+    super.previewCompetencyProfile,
+    super.previewCompetencyProfileLoading,
+    super.previewCompetencyProfileError,
+    super.previewCompetencyUserJobId,
+    super.previewCompetencyFrom,
+    super.previewCompetencyTo,
+    super.previewCompetencyTimezone,
+    super.previewCompetencyRequested,
+  });
+
+  @override
+  String toString() => 'ProfilePreviewLoading(user: $user)';
+}
+
+final class ProfilePreviewLoaded extends ProfileLoaded {
+  const ProfilePreviewLoaded({
+    required super.user,
+    super.quests,
+    super.questGroups,
+    super.questsLoading,
+    super.questGroupsLoading,
+    super.questsError,
+    super.questGroupsError,
+    super.questUserJobId,
+    super.questTimezone,
+    super.questScope,
+    super.claimingQuestId,
+    super.leaderboardUsers,
+    super.leaderboardLoading,
+    super.leaderboardError,
+    super.leaderboardJobId,
+    super.leaderboardFrom,
+    super.leaderboardTo,
+    super.rewards,
+    super.previewCompetencyProfile,
+    super.previewCompetencyProfileLoading,
+    super.previewCompetencyProfileError,
+    super.previewCompetencyUserJobId,
+    super.previewCompetencyFrom,
+    super.previewCompetencyTo,
+    super.previewCompetencyTimezone,
+    super.previewCompetencyRequested,
+  });
+
+  @override
+  String toString() => 'ProfilePreviewLoaded(user: $user)';
 }
