@@ -33,7 +33,11 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
         if (!mounted) return;
         setState(() {
           _previewRequested = state.previewCompetencyRequested;
-          _previewProfile = state.previewCompetencyProfile;
+          if (_previewRequested) {
+            _previewProfile = state.previewCompetencyProfile;
+          } else {
+            _previewProfile = null;
+          }
         });
       },
       child: Row(
@@ -530,6 +534,11 @@ class UserListBox extends StatelessWidget {
     final userJobId = user.userJobId;
     if (userJobId == null || userJobId.isEmpty) return;
     final profileState = context.read<ProfileBloc>().state;
+    final isSelected = profileState.previewCompetencyRequested && profileState.previewCompetencyUserJobId == userJobId;
+    if (isSelected) {
+      context.read<ProfileBloc>().add(CloseProfilPreview());
+      return;
+    }
     final cachedProfile = profileState.previewCompetencyProfile;
     final alreadyRequested =
         profileState.previewCompetencyRequested && profileState.previewCompetencyUserJobId == userJobId;
