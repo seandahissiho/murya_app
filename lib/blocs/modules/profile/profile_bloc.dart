@@ -41,6 +41,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileClaimQuestEvent>(_onProfileClaimQuestEvent);
     on<ProfileLoadLeaderboardEvent>(_onProfileLoadLeaderboardEvent);
     on<OpenProfilPreview>(_onOpenProfilePreview);
+    on<CloseProfilPreview>(_onCloseProfilePreview);
 
     profileRepository = RepositoryProvider.of<ProfileRepository>(context);
     jobRepository = RepositoryProvider.of<JobRepository>(context);
@@ -433,6 +434,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       previewCompetencyFrom: event.from,
       previewCompetencyTo: event.to,
       previewCompetencyTimezone: event.timezone,
+    ));
+  }
+
+  FutureOr<void> _onCloseProfilePreview(CloseProfilPreview event, Emitter<ProfileState> emit) {
+    emit(state.copyWith(
+      kind: ProfileStateKind.previewLoaded,
+      previewCompetencyProfile: null,
+      previewCompetencyProfileLoading: false,
+      previewCompetencyProfileError: null,
+      previewCompetencyUserJobId: null,
+      previewCompetencyFrom: null,
+      previewCompetencyTo: null,
+      previewCompetencyTimezone: null,
+      previewCompetencyRequested: false,
     ));
   }
 

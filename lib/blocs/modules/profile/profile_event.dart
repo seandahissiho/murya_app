@@ -103,3 +103,7 @@ final class OpenProfilPreview extends ProfileEvent {
     this.notifyOnError = true,
   });
 }
+
+final class CloseProfilPreview extends ProfileEvent {
+  CloseProfilPreview();
+}
