@@ -43,20 +43,54 @@ Future<void> openUrl(String? url) async {
   }
 }
 
+bool _navInFlight = false;
+DateTime? _lastNavAt;
+const Duration _navCooldown = Duration(milliseconds: 500);
+const Duration _navDelay = Duration(milliseconds: 250);
+
 void navigateToPath(BuildContext context, {String? from, required String to, Object? data}) {
-  context.read<AppBloc>().add(
-        AppChangeRoute(
-          currentRoute: from ?? to,
-          nextRoute: to,
-        ),
-      );
-  // final Uri? uri = Uri.tryParse(to);
-  // // log("Beaming to: ${widget.parent.route!} with URI: $uri");
-  // Beamer.of(context).updateRouteInformation(RouteInformation(
-  //   uri: uri,
-  // ));
-  Beamer.of(context).beamToNamed(to, data: {
-    'data': data,
+  final now = DateTime.now();
+  if (_navInFlight) return;
+  if (_lastNavAt != null && now.difference(_lastNavAt!) < _navCooldown) return;
+
+  final beamer = Beamer.of(context);
+  final Uri currentUri = beamer.currentBeamLocation.state.routeInformation.uri;
+  final Uri? targetUri = Uri.tryParse(to);
+  if (targetUri != null &&
+      currentUri.path == targetUri.path &&
+      currentUri.query == targetUri.query &&
+      currentUri.fragment == targetUri.fragment) {
+    return;
+  }
+
+  _navInFlight = true;
+  _lastNavAt = now;
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    Future.delayed(_navDelay, () {
+      if (!context.mounted) {
+        _navInFlight = false;
+        return;
+      }
+      try {
+        context.read<AppBloc>().add(
+              AppChangeRoute(
+                currentRoute: from ?? to,
+                nextRoute: to,
+              ),
+            );
+        // final Uri? uri = Uri.tryParse(to);
+        // // log("Beaming to: ${widget.parent.route!} with URI: $uri");
+        // Beamer.of(context).updateRouteInformation(RouteInformation(
+        //   uri: uri,
+        // ));
+        beamer.beamToNamed(to, data: {
+          'data': data,
+        });
+      } finally {
+        _navInFlight = false;
+      }
+    });
   });
 }
 

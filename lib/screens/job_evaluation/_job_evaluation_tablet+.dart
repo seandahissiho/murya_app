@@ -405,18 +405,10 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                                                         showVerificationState = index;
                                                         showCorrectAnswer();
                                                       },
-                                                      child: RotationTransition(
-                                                        turns: (indexToRotate == index)
-                                                            ? Tween(begin: 1.0, end: 0.99).animate(
-                                                                CurvedAnimation(
-                                                                  parent: AnimationController(
-                                                                    vsync: this,
-                                                                    duration: const Duration(milliseconds: 250),
-                                                                  )..forward(),
-                                                                  curve: Curves.easeInOut,
-                                                                ),
-                                                              )
-                                                            : const AlwaysStoppedAnimation(0),
+                                                      child: AnimatedRotation(
+                                                        turns: indexToRotate == index ? -0.01 : 0.0,
+                                                        duration: const Duration(milliseconds: 250),
+                                                        curve: Curves.easeInOut,
                                                         child: Card(
                                                           elevation: 2,
                                                           shadowColor: AppColors.borderMedium,

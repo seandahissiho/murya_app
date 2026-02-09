@@ -131,21 +131,16 @@ class _RessourcesScreenState extends State<RessourcesScreen> {
     if (!_isWaitingForResource) {
       return;
     }
-    if (_sseConnected) {
-      _pollTimer?.cancel();
-      _pollTimer = null;
-    } else {
-      _startPollingIfNeeded();
-    }
+    _startPollingIfNeeded();
   }
 
   void _startPollingIfNeeded() {
-    if (_sseConnected || !_isWaitingForResource || _pollTimer != null) {
+    if (!_isWaitingForResource || _pollTimer != null) {
       return;
     }
     _pollResourcesOnce();
     _pollTimer = Timer.periodic(const Duration(seconds: 5), (_) {
-      if (!_isWaitingForResource || _sseConnected) {
+      if (!_isWaitingForResource) {
         _pollTimer?.cancel();
         _pollTimer = null;
         return;
@@ -159,6 +154,7 @@ class _RessourcesScreenState extends State<RessourcesScreen> {
     if (userJobId == null || userJobId.isEmpty) {
       return;
     }
+    debugPrint('Resources polling: refreshing resources list.');
     context.read<ResourcesBloc>().add(LoadResources(userJobId: userJobId));
   }
 
@@ -438,7 +434,7 @@ class Costs {
 void _waitingModal(BuildContext context, ThemeData theme) {
   displayPopUp(
     context: context,
-    barrierDismissible: false,
+    barrierDismissible: true,
     noActions: true,
     contents: [
       SizedBox(
