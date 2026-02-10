@@ -72,10 +72,12 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               AppXDropdown(
-                key: const Key('language-dropdown'),
                 shrinkWrap: true,
+                leftIconPath: state.language.code != 'fr' ? AppIcons.enLanguageIconPath : AppIcons.frLanguageIconPath,
+                // leftIcon: SvgPicture.asset(
+                //     state.language.code != 'fr' ? AppIcons.enLanguageIconPath : AppIcons.frLanguageIconPath),
+                // maxDropdownWidth: 110,
                 controller: TextEditingController(text: state.language.code != 'fr' ? 'English' : 'Français'),
-                // DropdownMenuEntry
                 items: [
                   DropdownMenuEntry(
                     value: 'fr',
@@ -109,7 +111,7 @@ class _MobileAppFooterState extends State<MobileAppFooter> {
                   // onLocaleChange(context);
                   context.read<AppBloc>().add(
                         AppChangeLanguage(
-                          language: value == 'fr' ? AppLanguage.english : AppLanguage.french,
+                          language: value == 'fr' ? AppLanguage.french : AppLanguage.english,
                           context: context,
                         ),
                       );

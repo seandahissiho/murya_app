@@ -35,6 +35,9 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   int indexToRotate = -1;
   bool _isAnswerResolved = false;
 
+  final List<Timer> _timers = [];
+  bool _isCleaningUp = false;
+
   int get timeLeftInSeconds {
     return ((_countdown?.duration!.inSeconds ?? 0) * (_countdown?.value ?? 0)).ceil();
   }
@@ -60,19 +63,31 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
           started = true;
           _quizStopwatch.reset();
           setState(() {});
-          Future.delayed(const Duration(milliseconds: 250), () async {
-            while (mounted && !quizLoaded) {
-              await Future.delayed(const Duration(milliseconds: 100));
-            }
-            moveToNextQuestion();
+          _scheduleTimer(const Duration(milliseconds: 250), () {
+            _schedulePeriodicTimer(const Duration(milliseconds: 100), (timer) {
+              if (!mounted || _isCleaningUp) {
+                timer.cancel();
+                _timers.remove(timer);
+                return;
+              }
+              if (quizLoaded) {
+                timer.cancel();
+                _timers.remove(timer);
+                moveToNextQuestion();
+              }
+            });
           });
         } else {
           if (!mounted) return;
-          navigateToPath(
-            context,
-            to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
-            data: {'jobTitle': widget.jobTitle},
-          );
+          _prepareForNavigation().then((_) {
+            _deferNavigation(() {
+              navigateToPath(
+                context,
+                to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
+                data: {'jobTitle': widget.jobTitle},
+              );
+            });
+          });
         }
       });
       setState(() {});
@@ -82,12 +97,71 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
 
   @override
   void dispose() {
+    _isCleaningUp = true;
+    _cancelTimers();
     _confettiCtrl.dispose();
     _countdown?.dispose();
     super.dispose();
   }
 
+  Timer? _scheduleTimer(Duration duration, FutureOr<void> Function() cb) {
+    if (_isCleaningUp) return null;
+    late final Timer timer;
+    timer = Timer(duration, () {
+      _timers.remove(timer);
+      if (_isCleaningUp) return;
+      cb();
+    });
+    _timers.add(timer);
+    return timer;
+  }
+
+  Timer? _schedulePeriodicTimer(Duration duration, void Function(Timer) cb) {
+    if (_isCleaningUp) return null;
+    late final Timer timer;
+    timer = Timer.periodic(duration, (t) {
+      if (_isCleaningUp) {
+        t.cancel();
+        _timers.remove(t);
+        return;
+      }
+      cb(t);
+      if (!t.isActive) {
+        _timers.remove(t);
+      }
+    });
+    _timers.add(timer);
+    return timer;
+  }
+
+  void _cancelTimers() {
+    final timers = List<Timer>.from(_timers);
+    for (final timer in timers) {
+      timer.cancel();
+    }
+    _timers.clear();
+  }
+
+  void _deferNavigation(VoidCallback cb) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      cb();
+    });
+  }
+
+  Future<void> _prepareForNavigation() async {
+    _isCleaningUp = true;
+    _cancelTimers();
+    _countdown?.removeStatusListener(_listener);
+    _countdown?.stop();
+    _confettiCtrl.stop();
+    if (mounted && _showConfetti) {
+      setState(() => _showConfetti = false);
+    }
+  }
+
   void _playConfetti({required int pointsEarned}) {
+    if (_isCleaningUp) return;
     if (!_confettiLoaded) return;
 
     setState(() => _showConfetti = true);
@@ -101,14 +175,14 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
 
     final pointsDisplayDuration = duration - const Duration(milliseconds: 1000);
 
-    Future.delayed(pointsDisplayDuration, () {
+    _scheduleTimer(pointsDisplayDuration, () {
       if (!mounted) return;
       setState(() {
         totalPoints += pointsEarned;
       });
     });
 
-    Future.delayed(duration + const Duration(milliseconds: 150), () {
+    _scheduleTimer(duration + const Duration(milliseconds: 150), () {
       if (!mounted) return;
       setState(() => _showConfetti = false);
     });
@@ -149,7 +223,20 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                   color: AppColors.backgroundDefault,
                   child: Row(
                     children: [
-                      AppXExitQuizzButton(jobId: jobId, jobTitle: widget.jobTitle ?? ''),
+                      AppXExitQuizzButton(
+                        jobId: jobId,
+                        jobTitle: widget.jobTitle ?? '',
+                        onExitConfirmed: () async {
+                          await _prepareForNavigation();
+                          _deferNavigation(() {
+                            navigateToPath(
+                              context,
+                              to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
+                              data: {'jobTitle': widget.jobTitle},
+                            );
+                          });
+                        },
+                      ),
                       // GestureDetector(
                       //   onTap: () async {
                       //     return await quizzExitModal(context, jobId: jobId, jobTitle: widget.jobTitle ?? '');
@@ -737,6 +824,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   }
 
   void moveToNextQuestion() {
+    if (_isCleaningUp) return;
     currentQuestionIndex++;
     if (currentQuestionIndex >= quiz.questionResponses.length) {
       currentQuestionIndex;
@@ -765,9 +853,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         badAnswers: answers.where((element) => !element.isCorrect).length,
       ).then((value) {
         if (!mounted) return;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Future.delayed(const Duration(milliseconds: 250), () {
-            if (!mounted) return;
+        _prepareForNavigation().then((_) {
+          _deferNavigation(() {
             navigateToPath(context, to: AppRoutes.userRessourcesModule, data: {"openWaitingModal": true});
           });
         });
@@ -780,7 +867,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       _quizStopwatch.start();
     }
     _countdown?.removeStatusListener(_listener);
-    // _countdown?.dispose();
+    _countdown?.dispose();
     _countdown = AnimationController(vsync: this, duration: currentQuestion?.question.timeLimit ?? _total);
     _countdown?.addStatusListener(_listener);
     displayCorrectIndex = -1;
@@ -792,6 +879,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   }
 
   void _listener(status) {
+    if (_isCleaningUp) return;
     if (status == AnimationStatus.dismissed) {
       // time's up — move to next question, show dialog, etc.
       if (_isAnswerResolved || locked) return;
@@ -800,6 +888,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   }
 
   void showCorrectAnswer() {
+    if (_isCleaningUp) return;
     if (_isAnswerResolved || locked) return;
     _isAnswerResolved = true;
     final correctIndex = currentQuestion?.correctResponseIndex ?? -1;
@@ -826,7 +915,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       _playConfetti(pointsEarned: questionScore);
     }
 
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    _scheduleTimer(const Duration(milliseconds: 2500), () {
       if (!mounted) return;
       answers.add(currentQuestion!.toQuizResponse(
             selectedResponseIndex: showVerificationState,
