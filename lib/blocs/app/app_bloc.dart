@@ -159,6 +159,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     RepositoryProvider.of<ResourcesRepository>(event.context).updateLanguage(_appLanguage.code);
     RepositoryProvider.of<SearchRepository>(event.context).updateLanguage(_appLanguage.code);
 
+    if (event.persistPreferredLanguage) {
+      unawaited(
+        RepositoryProvider.of<ProfileRepository>(event.context)
+            .updatePreferredLanguage(_appLanguage.code),
+      );
+    }
+
     final context = event.context;
 
     // UserJob & Search
@@ -211,6 +218,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     add(AppChangeLanguage(
       language: _appLanguage,
       context: context,
+      persistPreferredLanguage: false,
     ));
   }
 }
