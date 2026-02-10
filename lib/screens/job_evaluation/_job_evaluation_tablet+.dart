@@ -54,76 +54,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       context.read<QuizBloc>().add(LoadQuizForJob(jobId: jobId));
       final theme = Theme.of(context);
       final localizations = AppLocalizations.of(context);
-      displayPopUp(
-        context: context,
-        okText: localizations.quiz_lets_go,
-        // okEnabled: quizLoaded,
-        noActions: true,
-        contents: [
-          SvgPicture.asset(
-            AppIcons.popupIconPath,
-          ),
-          AppSpacing.spacing24_Box,
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              localizations.quiz_ready_to_evaluate,
-              style: theme.textTheme.labelLarge?.copyWith(
-                fontSize: theme.textTheme.displayMedium?.fontSize,
-              ),
-              textAlign: TextAlign.start,
-            ),
-          ),
-          AppSpacing.spacing16_Box,
-          Text(
-            localizations.quiz_start_description_1,
-            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-            textAlign: TextAlign.start,
-          ),
-          AppSpacing.spacing16_Box,
-          Text(
-            localizations.quiz_start_description_2,
-            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-            textAlign: TextAlign.start,
-          ),
-          AppSpacing.spacing16_Box,
-          Text(
-            localizations.quiz_start_description_3,
-            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-            textAlign: TextAlign.start,
-          ),
-          AppSpacing.spacing24_Box,
-          Text(
-            localizations.quiz_start_advice,
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic, fontWeight: FontWeight.w100),
-            textAlign: TextAlign.start,
-          ),
-          AppSpacing.spacing40_Box,
-          BlocConsumer<QuizBloc, QuizState>(
-            listener: (context, state) {
-              setState(() {});
-            },
-            builder: (context, state) {
-              return Row(
-                children: [
-                  Flexible(
-                    child: AppXButton(
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true).pop(true);
-                      },
-                      isLoading: state is! QuizLoaded,
-                      disabled: state is! QuizLoaded,
-                      shrinkWrap: false,
-                      text: localizations.quiz_lets_go,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-      ).then((value) {
+      quizzStartModal(context, jobId: jobId, jobTitle: widget.jobTitle ?? '').then((value) {
         if (value == true) {
           started = true;
           setState(() {});
@@ -142,13 +73,103 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
           );
         }
       });
-
-      // quiz = Quiz.fromJson(TEST_QUIZ);
-      // initialized = true;
       setState(() {});
-      // Future.delayed(const Duration(seconds: 5), () {
-      //   context.beamBack();
+
+      // displayPopUp(
+      //   context: context,
+      //   okText: localizations.quiz_lets_go,
+      //   // okEnabled: quizLoaded,
+      //   noActions: true,
+      //   contents: [
+      //     SvgPicture.asset(
+      //       AppIcons.popupIconPath,
+      //     ),
+      //     AppSpacing.spacing24_Box,
+      //     FittedBox(
+      //       fit: BoxFit.scaleDown,
+      //       child: Text(
+      //         localizations.quiz_ready_to_evaluate,
+      //         style: theme.textTheme.labelLarge?.copyWith(
+      //           fontSize: theme.textTheme.displayMedium?.fontSize,
+      //         ),
+      //         textAlign: TextAlign.start,
+      //       ),
+      //     ),
+      //     AppSpacing.spacing16_Box,
+      //     Text(
+      //       localizations.quiz_start_description_1,
+      //       style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+      //       textAlign: TextAlign.start,
+      //     ),
+      //     AppSpacing.spacing16_Box,
+      //     Text(
+      //       localizations.quiz_start_description_2,
+      //       style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+      //       textAlign: TextAlign.start,
+      //     ),
+      //     AppSpacing.spacing16_Box,
+      //     Text(
+      //       localizations.quiz_start_description_3,
+      //       style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+      //       textAlign: TextAlign.start,
+      //     ),
+      //     AppSpacing.spacing24_Box,
+      //     Text(
+      //       localizations.quiz_start_advice,
+      //       style: theme.textTheme.bodyMedium
+      //           ?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic, fontWeight: FontWeight.w100),
+      //       textAlign: TextAlign.start,
+      //     ),
+      //     AppSpacing.spacing40_Box,
+      //     BlocConsumer<QuizBloc, QuizState>(
+      //       listener: (context, state) {
+      //         setState(() {});
+      //       },
+      //       builder: (context, state) {
+      //         return Row(
+      //           children: [
+      //             Flexible(
+      //               child: AppXButton(
+      //                 onPressed: () {
+      //                   Navigator.of(context, rootNavigator: true).pop(true);
+      //                 },
+      //                 isLoading: state is! QuizLoaded,
+      //                 disabled: state is! QuizLoaded,
+      //                 shrinkWrap: false,
+      //                 text: localizations.quiz_lets_go,
+      //               ),
+      //             ),
+      //           ],
+      //         );
+      //       },
+      //     ),
+      //   ],
+      // ).then((value) {
+      //   if (value == true) {
+      //     started = true;
+      //     setState(() {});
+      //     Future.delayed(const Duration(milliseconds: 250), () async {
+      //       while (mounted && !quizLoaded) {
+      //         await Future.delayed(const Duration(milliseconds: 100));
+      //       }
+      //       moveToNextQuestion();
+      //     });
+      //   } else {
+      //     if (!mounted) return;
+      //     navigateToPath(
+      //       context,
+      //       to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
+      //       data: {'jobTitle': widget.jobTitle},
+      //     );
+      //   }
       // });
+      //
+      // // quiz = Quiz.fromJson(TEST_QUIZ);
+      // // initialized = true;
+      // setState(() {});
+      // // Future.delayed(const Duration(seconds: 5), () {
+      // //   context.beamBack();
+      // // });
     });
     // pauseTimer();
   }
@@ -223,12 +244,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                   child: Row(
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          navigateToPath(
-                            context,
-                            to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
-                            data: {'jobTitle': widget.jobTitle},
-                          );
+                        onTap: () async {
+                          return await quizzExitModal(context, jobId: jobId, jobTitle: widget.jobTitle ?? '');
                         },
                         child: SvgPicture.asset(
                           AppIcons.exitIconPath,
@@ -828,44 +845,12 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
             context: context,
           ));
 
-      displayPopUp(
-        context: context,
-        okText: localizations.quiz_see_my_space,
-        // okEnabled: quizLoaded,
-        contentAlignment: Alignment.center,
-        contents: [
-          SvgPicture.asset(
-            AppIcons.popupIconPath,
-          ),
-          AppSpacing.spacing24_Box,
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              localizations.quiz_completed_title,
-              style: theme.textTheme.labelLarge?.copyWith(
-                fontSize: theme.textTheme.displayMedium?.fontSize,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          AppSpacing.spacing16_Box,
-          Text(
-            localizations.quiz_completed_subtitle,
-            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-            textAlign: TextAlign.center,
-          ),
-          AppSpacing.spacing24_Box,
-          Text(
-            localizations.quiz_completed_description,
-            style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-            textAlign: TextAlign.center,
-          ),
-          AppSpacing.spacing24_Box,
-          _todayPerformanceWidget(),
-          AppSpacing.spacing24_Box,
-          _todayRewardsWidget(),
-          AppSpacing.spacing40_Box,
-        ],
+      quizzEndModal(
+        context,
+        duration: 10,
+        score: 99999,
+        goodAnswers: 4,
+        badAnswers: 6,
       ).then((value) {
         if (!mounted) return;
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -875,9 +860,6 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
           });
         });
       });
-
-      // navigateToPath(context, to: AppRoutes.jobDetails.replaceFirst(':id', jobId));
-      return;
     }
     _isAnswerResolved = false;
     currentQuestion = quiz.questionResponses[currentQuestionIndex];

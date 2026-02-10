@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
-import 'package:murya/components/app_button.dart';
-import 'package:murya/components/popup.dart';
+import 'package:murya/components/modals/other.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
@@ -347,7 +345,7 @@ class Module {
         return () async {
           final isMobile = DeviceHelper.isMobile(context);
           if (isMobile) {
-            return await contentNotAvailablePopup(context);
+            return await contentNotAvailableModal(context);
           }
           final authBloc = context.read<AuthenticationBloc>();
           final profileBloc = context.read<ProfileBloc>();
@@ -566,78 +564,6 @@ class Module {
       index: index ?? this.index,
     );
   }
-}
-
-Future<void> contentNotAvailablePopup(BuildContext context) async {
-  final isMobile = DeviceHelper.isMobile(context);
-  final theme = Theme.of(context);
-  final locale = AppLocalizations.of(context);
-  return await displayPopUp(
-    context: context,
-    okText: locale.common_ok,
-    bgColor: const Color(0xFFE7E5DD),
-    // okEnabled: quizLoaded,
-    noActions: true,
-    contents: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
-                  borderRadius: AppRadius.tiny,
-                ),
-                padding: const EdgeInsets.all(4),
-                child: SvgPicture.asset(
-                  AppIcons.warningIconPath,
-                  width: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                  height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                ),
-              ),
-            ],
-          ),
-          AppSpacing.spacing8_Box,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  locale.popup_contentNotAvailable_title,
-                  textAlign: TextAlign.start,
-                  style: theme.textTheme.labelLarge,
-                ),
-                AppSpacing.spacing8_Box,
-                Text(
-                  locale.popup_contentNotAvailable_body,
-                  textAlign: TextAlign.start,
-                  style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      AppSpacing.spacing40_Box,
-      Align(
-        alignment: Alignment.centerRight,
-        child: AppXButton(
-          text: locale.popup_contentNotAvailable_cta,
-          shrinkWrap: true,
-          onPressed: () {
-            Navigator.of(context, rootNavigator: true).pop();
-          },
-          isLoading: false,
-        ),
-      ),
-    ],
-  );
 }
 
 // ModuleBuilder.of(ctx).accountModule

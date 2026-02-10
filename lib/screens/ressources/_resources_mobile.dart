@@ -15,7 +15,7 @@ class _MobileResourcesScreenState extends State<MobileResourcesScreen> {
       listener: (context, state) async {
         setState(() {});
         if (state is ResourceDetailsLoaded) {
-          return await contentNotAvailablePopup(context);
+          return await contentNotAvailableModal(context);
           navigateToPath(context,
               to: AppRoutes.userResourceViewerModule.replaceFirst(
                 ':id',

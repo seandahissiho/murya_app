@@ -611,7 +611,7 @@ class InvitationBox extends StatelessWidget {
             ),
             text: locale.inviteFriends_cta,
             onPressed: () async {
-              return await contentNotAvailablePopup(context);
+              return await contentNotAvailableModal(context);
             },
             isLoading: false,
           ),

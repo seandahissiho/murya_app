@@ -232,7 +232,7 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                                 reward.remainingPlaces <= 0 ||
                                 reward.costDiamonds > state.wallet.diamonds,
                             onPressed: () async {
-                              return await contentNotAvailablePopup(context);
+                              return await contentNotAvailableModal(context);
                             },
                             isLoading: state is RewardsLoading,
                           ),

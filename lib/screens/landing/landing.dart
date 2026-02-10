@@ -11,6 +11,7 @@ import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/app_footer.dart';
+import 'package:murya/components/modals/other.dart';
 import 'package:murya/components/modules/account_module.dart';
 import 'package:murya/components/modules/app_module.dart';
 import 'package:murya/components/modules/job_module.dart';
@@ -111,7 +112,6 @@ class AddModuleButton extends StatelessWidget {
           shrinkWrap: true,
           onPressed: () async {
             return await _openBottomSheet(context);
-            return await contentNotAvailablePopup(context);
           },
           isLoading: false,
         ),
@@ -790,7 +790,7 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
         AppSpacing.spacing24_Box,
         AppXButton(
           onPressed: () async {
-            return await contentNotAvailablePopup(context);
+            return await contentNotAvailableModal(context);
           },
           isLoading: false,
           shrinkWrap: false,
