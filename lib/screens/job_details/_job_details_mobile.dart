@@ -187,7 +187,7 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                     );
                   },
                   isLoading: false,
-                  disabled: nextQuizAvailableIn != null,
+                  // disabled: nextQuizAvailableIn != null,
                   text: nextQuizAvailableIn == null
                       ? locale.evaluateSkills
                       : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),

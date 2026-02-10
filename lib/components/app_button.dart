@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
@@ -796,8 +798,14 @@ class AppXCloseBottomSheetButton extends StatelessWidget {
 class AppXExitQuizzButton extends StatelessWidget {
   final String jobId;
   final String jobTitle;
+  final Future<void> Function()? onExitConfirmed;
 
-  const AppXExitQuizzButton({super.key, required this.jobId, required this.jobTitle});
+  const AppXExitQuizzButton({
+    super.key,
+    required this.jobId,
+    required this.jobTitle,
+    this.onExitConfirmed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -811,7 +819,21 @@ class AppXExitQuizzButton extends StatelessWidget {
             Navigator.pop(context);
             return;
           }
-          return await quizzExitModal(context, jobId: jobId, jobTitle: jobTitle);
+          final result = await _showExitModalSafely(context);
+          if (result == true) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              if (!context.mounted) return;
+              if (onExitConfirmed != null) {
+                await onExitConfirmed!();
+              } else {
+                navigateToPath(
+                  context,
+                  to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
+                  data: {'jobTitle': jobTitle},
+                );
+              }
+            });
+          }
         },
         isLoading: false,
         // leftIconPath: AppIcons.searchBarCloseIconPath,
@@ -832,5 +854,20 @@ class AppXExitQuizzButton extends StatelessWidget {
         onPressedColor: AppButtonColors.secondarySurfacePressed,
       ),
     );
+  }
+
+  Future<bool?> _showExitModalSafely(BuildContext context) async {
+    final completer = Completer<bool?>();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!context.mounted) {
+        completer.complete(null);
+        return;
+      }
+      final result = await quizzExitModal(context, jobId: jobId, jobTitle: jobTitle);
+      if (!completer.isCompleted) {
+        completer.complete(result);
+      }
+    });
+    return completer.future;
   }
 }

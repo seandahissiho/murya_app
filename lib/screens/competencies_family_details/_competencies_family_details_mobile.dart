@@ -10,7 +10,7 @@ class MobileCfDetailsScreen extends StatefulWidget {
 class _MobileCfDetailsScreenState extends State<MobileCfDetailsScreen> {
   CompetencyFamily _cf = CompetencyFamily.empty();
   AppJob _job = Job.empty();
-  late final jobId;
+  String jobId = '';
   late final cfId;
 
   @override

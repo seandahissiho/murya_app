@@ -37,11 +37,7 @@ Future<dynamic> quizzStartModal(
           // close button
           InkWell(
             onTap: () {
-              navigateToPath(
-                context,
-                to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
-                data: {'jobTitle': jobTitle},
-              );
+              Navigator.of(context, rootNavigator: true).pop(false);
             },
             child: const Icon(Icons.close, size: 18),
           ),
@@ -110,7 +106,7 @@ Future<dynamic> quizzStartModal(
   );
 }
 
-Future<void> quizzExitModal(
+Future<bool?> quizzExitModal(
   BuildContext context, {
   required String jobId,
   required String jobTitle,
@@ -118,7 +114,7 @@ Future<void> quizzExitModal(
   final isMobile = DeviceHelper.isMobile(context);
   final theme = Theme.of(context);
   final locale = AppLocalizations.of(context);
-  return await displayPopUp(
+  return await displayPopUp<bool>(
     context: context,
     okText: locale.common_ok,
     bgColor: const Color(0xFFE7E5DD),
@@ -186,11 +182,7 @@ Future<void> quizzExitModal(
             text: locale.quiz_exit_quit,
             shrinkWrap: true,
             onPressed: () {
-              navigateToPath(
-                context,
-                to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
-                data: {'jobTitle': jobTitle},
-              );
+              Navigator.of(context, rootNavigator: true).pop(true);
             },
             isLoading: false,
             shadowColor: AppColors.borderMedium,
@@ -205,7 +197,7 @@ Future<void> quizzExitModal(
             text: locale.quiz_exit_resume,
             shrinkWrap: true,
             onPressed: () {
-              Navigator.of(context, rootNavigator: true).pop();
+              Navigator.of(context, rootNavigator: true).pop(false);
             },
             isLoading: false,
           ),

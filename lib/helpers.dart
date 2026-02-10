@@ -48,6 +48,23 @@ DateTime? _lastNavAt;
 const Duration _navCooldown = Duration(milliseconds: 500);
 const Duration _navDelay = Duration(milliseconds: 250);
 
+void navigateToPath2(BuildContext context, {String? from, required String to, Object? data}) {
+  context.read<AppBloc>().add(
+        AppChangeRoute(
+          currentRoute: from ?? to,
+          nextRoute: to,
+        ),
+      );
+  // final Uri? uri = Uri.tryParse(to);
+  // // log("Beaming to: ${widget.parent.route!} with URI: $uri");
+  // Beamer.of(context).updateRouteInformation(RouteInformation(
+  //   uri: uri,
+  // ));
+  Beamer.of(context).beamToNamed(to, data: {
+    'data': data,
+  });
+}
+
 void navigateToPath(BuildContext context, {String? from, required String to, Object? data}) {
   final now = DateTime.now();
   if (_navInFlight) return;
