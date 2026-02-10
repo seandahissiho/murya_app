@@ -241,7 +241,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                             );
                                           },
                                           isLoading: false,
-                                          // disabled: nextQuizAvailableIn != null,
+                                          disabled: nextQuizAvailableIn != null,
                                           text: nextQuizAvailableIn == null
                                               ? locale.evaluateSkills
                                               : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
