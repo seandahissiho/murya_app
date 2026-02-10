@@ -11,6 +11,7 @@ import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/app_footer.dart';
 import 'package:murya/components/fil_arianne.dart';
+import 'package:murya/components/modals/other.dart';
 import 'package:murya/components/skeletonizer.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
@@ -19,7 +20,6 @@ import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/Job.dart';
-import 'package:murya/models/module.dart';
 import 'package:murya/screens/base.dart';
 import 'package:murya/screens/job_details/job_details.dart';
 
@@ -154,7 +154,7 @@ class CompetencyCard extends StatelessWidget {
                     child: AppXButton(
                       shrinkWrap: true,
                       onPressed: () async {
-                        return await contentNotAvailablePopup(context);
+                        return await contentNotAvailableModal(context);
                       },
                       isLoading: false,
                       text: locale.consult,

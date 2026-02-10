@@ -227,11 +227,11 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                         ),
                                         AppSpacing.spacing24_Box,
                                         AppXButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             navigateToPath(
                                               context,
-                                              to: AppRoutes.jobEvaluation.replaceAll(':id', _job!.id!),
-                                              data: {'jobTitle': _job!.title},
+                                              to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!),
+                                              data: {'jobTitle': _job.title},
                                             );
                                           },
                                           isLoading: false,

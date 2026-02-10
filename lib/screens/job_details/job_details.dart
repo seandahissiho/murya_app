@@ -15,6 +15,7 @@ import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/app_footer.dart';
 import 'package:murya/components/dropdown.dart';
+import 'package:murya/components/modals/quizz_modals.dart';
 import 'package:murya/components/ranking.dart';
 import 'package:murya/components/score.dart';
 import 'package:murya/components/skeletonizer.dart';

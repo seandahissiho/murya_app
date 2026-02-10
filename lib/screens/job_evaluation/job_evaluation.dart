@@ -9,6 +9,7 @@ import 'package:lottie/lottie.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/quizz/quiz_bloc.dart';
 import 'package:murya/components/app_button.dart';
+import 'package:murya/components/modals/quizz_modals.dart';
 import 'package:murya/components/popup.dart';
 import 'package:murya/components/score.dart';
 import 'package:murya/config/DS.dart';

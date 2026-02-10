@@ -13,6 +13,7 @@ import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/blocs/modules/resources/resources_bloc.dart';
 import 'package:murya/components/app_button.dart';
+import 'package:murya/components/modals/other.dart';
 import 'package:murya/components/popup.dart';
 import 'package:murya/components/score.dart';
 import 'package:murya/components/skeletonizer.dart';
@@ -281,7 +282,7 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
           if (index == 0) {
             return InkWell(
               onTap: () async {
-                return await contentNotAvailablePopup(context);
+                return await contentNotAvailableModal(context);
                 final int diamonds = context.read<ProfileBloc>().state.user.diamonds;
                 final int cost = Costs.byType(widget.type);
                 final canCreate = diamonds >= cost;
@@ -583,7 +584,7 @@ class ResourceItemWidget extends StatelessWidget {
           }
           if (resource.id.isNotEmptyOrNull) {
             if (isMobile) {
-              return await contentNotAvailablePopup(context);
+              return await contentNotAvailableModal(context);
             }
             navigateToPath(
               context,

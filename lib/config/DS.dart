@@ -247,12 +247,12 @@ class AppColors {
   // Success (Green)
   static const Color successDefault = Color(0xFF00A870);
   static const Color successHover = Color(0xFF00905F);
-  static const Color successText = Color(0xFF004C33);
+  static const Color successText = Color(0xFF188038);
 
   // Error (Red)
   static const Color errorDefault = Color(0xFFFF3B30);
   static const Color errorHover = Color(0xFFE63228);
-  static const Color errorText = Color(0xFF5C0000);
+  static const Color errorText = Color(0xFFD93025);
 
   // Warning (Amber)
   static const Color warningDefault = Color(0xFFFEC84B);

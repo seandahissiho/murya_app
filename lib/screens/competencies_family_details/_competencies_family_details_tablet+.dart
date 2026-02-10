@@ -131,7 +131,7 @@ class _TabletCfDetailsScreenState extends State<TabletCfDetailsScreen> {
                                     //     padding: const EdgeInsets.only(left: AppSpacing.groupMargin),
                                     //     child: GestureDetector(
                                     //       onTap: () async {
-                                    //         return await contentNotAvailablePopup(context);
+                                    //         return await contentNotAvailableModal(context);
                                     //         await ShareUtils.shareContent(
                                     //           text: locale.discover_cf_profile(_cf.name),
                                     //           url: ShareUtils.generateJobDetailsLink(_cf.id!),

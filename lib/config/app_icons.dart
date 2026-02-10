@@ -152,6 +152,11 @@ class AppIcons {
 
   // business_chart.svg
   static const String businessChartIconPath = '$basePath/business_chart.svg';
+
+  // checkmark.svg
+  static const String checkmarkIconPath = '$basePath/checkmark.svg';
+  // delete_disabled_1.svg
+  static const String deleteDisabled1IconPath = '$basePath/delete_disabled_1.svg';
 }
 
 class AppImages {

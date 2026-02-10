@@ -45,19 +45,21 @@ class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStat
     if (widget.isLandingPage) return _landingPageStyle(isMobile, theme, widget.textColor);
 
     if (widget.isReward) {
-      return isMobile
-          ? theme.textTheme.labelLarge?.copyWith(
-              height: 0.0,
-              color: widget.textColor,
-              fontWeight: FontWeight.bold,
-            )
-          : GoogleFonts.anton(
-              textStyle: theme.textTheme.displayLarge?.copyWith(
-                height: 1.0,
-                color: widget.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            );
+      // font-family: Anton;
+      // font-weight: 400;
+      // font-style: Regular;
+      // font-size: 20px;
+      // leading-trim: CAP_HEIGHT;
+      // line-height: 44px;
+      // letter-spacing: -2%;
+      // text-align: center;
+      return GoogleFonts.anton(
+        fontWeight: FontWeight.w400,
+        color: AppColors.textPrimary,
+        fontSize: 20,
+        height: 1,
+        letterSpacing: -0.02 * 20,
+      );
     }
 
     return isMobile
@@ -224,7 +226,7 @@ class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStat
             Row(
               children: [
                 scoreText,
-                widget.isLandingPage ? AppSpacing.spacing4_Box : AppSpacing.spacing8_Box,
+                widget.isLandingPage ? AppSpacing.spacing4_Box : AppSpacing.spacing4_Box,
                 diamondIcon,
               ],
             ),
@@ -269,7 +271,7 @@ class _ScoreWidgetState extends State<ScoreWidget> with SingleTickerProviderStat
       }
     } else {
       if (widget.isReward) {
-        return 24;
+        return 20;
       } else if (widget.isLandingPage) {
         return tabletAndAboveCTAHeight / (widget.compact ? 3 : 2.5) * (widget.isReward ? 1.75 : 1);
       } else {
