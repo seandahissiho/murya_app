@@ -672,6 +672,12 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
                                     .map(
                                       (module) => InkWell(
                                         onTap: () {
+                                          // set all other modules to false
+                                          for (var key in _pressedModules.keys) {
+                                            if (key != module.slug) {
+                                              _pressedModules[key] = false;
+                                            }
+                                          }
                                           setState(() {
                                             _pressedModules[module.slug ?? ''] =
                                                 !(_pressedModules[module.slug] == true);
