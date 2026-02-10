@@ -72,7 +72,7 @@ class AppIcons {
   static const String smilingIconPath = '$basePath/smiling_icon.svg';
 
   // exit_icon.svg
-  static const String exitIconPath = '$basePath/exit_icon.svg';
+  static const String exitIconPath = '$basePath/exit_log_out.svg';
 
   // diamond_blank.svg
   static const String diamondIconPath = '$basePath/diamond_blank.svg';

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
+import 'package:murya/components/modals/quizz_modals.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/routes.dart';
@@ -777,6 +778,48 @@ class AppXCloseBottomSheetButton extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: SvgPicture.asset(
             AppIcons.downIconPath,
+            width: ctaHeight,
+            height: ctaHeight,
+          ),
+        ),
+        shadowColor: AppColors.borderMedium,
+        bgColor: AppColors.backgroundColor,
+        fgColor: AppButtonColors.secondarySurfaceDefault,
+        borderColor: AppColors.borderMedium,
+        hoverColor: AppButtonColors.secondarySurfaceHover,
+        onPressedColor: AppButtonColors.secondarySurfacePressed,
+      ),
+    );
+  }
+}
+
+class AppXExitQuizzButton extends StatelessWidget {
+  final String jobId;
+  final String jobTitle;
+
+  const AppXExitQuizzButton({super.key, required this.jobId, required this.jobTitle});
+
+  @override
+  Widget build(BuildContext context) {
+    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    return SizedBox(
+      width: ctaHeight,
+      height: ctaHeight,
+      child: AppXButton(
+        onPressed: () async {
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+            return;
+          }
+          return await quizzExitModal(context, jobId: jobId, jobTitle: jobTitle);
+        },
+        isLoading: false,
+        // leftIconPath: AppIcons.searchBarCloseIconPath,
+        removePaddings: true,
+        leftIcon: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SvgPicture.asset(
+            AppIcons.exitIconPath,
             width: ctaHeight,
             height: ctaHeight,
           ),

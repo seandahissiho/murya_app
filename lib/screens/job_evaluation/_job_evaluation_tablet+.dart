@@ -10,7 +10,7 @@ class TabletJobEvaluationScreen extends StatefulWidget {
 }
 
 class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> with TickerProviderStateMixin {
-  late final String jobId;
+  String jobId = '';
   Quiz quiz = Quiz(questionResponses: []);
   QuestionResponses? currentQuestion;
   int currentQuestionIndex = -1;
@@ -76,102 +76,6 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
         }
       });
       setState(() {});
-
-      // displayPopUp(
-      //   context: context,
-      //   okText: localizations.quiz_lets_go,
-      //   // okEnabled: quizLoaded,
-      //   noActions: true,
-      //   contents: [
-      //     SvgPicture.asset(
-      //       AppIcons.popupIconPath,
-      //     ),
-      //     AppSpacing.spacing24_Box,
-      //     FittedBox(
-      //       fit: BoxFit.scaleDown,
-      //       child: Text(
-      //         localizations.quiz_ready_to_evaluate,
-      //         style: theme.textTheme.labelLarge?.copyWith(
-      //           fontSize: theme.textTheme.displayMedium?.fontSize,
-      //         ),
-      //         textAlign: TextAlign.start,
-      //       ),
-      //     ),
-      //     AppSpacing.spacing16_Box,
-      //     Text(
-      //       localizations.quiz_start_description_1,
-      //       style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-      //       textAlign: TextAlign.start,
-      //     ),
-      //     AppSpacing.spacing16_Box,
-      //     Text(
-      //       localizations.quiz_start_description_2,
-      //       style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-      //       textAlign: TextAlign.start,
-      //     ),
-      //     AppSpacing.spacing16_Box,
-      //     Text(
-      //       localizations.quiz_start_description_3,
-      //       style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-      //       textAlign: TextAlign.start,
-      //     ),
-      //     AppSpacing.spacing24_Box,
-      //     Text(
-      //       localizations.quiz_start_advice,
-      //       style: theme.textTheme.bodyMedium
-      //           ?.copyWith(color: AppColors.textSecondary, fontStyle: FontStyle.italic, fontWeight: FontWeight.w100),
-      //       textAlign: TextAlign.start,
-      //     ),
-      //     AppSpacing.spacing40_Box,
-      //     BlocConsumer<QuizBloc, QuizState>(
-      //       listener: (context, state) {
-      //         setState(() {});
-      //       },
-      //       builder: (context, state) {
-      //         return Row(
-      //           children: [
-      //             Flexible(
-      //               child: AppXButton(
-      //                 onPressed: () {
-      //                   Navigator.of(context, rootNavigator: true).pop(true);
-      //                 },
-      //                 isLoading: state is! QuizLoaded,
-      //                 disabled: state is! QuizLoaded,
-      //                 shrinkWrap: false,
-      //                 text: localizations.quiz_lets_go,
-      //               ),
-      //             ),
-      //           ],
-      //         );
-      //       },
-      //     ),
-      //   ],
-      // ).then((value) {
-      //   if (value == true) {
-      //     started = true;
-      //     setState(() {});
-      //     Future.delayed(const Duration(milliseconds: 250), () async {
-      //       while (mounted && !quizLoaded) {
-      //         await Future.delayed(const Duration(milliseconds: 100));
-      //       }
-      //       moveToNextQuestion();
-      //     });
-      //   } else {
-      //     if (!mounted) return;
-      //     navigateToPath(
-      //       context,
-      //       to: AppRoutes.jobDetails.replaceFirst(':id', jobId),
-      //       data: {'jobTitle': widget.jobTitle},
-      //     );
-      //   }
-      // });
-      //
-      // // quiz = Quiz.fromJson(TEST_QUIZ);
-      // // initialized = true;
-      // setState(() {});
-      // // Future.delayed(const Duration(seconds: 5), () {
-      // //   context.beamBack();
-      // // });
     });
     // pauseTimer();
   }
@@ -245,16 +149,17 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
                   color: AppColors.backgroundDefault,
                   child: Row(
                     children: [
-                      GestureDetector(
-                        onTap: () async {
-                          return await quizzExitModal(context, jobId: jobId, jobTitle: widget.jobTitle ?? '');
-                        },
-                        child: SvgPicture.asset(
-                          AppIcons.exitIconPath,
-                          width: tabletAndAboveCTAHeight,
-                          height: tabletAndAboveCTAHeight,
-                        ),
-                      ),
+                      AppXExitQuizzButton(jobId: jobId, jobTitle: widget.jobTitle ?? ''),
+                      // GestureDetector(
+                      //   onTap: () async {
+                      //     return await quizzExitModal(context, jobId: jobId, jobTitle: widget.jobTitle ?? '');
+                      //   },
+                      //   child: SvgPicture.asset(
+                      //     AppIcons.exitIconPath,
+                      //     width: tabletAndAboveCTAHeight,
+                      //     height: tabletAndAboveCTAHeight,
+                      //   ),
+                      // ),
                       const Spacer(),
                       Expanded(
                         flex: 8,
