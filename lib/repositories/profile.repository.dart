@@ -87,6 +87,20 @@ class ProfileRepository extends BaseRepository {
     );
   }
 
+  Future<Result<bool>> updatePreferredLanguage(String languageCode) async {
+    return AppResponse.execute(
+      action: () async {
+        final Response response =
+            await api.dio.put('/auth/me/language', data: {'lang': languageCode});
+        return response.statusCode != null &&
+            response.statusCode! >= 200 &&
+            response.statusCode! < 300;
+      },
+      parentFunctionName: 'ProfileRepository.updatePreferredLanguage',
+      errorResult: false,
+    );
+  }
+
   Future<Result<QuestList>> getQuests({
     required QuestScope scope,
     String? timezone,
