@@ -366,6 +366,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quiz_ready_to_evaluate => 'Ready to assess yourself?';
 
   @override
+  String get quiz_start_title_challenge => 'Ready to take the challenge?';
+
+  @override
+  String get quiz_start_prompt_prefix => 'Answer ';
+
+  @override
+  String get quiz_start_prompt_emphasis => '10 quick questions';
+
+  @override
+  String get quiz_start_prompt_suffix => ' to generate your tailored resource.';
+
+  @override
+  String get quiz_start_duration => 'Duration: Less than 5 min';
+
+  @override
+  String get quiz_start_tip_title => '💡 Tip';
+
+  @override
+  String get quiz_start_tip_text =>
+      'Answer instinctively for a more accurate result!';
+
+  @override
+  String get quiz_exit_title => 'Quit the assessment?';
+
+  @override
+  String get quiz_exit_body =>
+      'Your progress will be lost and you will have to start over from the beginning.';
+
+  @override
+  String get quiz_exit_quit => 'Quit';
+
+  @override
+  String get quiz_exit_resume => 'Resume';
+
+  @override
+  String get quiz_result_correct => 'Correct';
+
+  @override
+  String get quiz_result_incorrect => 'Incorrect';
+
+  @override
+  String quiz_time_minutes(int minutes) {
+    return 'Time: $minutes min';
+  }
+
+  @override
+  String get quiz_continue => 'Continue';
+
+  @override
   String get quiz_start_description_1 =>
       'You\'re about to start the Product Manager questionnaire.';
 

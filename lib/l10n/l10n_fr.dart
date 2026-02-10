@@ -369,6 +369,56 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quiz_ready_to_evaluate => 'Prêt(e) à vous évaluer ?';
 
   @override
+  String get quiz_start_title_challenge => 'Prêt à relever le défi ?';
+
+  @override
+  String get quiz_start_prompt_prefix => 'Répondez à ';
+
+  @override
+  String get quiz_start_prompt_emphasis => '10 questions rapides';
+
+  @override
+  String get quiz_start_prompt_suffix =>
+      ' pour générer votre ressource sur-mesure.';
+
+  @override
+  String get quiz_start_duration => 'Durée : Moins de 5 min';
+
+  @override
+  String get quiz_start_tip_title => '💡 Conseil';
+
+  @override
+  String get quiz_start_tip_text =>
+      'Répondez à l’instinct pour un résultat plus juste !';
+
+  @override
+  String get quiz_exit_title => 'Abandonner l\'évaluation ?';
+
+  @override
+  String get quiz_exit_body =>
+      'Votre progression sera perdue et vous devrez recommencer depuis le début.';
+
+  @override
+  String get quiz_exit_quit => 'Quitter';
+
+  @override
+  String get quiz_exit_resume => 'Reprendre';
+
+  @override
+  String get quiz_result_correct => 'Correct';
+
+  @override
+  String get quiz_result_incorrect => 'Incorrect';
+
+  @override
+  String quiz_time_minutes(int minutes) {
+    return 'Temps : $minutes min';
+  }
+
+  @override
+  String get quiz_continue => 'Continuer';
+
+  @override
   String get quiz_start_description_1 =>
       'Vous allez démarrer le questionnaire du métier de Product Manager.';
 
