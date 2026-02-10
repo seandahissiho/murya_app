@@ -28,6 +28,8 @@ Future<void> contentNotAvailableModal(BuildContext context) async {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Container(
+                height: 24,
+                width: 24,
                 decoration: BoxDecoration(
                   color: Colors.orange.withOpacity(0.1),
                   borderRadius: AppRadius.tiny,
@@ -46,12 +48,15 @@ Future<void> contentNotAvailableModal(BuildContext context) async {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  locale.popup_contentNotAvailable_title,
-                  textAlign: TextAlign.start,
-                  style: theme.textTheme.labelLarge,
+                SizedBox(
+                  height: 24,
+                  child: Text(
+                    locale.popup_contentNotAvailable_title,
+                    textAlign: TextAlign.start,
+                    style: theme.textTheme.labelLarge,
+                  ),
                 ),
-                AppSpacing.spacing8_Box,
+                AppSpacing.spacing4_Box,
                 Text(
                   locale.popup_contentNotAvailable_body,
                   textAlign: TextAlign.start,
@@ -62,7 +67,9 @@ Future<void> contentNotAvailableModal(BuildContext context) async {
           ),
         ],
       ),
-      AppSpacing.spacing40_Box,
+      AppSpacing.spacing16_Box,
+      const Divider(color: AppColors.borderMedium, height: 0, endIndent: 0, indent: 0),
+      AppSpacing.spacing16_Box,
       Align(
         alignment: Alignment.centerRight,
         child: AppXButton(
