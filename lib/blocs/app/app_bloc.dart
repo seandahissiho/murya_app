@@ -161,8 +161,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     if (event.persistPreferredLanguage) {
       unawaited(
-        RepositoryProvider.of<ProfileRepository>(event.context)
-            .updatePreferredLanguage(_appLanguage.code),
+        RepositoryProvider.of<ProfileRepository>(event.context).updatePreferredLanguage(_appLanguage.code),
       );
     }
 
@@ -211,14 +210,14 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     final savedLocale = localeProvider.locale;
     if (savedLocale == null) {
       _appLanguage = AppLanguage.english;
+      if (context.mounted != true) return;
+      add(AppChangeLanguage(
+        language: _appLanguage,
+        context: context,
+        persistPreferredLanguage: true,
+      ));
     } else {
       _appLanguage = savedLocale.languageCode == 'en' ? AppLanguage.english : AppLanguage.french;
     }
-    if (context.mounted != true) return;
-    add(AppChangeLanguage(
-      language: _appLanguage,
-      context: context,
-      persistPreferredLanguage: false,
-    ));
   }
 }
