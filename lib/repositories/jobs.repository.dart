@@ -35,7 +35,7 @@ class JobRepository extends BaseRepository {
       return Result.success(<Job>[], null);
     }
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get(
@@ -72,7 +72,7 @@ class JobRepository extends BaseRepository {
       return Result.success(<Job>[], null);
     }
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService
           .get(_searchCacheKey(normalizedQuery, languageCode));
@@ -92,7 +92,7 @@ class JobRepository extends BaseRepository {
 
   Future<Result<AppJob>> getJobDetails(String jobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/jobs/$jobId/');
@@ -119,7 +119,7 @@ class JobRepository extends BaseRepository {
 
   Future<Result<Job>> getJobDetailsCached(String jobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData =
           await cacheService.get('job_details_${jobId}_$languageCode');
@@ -136,7 +136,7 @@ class JobRepository extends BaseRepository {
   // getUserCurrentJob
   Future<Result<UserJob?>> getUserCurrentJob() async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/userJobs/current/');
@@ -157,7 +157,7 @@ class JobRepository extends BaseRepository {
 
   Future<Result<UserJob?>> getUserCurrentJobCached() async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData =
           await cacheService.get('user_current_job_$languageCode');
@@ -173,7 +173,7 @@ class JobRepository extends BaseRepository {
 
   Future<Result<UserJob?>> setUserCurrentJob(String jobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.post('/userJobs/current/$jobId');
@@ -195,7 +195,7 @@ class JobRepository extends BaseRepository {
   // getUserJobDetails
   Future<Result<UserJob>> getUserJobDetails(String jobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/userJobs/$jobId/');
@@ -214,7 +214,7 @@ class JobRepository extends BaseRepository {
 
   Future<Result<UserJob>> getUserJobDetailsCached(String jobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData =
           await cacheService.get('user_job_details_${jobId}_$languageCode');
@@ -233,7 +233,7 @@ class JobRepository extends BaseRepository {
       String jobId, String cfId,
       {String? userJobId}) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final String? resolvedUserJobId =
@@ -263,7 +263,7 @@ class JobRepository extends BaseRepository {
       String jobId, String cfId,
       {String? userJobId}) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final String? resolvedUserJobId =
           userJobId != null && userJobId.isNotEmpty ? userJobId : null;
@@ -285,7 +285,7 @@ class JobRepository extends BaseRepository {
   Future<Result<JobRankings>> getRankingForJob(
       String jobId, DateTime? from, DateTime? to) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio
@@ -311,7 +311,7 @@ class JobRepository extends BaseRepository {
   Future<Result<JobRankings>> getRankingForJobCached(
       String jobId, DateTime? from, DateTime? to) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService.get(
           'job_ranking_${jobId}-${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}_$languageCode');
@@ -329,7 +329,7 @@ class JobRepository extends BaseRepository {
   Future<Result<UserJobCompetencyProfile>> fetchUserJobCompetencyProfile(
       String userJobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response =
@@ -352,7 +352,7 @@ class JobRepository extends BaseRepository {
   Future<Result<UserJobCompetencyProfile>> fetchUserJobCompetencyProfileCached(
       String userJobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService
           .get('user_job_competency_profile_${userJobId}_$languageCode');
@@ -373,7 +373,7 @@ class JobRepository extends BaseRepository {
       DateTime? to,
       String? timezone}) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final queryParameters = <String, dynamic>{};
@@ -409,7 +409,7 @@ class JobRepository extends BaseRepository {
       fetchPreviewCompetencyProfileCached(String userJobId,
           {DateTime? from, DateTime? to, String? timezone}) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final tzKey =
           (timezone != null && timezone.isNotEmpty) ? timezone : 'null';

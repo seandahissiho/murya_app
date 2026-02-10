@@ -32,7 +32,7 @@ class ProfileRepository extends BaseRepository {
 
   Future<Result<User>> getMe() async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         while (!initialized) {
@@ -54,7 +54,7 @@ class ProfileRepository extends BaseRepository {
 
   Future<Result<User>> getMeCached() async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData =
           await cacheService.get('user_profile_me_$languageCode');
@@ -71,7 +71,7 @@ class ProfileRepository extends BaseRepository {
   // update Me
   Future<Result<User>> updateMe(User updatedUser, {User? baseline}) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final Response response = await api.dio
@@ -97,7 +97,7 @@ class ProfileRepository extends BaseRepository {
       return Result.failure('userJobId is required for USER_JOB scope');
     }
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final queryParameters = <String, dynamic>{
@@ -132,7 +132,7 @@ class ProfileRepository extends BaseRepository {
       return Result.failure('userJobId is required for USER_JOB scope');
     }
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService.get(
           _questCacheKey('list', scope, timezone, userJobId, languageCode));
@@ -156,7 +156,7 @@ class ProfileRepository extends BaseRepository {
       return Result.failure('userJobId is required for USER_JOB scope');
     }
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final queryParameters = <String, dynamic>{
@@ -191,7 +191,7 @@ class ProfileRepository extends BaseRepository {
       return Result.failure('userJobId is required for USER_JOB scope');
     }
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService.get(
           _questCacheKey('groups', scope, timezone, userJobId, languageCode));
@@ -216,7 +216,7 @@ class ProfileRepository extends BaseRepository {
       return Result.failure('userJobId is required for USER_JOB scope');
     }
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final queryParameters = <String, dynamic>{
@@ -251,7 +251,7 @@ class ProfileRepository extends BaseRepository {
       return Result.failure('userJobId is required for USER_JOB scope');
     }
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService.get(
           _questCacheKey('lineage', scope, timezone, userJobId, languageCode));

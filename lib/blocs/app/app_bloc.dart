@@ -73,7 +73,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   String? newRoute;
   late final AppRepository appRepository;
   EdgeInsets _safeAreaPadding = EdgeInsets.zero;
-  AppLanguage _appLanguage = AppLanguage.french;
+  AppLanguage _appLanguage = AppLanguage.english;
 
   EdgeInsets get safeAreaPadding => _safeAreaPadding;
 
@@ -203,7 +203,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     await localeProvider.load();
     final savedLocale = localeProvider.locale;
     if (savedLocale == null) {
-      _appLanguage = AppLanguage.french;
+      _appLanguage = AppLanguage.english;
     } else {
       _appLanguage = savedLocale.languageCode == 'en' ? AppLanguage.english : AppLanguage.french;
     }

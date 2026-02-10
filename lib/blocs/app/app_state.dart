@@ -13,7 +13,7 @@ sealed class AppState {
     this.showNavBar = true,
     this.oldRoute,
     this.newRoute = AppRoutes.landing,
-    this.language = AppLanguage.french,
+    this.language = AppLanguage.english,
   });
 }
 

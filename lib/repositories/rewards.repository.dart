@@ -45,7 +45,7 @@ class RewardsRepository extends BaseRepository {
     int limit = 20,
   }) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get(
@@ -117,7 +117,7 @@ class RewardsRepository extends BaseRepository {
     int limit = 20,
   }) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService.get(
         _rewardsCacheKey(
@@ -142,7 +142,7 @@ class RewardsRepository extends BaseRepository {
 
   Future<Result<RewardItem>> getRewardById(String rewardId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/rewards/$rewardId');
@@ -174,7 +174,7 @@ class RewardsRepository extends BaseRepository {
 
   Future<Result<RewardItem>> getRewardByIdCached(String rewardId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData =
           await cacheService.get(_rewardItemKey(rewardId, languageCode));
@@ -193,7 +193,7 @@ class RewardsRepository extends BaseRepository {
     int limit = 20,
   }) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get(
@@ -244,7 +244,7 @@ class RewardsRepository extends BaseRepository {
     int limit = 20,
   }) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService.get(
           _purchasesKey(page: page, limit: limit, languageCode: languageCode));
@@ -261,7 +261,7 @@ class RewardsRepository extends BaseRepository {
 
   Future<Result<RewardPurchase>> getPurchaseById(String purchaseId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/me/reward-purchases/$purchaseId');
@@ -287,7 +287,7 @@ class RewardsRepository extends BaseRepository {
   Future<Result<RewardPurchase>> getPurchaseByIdCached(
       String purchaseId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData =
           await cacheService.get(_purchaseKey(purchaseId, languageCode));
@@ -338,7 +338,7 @@ class RewardsRepository extends BaseRepository {
 
   Future<Result<Wallet>> getWallet() async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/me/wallet');
@@ -356,7 +356,7 @@ class RewardsRepository extends BaseRepository {
 
   Future<Result<Wallet>> getWalletCached() async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService.get(_walletKey(languageCode));
       if (cachedData != null) {

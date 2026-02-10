@@ -56,7 +56,7 @@ class QuizRepository extends BaseRepository {
 
   Future<Result<Quiz?>> getQuizForJob(String jobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         while (!initialized) {
@@ -82,7 +82,7 @@ class QuizRepository extends BaseRepository {
 
   Future<Result<Quiz?>> getQuizForJobCached(String jobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData =
           await cacheService.get(_quizCacheKey(jobId, languageCode));
