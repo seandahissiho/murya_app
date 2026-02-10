@@ -30,7 +30,7 @@ Future<dynamic> quizzStartModal(
         children: [
           Expanded(
             child: Text(
-              "Prêt à relever le défi ?",
+              locale.quiz_start_title_challenge,
               style: theme.textTheme.labelLarge,
             ),
           ),
@@ -53,15 +53,15 @@ Future<dynamic> quizzStartModal(
       // Répondez à 10 questions rapides pour générer votre ressource sur-mesure.
       RichText(
           text: TextSpan(
-        text: "Répondez à ",
+        text: locale.quiz_start_prompt_prefix,
         style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
         children: [
           TextSpan(
-            text: "10 questions rapides",
+            text: locale.quiz_start_prompt_emphasis,
             style: theme.textTheme.labelMedium!.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
           ),
           TextSpan(
-            text: " pour générer votre ressource sur-mesure.",
+            text: locale.quiz_start_prompt_suffix,
             style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
           ),
         ],
@@ -69,7 +69,7 @@ Future<dynamic> quizzStartModal(
       AppSpacing.spacing16_Box,
       // Durée : Moins de 5 min
       Text(
-        "Durée : Moins de 5 min",
+        locale.quiz_start_duration,
         style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
       ),
       AppSpacing.spacing16_Box,
@@ -86,12 +86,12 @@ Future<dynamic> quizzStartModal(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "💡 Conseil",
+              locale.quiz_start_tip_title,
               style: theme.textTheme.labelMedium!.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
             ),
             AppSpacing.spacing8_Box,
             Text(
-              "Répondez à l’instinct pour un résultat plus juste !",
+              locale.quiz_start_tip_text,
               style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
             ),
           ],
@@ -159,14 +159,14 @@ Future<void> quizzExitModal(
                 SizedBox(
                   height: 24,
                   child: Text(
-                    "Abandonner l'évaluation ?",
+                    locale.quiz_exit_title,
                     textAlign: TextAlign.start,
                     style: theme.textTheme.labelLarge,
                   ),
                 ),
                 AppSpacing.spacing4_Box,
                 Text(
-                  "Votre progression sera perdue et vous devrez recommencer depuis le début.",
+                  locale.quiz_exit_body,
                   textAlign: TextAlign.start,
                   style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
                 ),
@@ -183,7 +183,7 @@ Future<void> quizzExitModal(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           AppXButton(
-            text: "Quitter",
+            text: locale.quiz_exit_quit,
             shrinkWrap: true,
             onPressed: () {
               navigateToPath(
@@ -202,7 +202,7 @@ Future<void> quizzExitModal(
           ),
           AppSpacing.spacing8_Box,
           AppXButton(
-            text: "Reprendre",
+            text: locale.quiz_exit_resume,
             shrinkWrap: true,
             onPressed: () {
               Navigator.of(context, rootNavigator: true).pop();
@@ -237,7 +237,7 @@ Future<dynamic> quizzEndModal(
         children: [
           Expanded(
             child: Text(
-              "Évaluation terminée !",
+              locale.quiz_completed_title,
               style: theme.textTheme.labelLarge,
             ),
           ),
@@ -249,12 +249,12 @@ Future<dynamic> quizzEndModal(
       const Divider(color: AppColors.borderMedium, height: 0, endIndent: 0, indent: 0),
       AppSpacing.spacing16_Box,
       Text(
-        "Bravo, vos 10 réponses ont été analysées !",
+        locale.quiz_completed_subtitle,
         style: theme.textTheme.labelLarge!.copyWith(color: AppColors.textPrimary),
       ),
       AppSpacing.spacing20_Box,
       Text(
-        "Le diagramme de compétences est actualisé et vous pouvez créer la ressource parfaite pour continuer à progresser.",
+        locale.quiz_completed_description,
         style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
       ),
       AppSpacing.spacing24_Box,
@@ -298,7 +298,7 @@ Future<dynamic> quizzEndModal(
                               ),
                               AppSpacing.spacing2_Box,
                               Text(
-                                "Correct",
+                                locale.quiz_result_correct,
                                 style: theme.textTheme.bodyLarge!.copyWith(color: AppColors.successText),
                               ),
                             ],
@@ -352,7 +352,7 @@ Future<dynamic> quizzEndModal(
                               ),
                               AppSpacing.spacing2_Box,
                               Text(
-                                "Incorrect",
+                                locale.quiz_result_incorrect,
                                 style: theme.textTheme.bodyLarge!.copyWith(color: AppColors.errorText),
                               ),
                             ],
@@ -383,7 +383,7 @@ Future<dynamic> quizzEndModal(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing8, vertical: AppSpacing.spacing4),
                   // Temps : 5 min
                   child: Text(
-                    "Temps : $duration min",
+                    locale.quiz_time_minutes(duration),
                     style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textInverted),
                   ),
                 ),
@@ -394,7 +394,7 @@ Future<dynamic> quizzEndModal(
       ),
       AppSpacing.spacing24_Box,
       AppXButton(
-        text: "Continuer",
+        text: locale.quiz_continue,
         shrinkWrap: false,
         onPressed: () {
           Navigator.of(context, rootNavigator: true).pop(true);

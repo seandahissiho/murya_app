@@ -17,6 +17,12 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
   Duration? nextQuizAvailableIn;
   Timer? _countdownTimer;
 
+  List<CompetencyFamily> get families => _userJob.kiviats.isNotEmpty
+      ? _userJob.kiviats.map((kiviat) => kiviat.competenciesFamily).whereType<CompetencyFamily>().toList()
+      : (_job).competenciesFamilies.isNotEmpty
+          ? (_job).competenciesFamilies
+          : _userJobCompetencyProfile.competencyFamilies;
+
   @override
   void initState() {
     super.initState();
@@ -77,7 +83,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
         },
         builder: (context, state) {
           return AppSkeletonizer(
-            enabled: _job?.id.isEmptyOrNull ?? false,
+            enabled: _job.id.isEmptyOrNull ?? false,
             child: LayoutBuilder(builder: (context, bigConstraints) {
               return ScrollConfiguration(
                 behavior: ScrollConfiguration.of(context).copyWith(
@@ -177,7 +183,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                             Flexible(
                                               child: RichText(
                                                 text: TextSpan(
-                                                  text: _job?.title,
+                                                  text: _job.title,
                                                   style: GoogleFonts.anton(
                                                     color: AppColors.textPrimary,
                                                     fontSize: theme.textTheme.headlineLarge?.fontSize,
@@ -244,7 +250,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                         AppSpacing.spacing24_Box,
                                         Expanded(
                                           child: MarkdownWidget(
-                                            data: _job?.description ?? '',
+                                            data: _job.description ?? '',
                                           ),
                                         ),
                                       ],
@@ -259,8 +265,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                           children: [
                                             _diagramBuilder(locale, theme, options),
                                             if (_userJob.isNotEmpty &&
-                                                (_job?.id.isNotEmptyOrNull ?? false) &&
-                                                (_userJob.jobId == _job?.id || _userJob.jobFamilyId == _job?.id) &&
+                                                (_job.id.isNotEmptyOrNull ?? false) &&
+                                                (_userJob.jobId == _job.id || _userJob.jobFamilyId == _job.id) &&
                                                 _userJob.completedQuizzes > 0) ...[
                                               AppSpacing.spacing16_Box,
                                               _rankingBuilder(locale, theme),
@@ -307,7 +313,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
 
   List<Widget> familiesBuilder() {
     final List<Widget> widgets = [];
-    for (final family in (_job?.competenciesFamilies ?? [])) {
+    for (final family in (_job.competenciesFamilies ?? [])) {
       widgets.add(CFCard(job: _job ?? Job.empty(), family: family));
       widgets.add(AppSpacing.spacing16_Box);
     }
@@ -380,7 +386,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
               child: InteractiveRoundedRadarChart(
                 labels: _job.competenciesFamilies.map((cf) => cf.name).toList() ?? [],
                 defaultValues: _job.kiviatValues(_detailsLevel) ?? [],
-                userValues: _userJob.kiviatsValues,
+                userValues: _userJobCompetencyProfile.kiviatValues,
               ),
             ),
           ],
@@ -403,7 +409,7 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
             SizedBox(
               width: constraints.maxWidth,
               height: constraints.maxWidth / (1.618 * 1.5),
-              child: RankingChart(jobId: _job?.id! ?? ''),
+              child: RankingChart(jobId: _job.id! ?? ''),
             )
           ],
         ),

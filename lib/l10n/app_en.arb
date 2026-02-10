@@ -410,6 +410,71 @@
   "@quiz_ready_to_evaluate": {
     "description": "Title of the popup before starting the quiz"
   },
+  "quiz_start_title_challenge": "Ready to take the challenge?",
+  "@quiz_start_title_challenge": {
+    "description": "Title of the quiz start popup (challenge)"
+  },
+  "quiz_start_prompt_prefix": "Answer ",
+  "@quiz_start_prompt_prefix": {
+    "description": "Prefix before the emphasized part of the quiz start prompt"
+  },
+  "quiz_start_prompt_emphasis": "10 quick questions",
+  "@quiz_start_prompt_emphasis": {
+    "description": "Emphasized text indicating the number of quick questions"
+  },
+  "quiz_start_prompt_suffix": " to generate your tailored resource.",
+  "@quiz_start_prompt_suffix": {
+    "description": "Suffix after the emphasized part of the quiz start prompt"
+  },
+  "quiz_start_duration": "Duration: Less than 5 min",
+  "@quiz_start_duration": {
+    "description": "Estimated quiz duration at start"
+  },
+  "quiz_start_tip_title": "💡 Tip",
+  "@quiz_start_tip_title": {
+    "description": "Title of the tip block at quiz start"
+  },
+  "quiz_start_tip_text": "Answer instinctively for a more accurate result!",
+  "@quiz_start_tip_text": {
+    "description": "Tip text at quiz start"
+  },
+  "quiz_exit_title": "Quit the assessment?",
+  "@quiz_exit_title": {
+    "description": "Title of the quiz exit popup"
+  },
+  "quiz_exit_body": "Your progress will be lost and you will have to start over from the beginning.",
+  "@quiz_exit_body": {
+    "description": "Description of the quiz exit popup"
+  },
+  "quiz_exit_quit": "Quit",
+  "@quiz_exit_quit": {
+    "description": "Button to quit the quiz"
+  },
+  "quiz_exit_resume": "Resume",
+  "@quiz_exit_resume": {
+    "description": "Button to resume the quiz"
+  },
+  "quiz_result_correct": "Correct",
+  "@quiz_result_correct": {
+    "description": "Label for correct answers in the quiz summary"
+  },
+  "quiz_result_incorrect": "Incorrect",
+  "@quiz_result_incorrect": {
+    "description": "Label for incorrect answers in the quiz summary"
+  },
+  "quiz_time_minutes": "Time: {minutes} min",
+  "@quiz_time_minutes": {
+    "description": "Quiz time label in minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "quiz_continue": "Continue",
+  "@quiz_continue": {
+    "description": "Button to continue after the quiz ends"
+  },
   "quiz_start_description_1": "You''re about to start the Product Manager questionnaire.",
   "@quiz_start_description_1": {
     "description": "First line of the quiz start description"

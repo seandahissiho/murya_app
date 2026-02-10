@@ -674,6 +674,96 @@ abstract class AppLocalizations {
   /// **'Prêt(e) à vous évaluer ?'**
   String get quiz_ready_to_evaluate;
 
+  /// Titre de la popup de démarrage du quiz (challenge)
+  ///
+  /// In fr, this message translates to:
+  /// **'Prêt à relever le défi ?'**
+  String get quiz_start_title_challenge;
+
+  /// Préfixe avant la partie mise en valeur du texte de démarrage du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Répondez à '**
+  String get quiz_start_prompt_prefix;
+
+  /// Texte mis en valeur indiquant le nombre de questions rapides
+  ///
+  /// In fr, this message translates to:
+  /// **'10 questions rapides'**
+  String get quiz_start_prompt_emphasis;
+
+  /// Suffixe après la partie mise en valeur du texte de démarrage du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **' pour générer votre ressource sur-mesure.'**
+  String get quiz_start_prompt_suffix;
+
+  /// Durée estimée du quiz au démarrage
+  ///
+  /// In fr, this message translates to:
+  /// **'Durée : Moins de 5 min'**
+  String get quiz_start_duration;
+
+  /// Titre du bloc conseil au démarrage du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'💡 Conseil'**
+  String get quiz_start_tip_title;
+
+  /// Texte du conseil au démarrage du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Répondez à l’instinct pour un résultat plus juste !'**
+  String get quiz_start_tip_text;
+
+  /// Titre du popup de sortie du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Abandonner l\'\'évaluation ?'**
+  String get quiz_exit_title;
+
+  /// Description du popup de sortie du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Votre progression sera perdue et vous devrez recommencer depuis le début.'**
+  String get quiz_exit_body;
+
+  /// Bouton pour quitter le quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Quitter'**
+  String get quiz_exit_quit;
+
+  /// Bouton pour reprendre le quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Reprendre'**
+  String get quiz_exit_resume;
+
+  /// Libellé pour les réponses correctes dans le résumé du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Correct'**
+  String get quiz_result_correct;
+
+  /// Libellé pour les réponses incorrectes dans le résumé du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Incorrect'**
+  String get quiz_result_incorrect;
+
+  /// Libellé du temps du quiz en minutes
+  ///
+  /// In fr, this message translates to:
+  /// **'Temps : {minutes} min'**
+  String quiz_time_minutes(int minutes);
+
+  /// Bouton pour continuer après la fin du quiz
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer'**
+  String get quiz_continue;
+
   /// Première ligne de description du début du quiz
   ///
   /// In fr, this message translates to:

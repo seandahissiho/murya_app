@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -100,7 +99,6 @@ class _RankingChartState extends State<RankingChart> {
                 builder: (context, constraints) {
                   final isMobile = DeviceHelper.isMobile(context);
                   final currentUserId = widget.userId ?? context.read<ProfileBloc>().state.user.id;
-                  log("Current user ID: $currentUserId");
                   JobRanking? firstRanking = _ranking.rankings.firstWhereOrNull((r) => r.rank == 1);
                   // first quartile
                   JobRanking? firstQuartileRanking =

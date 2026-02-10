@@ -410,6 +410,71 @@
   "@quiz_ready_to_evaluate": {
     "description": "Titre de la popup avant de commencer le quiz"
   },
+  "quiz_start_title_challenge": "Prêt à relever le défi ?",
+  "@quiz_start_title_challenge": {
+    "description": "Titre de la popup de démarrage du quiz (challenge)"
+  },
+  "quiz_start_prompt_prefix": "Répondez à ",
+  "@quiz_start_prompt_prefix": {
+    "description": "Préfixe avant la partie mise en valeur du texte de démarrage du quiz"
+  },
+  "quiz_start_prompt_emphasis": "10 questions rapides",
+  "@quiz_start_prompt_emphasis": {
+    "description": "Texte mis en valeur indiquant le nombre de questions rapides"
+  },
+  "quiz_start_prompt_suffix": " pour générer votre ressource sur-mesure.",
+  "@quiz_start_prompt_suffix": {
+    "description": "Suffixe après la partie mise en valeur du texte de démarrage du quiz"
+  },
+  "quiz_start_duration": "Durée : Moins de 5 min",
+  "@quiz_start_duration": {
+    "description": "Durée estimée du quiz au démarrage"
+  },
+  "quiz_start_tip_title": "💡 Conseil",
+  "@quiz_start_tip_title": {
+    "description": "Titre du bloc conseil au démarrage du quiz"
+  },
+  "quiz_start_tip_text": "Répondez à l’instinct pour un résultat plus juste !",
+  "@quiz_start_tip_text": {
+    "description": "Texte du conseil au démarrage du quiz"
+  },
+  "quiz_exit_title": "Abandonner l''évaluation ?",
+  "@quiz_exit_title": {
+    "description": "Titre du popup de sortie du quiz"
+  },
+  "quiz_exit_body": "Votre progression sera perdue et vous devrez recommencer depuis le début.",
+  "@quiz_exit_body": {
+    "description": "Description du popup de sortie du quiz"
+  },
+  "quiz_exit_quit": "Quitter",
+  "@quiz_exit_quit": {
+    "description": "Bouton pour quitter le quiz"
+  },
+  "quiz_exit_resume": "Reprendre",
+  "@quiz_exit_resume": {
+    "description": "Bouton pour reprendre le quiz"
+  },
+  "quiz_result_correct": "Correct",
+  "@quiz_result_correct": {
+    "description": "Libellé pour les réponses correctes dans le résumé du quiz"
+  },
+  "quiz_result_incorrect": "Incorrect",
+  "@quiz_result_incorrect": {
+    "description": "Libellé pour les réponses incorrectes dans le résumé du quiz"
+  },
+  "quiz_time_minutes": "Temps : {minutes} min",
+  "@quiz_time_minutes": {
+    "description": "Libellé du temps du quiz en minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "quiz_continue": "Continuer",
+  "@quiz_continue": {
+    "description": "Bouton pour continuer après la fin du quiz"
+  },
   "quiz_start_description_1": "Vous allez démarrer le questionnaire du métier de Product Manager.",
   "@quiz_start_description_1": {
     "description": "Première ligne de description du début du quiz"

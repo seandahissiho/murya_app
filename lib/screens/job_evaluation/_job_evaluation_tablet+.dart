@@ -16,6 +16,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
   int currentQuestionIndex = -1;
   bool quizLoaded = false;
   bool started = false;
+  final Stopwatch _quizStopwatch = Stopwatch();
   final List<QuizResponse> answers = [];
   List<int> pointsPerQuestion = [];
   int _currentStreak = 0;
@@ -57,6 +58,7 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       quizzStartModal(context, jobId: jobId, jobTitle: widget.jobTitle ?? '').then((value) {
         if (value == true) {
           started = true;
+          _quizStopwatch.reset();
           setState(() {});
           Future.delayed(const Duration(milliseconds: 250), () async {
             while (mounted && !quizLoaded) {
@@ -836,6 +838,8 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       // Quiz is over
       final theme = Theme.of(context);
       final localizations = AppLocalizations.of(context)!;
+      _quizStopwatch.stop();
+      final int elapsedMinutes = (_quizStopwatch.elapsed.inSeconds / 60).ceil();
 
       context.read<QuizBloc>().add(SaveQuizResults(
             jobId: jobId,
@@ -845,12 +849,15 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
             context: context,
           ));
 
+      final earnedDIAMONDS = pointsPerQuestion.fold(
+          0, (int previousValue, element) => previousValue + element < 0 ? 0 : previousValue + element);
+
       quizzEndModal(
         context,
-        duration: 10,
-        score: 99999,
-        goodAnswers: 4,
-        badAnswers: 6,
+        duration: elapsedMinutes,
+        score: earnedDIAMONDS,
+        goodAnswers: answers.where((element) => element.isCorrect).length,
+        badAnswers: answers.where((element) => !element.isCorrect).length,
       ).then((value) {
         if (!mounted) return;
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -862,7 +869,11 @@ class _TabletJobEvaluationScreenState extends State<TabletJobEvaluationScreen> w
       });
     }
     _isAnswerResolved = false;
+    if (currentQuestionIndex >= quiz.questionResponses.length) return;
     currentQuestion = quiz.questionResponses[currentQuestionIndex];
+    if (currentQuestionIndex == 0 && !_quizStopwatch.isRunning && _quizStopwatch.elapsed == Duration.zero) {
+      _quizStopwatch.start();
+    }
     _countdown?.removeStatusListener(_listener);
     // _countdown?.dispose();
     _countdown = AnimationController(vsync: this, duration: currentQuestion?.question.timeLimit ?? _total);
