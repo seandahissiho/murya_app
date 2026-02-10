@@ -37,7 +37,7 @@ class SearchRepository extends BaseRepository {
   }) async {
     final normalized = _normalizeQuery(query);
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return await AppResponse.execute<SearchResponse>(
       parentFunctionName: 'SearchRepository.search',
       action: () async {
@@ -99,7 +99,7 @@ class SearchRepository extends BaseRepository {
   }) async {
     final normalized = _normalizeQuery(query);
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService.get(
         _searchCacheKey(

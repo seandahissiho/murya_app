@@ -21,7 +21,7 @@ class NotificationRepository extends BaseRepository {
     required int page,
   }) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         Map<String, dynamic> queryParams = {};
@@ -83,7 +83,7 @@ class NotificationRepository extends BaseRepository {
     required int page,
   }) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService
           .get(_notificationsCacheKey(selectedCategories, page, languageCode));

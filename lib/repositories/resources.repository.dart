@@ -40,7 +40,7 @@ class ResourcesRepository extends BaseRepository {
 
   Future<Result<List<Resource>>> fetchResources(String userJobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final response = await api.dio.get('/userJobs/$userJobId/resources');
@@ -122,7 +122,7 @@ class ResourcesRepository extends BaseRepository {
 
   Future<Result<List<Resource>>> fetchResourcesCached(String userJobId) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService
           .get('user_job_resources_${userJobId}_$languageCode');
@@ -143,7 +143,7 @@ class ResourcesRepository extends BaseRepository {
     required Resource updated,
   }) async {
     final languageCode =
-        api.dio.options.headers['accept-language']?.toString() ?? 'fr';
+        api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
       final cachedData = await cacheService
           .get('user_job_resources_${userJobId}_$languageCode');
