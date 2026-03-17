@@ -44,14 +44,17 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
       final history = Beamer.of(context).beamingHistory;
       if (history.length > 1) {
         final lastBeamState = history[history.length - 2];
-        final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
+        final lastPath = lastBeamState.state.routeInformation.uri.path
+            .toString(); // ← ceci est le path
         fromSearch = lastPath == AppRoutes.searchModule;
         setState(() {});
         // load resource content if needed
         if (fromSearch) {
           final resourceId = resource.id;
           if (resourceId != null && resourceId.isNotEmpty) {
-            context.read<ResourcesBloc>().add(LoadResourceDetails(resourceId: resourceId));
+            context
+                .read<ResourcesBloc>()
+                .add(LoadResourceDetails(resourceId: resourceId));
           }
         }
       }
@@ -119,24 +122,31 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
             children: [
               Row(
                 children: [
-                  AppXReturnButton(destination: fromSearch ? AppRoutes.searchModule : AppRoutes.userRessourcesModule),
+                  AppXReturnButton(
+                      destination: fromSearch
+                          ? AppRoutes.searchModule
+                          : AppRoutes.userRessourcesModule),
                   AppSpacing.spacing16_Box,
                   Expanded(
                     child: AppBreadcrumb(
                       items: [
                         BreadcrumbItem(
-                          label: !fromSearch
-                              ? AppLocalizations.of(context).mediaLibrary
-                              : AppLocalizations.of(context).search_filter_resource,
-                          onTap: () => navigateToPath(context,
-                              to: !fromSearch ? AppRoutes.userRessourcesModule : AppRoutes.searchModule),
+                          label: _viewerBreadcrumbLabel(
+                            AppLocalizations.of(context),
+                            fromSearch: fromSearch,
+                          ),
+                          onTap: () => navigateToPath(
+                            context,
+                            to: _viewerBreadcrumbRoute(fromSearch: fromSearch),
+                          ),
                         ),
                         BreadcrumbItem(label: resource.title ?? ''),
                       ],
                       inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
                         color: AppColors.textTertiary,
                       ),
-                      inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                      inactiveHoverTextStyle:
+                          theme.textTheme.bodyMedium?.copyWith(
                         color: AppColors.textPrimary, // hover
                         decoration: TextDecoration.underline, // optionnel
                       ),
@@ -248,16 +258,20 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
                                 ),
                               ),
                               // Cover image
-                              if (resource.thumbnailUrl != null && resource.thumbnailUrl!.isNotEmpty)
+                              if (resource.thumbnailUrl != null &&
+                                  resource.thumbnailUrl!.isNotEmpty)
                                 Positioned.fill(
                                   child: ClipRRect(
                                     borderRadius: AppRadius.small,
                                     child: Image.network(
                                       resource.thumbnailUrl!,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) => Container(
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Container(
                                         color: AppColors.borderLight,
-                                        child: const Icon(Icons.broken_image, color: AppColors.textTertiary),
+                                        child: const Icon(Icons.broken_image,
+                                            color: AppColors.textTertiary),
                                       ),
                                     ),
                                   ),
@@ -352,8 +366,9 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
       builder: (context, snapshot) {
         final state = snapshot.data;
         final isPlaying = state?.playing ?? false;
-        final isLoading = state?.processingState == just_audio.ProcessingState.loading ||
-            state?.processingState == just_audio.ProcessingState.buffering;
+        final isLoading =
+            state?.processingState == just_audio.ProcessingState.loading ||
+                state?.processingState == just_audio.ProcessingState.buffering;
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -363,7 +378,9 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
             ),
             AppSpacing.spacing16_Box,
             _ControlIconButton(
-              icon: isLoading ? Icons.hourglass_empty : (isPlaying ? Icons.pause_circle : Icons.play_circle),
+              icon: isLoading
+                  ? Icons.hourglass_empty
+                  : (isPlaying ? Icons.pause_circle : Icons.play_circle),
               size: 64,
               onTap: isLoading || _error != null ? null : _togglePlay,
             ),
@@ -387,7 +404,8 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
       builder: (context, snapshot) {
         final position = snapshot.data ?? Duration.zero;
         final duration = _duration ?? Duration.zero;
-        final maxMillis = duration.inMilliseconds.toDouble().clamp(1.0, double.infinity);
+        final maxMillis =
+            duration.inMilliseconds.toDouble().clamp(1.0, double.infinity);
         final value = position.inMilliseconds.toDouble().clamp(0.0, maxMillis);
         _updateProgress(position, duration);
         return Padding(
@@ -416,7 +434,8 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Text("${_formatDuration(position)} / ${_formatDuration(duration)}"),
+                    Text(
+                        "${_formatDuration(position)} / ${_formatDuration(duration)}"),
                   ],
                 ),
               ),
@@ -433,7 +452,9 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
       builder: (context, snapshot) {
         final position = snapshot.data ?? Duration.zero;
         final duration = _duration ?? Duration.zero;
-        final progress = duration.inMilliseconds > 0 ? position.inMilliseconds / duration.inMilliseconds : 0.0;
+        final progress = duration.inMilliseconds > 0
+            ? position.inMilliseconds / duration.inMilliseconds
+            : 0.0;
         _updateProgress(position, duration);
         return Column(
           children: [
@@ -441,8 +462,10 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
               builder: (context, constraints) {
                 final width = constraints.maxWidth;
                 return GestureDetector(
-                  onTapDown: (details) => _seekToOffset(details.localPosition.dx, width),
-                  onHorizontalDragUpdate: (details) => _seekToOffset(details.localPosition.dx, width),
+                  onTapDown: (details) =>
+                      _seekToOffset(details.localPosition.dx, width),
+                  onHorizontalDragUpdate: (details) =>
+                      _seekToOffset(details.localPosition.dx, width),
                   child: SizedBox(
                     height: 84,
                     width: double.infinity,
@@ -476,7 +499,8 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
     final duration = _duration ?? Duration.zero;
     if (duration == Duration.zero) return;
     final ratio = (dx / width).clamp(0.0, 1.0);
-    _player.seek(Duration(milliseconds: (duration.inMilliseconds * ratio).round()));
+    _player.seek(
+        Duration(milliseconds: (duration.inMilliseconds * ratio).round()));
   }
 
   void _togglePlay() {
@@ -523,12 +547,16 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
     final resourceId = resource.id;
     if (resourceId == null || resourceId.isEmpty) return;
     final existingProgress = resource.userState?.progress;
-    if (resource.userState?.readAt != null && (existingProgress == null || _lastProgress <= existingProgress + 0.01)) {
+    if (resource.userState?.readAt != null &&
+        (existingProgress == null ||
+            _lastProgress <= existingProgress + 0.01)) {
       return;
     }
     _readSent = true;
     final progress = _lastProgress > 0 ? _lastProgress : null;
-    context.read<ResourcesBloc>().add(ReadResource(resourceId: resourceId, progress: progress));
+    context
+        .read<ResourcesBloc>()
+        .add(ReadResource(resourceId: resourceId, progress: progress));
   }
 
   String _errorMessage(BuildContext context) {
@@ -551,7 +579,10 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
     if (waveform is Map) {
       final peaks = waveform['peaks'];
       if (peaks is List) {
-        _waveformPeaks = peaks.whereType<num>().map((value) => value.toDouble().clamp(0.0, 1.0)).toList();
+        _waveformPeaks = peaks
+            .whereType<num>()
+            .map((value) => value.toDouble().clamp(0.0, 1.0))
+            .toList();
       }
     }
   }
@@ -571,7 +602,8 @@ class _PodcastViewerScreenState extends State<PodcastViewerScreen> {
           width: 1,
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16, vertical: AppSpacing.spacing16),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.spacing16, vertical: AppSpacing.spacing16),
       child: Row(
         children: [
           AppXPlayButton(

@@ -21,7 +21,8 @@ class MobileArticleViewerScreen extends StatefulWidget {
   const MobileArticleViewerScreen({super.key, required this.resource});
 
   @override
-  State<MobileArticleViewerScreen> createState() => _MobileArticleViewerScreenState();
+  State<MobileArticleViewerScreen> createState() =>
+      _MobileArticleViewerScreenState();
 }
 
 class _MobileArticleViewerScreenState extends State<MobileArticleViewerScreen> {
@@ -39,7 +40,9 @@ class _MobileArticleViewerScreenState extends State<MobileArticleViewerScreen> {
     if (resourceId == null || resourceId.isEmpty) return;
     if (widget.resource.userState?.readAt != null) return;
     _readSent = true;
-    context.read<ResourcesBloc>().add(ReadResource(resourceId: resourceId, progress: 1.0));
+    context
+        .read<ResourcesBloc>()
+        .add(ReadResource(resourceId: resourceId, progress: 1.0));
   }
 
   @override
@@ -72,7 +75,8 @@ class TabletArticleViewerScreen extends StatefulWidget {
   const TabletArticleViewerScreen({super.key, required this.resource});
 
   @override
-  State<TabletArticleViewerScreen> createState() => _TabletArticleViewerScreenState();
+  State<TabletArticleViewerScreen> createState() =>
+      _TabletArticleViewerScreenState();
 }
 
 class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
@@ -93,14 +97,17 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
       final history = Beamer.of(context).beamingHistory;
       if (history.length > 1) {
         final lastBeamState = history[history.length - 2];
-        final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
+        final lastPath = lastBeamState.state.routeInformation.uri.path
+            .toString(); // ← ceci est le path
         fromSearch = lastPath == AppRoutes.searchModule;
         setState(() {});
         // load resource content if needed
         if (fromSearch) {
           final resourceId = widget.resource.id;
           if (resourceId != null && resourceId.isNotEmpty) {
-            context.read<ResourcesBloc>().add(LoadResourceDetails(resourceId: resourceId));
+            context
+                .read<ResourcesBloc>()
+                .add(LoadResourceDetails(resourceId: resourceId));
           }
         }
       }
@@ -110,7 +117,8 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
   @override
   void didUpdateWidget(covariant TabletArticleViewerScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.resource.userState?.isLikedAt != widget.resource.userState?.isLikedAt) {
+    if (oldWidget.resource.userState?.isLikedAt !=
+        widget.resource.userState?.isLikedAt) {
       _syncLikeState();
     }
   }
@@ -131,7 +139,9 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
     if (resourceId == null || resourceId.isEmpty) return;
     if (widget.resource.userState?.readAt != null) return;
     _readSent = true;
-    context.read<ResourcesBloc>().add(ReadResource(resourceId: resourceId, progress: 1.0));
+    context
+        .read<ResourcesBloc>()
+        .add(ReadResource(resourceId: resourceId, progress: 1.0));
   }
 
   @override
@@ -142,17 +152,23 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
       children: [
         Row(
           children: [
-            AppXReturnButton(destination: fromSearch ? AppRoutes.searchModule : AppRoutes.userRessourcesModule),
+            AppXReturnButton(
+                destination: fromSearch
+                    ? AppRoutes.searchModule
+                    : AppRoutes.userRessourcesModule),
             AppSpacing.spacing16_Box,
             Expanded(
               child: AppBreadcrumb(
                 items: [
                   BreadcrumbItem(
-                    label: !fromSearch
-                        ? AppLocalizations.of(context).mediaLibrary
-                        : AppLocalizations.of(context).search_filter_resource,
-                    onTap: () => navigateToPath(context,
-                        to: !fromSearch ? AppRoutes.userRessourcesModule : AppRoutes.searchModule),
+                    label: _viewerBreadcrumbLabel(
+                      AppLocalizations.of(context),
+                      fromSearch: fromSearch,
+                    ),
+                    onTap: () => navigateToPath(
+                      context,
+                      to: _viewerBreadcrumbRoute(fromSearch: fromSearch),
+                    ),
                   ),
                   BreadcrumbItem(label: widget.resource.title ?? ''),
                 ],
@@ -179,10 +195,13 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
               final double maxWidth = constraints.maxWidth;
               const double gap = AppSpacing.spacing16;
               const double collapsedWidth = 10.0;
-              final double availableWidth = (maxWidth - gap).clamp(0.0, maxWidth).toDouble();
+              final double availableWidth =
+                  (maxWidth - gap).clamp(0.0, maxWidth).toDouble();
               final double expandedWidth = availableWidth / 3;
               final double summaryWidth =
-                  (_isSummaryCollapsed ? collapsedWidth : expandedWidth).clamp(72.0, availableWidth).toDouble();
+                  (_isSummaryCollapsed ? collapsedWidth : expandedWidth)
+                      .clamp(72.0, availableWidth)
+                      .toDouble();
               return Row(
                 children: [
                   AnimatedContainer(
@@ -192,7 +211,8 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                     onEnd: () async {
                       _showSummaryText = false;
                       setState(() {});
-                      await Future.delayed(const Duration(milliseconds: 500), () {
+                      await Future.delayed(const Duration(milliseconds: 500),
+                          () {
                         if (mounted) {
                           setState(() {
                             _showSummaryText = !_isSummaryCollapsed;
@@ -219,14 +239,16 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 if (!_isSummaryCollapsed) ...[
-                                  Text(AppLocalizations.of(context).summary, style: theme.textTheme.labelLarge),
+                                  Text(AppLocalizations.of(context).summary,
+                                      style: theme.textTheme.labelLarge),
                                   const Spacer(),
                                 ],
                                 // retract summary button
                                 InkWell(
                                   onTap: () {
                                     setState(() {
-                                      _isSummaryCollapsed = !_isSummaryCollapsed;
+                                      _isSummaryCollapsed =
+                                          !_isSummaryCollapsed;
                                     });
                                   },
                                   child: Transform.scale(
@@ -234,7 +256,9 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                     scaleY: 1.0,
                                     child: SvgPicture.asset(
                                       AppIcons.windowResizeLeftPath,
-                                      colorFilter: const ColorFilter.mode(AppColors.textPrimary, BlendMode.srcATop),
+                                      colorFilter: const ColorFilter.mode(
+                                          AppColors.textPrimary,
+                                          BlendMode.srcATop),
                                     ),
                                   ),
                                 ),
@@ -260,10 +284,13 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                   final index = data.index;
                                   final toc = data.toc;
                                   final node = toc.node;
-                                  final level = headingTag2Level[node.headingConfig.tag] ?? 1;
+                                  final level = headingTag2Level[
+                                          node.headingConfig.tag] ??
+                                      1;
 
                                   final bool isHovered = hoveredIndex == index;
-                                  final bool isSelected = data.currentIndex == index;
+                                  final bool isSelected =
+                                      data.currentIndex == index;
 
                                   return MouseRegion(
                                     onHover: (_) {
@@ -279,7 +306,8 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                     child: InkWell(
                                       onTap: () {
                                         // scroll markdown to the corresponding heading
-                                        tocController.jumpToIndex(toc.widgetIndex);
+                                        tocController
+                                            .jumpToIndex(toc.widgetIndex);
 
                                         // update TocWidget's current index
                                         data.refreshIndexCallback(index);
@@ -288,64 +316,87 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                         decoration: BoxDecoration(
                                           // rgba(98, 70, 234, 0.15)
                                           color: (isSelected)
-                                              ? const Color.fromRGBO(98, 70, 234, 0.15)
+                                              ? const Color.fromRGBO(
+                                                  98, 70, 234, 0.15)
                                               : (isHovered
-                                                  ? const Color.fromRGBO(98, 70, 234, .05)
+                                                  ? const Color.fromRGBO(
+                                                      98, 70, 234, .05)
                                                   : Colors.transparent),
                                           borderRadius: AppRadius.tiny,
                                           border: Border.all(
                                             color: isSelected
-                                                ? const Color.fromRGBO(98, 70, 234, 1)
+                                                ? const Color.fromRGBO(
+                                                    98, 70, 234, 1)
                                                 : (isHovered
-                                                    ? const Color.fromRGBO(98, 70, 234, .25)
+                                                    ? const Color.fromRGBO(
+                                                        98, 70, 234, .25)
                                                     : Colors.transparent),
                                             width: 1,
                                           ),
                                         ),
                                         padding: EdgeInsets.symmetric(
                                           vertical: AppSpacing.spacing12,
-                                          horizontal: _isSummaryCollapsed ? AppSpacing.spacing8 : AppSpacing.spacing12,
+                                          horizontal: _isSummaryCollapsed
+                                              ? AppSpacing.spacing8
+                                              : AppSpacing.spacing12,
                                         ),
                                         child: Padding(
-                                          padding: EdgeInsets.only(left: 12.0 * (level - 1) * 0),
+                                          padding: EdgeInsets.only(
+                                              left: 12.0 * (level - 1) * 0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment: _isSummaryCollapsed
-                                                ? MainAxisAlignment.center
-                                                : MainAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                _isSummaryCollapsed
+                                                    ? MainAxisAlignment.center
+                                                    : MainAxisAlignment.start,
                                             children: [
                                               // bullet
                                               Container(
                                                 decoration: BoxDecoration(
-                                                  color: AppColors.secondaryDefault,
+                                                  color: AppColors
+                                                      .secondaryDefault,
                                                   shape: BoxShape.circle,
                                                   border: Border.all(
-                                                    color: AppColors.borderMedium,
+                                                    color:
+                                                        AppColors.borderMedium,
                                                     width: 1,
                                                   ),
                                                 ),
-                                                padding:
-                                                    const EdgeInsets.all(AppSpacing.spacing8 + AppSpacing.spacing2),
+                                                padding: const EdgeInsets.all(
+                                                    AppSpacing.spacing8 +
+                                                        AppSpacing.spacing2),
                                                 child: Center(
-                                                  child: Text((index + 1).toString()),
+                                                  child: Text(
+                                                      (index + 1).toString()),
                                                 ),
                                               ),
-                                              if (_showSummaryText && !_isSummaryCollapsed) ...[
+                                              if (_showSummaryText &&
+                                                  !_isSummaryCollapsed) ...[
                                                 AppSpacing.spacing8_Box,
                                                 // actual heading title from markdown
                                                 Expanded(
                                                   child: ProxyRichText(
                                                     node
                                                         .copy(
-                                                          headingConfig: _TocHeadingConfig(
+                                                          headingConfig:
+                                                              _TocHeadingConfig(
                                                             // use your theme style but you can switch for selected if you want
                                                             (isSelected
-                                                                    ? theme.textTheme.bodyLarge
-                                                                        ?.copyWith(color: AppColors.textPrimary)
-                                                                    : theme.textTheme.bodyLarge
-                                                                        ?.copyWith(color: AppColors.textPrimary)) ??
+                                                                    ? theme
+                                                                        .textTheme
+                                                                        .bodyLarge
+                                                                        ?.copyWith(
+                                                                            color: AppColors
+                                                                                .textPrimary)
+                                                                    : theme
+                                                                        .textTheme
+                                                                        .bodyLarge
+                                                                        ?.copyWith(
+                                                                            color:
+                                                                                AppColors.textPrimary)) ??
                                                                 defaultTocTextStyle,
-                                                            node.headingConfig.tag,
+                                                            node.headingConfig
+                                                                .tag,
                                                           ),
                                                         )
                                                         .build(),
@@ -380,7 +431,8 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(AppSpacing.spacing24),
-                            child: Text(AppLocalizations.of(context).article, style: theme.textTheme.labelLarge),
+                            child: Text(AppLocalizations.of(context).article,
+                                style: theme.textTheme.labelLarge),
                           ),
                           const Divider(
                             height: 0,
@@ -389,7 +441,8 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                           ),
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.all(AppSpacing.spacing24),
+                              padding:
+                                  const EdgeInsets.all(AppSpacing.spacing24),
                               child: _ArticleScrollableContent(
                                 tocController: tocController,
                                 data: widget.resource.content ?? '',
@@ -408,18 +461,23 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                     ),
                                     // asset image
                                     image: DecorationImage(
-                                      image: AssetImage(AppImages.articleHeaderPath),
+                                      image: AssetImage(
+                                          AppImages.articleHeaderPath),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
-                                  padding: const EdgeInsets.all(AppSpacing.spacing24),
+                                  padding: const EdgeInsets.all(
+                                      AppSpacing.spacing24),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       AppSpacing.spacing20_Box,
                                       ResourceIconWidget(
-                                          resource: widget.resource, outlined: true, color: AppColors.whiteSwatch),
+                                          resource: widget.resource,
+                                          outlined: true,
+                                          color: AppColors.whiteSwatch),
                                       AppSpacing.spacing16_Box,
                                       Text(
                                         (widget.resource.title ?? ''),
@@ -435,15 +493,18 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                       ),
                                       AppSpacing.spacing16_Box,
                                       Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           // 3 minutes - Mardi 6 janvier 2026
                                           Text(
                                             (() {
-                                              final locale = AppLocalizations.of(context);
+                                              final locale =
+                                                  AppLocalizations.of(context);
                                               return '${_formatDurationFromSeconds(locale, widget.resource.estimatedDuration)} - ${DateFormat('EEEE d MMMM y', locale.localeName).format(widget.resource.createdAt ?? DateTime.now())}';
                                             })(),
-                                            style: theme.textTheme.bodyMedium?.copyWith(
+                                            style: theme.textTheme.bodyMedium
+                                                ?.copyWith(
                                               color: AppColors.whiteSwatch,
                                             ),
                                           ),
@@ -452,7 +513,8 @@ class _TabletArticleViewerScreenState extends State<TabletArticleViewerScreen> {
                                           AppXLikeButton(
                                             liked: _isLiked,
                                             onPressed: () {
-                                              final resourceId = widget.resource.id ?? '';
+                                              final resourceId =
+                                                  widget.resource.id ?? '';
                                               if (resourceId.isEmpty) return;
                                               final nextLiked = !_isLiked;
                                               setState(() {
@@ -504,7 +566,8 @@ class _ArticleScrollableContent extends StatefulWidget {
   });
 
   @override
-  State<_ArticleScrollableContent> createState() => _ArticleScrollableContentState();
+  State<_ArticleScrollableContent> createState() =>
+      _ArticleScrollableContentState();
 }
 
 class _ArticleScrollableContentState extends State<_ArticleScrollableContent> {
@@ -519,7 +582,8 @@ class _ArticleScrollableContentState extends State<_ArticleScrollableContent> {
   void initState() {
     super.initState();
     widget.tocController.jumpToIndexCallback = (index) {
-      _controller.scrollToIndex(index + _headerCount, preferPosition: AutoScrollPosition.begin);
+      _controller.scrollToIndex(index + _headerCount,
+          preferPosition: AutoScrollPosition.begin);
     };
     _updateState();
   }
@@ -573,7 +637,8 @@ class _ArticleScrollableContentState extends State<_ArticleScrollableContent> {
           }
           final mdIndex = index - _headerCount;
           final child = _widgets[mdIndex];
-          return wrapByAutoScroll(index, _wrapByVisibilityDetector(mdIndex, child), _controller);
+          return wrapByAutoScroll(
+              index, _wrapByVisibilityDetector(mdIndex, child), _controller);
         },
       ),
     );
@@ -586,9 +651,13 @@ class _ArticleScrollableContentState extends State<_ArticleScrollableContent> {
       onVisibilityChanged: (info) {
         final visibleFraction = info.visibleFraction;
         if (_isForward) {
-          visibleFraction == 0 ? _indexTreeSet.remove(index) : _indexTreeSet.add(index);
+          visibleFraction == 0
+              ? _indexTreeSet.remove(index)
+              : _indexTreeSet.add(index);
         } else {
-          visibleFraction == 1.0 ? _indexTreeSet.add(index) : _indexTreeSet.remove(index);
+          visibleFraction == 1.0
+              ? _indexTreeSet.add(index)
+              : _indexTreeSet.remove(index);
         }
         if (_indexTreeSet.isNotEmpty) {
           widget.tocController.onIndexChanged(_indexTreeSet.first);

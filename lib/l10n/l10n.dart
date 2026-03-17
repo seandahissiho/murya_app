@@ -626,6 +626,12 @@ abstract class AppLocalizations {
   /// **'Recherche Principale'**
   String get mainSearchTitle;
 
+  /// Libellé court de la page de recherche pour le fil d'ariane
+  ///
+  /// In fr, this message translates to:
+  /// **'Recherche'**
+  String get searchPageLabel;
+
   /// Libellé pour la médiathèque
   ///
   /// In fr, this message translates to:

@@ -358,6 +358,10 @@
   "@mainSearchTitle": {
     "description": "Title of the main search screen"
   },
+  "searchPageLabel": "Search",
+  "@searchPageLabel": {
+    "description": "Short label for the search page breadcrumb"
+  },
   "mediaLibrary": "Media library",
   "@mediaLibrary": {
     "description": "Label for the media library"

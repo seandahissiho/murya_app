@@ -309,6 +309,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get mainSearchTitle => 'Recherche Principale';
 
   @override
+  String get searchPageLabel => 'Recherche';
+
+  @override
   String get mediaLibrary => 'Médiathèque';
 
   @override

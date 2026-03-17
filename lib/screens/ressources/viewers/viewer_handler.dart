@@ -26,7 +26,8 @@ import 'package:murya/screens/ressources/resources.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart' as yt_flutter;
+import 'package:youtube_player_flutter/youtube_player_flutter.dart'
+    as yt_flutter;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart' as yt_iframe;
 
 part 'article_viewer.dart';
@@ -52,21 +53,35 @@ String _formatDurationFromSeconds(AppLocalizations locale, int totalSeconds) {
   return parts.join(' ');
 }
 
-class ResourceViewerLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+String _viewerBreadcrumbLabel(AppLocalizations locale,
+    {required bool fromSearch}) {
+  return fromSearch ? locale.searchPageLabel : locale.mediaLibrary;
+}
+
+String _viewerBreadcrumbRoute({required bool fromSearch}) {
+  return fromSearch ? AppRoutes.searchModule : AppRoutes.userRessourcesModule;
+}
+
+class ResourceViewerLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.userResourceViewerModule];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     // Cast the state to BeamState (or your custom state class)
     // final state = Beamer.of(context).currentBeamLocation.state as BeamState;
     // Now you can access the 'data' property
     Map<String, dynamic>? data = this.data as Map<String, dynamic>?;
-    final Resource? resource = data != null && data['data'] is Resource ? data['data'] as Resource : null;
+    final Resource? resource = data != null && data['data'] is Resource
+        ? data['data'] as Resource
+        : null;
 
     return [
       BeamPage(
-        key: ValueKey('resourceViewer-page-${context.read<AppBloc>().appLanguage.code}'),
+        key: ValueKey(
+            'resourceViewer-page-${context.read<AppBloc>().appLanguage.code}'),
         title: AppLocalizations.of(context).resourceViewerPageTitle,
         child: ViewerHandler(resource: resource),
       ),
@@ -103,7 +118,9 @@ class _ViewerHandlerState extends State<ViewerHandler> {
         });
         _sendOpenIfNeeded();
       } else if (resourceId != null && resourceId!.isNotEmpty) {
-        context.read<ResourcesBloc>().add(LoadResourceDetails(resourceId: resourceId!));
+        context
+            .read<ResourcesBloc>()
+            .add(LoadResourceDetails(resourceId: resourceId!));
       }
     });
   }
@@ -134,7 +151,8 @@ class _ViewerHandlerState extends State<ViewerHandler> {
             // ignore: unreachable_switch_default
             default:
               return Center(
-                child: Text(AppLocalizations.of(context).unsupportedResourceType),
+                child:
+                    Text(AppLocalizations.of(context).unsupportedResourceType),
               );
           }
         },

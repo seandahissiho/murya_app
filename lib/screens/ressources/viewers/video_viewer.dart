@@ -46,14 +46,17 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
       final history = Beamer.of(context).beamingHistory;
       if (history.length > 1) {
         final lastBeamState = history[history.length - 2];
-        final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
+        final lastPath = lastBeamState.state.routeInformation.uri.path
+            .toString(); // ← ceci est le path
         fromSearch = lastPath == AppRoutes.searchModule;
         setState(() {});
         // load resource content if needed
         if (fromSearch) {
           final resourceId = resource.id;
           if (resourceId != null && resourceId.isNotEmpty) {
-            context.read<ResourcesBloc>().add(LoadResourceDetails(resourceId: resourceId));
+            context
+                .read<ResourcesBloc>()
+                .add(LoadResourceDetails(resourceId: resourceId));
           }
         }
       }
@@ -168,24 +171,31 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
             children: [
               Row(
                 children: [
-                  AppXReturnButton(destination: fromSearch ? AppRoutes.searchModule : AppRoutes.userRessourcesModule),
+                  AppXReturnButton(
+                      destination: fromSearch
+                          ? AppRoutes.searchModule
+                          : AppRoutes.userRessourcesModule),
                   AppSpacing.spacing16_Box,
                   Expanded(
                     child: AppBreadcrumb(
                       items: [
                         BreadcrumbItem(
-                          label: !fromSearch
-                              ? AppLocalizations.of(context).mediaLibrary
-                              : AppLocalizations.of(context).search_filter_resource,
-                          onTap: () => navigateToPath(context,
-                              to: !fromSearch ? AppRoutes.userRessourcesModule : AppRoutes.searchModule),
+                          label: _viewerBreadcrumbLabel(
+                            AppLocalizations.of(context),
+                            fromSearch: fromSearch,
+                          ),
+                          onTap: () => navigateToPath(
+                            context,
+                            to: _viewerBreadcrumbRoute(fromSearch: fromSearch),
+                          ),
                         ),
                         BreadcrumbItem(label: resource.title ?? ''),
                       ],
                       inactiveTextStyle: theme.textTheme.bodyMedium?.copyWith(
                         color: AppColors.textTertiary,
                       ),
-                      inactiveHoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
+                      inactiveHoverTextStyle:
+                          theme.textTheme.bodyMedium?.copyWith(
                         color: AppColors.textPrimary, // hover
                         decoration: TextDecoration.underline, // optionnel
                       ),
@@ -296,8 +306,11 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
                           final youtubeWebController = _youtubeWebController;
                           final controller = _controller;
                           final bool showYoutube = _isYoutube &&
-                              ((kIsWeb && youtubeWebController != null) || (!kIsWeb && youtubeController != null));
-                          final bool showVideo = !_isYoutube && controller != null && controller.value.isInitialized;
+                              ((kIsWeb && youtubeWebController != null) ||
+                                  (!kIsWeb && youtubeController != null));
+                          final bool showVideo = !_isYoutube &&
+                              controller != null &&
+                              controller.value.isInitialized;
                           return Stack(
                             children: [
                               // Default background (image from assets)
@@ -307,7 +320,8 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
                                 right: 0,
                                 bottom: 80,
                                 child: SizedBox(
-                                  height: constraints.maxHeight - 80, // leave space for controls
+                                  height: constraints.maxHeight -
+                                      80, // leave space for controls
                                   child: ClipRRect(
                                     borderRadius: AppRadius.small,
                                     child: Image.asset(
@@ -339,19 +353,24 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
                                   right: 0,
                                   bottom: 80,
                                   child: SizedBox(
-                                    height: constraints.maxHeight - 80, // leave space for controls
+                                    height: constraints.maxHeight -
+                                        80, // leave space for controls
                                     child: ClipRRect(
                                       // only top corners rounded to match background
                                       borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(AppRadius.smallRadius),
-                                        topRight: Radius.circular(AppRadius.smallRadius),
+                                        topLeft: Radius.circular(
+                                            AppRadius.smallRadius),
+                                        topRight: Radius.circular(
+                                            AppRadius.smallRadius),
                                       ),
                                       child: kIsWeb
                                           ? Stack(
                                               children: [
                                                 Positioned.fill(
-                                                  child: yt_iframe.YoutubePlayer(
-                                                    controller: youtubeWebController!,
+                                                  child:
+                                                      yt_iframe.YoutubePlayer(
+                                                    controller:
+                                                        youtubeWebController!,
                                                     keepAlive: true,
                                                   ),
                                                 ),
@@ -359,14 +378,23 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
                                                 if (_videoIsPlaying != true)
                                                   Positioned.fill(
                                                     child: SizedBox(
-                                                      height: constraints.maxHeight - 80, // leave space for controls
+                                                      height: constraints
+                                                              .maxHeight -
+                                                          80, // leave space for controls
                                                       child: ClipRRect(
-                                                        borderRadius: const BorderRadius.only(
-                                                          topLeft: Radius.circular(AppRadius.smallRadius),
-                                                          topRight: Radius.circular(AppRadius.smallRadius),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .only(
+                                                          topLeft: Radius
+                                                              .circular(AppRadius
+                                                                  .smallRadius),
+                                                          topRight: Radius
+                                                              .circular(AppRadius
+                                                                  .smallRadius),
                                                         ),
                                                         child: Image.asset(
-                                                          AppImages.articleHeaderPath,
+                                                          AppImages
+                                                              .articleHeaderPath,
                                                           fit: BoxFit.cover,
                                                         ),
                                                       ),
@@ -378,11 +406,15 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
                                               controller: youtubeController!,
                                               showVideoProgressIndicator: false,
                                               thumbnail: SizedBox(
-                                                height: constraints.maxHeight - 80, // leave space for controls
+                                                height: constraints.maxHeight -
+                                                    80, // leave space for controls
                                                 child: ClipRRect(
-                                                  borderRadius: const BorderRadius.only(
-                                                    topLeft: Radius.circular(AppRadius.smallRadius),
-                                                    topRight: Radius.circular(AppRadius.smallRadius),
+                                                  borderRadius:
+                                                      const BorderRadius.only(
+                                                    topLeft: Radius.circular(
+                                                        AppRadius.smallRadius),
+                                                    topRight: Radius.circular(
+                                                        AppRadius.smallRadius),
                                                   ),
                                                   child: Image.asset(
                                                     AppImages.articleHeaderPath,
@@ -401,7 +433,9 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
                                     child: Center(
                                       child: AspectRatio(
                                         aspectRatio:
-                                            controller.value.aspectRatio == 0 ? 16 / 9 : controller.value.aspectRatio,
+                                            controller.value.aspectRatio == 0
+                                                ? 16 / 9
+                                                : controller.value.aspectRatio,
                                         child: VideoPlayer(controller),
                                       ),
                                     ),
@@ -469,12 +503,15 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
     final resourceId = resource.id;
     if (resourceId == null || resourceId.isEmpty) return;
     final existingProgress = resource.userState?.progress;
-    if (resource.userState?.readAt != null && (existingProgress == null || _lastProgress <= existingProgress + 0.01)) {
+    if (resource.userState?.readAt != null &&
+        (existingProgress == null ||
+            _lastProgress <= existingProgress + 0.01)) {
       return;
     }
     _readSent = true;
     final progress = _lastProgress > 0 ? _lastProgress : null;
-    _resourcesBloc?.add(ReadResource(resourceId: resourceId, progress: progress));
+    _resourcesBloc
+        ?.add(ReadResource(resourceId: resourceId, progress: progress));
   }
 
   _builderControlsAndTimeline({required double height, required double width}) {
@@ -492,7 +529,8 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
           width: 1,
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16, vertical: AppSpacing.spacing16),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.spacing16, vertical: AppSpacing.spacing16),
       child: Row(
         children: [
           _buildPlayButton(),
@@ -516,8 +554,10 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
           return yt_iframe.YoutubeValueBuilder(
             controller: youtubeWebController,
             builder: (context, value) {
-              final isPlaying = value.playerState == yt_iframe.PlayerState.playing;
-              final isReady = value.playerState != yt_iframe.PlayerState.unknown;
+              final isPlaying =
+                  value.playerState == yt_iframe.PlayerState.playing;
+              final isReady =
+                  value.playerState != yt_iframe.PlayerState.unknown;
               return AppXPlayButton(
                 isPlaying: isPlaying,
                 onPressed: isReady ? _togglePlay : null,
@@ -563,7 +603,8 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
       if (kIsWeb) {
         final youtubeWebController = _youtubeWebController;
         if (youtubeWebController == null) return;
-        final isPlaying = youtubeWebController.value.playerState == yt_iframe.PlayerState.playing;
+        final isPlaying = youtubeWebController.value.playerState ==
+            yt_iframe.PlayerState.playing;
         if (isPlaying) {
           _videoIsPlaying = false;
           youtubeWebController.pauseVideo();
@@ -575,7 +616,8 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
         return;
       } else {
         final youtubeController = _youtubeController;
-        if (youtubeController == null || !youtubeController.value.isReady) return;
+        if (youtubeController == null || !youtubeController.value.isReady)
+          return;
         if (youtubeController.value.isPlaying) {
           _videoIsPlaying = false;
           youtubeController.pause();
@@ -632,7 +674,8 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
               return _buildTimelineUi(
                 position,
                 duration,
-                onSeek: (newValue) => youtubeController.seekTo(Duration(milliseconds: newValue.round())),
+                onSeek: (newValue) => youtubeController
+                    .seekTo(Duration(milliseconds: newValue.round())),
               );
             },
           );
@@ -650,7 +693,8 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
           return _buildTimelineUi(
             position,
             duration,
-            onSeek: (newValue) => controller.seekTo(Duration(milliseconds: newValue.round())),
+            onSeek: (newValue) =>
+                controller.seekTo(Duration(milliseconds: newValue.round())),
           );
         },
       );
@@ -659,8 +703,10 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
     return _buildTimelineUi(Duration.zero, Duration.zero);
   }
 
-  Widget _buildTimelineUi(Duration position, Duration duration, {void Function(double)? onSeek}) {
-    final maxMillis = duration.inMilliseconds.toDouble().clamp(1.0, double.infinity);
+  Widget _buildTimelineUi(Duration position, Duration duration,
+      {void Function(double)? onSeek}) {
+    final maxMillis =
+        duration.inMilliseconds.toDouble().clamp(1.0, double.infinity);
     final value = position.inMilliseconds.toDouble().clamp(0.0, maxMillis);
     _updateProgress(position, duration);
     final canSeek = onSeek != null && duration.inMilliseconds > 0;
@@ -688,7 +734,8 @@ class _VideoViewerScreenState extends State<VideoViewerScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text("${_formatDuration(position)} / ${_formatDuration(duration)}"),
+                Text(
+                    "${_formatDuration(position)} / ${_formatDuration(duration)}"),
               ],
             ),
           ),

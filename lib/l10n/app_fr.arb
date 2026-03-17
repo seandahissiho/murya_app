@@ -358,6 +358,10 @@
   "@mainSearchTitle": {
     "description": "Titre de l'écran de recherche principale"
   },
+  "searchPageLabel": "Recherche",
+  "@searchPageLabel": {
+    "description": "Libellé court de la page de recherche pour le fil d'ariane"
+  },
   "mediaLibrary": "Médiathèque",
   "@mediaLibrary": {
     "description": "Libellé pour la médiathèque"
