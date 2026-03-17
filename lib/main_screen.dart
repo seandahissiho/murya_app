@@ -74,7 +74,7 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<AppBloc>().updateScreenSafeAreaPadding(context);
-      context.read<AppBloc>().smt(context);
+      await context.read<AppBloc>().smt(context);
       int count = 0;
       // wait until the authentication bloc is initialized
       while (!context.read<AuthenticationBloc>().initialized) {
@@ -83,9 +83,11 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
           break; // Exit the loop after 5 seconds
         }
         await Future.delayed(const Duration(milliseconds: 250));
-        if (!mounted || !context.mounted) return; // Exit if the widget is not mounted
+        if (!mounted || !context.mounted)
+          return; // Exit if the widget is not mounted
       }
-      if (!mounted || !context.mounted) return; // Exit if the widget is not mounted
+      if (!mounted || !context.mounted)
+        return; // Exit if the widget is not mounted
       context.read<AuthenticationBloc>().updateRepositoriesContext(context);
     });
   }
@@ -133,7 +135,8 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
               backgroundColor: AppColors.backgroundColor,
               body: LayoutBuilder(
                 builder: (context, constraints) {
-                  if (authState is AuthenticationLoading && authState.isAuthenticated == false) {
+                  if (authState is AuthenticationLoading &&
+                      authState.isAuthenticated == false) {
                     return const Center(
                       child: AuthLoadingBar(),
                     );
@@ -185,7 +188,12 @@ class _AppScaffoldState extends State<AppScaffold> with WidgetsBindingObserver {
     // }
 
     if (state.isAuthenticated) {
-      final currentPath = Beamer.of(context).currentBeamLocation.state.routeInformation.uri.path;
+      final currentPath = Beamer.of(context)
+          .currentBeamLocation
+          .state
+          .routeInformation
+          .uri
+          .path;
       final isAuthOrLanding = currentPath.startsWith(AppRoutes.landing) ||
           currentPath.startsWith(AppRoutes.login) ||
           currentPath.startsWith(AppRoutes.register) ||

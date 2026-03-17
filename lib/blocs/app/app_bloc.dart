@@ -79,7 +79,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   AppLanguage get appLanguage => _appLanguage;
 
-  AppBloc({required BuildContext context}) : super(const AppRouteChanged(newRoute: AppRoutes.landing)) {
+  AppBloc({required BuildContext context})
+      : super(const AppRouteChanged(newRoute: AppRoutes.landing)) {
     on<AppEvent>((event, emit) {
       emit(AppLoading(
         isLoading: true,
@@ -97,7 +98,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     appRepository = RepositoryProvider.of<AppRepository>(context);
   }
 
-  FutureOr<void> _onInitialize(AppInitialize event, Emitter<AppState> emit) async {
+  FutureOr<void> _onInitialize(
+      AppInitialize event, Emitter<AppState> emit) async {
     emit(AppInitial(
       showNavBar: true,
       oldRoute: state.oldRoute,
@@ -114,7 +116,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     ));
   }
 
-  FutureOr<void> _onChangeNavBarState(AppChangeNavBarState event, Emitter<AppState> emit) {
+  FutureOr<void> _onChangeNavBarState(
+      AppChangeNavBarState event, Emitter<AppState> emit) {
     emit(AppInitial(
       showNavBar: !state.showNavBar,
       oldRoute: state.oldRoute,
@@ -141,27 +144,19 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     ));
   }
 
-  FutureOr<void> _onChangeLanguage(AppChangeLanguage event, Emitter<AppState> emit) {
+  FutureOr<void> _onChangeLanguage(
+      AppChangeLanguage event, Emitter<AppState> emit) {
     // if (event.language == state.language) {
     //   return null;
     // }
     _appLanguage = event.language;
 
-    RepositoryProvider.of<AuthenticationRepository>(event.context).updateLanguage(_appLanguage.code);
-    RepositoryProvider.of<NotificationRepository>(event.context).updateLanguage(_appLanguage.code);
-    RepositoryProvider.of<ProfileRepository>(event.context).updateLanguage(_appLanguage.code);
-    // jobs repository
-    RepositoryProvider.of<JobRepository>(event.context).updateLanguage(_appLanguage.code);
-    RepositoryProvider.of<ModulesRepository>(event.context).updateLanguage(_appLanguage.code);
-    RepositoryProvider.of<RewardsRepository>(event.context).updateLanguage(_appLanguage.code);
-    RepositoryProvider.of<AppRepository>(event.context).updateLanguage(_appLanguage.code);
-    RepositoryProvider.of<QuizRepository>(event.context).updateLanguage(_appLanguage.code);
-    RepositoryProvider.of<ResourcesRepository>(event.context).updateLanguage(_appLanguage.code);
-    RepositoryProvider.of<SearchRepository>(event.context).updateLanguage(_appLanguage.code);
+    _updateRepositoriesLanguage(event.context, _appLanguage.code);
 
     if (event.persistPreferredLanguage) {
       unawaited(
-        RepositoryProvider.of<ProfileRepository>(event.context).updatePreferredLanguage(_appLanguage.code),
+        RepositoryProvider.of<ProfileRepository>(event.context)
+            .updatePreferredLanguage(_appLanguage.code),
       );
     }
 
@@ -171,7 +166,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     context.read<JobBloc>().add(LoadUserCurrentJob(context: context));
     context.read<JobBloc>().add(SearchJobs(query: '', context: context));
 
-    context.read<ProfileBloc>().add(ProfileLoadQuestGroupsEvent(scope: QuestScope.all));
+    context
+        .read<ProfileBloc>()
+        .add(ProfileLoadQuestGroupsEvent(scope: QuestScope.all));
 
     // // Data depending on UserJob
     final userJob = context.read<JobBloc>().state.userCurrentJob;
@@ -208,16 +205,40 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
     await localeProvider.load();
     final savedLocale = localeProvider.locale;
-    if (savedLocale == null) {
-      _appLanguage = AppLanguage.english;
-      if (context.mounted != true) return;
+    final resolvedLanguage = savedLocale?.languageCode == 'fr'
+        ? AppLanguage.french
+        : AppLanguage.english;
+
+    _appLanguage = resolvedLanguage;
+    _updateRepositoriesLanguage(context, _appLanguage.code);
+
+    if (!context.mounted) return;
+    if (state.language.code != resolvedLanguage.code) {
       add(AppChangeLanguage(
-        language: _appLanguage,
+        language: resolvedLanguage,
         context: context,
-        persistPreferredLanguage: true,
+        persistPreferredLanguage: false,
       ));
-    } else {
-      _appLanguage = savedLocale.languageCode == 'en' ? AppLanguage.english : AppLanguage.french;
     }
+  }
+
+  void _updateRepositoriesLanguage(BuildContext context, String languageCode) {
+    RepositoryProvider.of<AuthenticationRepository>(context)
+        .updateLanguage(languageCode);
+    RepositoryProvider.of<NotificationRepository>(context)
+        .updateLanguage(languageCode);
+    RepositoryProvider.of<ProfileRepository>(context)
+        .updateLanguage(languageCode);
+    RepositoryProvider.of<JobRepository>(context).updateLanguage(languageCode);
+    RepositoryProvider.of<ModulesRepository>(context)
+        .updateLanguage(languageCode);
+    RepositoryProvider.of<RewardsRepository>(context)
+        .updateLanguage(languageCode);
+    RepositoryProvider.of<AppRepository>(context).updateLanguage(languageCode);
+    RepositoryProvider.of<QuizRepository>(context).updateLanguage(languageCode);
+    RepositoryProvider.of<ResourcesRepository>(context)
+        .updateLanguage(languageCode);
+    RepositoryProvider.of<SearchRepository>(context)
+        .updateLanguage(languageCode);
   }
 }
