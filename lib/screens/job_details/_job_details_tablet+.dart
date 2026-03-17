@@ -11,17 +11,30 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
   AppJob _job = AppJob.empty();
   JobProgressionLevel _detailsLevel = JobProgressionLevel.BEGINNER;
   UserJob _userJob = UserJob.empty();
-  UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
+  UserJobCompetencyProfile _userJobCompetencyProfile =
+      UserJobCompetencyProfile.empty();
   User _user = User.empty();
 
   Duration? nextQuizAvailableIn;
   Timer? _countdownTimer;
 
-  List<CompetencyFamily> get families => _userJob.kiviats.isNotEmpty
-      ? _userJob.kiviats.map((kiviat) => kiviat.competenciesFamily).whereType<CompetencyFamily>().toList()
-      : (_job).competenciesFamilies.isNotEmpty
-          ? (_job).competenciesFamilies
-          : _userJobCompetencyProfile.competencyFamilies;
+  List<CompetencyFamily> get families => _job.competenciesFamilies.isNotEmpty
+      ? _job.competenciesFamilies
+      : _userJobCompetencyProfile.competencyFamilies.isNotEmpty
+          ? _userJobCompetencyProfile.competencyFamilies
+          : _userJob.kiviats
+              .map((kiviat) => kiviat.competenciesFamily)
+              .whereType<CompetencyFamily>()
+              .toList();
+
+  List<double> _radarUserValues(List<CompetencyFamily> families) {
+    final profileValues =
+        _userJobCompetencyProfile.kiviatValuesForFamilies(families);
+    if (profileValues.isNotEmpty) {
+      return profileValues;
+    }
+    return _userJob.kiviatValues(families);
+  }
 
   @override
   void initState() {
@@ -29,9 +42,15 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dynamic beamState = Beamer.of(context).currentBeamLocation.state;
       final jobId = beamState.pathParameters['id'];
-      context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: jobId));
-      context.read<ProfileBloc>().add(ProfileLoadEvent(notifyIfNotFound: false));
-      context.read<JobBloc>().add(LoadUserJobDetails(context: context, jobId: jobId));
+      context
+          .read<JobBloc>()
+          .add(LoadJobDetails(context: context, jobId: jobId));
+      context
+          .read<ProfileBloc>()
+          .add(ProfileLoadEvent(notifyIfNotFound: false));
+      context
+          .read<JobBloc>()
+          .add(LoadUserJobDetails(context: context, jobId: jobId));
       _checkQuizAvailability();
     });
   }
@@ -40,18 +59,26 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final locale = AppLocalizations.of(context);
-    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
+    var options = [
+      locale.skillLevel_easy,
+      locale.skillLevel_medium,
+      locale.skillLevel_hard,
+      locale.skillLevel_expert
+    ];
     bool hideBackButton = false;
     final history = Beamer.of(context).beamingHistory;
 
     if (history.length > 1) {
       final lastBeamState = history[history.length - 2];
-      final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
+      final lastPath = lastBeamState.state.routeInformation.uri.path
+          .toString(); // ← ceci est le path
       hideBackButton = lastPath == AppRoutes.landing;
       // get last 3 paths
       final last3Paths = history
-          .sublist(history.length - 4 < 0 ? 0 : history.length - 4, history.length - 1)
-          .map((beamState) => beamState.state.routeInformation.uri.path.toString())
+          .sublist(history.length - 4 < 0 ? 0 : history.length - 4,
+              history.length - 1)
+          .map((beamState) =>
+              beamState.state.routeInformation.uri.path.toString())
           .toList();
       // if last 3 paths contain landing, hide back button
       hideBackButton = true;
@@ -76,7 +103,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
           }
           if (state is UserJobDetailsLoaded) {
             _userJob = state.userJob;
-            context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.id!));
+            context.read<JobBloc>().add(LoadUserJobCompetencyProfile(
+                context: context, jobId: _userJob.id!));
             _checkQuizAvailability();
           }
           setState(() {});
@@ -101,7 +129,9 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                           children: [
                             Row(
                               children: [
-                                if (!hideBackButton) const AppXReturnButton(destination: AppRoutes.searchModule),
+                                if (!hideBackButton)
+                                  const AppXReturnButton(
+                                      destination: AppRoutes.searchModule),
                                 // AppSpacing.groupMarginBox,
                                 // Expanded(
                                 //   flex: 10,
@@ -171,22 +201,30 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                 children: [
                                   Flexible(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.max,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Flexible(
                                               child: RichText(
                                                 text: TextSpan(
                                                   text: _job.title,
                                                   style: GoogleFonts.anton(
-                                                    color: AppColors.textPrimary,
-                                                    fontSize: theme.textTheme.headlineLarge?.fontSize,
+                                                    color:
+                                                        AppColors.textPrimary,
+                                                    fontSize: theme
+                                                        .textTheme
+                                                        .headlineLarge
+                                                        ?.fontSize,
                                                     fontWeight: FontWeight.w700,
                                                   ),
                                                   children: [
@@ -225,8 +263,10 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                             if (_user.isNotEmpty) ...[
                                               AppSpacing.spacing16_Box,
                                               Padding(
-                                                padding: const EdgeInsets.only(top: 20.0),
-                                                child: ScoreWidget(value: _user.diamonds),
+                                                padding: const EdgeInsets.only(
+                                                    top: 20.0),
+                                                child: ScoreWidget(
+                                                    value: _user.diamonds),
                                               ),
                                             ],
                                           ],
@@ -236,7 +276,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                           onPressed: () async {
                                             navigateToPath(
                                               context,
-                                              to: AppRoutes.jobEvaluation.replaceAll(':id', _job.id!),
+                                              to: AppRoutes.jobEvaluation
+                                                  .replaceAll(':id', _job.id!),
                                               data: {'jobTitle': _job.title},
                                             );
                                           },
@@ -244,7 +285,10 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                           disabled: nextQuizAvailableIn != null,
                                           text: nextQuizAvailableIn == null
                                               ? locale.evaluateSkills
-                                              : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
+                                              : locale
+                                                  .evaluateSkillsAvailableIn(
+                                                      nextQuizAvailableIn!
+                                                          .formattedHMS),
                                           shrinkWrap: false,
                                         ),
                                         AppSpacing.spacing24_Box,
@@ -259,15 +303,21 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                   AppSpacing.spacing16_Box,
                                   Flexible(
                                     child: ScrollConfiguration(
-                                      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                                      behavior: ScrollConfiguration.of(context)
+                                          .copyWith(scrollbars: false),
                                       child: SingleChildScrollView(
                                         child: Column(
                                           children: [
-                                            _diagramBuilder(locale, theme, options),
+                                            _diagramBuilder(
+                                                locale, theme, options),
                                             if (_userJob.isNotEmpty &&
-                                                (_job.id.isNotEmptyOrNull ?? false) &&
-                                                (_userJob.jobId == _job.id || _userJob.jobFamilyId == _job.id) &&
-                                                _userJob.completedQuizzes > 0) ...[
+                                                (_job.id.isNotEmptyOrNull ??
+                                                    false) &&
+                                                (_userJob.jobId == _job.id ||
+                                                    _userJob.jobFamilyId ==
+                                                        _job.id) &&
+                                                _userJob.completedQuizzes >
+                                                    0) ...[
                                               AppSpacing.spacing16_Box,
                                               _rankingBuilder(locale, theme),
                                             ],
@@ -279,12 +329,14 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                                   AppSpacing.spacing16_Box,
                                   Flexible(
                                     child: ScrollConfiguration(
-                                      behavior: ScrollConfiguration.of(context).copyWith(
+                                      behavior: ScrollConfiguration.of(context)
+                                          .copyWith(
                                         scrollbars: false,
                                       ),
                                       child: SingleChildScrollView(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             ...familiesBuilder(),
                                           ],
@@ -320,7 +372,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
     return widgets;
   }
 
-  _diagramBuilder(AppLocalizations locale, ThemeData theme, List<String> options) {
+  _diagramBuilder(
+      AppLocalizations locale, ThemeData theme, List<String> options) {
     return Container(
       decoration: const BoxDecoration(
         // color: AppColors.backgroundCard,
@@ -360,7 +413,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
                     ),
                   ),
                   AppXDropdown<int>(
-                    controller: TextEditingController(text: options[_detailsLevel.index]),
+                    controller: TextEditingController(
+                        text: options[_detailsLevel.index]),
                     items: options.map((level) => DropdownMenuEntry(
                           value: options.indexOf(level),
                           label: level,
@@ -384,9 +438,10 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
               height: constraints.maxWidth,
               width: constraints.maxWidth,
               child: InteractiveRoundedRadarChart(
-                labels: _job.competenciesFamilies.map((cf) => cf.name).toList() ?? [],
-                defaultValues: _job.kiviatValues(_detailsLevel) ?? [],
-                userValues: _userJobCompetencyProfile.kiviatValues,
+                labels: families.map((cf) => cf.name).toList(),
+                defaultValues: _job.kiviatValuesForFamilies(families,
+                    level: _detailsLevel.name),
+                userValues: _radarUserValues(families),
               ),
             ),
           ],
@@ -434,7 +489,8 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
       lastQuizAt.day,
       lastQuizAt.hour,
     );
-    nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+    nextQuizAvailableIn =
+        lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) {
@@ -455,7 +511,9 @@ class _TabletJobDetailsScreenState extends State<TabletJobDetailsScreen> {
           timer.cancel();
           return;
         }
-        nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+        nextQuizAvailableIn = lastQuizAt2
+            .add(Duration(hours: 24 - lastQuizAt2.hour))
+            .difference(now);
       });
     });
 

@@ -45,8 +45,8 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
   Timer? _countdownTimer;
   Job? _job;
   JobFamily? _jobFamily;
-  int _detailsLevel = 0;
-  UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
+  UserJobCompetencyProfile _userJobCompetencyProfile =
+      UserJobCompetencyProfile.empty();
 
   @override
   void initState() {
@@ -56,10 +56,7 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final bool isMobile = DeviceHelper.isMobile(context);
     final locale = AppLocalizations.of(context);
-    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
     return BlocConsumer<ModulesBloc, ModulesState>(
       listener: (context, state) {
         setState(() {});
@@ -75,7 +72,8 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                 _jobFamily = JobFamily.empty();
                 _job = _userJob.job!;
               }
-              context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.id!));
+              context.read<JobBloc>().add(LoadUserJobCompetencyProfile(
+                  context: context, jobId: _userJob.id!));
               _checkQuizAvailability();
             }
             if (state is UserJobCompetencyProfileLoaded) {
@@ -84,7 +82,8 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
             setState(() {});
           },
           builder: (context, state) {
-            final UserJob userCurrentJob = state.userCurrentJob ?? UserJob.empty();
+            final UserJob userCurrentJob =
+                state.userCurrentJob ?? UserJob.empty();
             return Container(
               key: widget.tileKey,
               child: AnimatedSwitcher(
@@ -98,13 +97,16 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                   );
                 },
                 child: AppModuleWidget(
-                  key: ValueKey('job-module-${widget.module.id}-${userCurrentJob.jobId ?? 'no-job'}'),
+                  key: ValueKey(
+                      'job-module-${widget.module.id}-${userCurrentJob.jobId ?? 'no-job'}'),
                   module: widget.module,
                   onCardTap: () {
-                    final jobTitle = userCurrentJob.job?.title ?? userCurrentJob.jobFamily?.title;
+                    final jobTitle = userCurrentJob.job?.title ??
+                        userCurrentJob.jobFamily?.title;
                     navigateToPath(
                       context,
-                      to: AppRoutes.jobDetails.replaceAll(':id', userCurrentJob.jobId ?? userCurrentJob.jobFamilyId!),
+                      to: AppRoutes.jobDetails.replaceAll(':id',
+                          userCurrentJob.jobId ?? userCurrentJob.jobFamilyId!),
                       data: {'jobTitle': jobTitle},
                     );
                   },
@@ -118,17 +120,21 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
                   bodyContent: SizedBox(
                     width: double.infinity,
                     height: double.infinity,
-                    child: _diagramBuilder(locale, theme, options),
+                    child: _diagramBuilder(),
                   ),
                   footerContent: AppXButton(
                     shrinkWrap: false,
                     onPressed: () {
-                      final jobTitle = userCurrentJob.job?.title ?? userCurrentJob.jobFamily?.title;
+                      final jobTitle = userCurrentJob.job?.title ??
+                          userCurrentJob.jobFamily?.title;
                       // if (nextQuizAvailableIn != null) return;
                       // navigateToPath(context, to: AppRoutes.jobEvaluation.replaceAll(':id', userCurrentJob.jobId!));
                       navigateToPath(
                         context,
-                        to: AppRoutes.jobDetails.replaceAll(':id', userCurrentJob.jobId ?? userCurrentJob.jobFamilyId!),
+                        to: AppRoutes.jobDetails.replaceAll(
+                            ':id',
+                            userCurrentJob.jobId ??
+                                userCurrentJob.jobFamilyId!),
                         data: {'jobTitle': jobTitle},
                       );
                     },
@@ -165,7 +171,8 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
       lastQuizAt.day,
       lastQuizAt.hour,
     );
-    nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+    nextQuizAvailableIn =
+        lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) {
@@ -186,30 +193,59 @@ class _JobModuleWidgetState extends State<JobModuleWidget> {
           timer.cancel();
           return;
         }
-        nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+        nextQuizAvailableIn = lastQuizAt2
+            .add(Duration(hours: 24 - lastQuizAt2.hour))
+            .difference(now);
       });
     });
   }
 
-  _diagramBuilder(AppLocalizations locale, ThemeData theme, List<String> options) {
+  List<CompetencyFamily> _radarFamilies() {
+    final familiesFromJob =
+        (_job ?? _jobFamily ?? Job.empty()).competenciesFamilies;
+    if (familiesFromJob.isNotEmpty) {
+      return familiesFromJob;
+    }
+    if (_userJobCompetencyProfile.competencyFamilies.isNotEmpty) {
+      return _userJobCompetencyProfile.competencyFamilies;
+    }
+    if (_userJob.kiviats.isNotEmpty) {
+      return _userJob.kiviats
+          .map((kiviat) => kiviat.competenciesFamily)
+          .whereType<CompetencyFamily>()
+          .toList();
+    }
+    return const <CompetencyFamily>[];
+  }
+
+  List<double> _radarUserValues(List<CompetencyFamily> families) {
+    final profileValues =
+        _userJobCompetencyProfile.kiviatValuesForFamilies(families);
+    if (profileValues.isNotEmpty) {
+      return profileValues;
+    }
+    return _userJob.kiviatValues(families);
+  }
+
+  _diagramBuilder() {
     return Center(
       child: LayoutBuilder(builder: (context, constraints) {
         final AppModuleType moduleType = widget.module.boxType;
         final bool isMobile = DeviceHelper.isMobile(context);
-        final bool smallHeight = moduleType == AppModuleType.type1 || moduleType == AppModuleType.type1_2 || isMobile;
-        final List<CompetencyFamily> families = _userJob.kiviats.isNotEmpty
-            ? _userJob.kiviats.map((kiviat) => kiviat.competenciesFamily).whereType<CompetencyFamily>().toList()
-            : (_job ?? _jobFamily ?? Job.empty()).competenciesFamilies.isNotEmpty
-                ? (_job ?? _jobFamily ?? Job.empty()).competenciesFamilies
-                : _userJobCompetencyProfile.competencyFamilies;
+        final bool smallHeight = moduleType == AppModuleType.type1 ||
+            moduleType == AppModuleType.type1_2 ||
+            isMobile;
+        final List<CompetencyFamily> families = _radarFamilies();
         return SizedBox(
           height: constraints.maxWidth,
           width: constraints.maxWidth,
           child: Center(
             child: InteractiveRoundedRadarChart(
               labels: families.map((cf) => cf.name).toList(),
-              defaultValues: (_job ?? _jobFamily ?? Job.empty()).kiviatValues(JobProgressionLevel.BEGINNER),
-              userValues: _userJob.kiviatValues(families),
+              defaultValues: (_job ?? _jobFamily ?? Job.empty())
+                  .kiviatValuesForFamilies(families,
+                      level: JobProgressionLevel.BEGINNER.name),
+              userValues: _radarUserValues(families),
               isLandingPageChart: true,
               // labelBgColor: AppColors.whiteSwatch,
               // labelTextColor: AppColors.primaryDefault,

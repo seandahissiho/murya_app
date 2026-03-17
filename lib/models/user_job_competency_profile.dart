@@ -1,4 +1,3 @@
-import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/job_kiviat.dart';
 
@@ -24,14 +23,17 @@ class UserJobCompetencyProfile {
     final JobInfo job = JobInfo.fromJson(json['job']);
     final UserInfo user = UserInfo.fromJson(json['user']);
     final ProfileSummary summary = ProfileSummary.fromJson(json['summary']);
-    final List<CompetencyProfile> competencies = (json['competencies'] as List<dynamic>)
-        .map((c) => CompetencyProfile.fromJson(c as Map<String, dynamic>))
-        .toList();
+    final List<CompetencyProfile> competencies =
+        (json['competencies'] as List<dynamic>)
+            .map((c) => CompetencyProfile.fromJson(c as Map<String, dynamic>))
+            .toList();
 
     final kiviatsJson = json['kiviats'] as Map<String, dynamic>?;
     final List<List<JobKiviat>>? kiviats = kiviatsJson?.entries.map((entry) {
       final kiviatList = entry.value as List<dynamic>;
-      return kiviatList.map((k) => JobKiviat.fromJson(k as Map<String, dynamic>)).toList();
+      return kiviatList
+          .map((k) => JobKiviat.fromJson(k as Map<String, dynamic>))
+          .toList();
     }).toList();
     // final List<List<JobKiviat>>? kiviats = json['kiviats'] != null
     //     ? (json['kiviats'] as List<dynamic>)
@@ -51,49 +53,44 @@ class UserJobCompetencyProfile {
 
   List<CompetencyFamily> get competencyFamilies {
     return job.competencyFamilies;
-    // group competencies by family
-    Map<String, Set<CompetencyProfile>?> familyMap = {};
-    for (var competenciesFamily in job.competencyFamilies) {
-      familyMap[competenciesFamily.id!] = {};
-    }
-    for (var competency in competencies) {
-      for (var familyId in competency.competencyFamiliesIds) {
-        if (familyMap.containsKey(familyId)) {
-          familyMap[familyId]!.add(competency);
-        }
-      }
-    }
-
-    // create CompetencyFamily objects
-    List<CompetencyFamily> families = [];
-    familyMap.forEach((familyId, competenciesSet) {
-      families.add(CompetencyFamily(
-        id: familyId,
-        name: job.competencyFamilies.firstWhereOrNull((cf) => cf.id == familyId)?.name ?? 'Unknown',
-      ));
-    });
-    return families;
   }
 
   List<double> get kiviatValues {
-    if (kiviats == null) return [];
-    Map<String, double> valuePerFamily = {};
-    for (List<JobKiviat> kiviat in (kiviats ?? [])) {
-      for (JobKiviat k in kiviat) {
-        if (valuePerFamily.containsKey(k.competenciesFamilyId)) {
-          valuePerFamily[k.competenciesFamilyId] = k.radarScore0to5 + valuePerFamily[k.competenciesFamilyId]!;
-        } else {
-          valuePerFamily[k.competenciesFamilyId] = k.radarScore0to5;
-        }
+    return kiviatValuesForFamilies(competencyFamilies);
+  }
+
+  List<double> kiviatValuesForFamilies(List<CompetencyFamily> families) {
+    final groupedKiviats = kiviats;
+    if (groupedKiviats == null || groupedKiviats.isEmpty || families.isEmpty) {
+      return [];
+    }
+
+    final totals = <String, double>{};
+    final counts = <String, int>{};
+
+    for (final group in groupedKiviats) {
+      for (final kiviat in group) {
+        final familyId = kiviat.competenciesFamilyId;
+        if (familyId.isEmpty) continue;
+        totals[familyId] = (totals[familyId] ?? 0) + kiviat.radarScore0to5;
+        counts[familyId] = (counts[familyId] ?? 0) + 1;
       }
     }
-    valuePerFamily.forEach((key, value) {
-      valuePerFamily[key] = value / (kiviats?.length ?? 1);
-    });
-    return valuePerFamily.values.map((v) {
-      // if (v < 0.5) return 1.0;
-      if (v > 5.0) return 5.0;
-      return v;
+
+    return families.map((family) {
+      final familyId = family.id;
+      if (familyId == null || familyId.isEmpty) {
+        return 0.0;
+      }
+      final count = counts[familyId] ?? 0;
+      if (count == 0) {
+        return 0.0;
+      }
+      final average = (totals[familyId] ?? 0) / count;
+      if (average > 5.0) {
+        return 5.0;
+      }
+      return average;
     }).toList();
   }
 
@@ -135,7 +132,8 @@ class JobInfo {
       slug: json['slug'] as String,
       description: json['description'] as String?,
       competencyFamilies: (json['competencyFamilies'] as List<dynamic>?)
-              ?.map((cf) => CompetencyFamily.fromJson(cf as Map<String, dynamic>))
+              ?.map(
+                  (cf) => CompetencyFamily.fromJson(cf as Map<String, dynamic>))
               .toList() ??
           [],
     );
@@ -195,7 +193,9 @@ class ProfileSummary {
       avgPercentage: (json['avgPercentage'] as num).toDouble(),
       strongCount: (json['strongCount'] as num).toInt(),
       weakCount: (json['weakCount'] as num).toInt(),
-      lastQuizAt: json['lastQuizAt'] != null ? DateTime.parse(json['lastQuizAt'] as String) : null,
+      lastQuizAt: json['lastQuizAt'] != null
+          ? DateTime.parse(json['lastQuizAt'] as String)
+          : null,
     );
   }
 }
@@ -234,8 +234,10 @@ class CompetencyProfile {
   factory CompetencyProfile.fromJson(Map<String, dynamic> json) {
     return CompetencyProfile(
       competencyId: json['competencyId'] as String,
-      competencyFamiliesIds:
-          (json['competencyFamiliesIds'] as List<dynamic>?)?.map((id) => id as String).toList() ?? [],
+      competencyFamiliesIds: (json['competencyFamiliesIds'] as List<dynamic>?)
+              ?.map((id) => id as String)
+              .toList() ??
+          [],
       name: json['name'] as String,
       slug: json['slug'] as String,
       type: json['type'] as String,
@@ -245,9 +247,12 @@ class CompetencyProfile {
       maxScore: (json['maxScore'] as num).toDouble(),
       attemptsCount: (json['attemptsCount'] as num).toInt(),
       bestScore: (json['bestScore'] as num).toDouble(),
-      lastQuizAt: json['lastQuizAt'] != null ? DateTime.parse(json['lastQuizAt'] as String) : null,
+      lastQuizAt: json['lastQuizAt'] != null
+          ? DateTime.parse(json['lastQuizAt'] as String)
+          : null,
       history: (json['history'] as List<dynamic>)
-          .map((h) => CompetencyHistoryPoint.fromJson(h as Map<String, dynamic>))
+          .map(
+              (h) => CompetencyHistoryPoint.fromJson(h as Map<String, dynamic>))
           .toList(),
     );
   }

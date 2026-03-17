@@ -10,7 +10,8 @@ class MobileJobDetailsScreen extends StatefulWidget {
 class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
   AppJob _job = Job.empty();
   UserJob _userJob = UserJob.empty();
-  UserJobCompetencyProfile _userJobCompetencyProfile = UserJobCompetencyProfile.empty();
+  UserJobCompetencyProfile _userJobCompetencyProfile =
+      UserJobCompetencyProfile.empty();
   User _user = User.empty();
 
   JobProgressionLevel _detailsLevel = JobProgressionLevel.BEGINNER;
@@ -23,24 +24,61 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final dynamic beamState = Beamer.of(context).currentBeamLocation.state;
       final jobId = beamState.pathParameters['id'];
-      context.read<ProfileBloc>().add(ProfileLoadEvent(notifyIfNotFound: false));
-      context.read<JobBloc>().add(LoadJobDetails(context: context, jobId: jobId));
-      context.read<JobBloc>().add(LoadUserJobDetails(context: context, jobId: jobId));
+      context
+          .read<ProfileBloc>()
+          .add(ProfileLoadEvent(notifyIfNotFound: false));
+      context
+          .read<JobBloc>()
+          .add(LoadJobDetails(context: context, jobId: jobId));
+      context
+          .read<JobBloc>()
+          .add(LoadUserJobDetails(context: context, jobId: jobId));
       // context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: jobId));
     });
+  }
+
+  List<CompetencyFamily> get _radarFamilies {
+    if (_job.competenciesFamilies.isNotEmpty) {
+      return _job.competenciesFamilies;
+    }
+    if (_userJobCompetencyProfile.competencyFamilies.isNotEmpty) {
+      return _userJobCompetencyProfile.competencyFamilies;
+    }
+    if (_userJob.kiviats.isNotEmpty) {
+      return _userJob.kiviats
+          .map((kiviat) => kiviat.competenciesFamily)
+          .whereType<CompetencyFamily>()
+          .toList();
+    }
+    return const <CompetencyFamily>[];
+  }
+
+  List<double> _radarUserValues(List<CompetencyFamily> families) {
+    final profileValues =
+        _userJobCompetencyProfile.kiviatValuesForFamilies(families);
+    if (profileValues.isNotEmpty) {
+      return profileValues;
+    }
+    return _userJob.kiviatValues(families);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final locale = AppLocalizations.of(context);
-    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
+    var options = [
+      locale.skillLevel_easy,
+      locale.skillLevel_medium,
+      locale.skillLevel_hard,
+      locale.skillLevel_expert
+    ];
     bool hideBackButton = false;
     final history = Beamer.of(context).beamingHistory;
 
     if (history.length > 1) {
       final lastBeamState = history[history.length - 2];
-      final lastPath = lastBeamState.state.routeInformation.uri.path.toString(); // ← ceci est le path
+      final lastPath = lastBeamState.state.routeInformation.uri.path
+          .toString(); // ← ceci est le path
       hideBackButton = lastPath == AppRoutes.landing;
     }
     return BlocListener<ProfileBloc, ProfileState>(
@@ -60,7 +98,8 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
           }
           if (state is UserJobDetailsLoaded) {
             _userJob = state.userJob;
-            context.read<JobBloc>().add(LoadUserJobCompetencyProfile(context: context, jobId: _userJob.id!));
+            context.read<JobBloc>().add(LoadUserJobCompetencyProfile(
+                context: context, jobId: _userJob.id!));
             final DateTime now = DateTime.now();
             final DateTime? lastQuizAt = _userJob.lastQuizAt;
             if (lastQuizAt == null) {
@@ -77,9 +116,12 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
               lastQuizAt.day,
               lastQuizAt.hour,
             );
-            nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+            nextQuizAvailableIn = lastQuizAt2
+                .add(Duration(hours: 24 - lastQuizAt2.hour))
+                .difference(now);
             _countdownTimer?.cancel();
-            _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+            _countdownTimer =
+                Timer.periodic(const Duration(seconds: 1), (timer) {
               if (!mounted) {
                 timer.cancel();
                 return;
@@ -98,7 +140,9 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                   timer.cancel();
                   return;
                 }
-                nextQuizAvailableIn = lastQuizAt2.add(Duration(hours: 24 - lastQuizAt2.hour)).difference(now);
+                nextQuizAvailableIn = lastQuizAt2
+                    .add(Duration(hours: 24 - lastQuizAt2.hour))
+                    .difference(now);
               });
             });
           }
@@ -190,7 +234,8 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                   // disabled: nextQuizAvailableIn != null,
                   text: nextQuizAvailableIn == null
                       ? locale.evaluateSkills
-                      : locale.evaluateSkillsAvailableIn(nextQuizAvailableIn!.formattedHMS),
+                      : locale.evaluateSkillsAvailableIn(
+                          nextQuizAvailableIn!.formattedHMS),
                   shrinkWrap: false,
                 ),
                 AppSpacing.spacing24_Box,
@@ -221,11 +266,13 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              if (_userJob.isNotEmpty && _job.id.isNotEmptyOrNull) ...[
+                              if (_userJob.isNotEmpty &&
+                                  _job.id.isNotEmptyOrNull) ...[
                                 _rankingBuilder(constraints, locale, theme),
                                 AppSpacing.spacing16_Box,
                               ],
-                              _diagramBuilder(constraints, locale, theme, options),
+                              _diagramBuilder(
+                                  constraints, locale, theme, options),
                             ],
                           ),
                           AppSpacing.spacing24_Box,
@@ -254,7 +301,9 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
     return widgets;
   }
 
-  _diagramBuilder(BoxConstraints constraints, AppLocalizations locale, ThemeData theme, List<String> options) {
+  _diagramBuilder(BoxConstraints constraints, AppLocalizations locale,
+      ThemeData theme, List<String> options) {
+    final families = _radarFamilies;
     return Card(
       elevation: 0,
       color: AppColors.backgroundCard,
@@ -268,9 +317,10 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
             height: constraints.maxWidth,
             width: constraints.maxWidth,
             child: InteractiveRoundedRadarChart(
-              labels: _job.competenciesFamilies.map((cf) => cf.name).toList(),
-              defaultValues: _job.kiviatValues(_detailsLevel),
-              userValues: _userJobCompetencyProfile.kiviatValues,
+              labels: families.map((cf) => cf.name).toList(),
+              defaultValues: _job.kiviatValuesForFamilies(families,
+                  level: _detailsLevel.name),
+              userValues: _radarUserValues(families),
             ),
           ),
           AppSpacing.spacing16_Box,
@@ -289,7 +339,8 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
                 ),
                 AppSpacing.spacing16_Box,
                 AppXDropdown<int>(
-                  controller: TextEditingController(text: options[_detailsLevel.index]),
+                  controller:
+                      TextEditingController(text: options[_detailsLevel.index]),
                   items: options.map((level) => DropdownMenuEntry(
                         value: options.indexOf(level),
                         label: level,
@@ -312,7 +363,8 @@ class _MobileJobDetailsScreenState extends State<MobileJobDetailsScreen> {
     );
   }
 
-  _rankingBuilder(BoxConstraints constraints, AppLocalizations locale, ThemeData theme) {
+  _rankingBuilder(
+      BoxConstraints constraints, AppLocalizations locale, ThemeData theme) {
     return Card(
       elevation: 0,
       color: AppColors.backgroundCard,

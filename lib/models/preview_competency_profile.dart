@@ -25,7 +25,8 @@ class PreviewCompetencyProfile {
       userJobId: json['userJobId']?.toString() ?? '',
       job: _parseNullable(json['job'], (data) => PreviewJob.fromJson(data)),
       user: PreviewUser.fromJson(_parseMap(json['user'])),
-      objective: _parseNullable(json['objective'], (data) => PreviewObjective.fromJson(data)),
+      objective: _parseNullable(
+          json['objective'], (data) => PreviewObjective.fromJson(data)),
       kiviats: PreviewKiviats.fromJson(_parseMap(json['kiviats'])),
       ranking: PreviewRanking.fromJson(_parseMap(json['ranking'])),
     );
@@ -50,7 +51,9 @@ class PreviewCompetencyProfile {
     return PreviewCompetencyProfile(
       userJobId: userJobId ?? this.userJobId,
       job: job,
-      user: userId != null ? PreviewUser(id: userId, diamonds: 0) : (user ?? this.user),
+      user: userId != null
+          ? PreviewUser(id: userId, diamonds: 0)
+          : (user ?? this.user),
       objective: objective,
       kiviats: kiviats,
       ranking: ranking,
@@ -206,9 +209,11 @@ class PreviewKiviats {
 
   factory PreviewKiviats.fromJson(Map<String, dynamic> json) {
     return PreviewKiviats(
-      families: _parseList(json['families'], (item) => CompetencyFamily.fromJson(item)),
+      families: _parseList(
+          json['families'], (item) => CompetencyFamily.fromJson(item)),
       userJob: _parseList(json['userJob'], (item) => JobKiviat.fromJson(item)),
-      jobDefaults: _parseList(json['jobDefaults'], (item) => JobKiviat.fromJson(item)),
+      jobDefaults:
+          _parseList(json['jobDefaults'], (item) => JobKiviat.fromJson(item)),
     );
   }
 
@@ -220,8 +225,45 @@ class PreviewKiviats {
     );
   }
 
-  defaultKiviatValues(JobProgressionLevel level) {
-    return jobDefaults.whereOrEmpty((k) => k.level == level.name).map((k) => k.radarScore0to5).toList();
+  List<double> defaultKiviatValues(JobProgressionLevel level) {
+    return defaultValuesForFamilies(families, level);
+  }
+
+  List<double> defaultValuesForFamilies(
+      List<CompetencyFamily> families, JobProgressionLevel level) {
+    return _alignedValues(jobDefaults, families, level: level.name);
+  }
+
+  List<double> userValuesForFamilies(List<CompetencyFamily> families) {
+    return _alignedValues(userJob, families);
+  }
+
+  List<double> _alignedValues(
+      List<JobKiviat> source, List<CompetencyFamily> families,
+      {String? level}) {
+    if (source.isEmpty || families.isEmpty) return [];
+
+    final Map<String, List<double>> valuesPerFamily = {};
+    for (final kiviat in source) {
+      if (level != null && kiviat.level != level) continue;
+      if (kiviat.competenciesFamilyId.isEmpty) continue;
+      valuesPerFamily
+          .putIfAbsent(kiviat.competenciesFamilyId, () => <double>[])
+          .add(kiviat.radarScore0to5);
+    }
+
+    return families.map((family) {
+      final familyId = family.id;
+      if (familyId == null || familyId.isEmpty) {
+        return 0.0;
+      }
+      final values = valuesPerFamily[familyId] ?? const <double>[];
+      if (values.isEmpty) return 0.0;
+      final avg = values.reduce((a, b) => a + b) / values.length;
+      if (avg > 5.0) return 5.0;
+      if (avg < 0.0) return 0.0;
+      return avg;
+    }).toList();
   }
 }
 
@@ -240,10 +282,14 @@ class PreviewRanking {
 
   factory PreviewRanking.fromJson(Map<String, dynamic> json) {
     return PreviewRanking(
-      me: _parseNullable(json['me'], (data) => UserJobRankingRow.fromJson(data)),
-      top: _parseNullable(json['top'], (data) => UserJobRankingRow.fromJson(data)),
-      betweenTop: _parseNullable(json['betweenTop'], (data) => UserJobRankingRow.fromJson(data)),
-      betweenBottom: _parseNullable(json['betweenBottom'], (data) => UserJobRankingRow.fromJson(data)),
+      me: _parseNullable(
+          json['me'], (data) => UserJobRankingRow.fromJson(data)),
+      top: _parseNullable(
+          json['top'], (data) => UserJobRankingRow.fromJson(data)),
+      betweenTop: _parseNullable(
+          json['betweenTop'], (data) => UserJobRankingRow.fromJson(data)),
+      betweenBottom: _parseNullable(
+          json['betweenBottom'], (data) => UserJobRankingRow.fromJson(data)),
     );
   }
 
@@ -321,7 +367,10 @@ Map<String, dynamic> _parseMap(dynamic value) {
 
 List<T> _parseList<T>(dynamic value, T Function(Map<String, dynamic>) mapper) {
   if (value is! List) return <T>[];
-  return value.whereType<Map>().map((item) => mapper(Map<String, dynamic>.from(item))).toList();
+  return value
+      .whereType<Map>()
+      .map((item) => mapper(Map<String, dynamic>.from(item)))
+      .toList();
 }
 
 T? _parseNullable<T>(dynamic value, T Function(Map<String, dynamic>) mapper) {

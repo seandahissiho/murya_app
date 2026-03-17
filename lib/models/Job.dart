@@ -31,6 +31,33 @@ sealed class AppJob {
 
   kiviatValues(JobProgressionLevel level) {}
 
+  List<double> kiviatValuesForFamilies(List<CompetencyFamily> families,
+      {String? level}) {
+    if (kiviats.isEmpty || families.isEmpty) return [];
+
+    final Map<String, List<double>> valuesPerFamily = {};
+    for (final kiviat in kiviats) {
+      if (level != null && kiviat.level != level) continue;
+      if (kiviat.competenciesFamilyId.isEmpty) continue;
+      valuesPerFamily
+          .putIfAbsent(kiviat.competenciesFamilyId, () => <double>[])
+          .add(kiviat.radarScore0to5);
+    }
+
+    return families.map((family) {
+      final familyId = family.id;
+      if (familyId == null || familyId.isEmpty) {
+        return 0.0;
+      }
+      final values = valuesPerFamily[familyId] ?? const <double>[];
+      if (values.isEmpty) return 0.0;
+      final avg = values.reduce((a, b) => a + b) / values.length;
+      if (avg > 5.0) return 5.0;
+      if (avg < 0.0) return 0.0;
+      return avg;
+    }).toList();
+  }
+
   competenciesPerFamily(CompetencyFamily family) {}
 
   static AppJob empty() {
@@ -70,15 +97,23 @@ class Job extends AppJob {
       slug: jobJson['slug'] ?? '',
       description: jobJson['description'] ?? '',
       popularity: jobJson['popularity'] ?? 0,
-      backgroundColor:
-          jobJson['background_color'] != null ? parseColor(jobJson['background_color']) : const Color(0xFFFFFFFF),
-      foregroundColor:
-          jobJson['foreground_color'] != null ? parseColor(jobJson['foreground_color']) : const Color(0xFFFFFFFF),
-      textColor: jobJson['text_color'] != null ? parseColor(jobJson['text_color']) : const Color(0xFFFFFFFF),
-      overlayColor: jobJson['overlay_color'] != null ? parseColor(jobJson['overlay_color']) : const Color(0xFFFFFFFF),
+      backgroundColor: jobJson['background_color'] != null
+          ? parseColor(jobJson['background_color'])
+          : const Color(0xFFFFFFFF),
+      foregroundColor: jobJson['foreground_color'] != null
+          ? parseColor(jobJson['foreground_color'])
+          : const Color(0xFFFFFFFF),
+      textColor: jobJson['text_color'] != null
+          ? parseColor(jobJson['text_color'])
+          : const Color(0xFFFFFFFF),
+      overlayColor: jobJson['overlay_color'] != null
+          ? parseColor(jobJson['overlay_color'])
+          : const Color(0xFFFFFFFF),
       imagePath: jobJson['image_path'] ?? '',
       competencies: jobJson['competencies'] != null
-          ? (jobJson['competencies'] as List).map((compJson) => Competency.fromJson(compJson)).toList()
+          ? (jobJson['competencies'] as List)
+              .map((compJson) => Competency.fromJson(compJson))
+              .toList()
           : [],
       competenciesFamilies: jobJson['competenciesFamilies'] != null
           ? (jobJson['competenciesFamilies'] as List)
@@ -91,7 +126,9 @@ class Job extends AppJob {
               .toList()
           : [],
       kiviats: jobJson['kiviats'] != null
-          ? (jobJson['kiviats'] as List).map((kiviatJson) => JobKiviat.fromJson(kiviatJson)).toList()
+          ? (jobJson['kiviats'] as List)
+              .map((kiviatJson) => JobKiviat.fromJson(kiviatJson))
+              .toList()
           : [],
     );
 
@@ -100,7 +137,10 @@ class Job extends AppJob {
 
   @override
   List<double> kiviatValues(JobProgressionLevel level) {
-    return kiviats.whereOrEmpty((k) => k.level == level.name).map((k) => k.radarScore0to5).toList();
+    return kiviats
+        .whereOrEmpty((k) => k.level == level.name)
+        .map((k) => k.radarScore0to5)
+        .toList();
   }
 
   // List<CompetencyFamily> get competenciesFamilies {
@@ -129,13 +169,17 @@ class Job extends AppJob {
       description: FAKER.lorem.sentence() * 5,
       competencies: List.generate(20, (_) => Competency.empty()),
       competenciesFamilies: List.generate(5, (_) => CompetencyFamily.empty()),
-      competenciesSubFamilies: List.generate(5, (_) => CompetencyFamily.empty()),
+      competenciesSubFamilies:
+          List.generate(5, (_) => CompetencyFamily.empty()),
     );
   }
 
   @override
   competenciesPerFamily(CompetencyFamily family) {
-    return competencies.where((comp) => comp.families != null && comp.families!.contains(family)).toList();
+    return competencies
+        .where(
+            (comp) => comp.families != null && comp.families!.contains(family))
+        .toList();
   }
 
   getProficiencyLevel(comp, int level) {
@@ -185,19 +229,27 @@ class JobFamily extends AppJob {
     final description = familyJson['description'] ?? '';
 
     final jobs = familyJson['jobs'] != null
-        ? (familyJson['jobs'] as List).map((jobJson) => Job.fromJson(jobJson)).toList()
+        ? (familyJson['jobs'] as List)
+            .map((jobJson) => Job.fromJson(jobJson))
+            .toList()
         : <Job>[];
 
     final resources = familyJson['learningResources'] != null
-        ? (familyJson['learningResources'] as List).map((resJson) => Resource.fromJson(resJson)).toList()
+        ? (familyJson['learningResources'] as List)
+            .map((resJson) => Resource.fromJson(resJson))
+            .toList()
         : <Resource>[];
 
     final kiviats = familyJson['kiviats'] != null
-        ? (familyJson['kiviats'] as List).map((kiviatJson) => JobKiviat.fromJson(kiviatJson)).toList()
+        ? (familyJson['kiviats'] as List)
+            .map((kiviatJson) => JobKiviat.fromJson(kiviatJson))
+            .toList()
         : <JobKiviat>[];
 
     final competencies = familyJson['competencies'] != null
-        ? (familyJson['competencies'] as List).map((compJson) => Competency.fromJson(compJson)).toList()
+        ? (familyJson['competencies'] as List)
+            .map((compJson) => Competency.fromJson(compJson))
+            .toList()
         : <Competency>[];
 
     final competenciesFamilies = familyJson['competenciesFamilies'] != null
@@ -206,11 +258,12 @@ class JobFamily extends AppJob {
             .toList()
         : <CompetencyFamily>[];
 
-    final competenciesSubFamilies = familyJson['competenciesSubfamilies'] != null
-        ? (familyJson['competenciesSubfamilies'] as List)
-            .map((familyJson) => CompetencyFamily.fromJson(familyJson))
-            .toList()
-        : <CompetencyFamily>[];
+    final competenciesSubFamilies =
+        familyJson['competenciesSubfamilies'] != null
+            ? (familyJson['competenciesSubfamilies'] as List)
+                .map((familyJson) => CompetencyFamily.fromJson(familyJson))
+                .toList()
+            : <CompetencyFamily>[];
 
     return JobFamily(
       id: id,
@@ -242,12 +295,18 @@ class JobFamily extends AppJob {
 
   @override
   List<double> kiviatValues(JobProgressionLevel level) {
-    return kiviats.whereOrEmpty((k) => k.level == level.name).map((k) => k.radarScore0to5).toList();
+    return kiviats
+        .whereOrEmpty((k) => k.level == level.name)
+        .map((k) => k.radarScore0to5)
+        .toList();
   }
 
   @override
   competenciesPerFamily(CompetencyFamily family) {
-    return competencies.where((comp) => comp.families != null && comp.families!.contains(family)).toList();
+    return competencies
+        .where(
+            (comp) => comp.families != null && comp.families!.contains(family))
+        .toList();
   }
 }
 
@@ -295,20 +354,27 @@ class UserJob {
     final id = userJobJson['id'];
     final userId = userJobJson['userId'];
     final jobId = userJobJson['jobId'];
-    final job = userJobJson['job'] != null ? Job.fromJson(userJobJson['job']) : null;
+    final job =
+        userJobJson['job'] != null ? Job.fromJson(userJobJson['job']) : null;
     final jobFamilyId = userJobJson['jobFamilyId'];
-    final jobFamily = userJobJson['jobFamily'] != null ? JobFamily.fromJson(userJobJson['jobFamily']) : null;
+    final jobFamily = userJobJson['jobFamily'] != null
+        ? JobFamily.fromJson(userJobJson['jobFamily'])
+        : null;
 
     final statusString = userJobJson['status'];
     final status = statusString != null
         ? UserJobStatus.values.firstWhere(
-            (e) => e.toString().split('.').last.toLowerCase() == statusString.toLowerCase(),
+            (e) =>
+                e.toString().split('.').last.toLowerCase() ==
+                statusString.toLowerCase(),
             orElse: () => UserJobStatus.target,
           )
         : null;
 
     final levelString = userJobJson['level'];
-    final level = levelString != null ? LevelExtension.fromString(levelString) : Level.beginner;
+    final level = levelString != null
+        ? LevelExtension.fromString(levelString)
+        : Level.beginner;
 
     final note = userJobJson['note'];
     final totalScore = userJobJson['totalScore'] ?? 0;
@@ -316,9 +382,12 @@ class UserJob {
     final completedQuizzes = userJobJson['completedQuizzes'] ?? 0;
 
     final lastQuizAtString = userJobJson['lastQuizAt'];
-    final lastQuizAt = lastQuizAtString != null ? DateTime.parse(lastQuizAtString) : null;
+    final lastQuizAt =
+        lastQuizAtString != null ? DateTime.parse(lastQuizAtString) : null;
     final kiviats = userJobJson['kiviats'] != null
-        ? (userJobJson['kiviats'] as List).map((kiviatJson) => JobKiviat.fromJson(kiviatJson)).toList()
+        ? (userJobJson['kiviats'] as List)
+            .map((kiviatJson) => JobKiviat.fromJson(kiviatJson))
+            .toList()
         : <JobKiviat>[];
 
     return UserJob(
@@ -344,7 +413,9 @@ class UserJob {
     final Map<String, List<double>> valuesPerFamily = {};
     for (final kiviat in kiviats) {
       if (level != null && kiviat.level != level) continue;
-      valuesPerFamily.putIfAbsent(kiviat.competenciesFamilyId, () => <double>[]).add(kiviat.radarScore0to5);
+      valuesPerFamily
+          .putIfAbsent(kiviat.competenciesFamilyId, () => <double>[])
+          .add(kiviat.radarScore0to5);
     }
     return families.map((family) {
       final values = valuesPerFamily[family.id] ?? const <double>[];
@@ -413,17 +484,22 @@ class Competency {
       id: compJson['id'],
       name: compJson['name'],
       families: compJson['families'] != null
-          ? (compJson['families'] as List).map((familyJson) => CompetencyFamily.fromJson(familyJson)).toList()
+          ? (compJson['families'] as List)
+              .map((familyJson) => CompetencyFamily.fromJson(familyJson))
+              .toList()
           : null,
       type: CompetencyTypeExtension.fromString(compJson['type']),
       level: LevelExtension.fromString(compJson['level']),
-      rating: CompetencyRatingExtension.fromString(compJson['rating'] as String?),
+      rating:
+          CompetencyRatingExtension.fromString(compJson['rating'] as String?),
       percentage: _toDoubleNullable(compJson['percentage']),
       masteryNow: _toDoubleNullable(compJson['masteryNow']),
       mastery30d: _toDoubleNullable(compJson['mastery30d']),
       attemptsCount: (compJson['attemptsCount'] as num?)?.toInt(),
       bestScore: _toDoubleNullable(compJson['bestScore']),
-      lastQuizAt: compJson['lastQuizAt'] != null ? DateTime.parse(compJson['lastQuizAt'] as String) : null,
+      lastQuizAt: compJson['lastQuizAt'] != null
+          ? DateTime.parse(compJson['lastQuizAt'] as String)
+          : null,
     );
   }
 
@@ -529,11 +605,17 @@ class CompetencyFamily {
       slug: familyJson['slug'] ?? '',
       description: familyJson['description'],
       competencies: familyJson['competencies'] != null
-          ? (familyJson['competencies'] as List).map((compJson) => Competency.fromJson(compJson)).toList()
+          ? (familyJson['competencies'] as List)
+              .map((compJson) => Competency.fromJson(compJson))
+              .toList()
           : [],
-      parent: familyJson['parent'] != null ? CompetencyFamily.fromJson(familyJson['parent']) : null,
+      parent: familyJson['parent'] != null
+          ? CompetencyFamily.fromJson(familyJson['parent'])
+          : null,
       children: familyJson['children'] != null
-          ? (familyJson['children'] as List).map((childJson) => CompetencyFamily.fromJson(childJson)).toList()
+          ? (familyJson['children'] as List)
+              .map((childJson) => CompetencyFamily.fromJson(childJson))
+              .toList()
           : [],
     );
   }
@@ -541,7 +623,10 @@ class CompetencyFamily {
   // Override equality operator and hashCode to ensure uniqueness in a Set
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is CompetencyFamily && runtimeType == other.runtimeType && id == other.id;
+      identical(this, other) ||
+      other is CompetencyFamily &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
 
   @override
   int get hashCode => id.hashCode;
@@ -556,8 +641,12 @@ class CompetencyFamily {
       description: FAKER.lorem.sentence() * 5,
       competencies: List.generate(20, (_) => Competency.empty()),
       parent: null,
-      children:
-          canNest ? List.generate(3, (_) => CompetencyFamily.empty(depth: depth + 1, maxDepth: maxDepth)) : const [],
+      children: canNest
+          ? List.generate(
+              3,
+              (_) =>
+                  CompetencyFamily.empty(depth: depth + 1, maxDepth: maxDepth))
+          : const [],
     );
   }
 }

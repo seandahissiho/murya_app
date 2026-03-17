@@ -34,19 +34,24 @@ import 'package:murya/screens/base.dart';
 part '_job_details_mobile.dart';
 part '_job_details_tablet+.dart';
 
-class JobDetailsLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class JobDetailsLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.jobDetails];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     final locale = AppLocalizations.of(context);
     final Map<String, dynamic>? routeData = data as Map<String, dynamic>?;
     final dynamic payload = routeData?['data'];
     final String jobName =
-        payload is Map<String, dynamic> && payload['jobTitle'] is String ? payload['jobTitle'] as String : '';
-    final String pageTitle = jobName.isNotEmpty ? locale.job_profile_page_title(jobName) : 'Murya';
+        payload is Map<String, dynamic> && payload['jobTitle'] is String
+            ? payload['jobTitle'] as String
+            : '';
+    final String pageTitle =
+        jobName.isNotEmpty ? locale.job_profile_page_title(jobName) : 'Murya';
     return [
       BeamPage(
         key: ValueKey('jobDetails-page-$languageCode'),
@@ -86,7 +91,8 @@ class _CFCardState extends State<CFCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final nbCompetencies = widget.job.competenciesPerFamily(widget.family).length;
+    final nbCompetencies =
+        widget.job.competenciesPerFamily(widget.family).length;
     final locale = AppLocalizations.of(context);
     final isMobile = DeviceHelper.isMobile(context);
     return AppXButton(
@@ -119,9 +125,12 @@ class _CFCardState extends State<CFCard> {
           padding: const EdgeInsets.all(10),
           child: SvgPicture.asset(
             getIconForFamily(widget.family),
-            height: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
-            width: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
-            colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
+            height:
+                isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
+            width:
+                isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
+            colorFilter: const ColorFilter.mode(
+                AppColors.primaryDefault, BlendMode.srcIn),
           ),
         ),
         AppSpacing.spacing16_Box,
@@ -135,9 +144,12 @@ class _CFCardState extends State<CFCard> {
               Text(
                 widget.family.name,
                 style: GoogleFonts.anton(
-                  color: _isHovering ? AppColors.textInverted : AppColors.textPrimary,
-                  fontSize:
-                      isMobile ? theme.textTheme.displayMedium!.fontSize : theme.textTheme.headlineSmall!.fontSize,
+                  color: _isHovering
+                      ? AppColors.textInverted
+                      : AppColors.textPrimary,
+                  fontSize: isMobile
+                      ? theme.textTheme.displayMedium!.fontSize
+                      : theme.textTheme.headlineSmall!.fontSize,
                   fontWeight: FontWeight.w400,
                   // height: 1 / 3.8,
                 ),
@@ -145,8 +157,13 @@ class _CFCardState extends State<CFCard> {
               AppSpacing.spacing2_Box,
               Text(
                 locale.competencies_count(nbCompetencies),
-                style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
-                  color: _isHovering ? AppColors.textInverted : AppColors.textSecondary,
+                style: (isMobile
+                        ? theme.textTheme.bodyMedium
+                        : theme.textTheme.bodyLarge)
+                    ?.copyWith(
+                  color: _isHovering
+                      ? AppColors.textInverted
+                      : AppColors.textSecondary,
                   // height: 1 / 2.4,
                 ),
               ),
@@ -196,11 +213,17 @@ class _CFCardState extends State<CFCard> {
           width: double.infinity,
           decoration: BoxDecoration(
             color: AppColors.backgroundDefault,
-            border: Border.all(color: _isHovering ? AppColors.primaryHover : AppColors.borderLight, width: 2),
+            border: Border.all(
+                color: _isHovering
+                    ? AppColors.primaryHover
+                    : AppColors.borderLight,
+                width: 2),
             borderRadius: AppRadius.large,
             boxShadow: [
               BoxShadow(
-                color: _isHovering ? AppColors.primaryHover : AppColors.secondaryHover,
+                color: _isHovering
+                    ? AppColors.primaryHover
+                    : AppColors.secondaryHover,
                 blurRadius: 1,
                 offset: const Offset(0, 6),
               ),
@@ -221,15 +244,22 @@ class _CFCardState extends State<CFCard> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: _isHovering ? AppColors.backgroundSurface : AppColors.borderLight,
+                  color: _isHovering
+                      ? AppColors.backgroundSurface
+                      : AppColors.borderLight,
                   shape: BoxShape.circle,
                 ),
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
                   getIconForFamily(widget.family),
-                  height: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
-                  width: isMobile ? mobileCTAHeight - 15 : tabletAndAboveCTAHeight - 15,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryDefault, BlendMode.srcIn),
+                  height: isMobile
+                      ? mobileCTAHeight - 15
+                      : tabletAndAboveCTAHeight - 15,
+                  width: isMobile
+                      ? mobileCTAHeight - 15
+                      : tabletAndAboveCTAHeight - 15,
+                  colorFilter: const ColorFilter.mode(
+                      AppColors.primaryDefault, BlendMode.srcIn),
                 ),
               ),
               AppSpacing.spacing16_Box,
@@ -243,7 +273,9 @@ class _CFCardState extends State<CFCard> {
                     Text(
                       widget.family.name,
                       style: GoogleFonts.anton(
-                        color: _isHovering ? AppColors.textInverted : AppColors.textPrimary,
+                        color: _isHovering
+                            ? AppColors.textInverted
+                            : AppColors.textPrimary,
                         fontSize: isMobile
                             ? theme.textTheme.displayMedium!.fontSize
                             : theme.textTheme.headlineSmall!.fontSize,
@@ -254,8 +286,13 @@ class _CFCardState extends State<CFCard> {
                     AppSpacing.spacing2_Box,
                     Text(
                       locale.competencies_count(nbCompetencies),
-                      style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
-                        color: _isHovering ? AppColors.textInverted : AppColors.textSecondary,
+                      style: (isMobile
+                              ? theme.textTheme.bodyMedium
+                              : theme.textTheme.bodyLarge)
+                          ?.copyWith(
+                        color: _isHovering
+                            ? AppColors.textInverted
+                            : AppColors.textSecondary,
                         // height: 1 / 2.4,
                       ),
                     ),
@@ -364,21 +401,38 @@ class InteractiveRoundedRadarChart extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<InteractiveRoundedRadarChart> createState() => _InteractiveRoundedRadarChartState();
+  State<InteractiveRoundedRadarChart> createState() =>
+      _InteractiveRoundedRadarChartState();
 }
 
-class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarChart> {
+class _InteractiveRoundedRadarChartState
+    extends State<InteractiveRoundedRadarChart> {
   int? _activeIndex;
   Offset? _tooltipPos; // in local coordinates
 
+  int _axisCount() {
+    if (widget.labels.isNotEmpty) return widget.labels.length;
+    return math.max(widget.defaultValues.length, widget.userValues.length);
+  }
+
+  List<double> _normalizedValues(List<double> values, int axisCount) {
+    if (axisCount <= 0) return const <double>[];
+    return List<double>.generate(
+      axisCount,
+      (i) => i < values.length ? values[i] : 0.0,
+      growable: false,
+    );
+  }
+
   // Computes the data-points exactly like the painter
   List<Offset> _computePoints(Size size, List<double> values) {
-    final int n = values.length;
+    final int n = _axisCount();
     if (n < 3) return [];
     final fit = _RadarFit.compute(size, n);
+    final normalizedValues = _normalizedValues(values, n);
 
     return List.generate(n, (i) {
-      final double v = (values[i] / widget.maxValue).clamp(0.0, 1.0);
+      final double v = (normalizedValues[i] / widget.maxValue).clamp(0.0, 1.0);
       return fit.point(i, v);
     });
   }
@@ -435,8 +489,10 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
                 onPointerCancel: (_) => _clearHover(),
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onLongPressStart: (details) => _updateHover(size, details.localPosition),
-                  onLongPressMoveUpdate: (details) => _updateHover(size, details.localPosition),
+                  onLongPressStart: (details) =>
+                      _updateHover(size, details.localPosition),
+                  onLongPressMoveUpdate: (details) =>
+                      _updateHover(size, details.localPosition),
                   onLongPressEnd: (_) => _clearHover(),
                   // onTapDown: (details) => _updateHover(size, details.localPosition),
                   child: MouseRegion(
@@ -445,7 +501,7 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
                     onExit: (_) => _clearHover(),
                     child: CustomPaint(
                       painter: _RoundedRadarPainter(
-                        labels: const [],
+                        labels: widget.labels,
                         defaultValues: widget.defaultValues,
                         userValues: widget.userValues,
                         maxValue: widget.maxValue,
@@ -471,7 +527,9 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
                 left: _tooltipPos!.dx,
                 top: _tooltipPos!.dy,
                 child: _ValueTooltip(
-                  value: widget.defaultValues[_activeIndex!],
+                  value: _activeIndex! < widget.defaultValues.length
+                      ? widget.defaultValues[_activeIndex!]
+                      : 0.0,
                   // nudge the tooltip so it doesn’t cover the dot
                   offset: const Offset(10, -10),
                 ),
@@ -483,7 +541,8 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
   }
 
   List<Widget> _buildLabelChips(Size size) {
-    double _clamp(double v, double min, double max) => math.max(min, math.min(v, max));
+    double _clamp(double v, double min, double max) =>
+        math.max(min, math.min(v, max));
 
     final int n = widget.labels.length;
     if (n == 0) return [];
@@ -510,11 +569,15 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
     for (int i = 0; i < n; i++) {
       final Offset dir = fit.dir(i);
       final double defaultV = widget.defaultValues.elementAtOrNull(i) ?? 0.0;
-      final double userV = (widget.userValues.isNotEmpty && i < widget.userValues.length) ? widget.userValues[i] : 0.0;
+      final double userV =
+          (widget.userValues.isNotEmpty && i < widget.userValues.length)
+              ? widget.userValues[i]
+              : 0.0;
       final double maxV = math.max(defaultV, userV).clamp(0.0, widget.maxValue);
       final double t = (widget.maxValue <= 0) ? 0.0 : (maxV / widget.maxValue);
       final Offset anchor = fit.point(i, t);
-      final Offset pos = Offset(anchor.dx + dir.dx * out, anchor.dy + dir.dy * out);
+      final Offset pos =
+          Offset(anchor.dx + dir.dx * out, anchor.dy + dir.dy * out);
 
       tp.text = TextSpan(
         text: widget.labels[i],
@@ -532,9 +595,15 @@ class _InteractiveRoundedRadarChartState extends State<InteractiveRoundedRadarCh
       final bool isTopCenter = (angle + (math.pi / 2)).abs() < (math.pi / 12);
       final bool isTopLeft = angle < -math.pi / 2;
       final bool isTopRight = angle > -math.pi / 2 && angle < 0;
-      final double left = isTopCenter ? (pos.dx - w / 2) : (pos.dx + (dir.dx >= 0 ? gap : -w - gap));
-      final double top = isTopCenter ? (pos.dy - h - gap) : (pos.dy + (dir.dy >= 0 ? gap : -h - gap));
-      final double rotation = isTopLeft ? (-0 * math.pi / 180) : (isTopRight ? (0 * math.pi / 180) : 0.0);
+      final double left = isTopCenter
+          ? (pos.dx - w / 2)
+          : (pos.dx + (dir.dx >= 0 ? gap : -w - gap));
+      final double top = isTopCenter
+          ? (pos.dy - h - gap)
+          : (pos.dy + (dir.dy >= 0 ? gap : -h - gap));
+      final double rotation = isTopLeft
+          ? (-0 * math.pi / 180)
+          : (isTopRight ? (0 * math.pi / 180) : 0.0);
 
       children.add(Positioned(
         left: _clamp(left, safe.left, safe.right - w),
@@ -591,7 +660,10 @@ class _ValueTooltip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           child: Text(
             text,
-            style: const TextStyle(color: AppColors.textInverted, fontSize: 12, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+                color: AppColors.textInverted,
+                fontSize: 12,
+                fontWeight: FontWeight.w600),
           ),
         ),
       ),
@@ -683,10 +755,14 @@ class _RoundedRadarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final int n = defaultValues.length;
+    final int n = labels.isNotEmpty
+        ? labels.length
+        : math.max(defaultValues.length, userValues.length);
     if (n < 3) return; // need 3+ axes
 
     final fit = _RadarFit.compute(size, n);
+    final normalizedDefaultValues = _normalizedValues(defaultValues, n);
+    final normalizedUserValues = _normalizedValues(userValues, n);
 
     // Proportional styling scale (tweak the base divisor if you prefer)
     final double s = fit.s;
@@ -715,11 +791,14 @@ class _RoundedRadarPainter extends CustomPainter {
 
     // 2) Compute data polygon points (scaled by values/maxValue)
     final List<Offset> defaultPts = List.generate(n, (i) {
-      final double val = (defaultValues[i] / maxValue).clamp(0.0, 1.0);
+      final double val =
+          (normalizedDefaultValues[i] / maxValue).clamp(0.0, 1.0);
       return fit.point(i, val);
     });
     final List<Offset> userPts = List.generate(n, (i) {
-      final double val = (userValues.isNotEmpty ? (userValues[i] / maxValue).clamp(0.0, 1.0) : 0.0);
+      final double val = userValues.isNotEmpty
+          ? (normalizedUserValues[i] / maxValue).clamp(0.0, 1.0)
+          : 0.0;
       return fit.point(i, val);
     });
 
@@ -728,8 +807,10 @@ class _RoundedRadarPainter extends CustomPainter {
       canvas: canvas,
       pts: defaultPts,
       cornerRadius: cornerR,
-      fillColor: AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 0.1 : 0.05),
-      strokeColor: AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 1.0 : 0.125),
+      fillColor: AppColors.primaryDefault
+          .withValues(alpha: userValues.isEmpty ? 0.1 : 0.05),
+      strokeColor: AppColors.primaryDefault
+          .withValues(alpha: userValues.isEmpty ? 1.0 : 0.125),
       strokeWidth: dataStroke,
     );
     if (userValues.isNotEmpty) {
@@ -749,10 +830,12 @@ class _RoundedRadarPainter extends CustomPainter {
       pts: defaultPts,
       baseDotRadius: dotRadius,
       borderWidth: dotBorderW,
-      fillColor: AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 1.0 : 0.25),
+      fillColor: AppColors.primaryDefault
+          .withValues(alpha: userValues.isEmpty ? 1.0 : 0.25),
       borderColor: userValues.isEmpty
           ? AppColors.textInverted
-          : AppColors.primaryDefault.withValues(alpha: userValues.isEmpty ? 1.0 : 0),
+          : AppColors.primaryDefault
+              .withValues(alpha: userValues.isEmpty ? 1.0 : 0),
       highlightIndex: highlightIndex,
       highlightScale: 1.6,
       // a bit larger
@@ -784,6 +867,14 @@ class _RoundedRadarPainter extends CustomPainter {
       old.highlightIndex != highlightIndex ||
       old.highlightColor != highlightColor;
 
+  List<double> _normalizedValues(List<double> values, int axisCount) {
+    return List<double>.generate(
+      axisCount,
+      (i) => i < values.length ? values[i] : 0.0,
+      growable: false,
+    );
+  }
+
   // ---------------------------
   // Helpers
   // ---------------------------
@@ -798,7 +889,8 @@ class _RoundedRadarPainter extends CustomPainter {
   }) {
     for (int i = 1; i <= rings; i++) {
       final double t = i / rings;
-      final List<Offset> ringPts = List.generate(nSides, (j) => fit.point(j, t));
+      final List<Offset> ringPts =
+          List.generate(nSides, (j) => fit.point(j, t));
 
       final Path ringPath = _buildRoundedPolygonPath(ringPts, cornerRadius);
       canvas.drawPath(ringPath, paint);
@@ -840,7 +932,8 @@ class _RoundedRadarPainter extends CustomPainter {
   }) {
     for (int i = 0; i < pts.length; i++) {
       final bool isActive = (highlightIndex != null && i == highlightIndex);
-      final double dotRadius = isActive ? baseDotRadius * highlightScale : baseDotRadius;
+      final double dotRadius =
+          isActive ? baseDotRadius * highlightScale : baseDotRadius;
       final Color fill = isActive ? (highlightColor ?? fillColor) : fillColor;
 
       final Paint fillPaint = Paint()..color = fill;
@@ -879,7 +972,9 @@ class _RoundedRadarPainter extends CustomPainter {
       final double angle = -math.pi / 2 + (i * angleStep);
 
       // Data point position
-      final double ratio = ((values[i] == 0 ? (maxValue / 1.5) : values[i]) / maxValue).clamp(0.0, 1.0);
+      final double ratio =
+          ((values[i] == 0 ? (maxValue / 1.5) : values[i]) / maxValue)
+              .clamp(0.0, 1.0);
       final double r = maxRadius * ratio;
       final Offset dir = Offset(math.cos(angle), math.sin(angle));
       final Offset dataPt = center + dir * r;
@@ -902,8 +997,10 @@ class _RoundedRadarPainter extends CustomPainter {
       double x = 0;
       double y = 0;
       if (values[i] > 3.5) {
-        x = labelAnchor.dx + (dir.dx >= 0 ? -(tp.width / (i == 0 ? 2 : 1)) : -tp.width / 10);
-        y = labelAnchor.dy + (dir.dy >= 0 ? 5 : -tp.height * (i == 0 ? 1 : 2.125));
+        x = labelAnchor.dx +
+            (dir.dx >= 0 ? -(tp.width / (i == 0 ? 2 : 1)) : -tp.width / 10);
+        y = labelAnchor.dy +
+            (dir.dy >= 0 ? 5 : -tp.height * (i == 0 ? 1 : 2.125));
 
         // Clamp to bounds
         final double clampPad = -tp.height;
@@ -912,13 +1009,16 @@ class _RoundedRadarPainter extends CustomPainter {
         x = x.clamp(clampPad, maxX);
         y = y.clamp(clampPad, maxY);
       } else {
-        x = labelAnchor.dx + (dir.dx >= 0 ? (i == 0 ? -tp.width / 2 : 0) : -tp.width);
+        x = labelAnchor.dx +
+            (dir.dx >= 0 ? (i == 0 ? -tp.width / 2 : 0) : -tp.width);
         y = labelAnchor.dy + (dir.dy >= 0 ? 0.0 : -tp.height);
 
         // Clamp to bounds
         const double clampPad = 6.0;
-        final double maxX = math.max(clampPad, (center.dx * 2) - tp.width - clampPad);
-        final double maxY = math.max(clampPad, (center.dy * 2) - tp.height - clampPad);
+        final double maxX =
+            math.max(clampPad, (center.dx * 2) - tp.width - clampPad);
+        final double maxY =
+            math.max(clampPad, (center.dy * 2) - tp.height - clampPad);
         x = x.clamp(clampPad, maxX);
         y = y.clamp(clampPad, maxY);
       }
@@ -934,7 +1034,8 @@ class _RoundedRadarPainter extends CustomPainter {
       );
 
       final Paint bgPaint = Paint()..color = labelBgColor;
-      final RRect roundedRect = RRect.fromRectAndRadius(bgRect, Radius.circular(bgRadius));
+      final RRect roundedRect =
+          RRect.fromRectAndRadius(bgRect, Radius.circular(bgRadius));
       canvas.drawRRect(roundedRect, bgPaint);
 
       // Leader line (short)
