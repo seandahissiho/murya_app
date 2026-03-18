@@ -1094,6 +1094,12 @@ abstract class AppLocalizations {
   /// **'Débloquer'**
   String get reward_unlock_cta;
 
+  /// Infobulle affichée quand une récompense est inactive faute de diamants
+  ///
+  /// In fr, this message translates to:
+  /// **'Vous n'avez pas assez de 💎'**
+  String get reward_unlock_insufficientDiamonds_tooltip;
+
   /// Libellé du type de récompense cinéma
   ///
   /// In fr, this message translates to:

@@ -614,6 +614,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reward_unlock_cta => 'Unlock';
 
   @override
+  String get reward_unlock_insufficientDiamonds_tooltip =>
+      'You don\'t have enough 💎';
+
+  @override
   String get rewardKind_cinema => 'Cinema';
 
   @override

@@ -716,6 +716,10 @@
   "@reward_unlock_cta": {
     "description": "Button to unlock a reward"
   },
+  "reward_unlock_insufficientDiamonds_tooltip": "You don't have enough 💎",
+  "@reward_unlock_insufficientDiamonds_tooltip": {
+    "description": "Tooltip shown when a reward is inactive because the user lacks diamonds"
+  },
   "rewardKind_cinema": "Cinema",
   "@rewardKind_cinema": {
     "description": "Reward kind label for cinema"

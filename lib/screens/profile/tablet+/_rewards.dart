@@ -118,7 +118,6 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
           ),
         ];
         final rewards = demoRewards; // state.rewards;
-        final purchases = state.purchases;
         return LayoutBuilder(
           builder: (context, constraints) {
             return Wrap(
@@ -126,6 +125,8 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
               spacing: AppSpacing.spacing16,
               runSpacing: AppSpacing.spacing16,
               children: rewards.map((reward) {
+                final lacksDiamonds = reward.costDiamonds > state.wallet.diamonds;
+                final isRewardDisabled = !reward.canBuy || reward.remainingPlaces <= 0 || lacksDiamonds;
                 return Container(
                   height: 325,
                   width: (constraints.maxWidth / 4) - 3 * AppSpacing.spacing16,
@@ -225,16 +226,22 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
                         const Spacer(),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
-                          child: AppXButton(
-                            shrinkWrap: false,
-                            text: locale.reward_unlock_cta,
-                            disabled: !reward.canBuy ||
-                                reward.remainingPlaces <= 0 ||
-                                reward.costDiamonds > state.wallet.diamonds,
-                            onPressed: () async {
-                              return await contentNotAvailableModal(context);
-                            },
-                            isLoading: state is RewardsLoading,
+                          child: Tooltip(
+                            message: lacksDiamonds ? locale.reward_unlock_insufficientDiamonds_tooltip : '',
+                            decoration: const BoxDecoration(
+                              color: AppColors.primaryDefault,
+                              borderRadius: AppRadius.tinyTiny,
+                            ),
+                            waitDuration: const Duration(milliseconds: 250),
+                            child: AppXButton(
+                              shrinkWrap: false,
+                              text: locale.reward_unlock_cta,
+                              disabled: isRewardDisabled,
+                              onPressed: () async {
+                                return await contentNotAvailableModal(context);
+                              },
+                              isLoading: state is RewardsLoading,
+                            ),
                           ),
                         ),
                         AppSpacing.spacing16_Box,

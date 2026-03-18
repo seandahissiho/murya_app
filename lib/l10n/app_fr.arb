@@ -716,6 +716,10 @@
   "@reward_unlock_cta": {
     "description": "Bouton pour débloquer une récompense"
   },
+  "reward_unlock_insufficientDiamonds_tooltip": "Vous n'avez pas assez de 💎",
+  "@reward_unlock_insufficientDiamonds_tooltip": {
+    "description": "Infobulle affichée quand une récompense est inactive faute de diamants"
+  },
   "rewardKind_cinema": "Cinéma",
   "@rewardKind_cinema": {
     "description": "Libellé du type de récompense cinéma"
