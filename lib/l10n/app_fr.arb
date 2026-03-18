@@ -167,7 +167,7 @@
       }
     }
   },
-  "searchNoResultsSubtitle": "Vérifiez l'orthographe de tous les mots.\nEssayez différents mots-clés.\nEssayez des mots-clés plus généraux.",
+  "searchNoResultsSubtitle": "Vérifiez l''orthographe de tous les mots.\nEssayez différents mots-clés.\nEssayez des mots-clés plus généraux.",
   "@searchNoResultsSubtitle": {
     "description": "Sous-texte affiché sous le message de recherche sans résultat"
   },

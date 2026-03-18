@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'l10n.dart';
 
 // ignore_for_file: type=lint
@@ -125,8 +126,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get user_ressources_module_title => 'Ressources';
 
   @override
-  String get user_ressources_module_subtitle =>
-      'La génération des contenus de Murya est instantanée';
+  String get user_ressources_module_subtitle => 'La génération des contenus de Murya est instantanée';
 
   @override
   String get user_ressources_module_button => 'Personnaliser';
@@ -137,8 +137,8 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get searchNoResultsSubtitle =>
-      'Vérifiez l\'orthographe de tous les mots.\n'
+  String get searchNoResultsSubtitle => 'Vérifiez l'
+      'orthographe de tous les mots.\n'
       'Essayez différents mots-clés.\n'
       'Essayez des mots-clés plus généraux.';
 
@@ -184,24 +184,19 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get competencyRatingVeryGoodTooltip =>
-      'Cet indicateur reflète votre évolution';
+  String get competencyRatingVeryGoodTooltip => 'Cet indicateur reflète votre évolution';
 
   @override
-  String get competencyRatingGoodTooltip =>
-      'Cet indicateur reflète votre évolution';
+  String get competencyRatingGoodTooltip => 'Cet indicateur reflète votre évolution';
 
   @override
-  String get competencyRatingAverageTooltip =>
-      'Cet indicateur reflète votre évolution';
+  String get competencyRatingAverageTooltip => 'Cet indicateur reflète votre évolution';
 
   @override
-  String get competencyRatingBadTooltip =>
-      'Cet indicateur reflète votre évolution';
+  String get competencyRatingBadTooltip => 'Cet indicateur reflète votre évolution';
 
   @override
-  String get competencyRatingVeryBadTooltip =>
-      'Cet indicateur reflète votre évolution';
+  String get competencyRatingVeryBadTooltip => 'Cet indicateur reflète votre évolution';
 
   @override
   String get show_more => 'Afficher plus';
@@ -264,8 +259,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get popup_job_selection_title => 'Choisissez votre métier';
 
   @override
-  String get popup_job_selection_technician_title =>
-      'Technicien en Cybersécurité';
+  String get popup_job_selection_technician_title => 'Technicien en Cybersécurité';
 
   @override
   String get popup_job_selection_technician_subtitle =>
@@ -275,12 +269,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get popup_job_selection_continue_button => 'Continuer';
 
   @override
-  String get popup_job_selection_other_expertise_label =>
-      'Vous visez une autre expertise?';
+  String get popup_job_selection_other_expertise_label => 'Vous visez une autre expertise?';
 
   @override
-  String get popup_job_selection_search_hint =>
-      'Ex: Développeur, Product Manager...';
+  String get popup_job_selection_search_hint => 'Ex: Développeur, Product Manager...';
 
   @override
   String get resourceViewerPageTitle => 'Page Visualiseur de Ressource';
@@ -292,8 +284,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get videoViewerMissingUrl => 'L\'URL de la vidéo est manquante';
 
   @override
-  String get videoViewerInvalidUrl =>
-      'L\'URL de la vidéo doit utiliser http ou https';
+  String get videoViewerInvalidUrl => 'L\'URL de la vidéo doit utiliser http ou https';
 
   @override
   String get videoViewerLoadFailed => 'Impossible de charger la vidéo';
@@ -302,8 +293,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get audioViewerMissingUrl => 'L\'URL audio est manquante';
 
   @override
-  String get audioViewerInvalidUrl =>
-      'L\'URL audio doit utiliser http ou https';
+  String get audioViewerInvalidUrl => 'L\'URL audio doit utiliser http ou https';
 
   @override
   String get audioViewerLoadFailed => 'Impossible de charger l\'audio';
@@ -387,8 +377,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quiz_start_prompt_emphasis => '10 questions rapides';
 
   @override
-  String get quiz_start_prompt_suffix =>
-      ' pour générer votre ressource sur-mesure.';
+  String get quiz_start_prompt_suffix => ' pour générer votre ressource sur-mesure.';
 
   @override
   String get quiz_start_duration => 'Durée : Moins de 5 min';
@@ -397,15 +386,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quiz_start_tip_title => '💡 Conseil';
 
   @override
-  String get quiz_start_tip_text =>
-      'Répondez à l’instinct pour un résultat plus juste !';
+  String get quiz_start_tip_text => 'Répondez à l’instinct pour un résultat plus juste !';
 
   @override
   String get quiz_exit_title => 'Abandonner l\'évaluation ?';
 
   @override
-  String get quiz_exit_body =>
-      'Votre progression sera perdue et vous devrez recommencer depuis le début.';
+  String get quiz_exit_body => 'Votre progression sera perdue et vous devrez recommencer depuis le début.';
 
   @override
   String get quiz_exit_quit => 'Quitter';
@@ -428,16 +415,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quiz_continue => 'Continuer';
 
   @override
-  String get quiz_start_description_1 =>
-      'Vous allez démarrer le questionnaire du métier de Product Manager.';
+  String get quiz_start_description_1 => 'Vous allez démarrer le questionnaire du métier de Product Manager.';
 
   @override
-  String get quiz_start_description_2 =>
-      'Il se compose de 10 questions à choix multiple.';
+  String get quiz_start_description_2 => 'Il se compose de 10 questions à choix multiple.';
 
   @override
-  String get quiz_start_description_3 =>
-      'Vos réponses permettront de créer votre ressource personnalisée.';
+  String get quiz_start_description_3 => 'Vos réponses permettront de créer votre ressource personnalisée.';
 
   @override
   String get quiz_start_advice =>
@@ -458,8 +442,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quiz_completed_title => 'Évaluation terminée !';
 
   @override
-  String get quiz_completed_subtitle =>
-      'Bravo, vos 10 réponses ont été analysées !';
+  String get quiz_completed_subtitle => 'Bravo, vos 10 réponses ont été analysées !';
 
   @override
   String get quiz_completed_description =>
@@ -500,8 +483,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cost_current_balance_label => 'Votre solde actuel';
 
   @override
-  String get cost_remaining_balance_label =>
-      'Votre solde restant (après création)';
+  String get cost_remaining_balance_label => 'Votre solde restant (après création)';
 
   @override
   String get loading_creating_resource => 'Création de votre ressource...';
@@ -599,8 +581,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get parcoursObjective_inProgress => 'Objectif en cours';
 
   @override
-  String get parcoursObjective_finalizePositioningPath =>
-      'Finaliser le parcours de positionnement';
+  String get parcoursObjective_finalizePositioningPath => 'Finaliser le parcours de positionnement';
 
   @override
   String get parcoursRewards_possibleTitle => 'Récompenses possibles';
@@ -624,8 +605,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get reward_unlock_cta => 'Débloquer';
 
   @override
-  String get reward_unlock_insufficientDiamonds_tooltip =>
-      'Vous n\'avez pas assez de 💎';
+  String get reward_unlock_insufficientDiamonds_tooltip => 'Vous n\'avez pas assez de 💎';
 
   @override
   String get rewardKind_cinema => 'Cinéma';
@@ -646,8 +626,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get rewardKind_other => 'Autre';
 
   @override
-  String get rewardItem_francofoliesLaRochelle =>
-      'Les francofolies de La Rochelle';
+  String get rewardItem_francofoliesLaRochelle => 'Les francofolies de La Rochelle';
 
   @override
   String get rewardItem_futuroscope => 'Futuroscope';
@@ -689,23 +668,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get authLoading_message_engineInit => 'Initialisation du moteur...';
 
   @override
-  String get authLoading_message_uiArtifacts =>
-      'Chargement des artefacts UI...';
+  String get authLoading_message_uiArtifacts => 'Chargement des artefacts UI...';
 
   @override
-  String get authLoading_message_permissionsCheck =>
-      'Vérification des autorisations...';
+  String get authLoading_message_permissionsCheck => 'Vérification des autorisations...';
 
   @override
   String get authLoading_message_modulesCompile => 'Compilation des modules...';
 
   @override
-  String get authLoading_message_cacheSync =>
-      'Synchronisation du cache local...';
+  String get authLoading_message_cacheSync => 'Synchronisation du cache local...';
 
   @override
-  String get authLoading_message_profileFetch =>
-      'Récupération du profil utilisateur...';
+  String get authLoading_message_profileFetch => 'Récupération du profil utilisateur...';
 
   @override
   String get authLoading_message_sessionPrep => 'Préparation de la session...';
