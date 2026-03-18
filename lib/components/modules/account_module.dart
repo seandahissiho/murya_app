@@ -416,37 +416,17 @@ class _AvatarPhoto extends StatelessWidget {
                 height: size,
                 fit: BoxFit.cover,
                 placeholder: (context, url) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: AppColors.borderMedium,
-                        width: 2,
-                        strokeAlign: BorderSide.strokeAlignInside,
-                      ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: SvgPicture.asset(
-                      AppIcons.avatarPlaceholderPath,
-                      width: size,
-                      height: size,
-                    ),
+                  return SvgPicture.asset(
+                    AppIcons.avatarPlaceholderPath,
+                    width: size,
+                    height: size,
                   );
                 },
                 errorWidget: (context, url, error) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: AppColors.borderMedium,
-                        width: 2,
-                        strokeAlign: BorderSide.strokeAlignInside,
-                      ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: SvgPicture.asset(
-                      AppIcons.avatarPlaceholderPath,
-                      width: size,
-                      height: size,
-                    ),
+                  return SvgPicture.asset(
+                    AppIcons.avatarPlaceholderPath,
+                    width: size,
+                    height: size,
                   );
                 },
               ),

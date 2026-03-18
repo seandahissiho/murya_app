@@ -8,7 +8,8 @@ import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/helpers.dart';
-import 'package:responsive_framework/responsive_framework.dart' show ResponsiveBreakpoints;
+import 'package:responsive_framework/responsive_framework.dart'
+    show ResponsiveBreakpoints;
 
 //kButtonMinWidth
 const double kButtonMinWidth = 144;
@@ -95,13 +96,17 @@ class _AppXButtonState extends State<AppXButton> {
 
   // = 100ms (ton AnimatedContainer) + un petit buffer
   static const Duration _pressAnim = Duration(milliseconds: 150);
-  static const Duration _pressHold = Duration(milliseconds: 110); // = ton AnimatedContainer (100ms) + marge
+  static const Duration _pressHold =
+      Duration(milliseconds: 110); // = ton AnimatedContainer (100ms) + marge
 
   // Tune these to match the exact Figma numbers.
   static const double _hardShadowOffsetY = 5;
   static const Color _focusGlowColor = Color(0xFFB0C6EA);
 
   bool get _isDisabled => widget.disabled || widget.onPressed == null;
+  bool get _isInteractive => !_isDisabled && !widget.isLoading;
+  MouseCursor get _mouseCursor =>
+      _isInteractive ? SystemMouseCursors.click : SystemMouseCursors.basic;
 
   Set<WidgetState> _states() {
     final s = <WidgetState>{};
@@ -184,11 +189,15 @@ class _AppXButtonState extends State<AppXButton> {
   }
 
   Color _resolveForegroundColor(ThemeData theme, Set<WidgetState> states) {
-    return widget.fgColor ?? theme.elevatedButtonTheme.style?.foregroundColor?.resolve(states) ?? AppColors.whiteSwatch;
+    return widget.fgColor ??
+        theme.elevatedButtonTheme.style?.foregroundColor?.resolve(states) ??
+        AppColors.whiteSwatch;
   }
 
   Color _resolveIconColor(ThemeData theme, Set<WidgetState> states) {
-    return widget.fgColor ?? theme.elevatedButtonTheme.style?.iconColor?.resolve(states) ?? AppColors.whiteSwatch;
+    return widget.fgColor ??
+        theme.elevatedButtonTheme.style?.iconColor?.resolve(states) ??
+        AppColors.whiteSwatch;
   }
 
   Color _resolveBackgroundColor(ThemeData theme, Set<WidgetState> states) {
@@ -217,10 +226,13 @@ class _AppXButtonState extends State<AppXButton> {
           theme.colorScheme.primary;
     }
 
-    return widget.bgColor ?? style?.backgroundColor?.resolve(states) ?? theme.colorScheme.primary;
+    return widget.bgColor ??
+        style?.backgroundColor?.resolve(states) ??
+        theme.colorScheme.primary;
   }
 
-  TextStyle _resolveTextStyle(ThemeData theme, Set<WidgetState> states, {required bool isMobile}) {
+  TextStyle _resolveTextStyle(ThemeData theme, Set<WidgetState> states,
+      {required bool isMobile}) {
     final fg = _resolveForegroundColor(theme, states);
 
     // If the caller gives an explicit textStyle, respect it (but force color by default).
@@ -234,15 +246,18 @@ class _AppXButtonState extends State<AppXButton> {
     // - desktop/tablet: use labelLarge with fg
     final themed = theme.elevatedButtonTheme.style?.textStyle?.resolve(states);
     if (isMobile) {
-      return (themed ?? theme.textTheme.labelLarge ?? const TextStyle()).copyWith(color: fg);
+      return (themed ?? theme.textTheme.labelLarge ?? const TextStyle())
+          .copyWith(color: fg);
     }
 
-    return (theme.textTheme.labelLarge ?? themed ?? const TextStyle()).copyWith(color: fg);
+    return (theme.textTheme.labelLarge ?? themed ?? const TextStyle())
+        .copyWith(color: fg);
   }
 
   double _resolveMaxWidth(BuildContext context) {
     return widget.maxWidth ?? double.infinity;
-    ResponsiveBreakpoints.of(context).breakpoints.elementAtOrNull(1)?.start ?? AppBreakpoints.mobile;
+    ResponsiveBreakpoints.of(context).breakpoints.elementAtOrNull(1)?.start ??
+        AppBreakpoints.mobile;
   }
 
   @override
@@ -257,15 +272,19 @@ class _AppXButtonState extends State<AppXButton> {
     final BorderSide side = _resolveSide(theme, states);
     final borderRadius = _resolveBorderRadius(theme, states);
 
-    final double effectiveHeight =
-        widget.height ?? theme.elevatedButtonTheme.style?.maximumSize?.resolve({})?.height ?? 40;
+    final double effectiveHeight = widget.height ??
+        theme.elevatedButtonTheme.style?.maximumSize?.resolve({})?.height ??
+        40;
     final double maxWidth = _resolveMaxWidth(context);
 
-    final bool onlyOneIconBase =
-        (widget.leftIcon != null && (widget.rightIcon == null && widget.rightIconPath == null)) ||
-            (widget.rightIcon != null && (widget.leftIcon == null && widget.leftIconPath == null)) ||
-            (widget.leftIconPath != null && (widget.rightIcon == null && widget.rightIconPath == null)) ||
-            (widget.rightIconPath != null && (widget.leftIcon == null && widget.leftIconPath == null));
+    final bool onlyOneIconBase = (widget.leftIcon != null &&
+            (widget.rightIcon == null && widget.rightIconPath == null)) ||
+        (widget.rightIcon != null &&
+            (widget.leftIcon == null && widget.leftIconPath == null)) ||
+        (widget.leftIconPath != null &&
+            (widget.rightIcon == null && widget.rightIconPath == null)) ||
+        (widget.rightIconPath != null &&
+            (widget.leftIcon == null && widget.leftIconPath == null));
 
     final bool onlyOneIcon = onlyOneIconBase && widget.text == null;
 
@@ -295,7 +314,8 @@ class _AppXButtonState extends State<AppXButton> {
                       fit: BoxFit.scaleDown,
                       height: widget.iconSize,
                       width: widget.iconSize,
-                      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcATop),
+                      colorFilter:
+                          ColorFilter.mode(iconColor, BlendMode.srcATop),
                     ),
                   ),
           ),
@@ -340,7 +360,8 @@ class _AppXButtonState extends State<AppXButton> {
                       fit: BoxFit.scaleDown,
                       height: widget.iconSize,
                       width: widget.iconSize,
-                      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcATop),
+                      colorFilter:
+                          ColorFilter.mode(iconColor, BlendMode.srcATop),
                     ),
                   ),
                 ),
@@ -356,8 +377,9 @@ class _AppXButtonState extends State<AppXButton> {
       }
     }
 
-    final hardShadowColor =
-        widget.shadowColor ?? theme.elevatedButtonTheme.style?.shadowColor?.resolve(states) ?? theme.shadowColor;
+    final hardShadowColor = widget.shadowColor ??
+        theme.elevatedButtonTheme.style?.shadowColor?.resolve(states) ??
+        theme.shadowColor;
 
     final List<BoxShadow> shadows = <BoxShadow>[
       if (_focused && !_isDisabled)
@@ -376,15 +398,16 @@ class _AppXButtonState extends State<AppXButton> {
         ),
     ];
 
-    final double translateY = (_pressed && !_isDisabled) ? _hardShadowOffsetY : 0;
+    final double translateY =
+        (_pressed && !_isDisabled) ? _hardShadowOffsetY : 0;
 
-    final onTap = (!_isDisabled && !widget.isLoading)
+    final onTap = _isInteractive
         ? () {
             widget.onPressed?.call();
           }
         : null;
 
-    final onLongPress = (!_isDisabled && !widget.isLoading)
+    final onLongPress = _isInteractive
         ? () {
             widget.onLongPress?.call();
           }
@@ -400,7 +423,8 @@ class _AppXButtonState extends State<AppXButton> {
             BlendMode.srcATop,
           ),
           child: FocusableActionDetector(
-            enabled: !_isDisabled && !widget.isLoading,
+            enabled: _isInteractive,
+            mouseCursor: _mouseCursor,
             onShowHoverHighlight: (v) => setState(() => _hovered = v),
             onShowFocusHighlight: (v) => setState(() => _focused = v),
             child: AnimatedContainer(
@@ -429,14 +453,16 @@ class _AppXButtonState extends State<AppXButton> {
                           // ✅ attendre la fin de l’animation de "descente"
                           await Future<void>.delayed(_pressAnim);
                           if (!mounted) return;
-                          if (_pressSeq != seq) return; // un nouveau tap a pris le dessus
+                          if (_pressSeq != seq)
+                            return; // un nouveau tap a pris le dessus
                           if (_isDisabled || widget.isLoading) return;
 
                           // ✅ action seulement à la fin
                           widget.onPressed?.call();
 
                           // ✅ remonter juste après (ou tu peux ajouter un petit délai)
-                          await Future<void>.delayed(const Duration(milliseconds: 60));
+                          await Future<void>.delayed(
+                              const Duration(milliseconds: 60));
                           if (!mounted) return;
                           if (_pressSeq != seq) return;
                           setState(() => _pressed = false);
@@ -460,6 +486,7 @@ class _AppXButtonState extends State<AppXButton> {
                   },
 
                   borderRadius: borderRadius,
+                  mouseCursor: _mouseCursor,
                   hoverColor: Colors.transparent,
                   focusColor: Colors.transparent,
                   highlightColor: Colors.transparent,
@@ -476,7 +503,8 @@ class _AppXButtonState extends State<AppXButton> {
                             removePaddings: widget.removePaddings,
                             horizontalAlignment: widget.horizontalAlignment,
                             disabled: widget.disabled,
-                            disabledColor: widget.disabledColor ?? AppColors.primaryDisabled,
+                            disabledColor: widget.disabledColor ??
+                                AppColors.primaryDisabled,
                             children: widget.children ?? children,
                           ),
                         )
@@ -489,7 +517,8 @@ class _AppXButtonState extends State<AppXButton> {
                           removePaddings: widget.removePaddings,
                           horizontalAlignment: widget.horizontalAlignment,
                           disabled: widget.disabled,
-                          disabledColor: widget.disabledColor ?? AppColors.primaryDisabled,
+                          disabledColor:
+                              widget.disabledColor ?? AppColors.primaryDisabled,
                           children: widget.children ?? children,
                         ),
                 ),
@@ -560,7 +589,9 @@ class _ButtonBody extends StatelessWidget {
         maxWidth: shrinkWrap ? double.infinity : maxWidth,
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: shrinkWrap ? (removePaddings ? 0 : AppSpacing.spacing12) : AppSpacing.spacing24,
+        horizontal: shrinkWrap
+            ? (removePaddings ? 0 : AppSpacing.spacing12)
+            : AppSpacing.spacing24,
       ),
       child: SizedBox(
         height: effectiveHeight,
@@ -608,7 +639,9 @@ class AppXCloseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    final double ctaHeight = DeviceHelper.isMobile(context)
+        ? mobileCTAHeight
+        : tabletAndAboveCTAHeight;
     return SizedBox(
       width: ctaHeight,
       height: ctaHeight,
@@ -650,7 +683,9 @@ class AppXReturnButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    final double ctaHeight = DeviceHelper.isMobile(context)
+        ? mobileCTAHeight
+        : tabletAndAboveCTAHeight;
     return SizedBox(
       width: ctaHeight,
       height: ctaHeight,
@@ -692,7 +727,9 @@ class AppXLikeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    final double ctaHeight = DeviceHelper.isMobile(context)
+        ? mobileCTAHeight
+        : tabletAndAboveCTAHeight;
     return SizedBox(
       width: ctaHeight,
       height: ctaHeight,
@@ -728,7 +765,9 @@ class AppXPlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    final double ctaHeight = DeviceHelper.isMobile(context)
+        ? mobileCTAHeight
+        : tabletAndAboveCTAHeight;
     return SizedBox(
       width: ctaHeight,
       height: ctaHeight,
@@ -743,7 +782,8 @@ class AppXPlayButton extends StatelessWidget {
             isPlaying ? AppIcons.pauseIconPath : AppIcons.playIconPath,
             width: ctaHeight,
             height: ctaHeight,
-            colorFilter: ColorFilter.mode(AppColors.whiteSwatch, BlendMode.srcATop),
+            colorFilter:
+                ColorFilter.mode(AppColors.whiteSwatch, BlendMode.srcATop),
           ),
         ),
         // shadowColor: AppColors.borderMedium,
@@ -762,7 +802,9 @@ class AppXCloseBottomSheetButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    final double ctaHeight = DeviceHelper.isMobile(context)
+        ? mobileCTAHeight
+        : tabletAndAboveCTAHeight;
     return SizedBox(
       width: ctaHeight,
       height: ctaHeight,
@@ -809,7 +851,9 @@ class AppXExitQuizzButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
+    final double ctaHeight = DeviceHelper.isMobile(context)
+        ? mobileCTAHeight
+        : tabletAndAboveCTAHeight;
     return SizedBox(
       width: ctaHeight,
       height: ctaHeight,
@@ -863,7 +907,8 @@ class AppXExitQuizzButton extends StatelessWidget {
         completer.complete(null);
         return;
       }
-      final result = await quizzExitModal(context, jobId: jobId, jobTitle: jobTitle);
+      final result =
+          await quizzExitModal(context, jobId: jobId, jobTitle: jobTitle);
       if (!completer.isCompleted) {
         completer.complete(result);
       }

@@ -1295,7 +1295,7 @@ abstract class AppLocalizations {
   /// Message de série de jours consécutifs
   ///
   /// In fr, this message translates to:
-  /// **'{count, plural, =0 {Premier jour, beau départ !} =1 {Premier jour, beau départ !} other {{count} jours consécutifs}}'**
+  /// **'{count, plural, =0 {Premier jour !} =1 {Premier jour !} other {{count} jours consécutifs}}'**
   String streakDays(int count);
 
   /// Libellé pour le champ e-mail

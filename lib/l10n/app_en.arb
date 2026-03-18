@@ -860,7 +860,7 @@
   "@user_anonymous_placeholder": {
     "description": "Placeholder for anonymous user name"
   },
-  "streakDays": "{count, plural, =0 {Day 1 — great start!} =1 {Day 1 — great start!} other {{count}-day streak}}",
+  "streakDays": "{count, plural, =0 {First day!} =1 {First day!} other {{count}-day streak}}",
   "@streakDays": {
     "description": "Message for consecutive day streak",
     "placeholders": {

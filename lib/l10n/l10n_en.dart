@@ -724,8 +724,8 @@ class AppLocalizationsEn extends AppLocalizations {
       count,
       locale: localeName,
       other: '$count-day streak',
-      one: 'Day 1 — great start!',
-      zero: 'Day 1 — great start!',
+      one: 'First day!',
+      zero: 'First day!',
     );
     return '$_temp0';
   }

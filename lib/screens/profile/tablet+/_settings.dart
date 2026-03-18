@@ -67,12 +67,50 @@ class _TabletJourneySettingsTabState extends State<TabletJourneySettingsTab> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 94,
-                      height: 94,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.borderMedium, width: 1),
+                    CircleAvatar(
+                      radius: 94 / 2,
+                      backgroundColor: AppColors.whiteSwatch,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: AppColors.borderMedium,
+                            width: 2,
+                            strokeAlign: BorderSide.strokeAlignInside,
+                          ),
+                          shape: BoxShape.circle,
+                        ),
+                        child: ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl: _currentUser?.avatarUrl ?? "",
+                            width: 94,
+                            height: 94,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: AppColors.borderMedium,
+                                    width: 2,
+                                    strokeAlign: BorderSide.strokeAlignInside,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: SvgPicture.asset(
+                                  AppIcons.avatarPlaceholderPath,
+                                  width: 94,
+                                  height: 94,
+                                ),
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return SvgPicture.asset(
+                                AppIcons.avatarPlaceholderPath,
+                                width: 94,
+                                height: 94,
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
                     AppSpacing.spacing16_Box,
@@ -81,23 +119,23 @@ class _TabletJourneySettingsTabState extends State<TabletJourneySettingsTab> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          state.user.contextName(context),
-                          // font-family: Inter;
-                          // font-weight: 600;
-                          // font-style: Semi Bold;
-                          // font-size: 20px;
-                          // line-height: 34px;
-                          // letter-spacing: -2%;
-                          style: theme.textTheme.displayMedium!.copyWith(
-                            color: AppColors.textPrimary,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: -0.02,
-                            height: 34 / (theme.textTheme.displayMedium?.fontSize ?? 34),
-                            // leading-trim: CAP_HEIGHT;
-                            leadingDistribution: TextLeadingDistribution.proportional,
-                          ),
-                        ),
+                        // Text(
+                        //   state.user.contextName(context),
+                        //   // font-family: Inter;
+                        //   // font-weight: 600;
+                        //   // font-style: Semi Bold;
+                        //   // font-size: 20px;
+                        //   // line-height: 34px;
+                        //   // letter-spacing: -2%;
+                        //   style: theme.textTheme.displayMedium!.copyWith(
+                        //     color: AppColors.textPrimary,
+                        //     fontWeight: FontWeight.w600,
+                        //     letterSpacing: -0.02,
+                        //     height: 34 / (theme.textTheme.displayMedium?.fontSize ?? 34),
+                        //     // leading-trim: CAP_HEIGHT;
+                        //     leadingDistribution: TextLeadingDistribution.proportional,
+                        //   ),
+                        // ),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.start,

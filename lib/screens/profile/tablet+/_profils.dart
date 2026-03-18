@@ -885,7 +885,7 @@ class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
         kind: RewardKind.concertHall,
         city: "Poitiers",
         imageUrl:
-            "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/tap-poitiers.webp?alt=media&token=adeabe1c-2064-4642-9c82-25eb45f8388f",
+            "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/e03076028294b8d3777f3540f895cdb1a7b4d8ee.jpg?alt=media&token=98795927-c280-43e3-9b3a-a957b93f945f",
         remainingPlaces: 5,
         costDiamonds: 350,
         address: RewardAddress(
@@ -902,7 +902,7 @@ class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
         kind: RewardKind.theatre,
         city: "Poitiers",
         imageUrl:
-            "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/5a35cb1c459a45014e8b45b5.webp?alt=media&token=5c3fb9c4-9fb1-4a9c-8e7c-9a7786d195f5",
+            "https://firebasestorage.googleapis.com/v0/b/murya-c861b.firebasestorage.app/o/1b262bb730e36dd10c5bbe71b20eeaf7ba556b1f.jpg?alt=media&token=ec62b5ec-9ff7-4d0c-9522-9913f22e224f",
         remainingPlaces: 5,
         costDiamonds: 400,
         address: RewardAddress(

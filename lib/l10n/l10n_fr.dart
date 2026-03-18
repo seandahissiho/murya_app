@@ -732,8 +732,8 @@ class AppLocalizationsFr extends AppLocalizations {
       count,
       locale: localeName,
       other: '$count jours consécutifs',
-      one: 'Premier jour, beau départ !',
-      zero: 'Premier jour, beau départ !',
+      one: 'Premier jour !',
+      zero: 'Premier jour !',
     );
     return '$_temp0';
   }
