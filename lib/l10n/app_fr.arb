@@ -158,7 +158,7 @@
   "@user_ressources_module_button": {
     "description": "Texte du bouton dans le module des ressources de l'utilisateur"
   },
-  "searchNoResults": "Aucun résultat trouvé pour \"{query}\".",
+  "searchNoResults": "Aucun résultat pour {query}",
   "@searchNoResults": {
     "description": "Message affiché lorsque la recherche ne retourne aucun résultat",
     "placeholders": {
@@ -716,7 +716,7 @@
   "@reward_unlock_cta": {
     "description": "Bouton pour débloquer une récompense"
   },
-  "reward_unlock_insufficientDiamonds_tooltip": "Vous n'avez pas assez de 💎",
+  "reward_unlock_insufficientDiamonds_tooltip": "Vous n''avez pas assez de 💎",
   "@reward_unlock_insufficientDiamonds_tooltip": {
     "description": "Infobulle affichée quand une récompense est inactive faute de diamants"
   },

@@ -228,6 +228,7 @@ class AppColors {
   static const Color textPrimary = Color.fromRGBO(31, 22, 51, 1);
   static const Color textSecondary = Color(0xFF4D4D4D);
   static const Color textTertiary = Color(0xFF7A7A7A);
+  static const Color textTertiaryMuted = Color(0xFF9E9AA6);
   static const Color textInverted = Color(0xFFFFFFFF);
 
   // Brand / Primary

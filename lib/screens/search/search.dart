@@ -143,73 +143,82 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
                 setState(() {});
               },
               builder: (context, state) {
+                final showNoResults = _shouldShowNoResults(state, locale);
                 return Column(
                   children: [
-                    selectorBar(isMobile, locale, theme),
-                    AppSpacing.spacing40_Box,
+                    if (showNoResults == false) ...[
+                      selectorBar(isMobile, locale, theme),
+                      AppSpacing.spacing40_Box,
+                    ],
                     Flexible(
-                      child: SingleChildScrollView(
-                        child: Container(
-                          constraints: BoxConstraints(
-                            maxHeight: isMobile
-                                ? constraints.maxHeight * 4
-                                : constraints.maxHeight * (1.125 + (kIsWeb ? 0.125 : 0)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (selectedFilter == locale.search_filter_all ||
-                                  selectedFilter == locale.search_filter_job) ...[
-                                Flexible(
-                                  child: JobsSearchResultsList(
-                                    searchState: state,
-                                    seeAll: selectedFilter == locale.search_filter_job,
-                                    switchFilter: () {
-                                      setState(() {
-                                        selectedFilter = locale.search_filter_job;
-                                        _triggerSearchForFilter(selectedFilter);
-                                      });
-                                    },
-                                  ),
+                      child: showNoResults
+                          ? _buildNoResultsWidget(
+                              locale: locale,
+                              theme: theme,
+                              query: state.response.query,
+                            )
+                          : SingleChildScrollView(
+                              child: Container(
+                                constraints: BoxConstraints(
+                                  maxHeight: isMobile
+                                      ? constraints.maxHeight * 4
+                                      : constraints.maxHeight * (1.125 + (kIsWeb ? 0.125 : 0)),
                                 ),
-                                if (selectedFilter == locale.search_filter_all) AppSpacing.spacing40_Box,
-                              ],
-                              if (selectedFilter == locale.search_filter_all ||
-                                  selectedFilter == locale.search_filter_resource) ...[
-                                Flexible(
-                                  child: ResourcesSearchResultsList(
-                                    searchState: state,
-                                    seeAll: selectedFilter == locale.search_filter_resource,
-                                    switchFilter: () {
-                                      setState(() {
-                                        selectedFilter = locale.search_filter_resource;
-                                        _triggerSearchForFilter(selectedFilter);
-                                      });
-                                    },
-                                  ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (selectedFilter == locale.search_filter_all ||
+                                        selectedFilter == locale.search_filter_job) ...[
+                                      Flexible(
+                                        child: JobsSearchResultsList(
+                                          searchState: state,
+                                          seeAll: selectedFilter == locale.search_filter_job,
+                                          switchFilter: () {
+                                            setState(() {
+                                              selectedFilter = locale.search_filter_job;
+                                              _triggerSearchForFilter(selectedFilter);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      if (selectedFilter == locale.search_filter_all) AppSpacing.spacing40_Box,
+                                    ],
+                                    if (selectedFilter == locale.search_filter_all ||
+                                        selectedFilter == locale.search_filter_resource) ...[
+                                      Flexible(
+                                        child: ResourcesSearchResultsList(
+                                          searchState: state,
+                                          seeAll: selectedFilter == locale.search_filter_resource,
+                                          switchFilter: () {
+                                            setState(() {
+                                              selectedFilter = locale.search_filter_resource;
+                                              _triggerSearchForFilter(selectedFilter);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      if (selectedFilter == locale.search_filter_all) AppSpacing.spacing40_Box,
+                                    ],
+                                    if (selectedFilter == locale.search_filter_all ||
+                                        selectedFilter == locale.search_filter_profile) ...[
+                                      Flexible(
+                                        child: ProfilesSearchResultsList(
+                                          searchState: state,
+                                          seeAll: selectedFilter == locale.search_filter_profile,
+                                          switchFilter: () {
+                                            setState(() {
+                                              selectedFilter = locale.search_filter_profile;
+                                              _triggerSearchForFilter(selectedFilter);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ],
                                 ),
-                                if (selectedFilter == locale.search_filter_all) AppSpacing.spacing40_Box,
-                              ],
-                              if (selectedFilter == locale.search_filter_all ||
-                                  selectedFilter == locale.search_filter_profile) ...[
-                                Flexible(
-                                  child: ProfilesSearchResultsList(
-                                    searchState: state,
-                                    seeAll: selectedFilter == locale.search_filter_profile,
-                                    switchFilter: () {
-                                      setState(() {
-                                        selectedFilter = locale.search_filter_profile;
-                                        _triggerSearchForFilter(selectedFilter);
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
+                              ),
+                            ),
                     ),
                   ],
                 );
@@ -219,6 +228,109 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
         ],
       );
     });
+  }
+
+  bool _shouldShowNoResults(SearchState state, AppLocalizations locale) {
+    if (state is! SearchLoaded) {
+      return false;
+    }
+
+    final query = state.response.query.trim();
+    if (query.isEmpty) {
+      return false;
+    }
+
+    return _resultsCountForSelectedFilter(state.response, locale) == 0;
+  }
+
+  int _resultsCountForSelectedFilter(SearchResponse response, AppLocalizations locale) {
+    if (selectedFilter == locale.search_filter_job) {
+      return response.sections.jobs.items.length + response.sections.jobFamilies.items.length;
+    }
+
+    if (selectedFilter == locale.search_filter_resource) {
+      return response.sections.learningResources.items.length;
+    }
+
+    if (selectedFilter == locale.search_filter_profile) {
+      return response.sections.users.items.length;
+    }
+
+    return response.sections.jobs.items.length +
+        response.sections.jobFamilies.items.length +
+        response.sections.learningResources.items.length +
+        response.sections.users.items.length;
+  }
+
+  Widget _buildNoResultsWidget({
+    required AppLocalizations locale,
+    required ThemeData theme,
+    required String query,
+  }) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  locale.searchNoResults(""),
+                  textAlign: TextAlign.center,
+                  // font-family: Anton;
+                  // font-weight: 400;
+                  // font-style: Regular;
+                  // font-size: 48px;
+                  // leading-trim: NONE;
+                  // line-height: 64px;
+                  // letter-spacing: -2%;
+                  // vertical-align: middle;
+                  style: GoogleFonts.anton(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 48,
+                    height: 64 / 48,
+                    letterSpacing: -0.02 * 48,
+                    color: AppColors.textTertiaryMuted,
+                  ),
+                ),
+                Text(
+                  ' “$query”',
+                  textAlign: TextAlign.center,
+                  // font-family: Anton;
+                  // font-weight: 400;
+                  // font-style: Regular;
+                  // font-size: 48px;
+                  // leading-trim: NONE;
+                  // line-height: 64px;
+                  // letter-spacing: -2%;
+                  // vertical-align: middle;
+                  style: GoogleFonts.anton(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 48,
+                    height: 64 / 48,
+                    letterSpacing: -0.02 * 48,
+                    color: AppButtonColors.primaryBorderDefault,
+                  ),
+                ),
+              ],
+            ),
+            AppSpacing.spacing40_Box,
+            Text(
+              locale.searchNoResultsSubtitle,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppButtonColors.tertiaryTextDefault,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _onSearchChanged(String value) {

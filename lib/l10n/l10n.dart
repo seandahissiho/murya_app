@@ -335,7 +335,7 @@ abstract class AppLocalizations {
   /// Message affiché lorsque la recherche ne retourne aucun résultat
   ///
   /// In fr, this message translates to:
-  /// **'Aucun résultat trouvé pour \"{query}\".'**
+  /// **'Aucun résultat pour {query}'**
   String searchNoResults(String query);
 
   /// No description provided for @landingSkillButtonText.
@@ -1097,7 +1097,7 @@ abstract class AppLocalizations {
   /// Infobulle affichée quand une récompense est inactive faute de diamants
   ///
   /// In fr, this message translates to:
-  /// **'Vous n'avez pas assez de 💎'**
+  /// **'Vous n\'\'avez pas assez de 💎'**
   String get reward_unlock_insufficientDiamonds_tooltip;
 
   /// Libellé du type de récompense cinéma

@@ -133,7 +133,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String searchNoResults(String query) {
-    return 'Aucun résultat trouvé pour \"$query\".';
+    return 'Aucun résultat pour $query';
   }
 
   @override
