@@ -341,9 +341,7 @@ abstract class AppLocalizations {
   /// Sous-texte affiché sous le message de recherche sans résultat
   ///
   /// In fr, this message translates to:
-  /// **'Vérifiez l'orthographe de tous les mots.
-  /// Essayez différents mots-clés.
-  /// Essayez des mots-clés plus généraux.'**
+  /// **'Vérifiez l\'\'orthographe de tous les mots.\nEssayez différents mots-clés.\nEssayez des mots-clés plus généraux.'**
   String get searchNoResultsSubtitle;
 
   /// No description provided for @landingSkillButtonText.

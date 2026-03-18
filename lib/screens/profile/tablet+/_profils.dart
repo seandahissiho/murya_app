@@ -24,10 +24,13 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
   Widget build(BuildContext context) {
     return BlocListener<ProfileBloc, ProfileState>(
       listenWhen: (previous, current) {
-        final isPreviewState = current is ProfilePreviewLoading || current is ProfilePreviewLoaded;
+        final isPreviewState =
+            current is ProfilePreviewLoading || current is ProfilePreviewLoaded;
         if (!isPreviewState) return false;
-        return previous.previewCompetencyRequested != current.previewCompetencyRequested ||
-            previous.previewCompetencyProfile != current.previewCompetencyProfile;
+        return previous.previewCompetencyRequested !=
+                current.previewCompetencyRequested ||
+            previous.previewCompetencyProfile !=
+                current.previewCompetencyProfile;
       },
       listener: (context, state) {
         if (!mounted) return;
@@ -90,7 +93,8 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
                         AppSpacing.spacing16_Box,
                         UserRankingBox(
                           ranking: _previewProfile?.ranking,
-                          isLoading: _previewRequested && _previewProfile == null,
+                          isLoading:
+                              _previewRequested && _previewProfile == null,
                           jobId: jobId!,
                           userId: _previewProfile?.user.id,
                         ),
@@ -107,12 +111,24 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
   }
 }
 
-class UserListBox extends StatelessWidget {
+class UserListBox extends StatefulWidget {
   final PreviewCompetencyProfile? previewProfile;
 
   const UserListBox({super.key, this.previewProfile});
 
+  @override
+  State<UserListBox> createState() => _UserListBoxState();
+}
+
+class _UserListBoxState extends State<UserListBox> {
   static const double _userRowHeight = 80;
+  final ScrollController _usersScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _usersScrollController.dispose();
+    super.dispose();
+  }
 
   String _formatDate(DateTime? date) {
     if (date == null) return '-';
@@ -154,30 +170,34 @@ class UserListBox extends StatelessWidget {
                       ],
                     ),
                     Expanded(
-                      child: SingleChildScrollView(
-                        // physics: const NeverScrollableScrollPhysics(),
-                        child: Table(
-                          columnWidths: const {
-                            0: FlexColumnWidth(.4),
-                            1: FlexColumnWidth(1.125),
-                            2: FlexColumnWidth(1),
-                            3: FlexColumnWidth(1),
-                            4: FlexColumnWidth(.75),
-                          },
-                          children: [
-                            ...users.map((user) {
-                              final int index = users.indexOf(user) + 1;
-                              return userRow(
-                                user,
-                                theme,
-                                locale,
-                                index,
-                                currentUserId: state.user.id,
-                                isLast: index == users.length,
-                                context: context,
-                              );
-                            }).toList(),
-                          ],
+                      child: Scrollbar(
+                        controller: _usersScrollController,
+                        thumbVisibility: true,
+                        child: SingleChildScrollView(
+                          controller: _usersScrollController,
+                          child: Table(
+                            columnWidths: const {
+                              0: FlexColumnWidth(.4),
+                              1: FlexColumnWidth(1.125),
+                              2: FlexColumnWidth(1),
+                              3: FlexColumnWidth(1),
+                              4: FlexColumnWidth(.75),
+                            },
+                            children: [
+                              ...users.map((user) {
+                                final int index = users.indexOf(user) + 1;
+                                return userRow(
+                                  user,
+                                  theme,
+                                  locale,
+                                  index,
+                                  currentUserId: state.user.id,
+                                  isLast: index == users.length,
+                                  context: context,
+                                );
+                              }).toList(),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -231,11 +251,14 @@ class UserListBox extends StatelessWidget {
     required BuildContext context,
   }) {
     final int displayRank = user.rank > 0 ? user.rank : index;
-    final String youTag = currentUserId == user.id ? ' ${locale.parcoursRanking_youTag}' : '';
+    final String youTag =
+        currentUserId == user.id ? ' ${locale.parcoursRanking_youTag}' : '';
     return TableRow(
       decoration: BoxDecoration(
         border: Border(
-          bottom: isLast ? BorderSide.none : const BorderSide(color: AppColors.borderLight),
+          bottom: isLast
+              ? BorderSide.none
+              : const BorderSide(color: AppColors.borderLight),
         ),
       ),
       children: [
@@ -262,8 +285,10 @@ class UserListBox extends StatelessWidget {
               height: _userRowHeight,
               // rgba(98, 70, 234, 0.2)
               decoration: BoxDecoration(
-                color: previewProfile?.user.id == user.id ? const Color.fromRGBO(98, 70, 234, 0.2) : Colors.transparent,
-                border: previewProfile?.user.id == user.id
+                color: widget.previewProfile?.user.id == user.id
+                    ? const Color.fromRGBO(98, 70, 234, 0.2)
+                    : Colors.transparent,
+                border: widget.previewProfile?.user.id == user.id
                     ? const Border(
                         bottom: BorderSide(
                           color: Color.fromRGBO(98, 70, 234, 1),
@@ -348,8 +373,10 @@ class UserListBox extends StatelessWidget {
             child: Container(
               height: _userRowHeight,
               decoration: BoxDecoration(
-                color: previewProfile?.user.id == user.id ? const Color.fromRGBO(98, 70, 234, 0.2) : Colors.transparent,
-                border: previewProfile?.user.id == user.id
+                color: widget.previewProfile?.user.id == user.id
+                    ? const Color.fromRGBO(98, 70, 234, 0.2)
+                    : Colors.transparent,
+                border: widget.previewProfile?.user.id == user.id
                     ? const Border(
                         bottom: BorderSide(
                           color: Color.fromRGBO(98, 70, 234, 1),
@@ -362,7 +389,8 @@ class UserListBox extends StatelessWidget {
                       )
                     : null,
               ),
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
+              padding:
+                  const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -374,7 +402,9 @@ class UserListBox extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    user.lastName.isEmpty ? locale.user_lastName_placeholder : user.lastName,
+                    user.lastName.isEmpty
+                        ? locale.user_lastName_placeholder
+                        : user.lastName,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: AppColors.textPrimary,
                     ),
@@ -392,8 +422,10 @@ class UserListBox extends StatelessWidget {
             child: Container(
               height: _userRowHeight,
               decoration: BoxDecoration(
-                color: previewProfile?.user.id == user.id ? const Color.fromRGBO(98, 70, 234, 0.2) : Colors.transparent,
-                border: previewProfile?.user.id == user.id
+                color: widget.previewProfile?.user.id == user.id
+                    ? const Color.fromRGBO(98, 70, 234, 0.2)
+                    : Colors.transparent,
+                border: widget.previewProfile?.user.id == user.id
                     ? const Border(
                         bottom: BorderSide(
                           color: Color.fromRGBO(98, 70, 234, 1),
@@ -406,7 +438,8 @@ class UserListBox extends StatelessWidget {
                       )
                     : null,
               ),
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
+              padding:
+                  const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -422,7 +455,8 @@ class UserListBox extends StatelessWidget {
                   SvgPicture.asset(
                     AppIcons.diamondIconPath,
                     height: 14,
-                    colorFilter: const ColorFilter.mode(AppColors.primaryFocus, BlendMode.srcIn),
+                    colorFilter: const ColorFilter.mode(
+                        AppColors.primaryFocus, BlendMode.srcIn),
                   )
                 ],
               ),
@@ -437,8 +471,10 @@ class UserListBox extends StatelessWidget {
             child: Container(
               height: _userRowHeight,
               decoration: BoxDecoration(
-                color: previewProfile?.user.id == user.id ? const Color.fromRGBO(98, 70, 234, 0.2) : Colors.transparent,
-                border: previewProfile?.user.id == user.id
+                color: widget.previewProfile?.user.id == user.id
+                    ? const Color.fromRGBO(98, 70, 234, 0.2)
+                    : Colors.transparent,
+                border: widget.previewProfile?.user.id == user.id
                     ? const Border(
                         bottom: BorderSide(
                           color: Color.fromRGBO(98, 70, 234, 1),
@@ -451,7 +487,8 @@ class UserListBox extends StatelessWidget {
                       )
                     : null,
               ),
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
+              padding:
+                  const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: user.completedQuizzes > 0
@@ -477,8 +514,10 @@ class UserListBox extends StatelessWidget {
             child: Container(
               height: _userRowHeight,
               decoration: BoxDecoration(
-                color: previewProfile?.user.id == user.id ? const Color.fromRGBO(98, 70, 234, 0.2) : Colors.transparent,
-                border: previewProfile?.user.id == user.id
+                color: widget.previewProfile?.user.id == user.id
+                    ? const Color.fromRGBO(98, 70, 234, 0.2)
+                    : Colors.transparent,
+                border: widget.previewProfile?.user.id == user.id
                     ? const Border(
                         bottom: BorderSide(
                           color: Color.fromRGBO(98, 70, 234, 1),
@@ -495,7 +534,8 @@ class UserListBox extends StatelessWidget {
                       )
                     : null,
               ),
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
+              padding:
+                  const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -508,7 +548,8 @@ class UserListBox extends StatelessWidget {
                               AppIcons.businessChartIconPath,
                               height: 16,
                               width: 16,
-                              colorFilter: const ColorFilter.mode(AppColors.textSecondary, BlendMode.srcATop),
+                              colorFilter: const ColorFilter.mode(
+                                  AppColors.textSecondary, BlendMode.srcATop),
                             ),
                             AppSpacing.spacing4_Box,
                             Text(
@@ -519,7 +560,8 @@ class UserListBox extends StatelessWidget {
                             ),
                           ],
                         )
-                      : pendingChip(theme, locale.parcoursRanking_status_pending),
+                      : pendingChip(
+                          theme, locale.parcoursRanking_status_pending),
                 ],
               ),
             ),
@@ -554,16 +596,19 @@ class UserListBox extends StatelessWidget {
     final userJobId = user.userJobId;
     if (userJobId == null || userJobId.isEmpty) return;
     final profileState = context.read<ProfileBloc>().state;
-    final isSelected = profileState.previewCompetencyRequested && profileState.previewCompetencyUserJobId == userJobId;
+    final isSelected = profileState.previewCompetencyRequested &&
+        profileState.previewCompetencyUserJobId == userJobId;
     if (isSelected) {
       context.read<ProfileBloc>().add(CloseProfilPreview());
       return;
     }
     final cachedProfile = profileState.previewCompetencyProfile;
-    final alreadyRequested =
-        profileState.previewCompetencyRequested && profileState.previewCompetencyUserJobId == userJobId;
-    final hasCachedProfile = cachedProfile != null && cachedProfile.userJobId == userJobId;
-    if (alreadyRequested && (profileState.previewCompetencyProfileLoading || hasCachedProfile)) {
+    final alreadyRequested = profileState.previewCompetencyRequested &&
+        profileState.previewCompetencyUserJobId == userJobId;
+    final hasCachedProfile =
+        cachedProfile != null && cachedProfile.userJobId == userJobId;
+    if (alreadyRequested &&
+        (profileState.previewCompetencyProfileLoading || hasCachedProfile)) {
       return;
     }
     context.read<ProfileBloc>().add(OpenProfilPreview(
@@ -761,7 +806,8 @@ class QuestInfoBox extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       return BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
-          final questGroup = state.questGroups.groups.firstOrNull ?? const QuestGroup();
+          final questGroup =
+              state.questGroups.groups.firstOrNull ?? const QuestGroup();
           return InkWell(
             onTap: () {
               // Navigate to quests tab
@@ -789,7 +835,8 @@ class QuestInfoBox extends StatelessWidget {
                   AppSpacing.spacing4_Box,
                   Flexible(
                     child: AutoSizeText(
-                      (objective?.title ?? questGroup.group?.title ?? '').toString(),
+                      (objective?.title ?? questGroup.group?.title ?? '')
+                          .toString(),
                       style: theme.textTheme.labelLarge!.copyWith(
                         color: AppColors.textPrimary,
                         fontSize: math.max(16 * scale, 2),
@@ -807,16 +854,20 @@ class QuestInfoBox extends StatelessWidget {
                         height: 16 * scale,
                         decoration: BoxDecoration(
                           color: AppColors.borderLight,
-                          borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                          borderRadius: BorderRadius.circular(
+                              AppRadius.tinyRadius / 2 * scale),
                         ),
                       ),
                       Container(
                         height: 16 * scale,
-                        width: (constraints.maxWidth - 2 * AppSpacing.spacing24 * scale) *
-                            (completionPercentage(objective?.toQuestGroup() ?? questGroup)),
+                        width: (constraints.maxWidth -
+                                2 * AppSpacing.spacing24 * scale) *
+                            (completionPercentage(
+                                objective?.toQuestGroup() ?? questGroup)),
                         decoration: BoxDecoration(
                           color: AppColors.primaryFocus,
-                          borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                          borderRadius: BorderRadius.circular(
+                              AppRadius.tinyRadius / 2 * scale),
                         ),
                       ),
                     ],
@@ -1001,7 +1052,9 @@ class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
                     // Switch to rewards tab
                     DefaultTabController.of(context).animateTo(2);
                   },
-                  fgColor: !_isHovering ? AppButtonColors.tertiaryTextDefault : AppButtonColors.tertiaryTextHover,
+                  fgColor: !_isHovering
+                      ? AppButtonColors.tertiaryTextDefault
+                      : AppButtonColors.tertiaryTextHover,
                   bgColor: Colors.transparent,
                   borderColor: Colors.transparent,
                   hoverColor: Colors.transparent,
@@ -1024,7 +1077,9 @@ class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
                 final reward = demoRewards[index];
                 return Padding(
                   padding: EdgeInsets.only(
-                    bottom: index == math.min(demoRewards.length, 3) - 1 ? 0 : AppSpacing.spacing16,
+                    bottom: index == math.min(demoRewards.length, 3) - 1
+                        ? 0
+                        : AppSpacing.spacing16,
                   ),
                   child: RewardListItem(reward: reward),
                 );
@@ -1075,11 +1130,17 @@ class _RewardListItemState extends State<RewardListItem> {
             decoration: BoxDecoration(
               // color: Colors.yellow,
               color: AppColors.backgroundDefault,
-              border: Border.all(color: _isHovering ? AppColors.primaryHover : AppColors.borderLight, width: 2),
+              border: Border.all(
+                  color: _isHovering
+                      ? AppColors.primaryHover
+                      : AppColors.borderLight,
+                  width: 2),
               borderRadius: AppRadius.small,
               boxShadow: [
                 BoxShadow(
-                  color: _isHovering ? AppColors.primaryHover : AppColors.secondaryHover,
+                  color: _isHovering
+                      ? AppColors.primaryHover
+                      : AppColors.secondaryHover,
                   blurRadius: 1,
                   offset: const Offset(0, 6),
                 ),
@@ -1137,7 +1198,9 @@ class _RewardListItemState extends State<RewardListItem> {
                         maxFontSize: theme.textTheme.bodyLarge!.fontSize!,
                         minFontSize: theme.textTheme.bodySmall!.fontSize!,
                         style: GoogleFonts.inter(
-                          color: _isHovering ? AppColors.textInverted : AppColors.textPrimary,
+                          color: _isHovering
+                              ? AppColors.textInverted
+                              : AppColors.textPrimary,
                           fontSize: isMobile
                               ? theme.textTheme.displayMedium!.fontSize
                               : theme.textTheme.headlineSmall!.fontSize,
@@ -1148,8 +1211,13 @@ class _RewardListItemState extends State<RewardListItem> {
                       AppSpacing.spacing2_Box,
                       Text(
                         "${widget.reward.kind.label(locale)} • ${widget.reward.city}",
-                        style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
-                          color: _isHovering ? AppColors.textInverted : AppColors.textSecondary,
+                        style: (isMobile
+                                ? theme.textTheme.bodyMedium
+                                : theme.textTheme.bodyLarge)
+                            ?.copyWith(
+                          color: _isHovering
+                              ? AppColors.textInverted
+                              : AppColors.textSecondary,
                           // height: 1 / 2.4,
                         ),
                       ),
@@ -1205,11 +1273,17 @@ class _UserKiviatsBoxState extends State<UserKiviatsBox> {
       return Container();
     }
     var families = widget.kiviats?.families ?? [];
-    var defaults = widget.kiviats?.defaultValuesForFamilies(families, _detailsLevel) ?? [];
+    var defaults =
+        widget.kiviats?.defaultValuesForFamilies(families, _detailsLevel) ?? [];
     var userValues = widget.kiviats?.userValuesForFamilies(families) ?? [];
     final theme = Theme.of(context);
     final locale = AppLocalizations.of(context);
-    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
+    var options = [
+      locale.skillLevel_easy,
+      locale.skillLevel_medium,
+      locale.skillLevel_hard,
+      locale.skillLevel_expert
+    ];
     return _diagramBuilder(locale, theme, options);
     return Container(
       color: Colors.yellow,
@@ -1234,9 +1308,11 @@ class _UserKiviatsBoxState extends State<UserKiviatsBox> {
     );
   }
 
-  _diagramBuilder(AppLocalizations locale, ThemeData theme, List<String> options) {
+  _diagramBuilder(
+      AppLocalizations locale, ThemeData theme, List<String> options) {
     var families = widget.kiviats?.families ?? [];
-    var defaults = widget.kiviats?.defaultValuesForFamilies(families, _detailsLevel) ?? [];
+    var defaults =
+        widget.kiviats?.defaultValuesForFamilies(families, _detailsLevel) ?? [];
     var userValues = widget.kiviats?.userValuesForFamilies(families) ?? [];
     return Container(
       height: 400,
@@ -1278,7 +1354,8 @@ class _UserKiviatsBoxState extends State<UserKiviatsBox> {
                     ),
                   ),
                   AppXDropdown<int>(
-                    controller: TextEditingController(text: options[_detailsLevel.index]),
+                    controller: TextEditingController(
+                        text: options[_detailsLevel.index]),
                     items: options.map((level) => DropdownMenuEntry(
                           value: options.indexOf(level),
                           label: level,
@@ -1323,7 +1400,12 @@ class UserRankingBox extends StatelessWidget {
   final bool isLoading;
   final String? userId;
 
-  const UserRankingBox({super.key, this.ranking, this.isLoading = false, required this.jobId, this.userId});
+  const UserRankingBox(
+      {super.key,
+      this.ranking,
+      this.isLoading = false,
+      required this.jobId,
+      this.userId});
 
   @override
   Widget build(BuildContext context) {

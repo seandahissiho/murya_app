@@ -1114,9 +1114,9 @@ class AppScrollbarThemeData {
     },
   );
 
-  static double? crossAxisMargin = -AppSpacing.spacing40 / 2;
+  static double? crossAxisMargin = -12;
 
-  static double? mainAxisMargin = 5.w;
+  static double? mainAxisMargin = 4;
 
   static double? minThumbLength = 16;
 
