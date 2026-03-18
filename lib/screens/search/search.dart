@@ -231,7 +231,7 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
   }
 
   selectorBar(bool isMobile, AppLocalizations locale, ThemeData theme) {
-    return Container(
+    return SizedBox(
       height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
       child: Row(
         children: [
@@ -323,6 +323,7 @@ class JobsSearchResultsList extends StatefulWidget {
 
 class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
   bool _isHovering = false;
+  static const double itemWidth = 310;
 
   @override
   Widget build(BuildContext context) {
@@ -337,7 +338,7 @@ class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 locale.search_filter_job,
@@ -383,7 +384,7 @@ class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
 
   fullView(AppSize appSize, ThemeData theme) {
     return LayoutBuilder(builder: (context, constraints) {
-      final width = math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, 320).toDouble();
+      final width = math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, itemWidth).toDouble();
       final items =
           widget.searchState.response.sections.jobs.items + widget.searchState.response.sections.jobFamilies.items;
       return Wrap(
@@ -434,7 +435,7 @@ class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
   }
 
   previewView(AppSize appSize, ThemeData theme, bool isMobile) {
-    final int upTo = appSize.screenWidth ~/ 320;
+    final int upTo = appSize.screenWidth ~/ (itemWidth + AppSpacing.spacing16);
     final items =
         widget.searchState.response.sections.jobs.items + widget.searchState.response.sections.jobFamilies.items;
     List<SearchItem> data = items.takeUpTo(upTo);
@@ -449,7 +450,7 @@ class _JobsSearchResultsListState extends State<JobsSearchResultsList> {
             children: data.map((e) {
               return Container(
                 constraints: const BoxConstraints(
-                  maxWidth: 320,
+                  maxWidth: itemWidth,
                 ),
                 margin: EdgeInsets.only(
                   right: e != data.last ? AppSpacing.spacing16 : 0,
@@ -518,6 +519,7 @@ class ResourcesSearchResultsList extends StatefulWidget {
 
 class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList> {
   bool _isHovering = false;
+  static const double itemWidth = 310;
 
   @override
   Widget build(BuildContext context) {
@@ -531,7 +533,7 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 locale.search_filter_resource,
@@ -577,7 +579,8 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
 
   fullView(AppSize appSize) {
     return LayoutBuilder(builder: (context, constraints) {
-      final width = math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, 320 + AppSpacing.spacing16).toDouble();
+      final width =
+          math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, itemWidth + AppSpacing.spacing16).toDouble();
       return Wrap(
         spacing: AppSpacing.spacing4,
         runSpacing: AppSpacing.spacing16,
@@ -595,7 +598,7 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
   }
 
   previewView(AppSize appSize) {
-    final int upTo = appSize.screenWidth ~/ 320;
+    final int upTo = appSize.screenWidth ~/ (itemWidth + AppSpacing.spacing16);
     List<SearchItem> data = widget.searchState.response.sections.learningResources.items.takeUpTo(upTo);
     return ConstrainedBox(
       constraints: const BoxConstraints(
@@ -615,7 +618,7 @@ class _ResourcesSearchResultsListState extends State<ResourcesSearchResultsList>
               final index = widget.searchState.response.sections.learningResources.items.indexOf(item);
               return Container(
                 constraints: const BoxConstraints(
-                  maxWidth: 320 + AppSpacing.spacing16,
+                  maxWidth: itemWidth + AppSpacing.spacing16,
                 ),
                 margin: EdgeInsets.only(
                   right: e != data.last ? 0 : 0,
@@ -643,6 +646,7 @@ class ProfilesSearchResultsList extends StatefulWidget {
 
 class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
   bool _isHovering = false;
+  static const double itemWidth = 204;
 
   @override
   Widget build(BuildContext context) {
@@ -656,7 +660,7 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 locale.search_filter_profile,
@@ -702,7 +706,7 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
 
   fullView(AppSize appSize, ThemeData theme, AppLocalizations locale) {
     return LayoutBuilder(builder: (context, constraints) {
-      final width = math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, 204).toDouble();
+      final width = math.min(constraints.maxWidth / 4 - AppSpacing.spacing16, itemWidth).toDouble();
       return Wrap(
         spacing: AppSpacing.spacing16,
         runSpacing: AppSpacing.spacing16,
@@ -712,9 +716,14 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
             child: Column(
               children: [
                 Container(
-                  height: 204,
-                  width: 204,
-                  decoration: const BoxDecoration(
+                  height: itemWidth,
+                  width: itemWidth,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColors.borderMedium,
+                      width: 2,
+                      strokeAlign: BorderSide.strokeAlignInside,
+                    ),
                     shape: BoxShape.circle,
                   ),
                   child: ClipRRect(
@@ -749,7 +758,7 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
   }
 
   previewView(AppSize appSize, ThemeData theme, AppLocalizations locale) {
-    final int upTo = appSize.screenWidth ~/ 204;
+    final int upTo = appSize.screenWidth ~/ (itemWidth + AppSpacing.spacing16);
     List<SearchItem> data = widget.searchState.response.sections.users.items.takeUpTo(upTo);
     return ConstrainedBox(
       constraints: const BoxConstraints(
@@ -762,7 +771,7 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
             children: data.map((e) {
               return Container(
                 constraints: const BoxConstraints(
-                  maxWidth: 204,
+                  maxWidth: itemWidth,
                 ),
                 margin: EdgeInsets.only(
                   right: e != data.last ? AppSpacing.spacing16 : 0,
@@ -770,9 +779,14 @@ class _ProfilesSearchResultsListState extends State<ProfilesSearchResultsList> {
                 child: Column(
                   children: [
                     Container(
-                      height: 204,
-                      width: 204,
-                      decoration: const BoxDecoration(
+                      height: itemWidth,
+                      width: itemWidth,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppColors.borderMedium,
+                          width: 2,
+                          strokeAlign: BorderSide.strokeAlignInside,
+                        ),
                         shape: BoxShape.circle,
                       ),
                       child: ClipRRect(
