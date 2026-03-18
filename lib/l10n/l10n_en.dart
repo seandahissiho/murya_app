@@ -137,6 +137,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get searchNoResultsSubtitle =>
+      'Check the spelling of all words.\n'
+      'Try different keywords.\n'
+      'Try more general keywords.';
+
+  @override
   String get landingSkillButtonText => 'Improve';
 
   @override

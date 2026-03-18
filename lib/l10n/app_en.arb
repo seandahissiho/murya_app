@@ -167,6 +167,10 @@
       }
     }
   },
+  "searchNoResultsSubtitle": "Check the spelling of all words.\nTry different keywords.\nTry more general keywords.",
+  "@searchNoResultsSubtitle": {
+    "description": "Subtitle shown below the empty search results message"
+  },
   "landingSkillButtonText": "Improve",
   "evaluateSkills": "Assess skills",
   "@evaluateSkills": {

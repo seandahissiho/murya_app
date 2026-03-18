@@ -137,6 +137,12 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get searchNoResultsSubtitle =>
+      'Vérifiez l\'orthographe de tous les mots.\n'
+      'Essayez différents mots-clés.\n'
+      'Essayez des mots-clés plus généraux.';
+
+  @override
   String get landingSkillButtonText => 'Perfectionner';
 
   @override

@@ -338,6 +338,14 @@ abstract class AppLocalizations {
   /// **'Aucun résultat pour {query}'**
   String searchNoResults(String query);
 
+  /// Sous-texte affiché sous le message de recherche sans résultat
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifiez l'orthographe de tous les mots.
+  /// Essayez différents mots-clés.
+  /// Essayez des mots-clés plus généraux.'**
+  String get searchNoResultsSubtitle;
+
   /// No description provided for @landingSkillButtonText.
   ///
   /// In fr, this message translates to:
