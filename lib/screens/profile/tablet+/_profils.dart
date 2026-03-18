@@ -24,13 +24,10 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
   Widget build(BuildContext context) {
     return BlocListener<ProfileBloc, ProfileState>(
       listenWhen: (previous, current) {
-        final isPreviewState =
-            current is ProfilePreviewLoading || current is ProfilePreviewLoaded;
+        final isPreviewState = current is ProfilePreviewLoading || current is ProfilePreviewLoaded;
         if (!isPreviewState) return false;
-        return previous.previewCompetencyRequested !=
-                current.previewCompetencyRequested ||
-            previous.previewCompetencyProfile !=
-                current.previewCompetencyProfile;
+        return previous.previewCompetencyRequested != current.previewCompetencyRequested ||
+            previous.previewCompetencyProfile != current.previewCompetencyProfile;
       },
       listener: (context, state) {
         if (!mounted) return;
@@ -77,6 +74,7 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
                     AppSpacing.spacing16_Box,
                     QuestInfoBox(
                       objective: _previewProfile?.objective,
+                      user: _previewProfile?.user,
                     ),
                     if (_previewProfile == null) ...[
                       AppSpacing.spacing16_Box,
@@ -93,8 +91,7 @@ class _TabletJourneyInfoTabState extends State<TabletJourneyInfoTab> {
                         AppSpacing.spacing16_Box,
                         UserRankingBox(
                           ranking: _previewProfile?.ranking,
-                          isLoading:
-                              _previewRequested && _previewProfile == null,
+                          isLoading: _previewRequested && _previewProfile == null,
                           jobId: jobId!,
                           userId: _previewProfile?.user.id,
                         ),
@@ -251,14 +248,11 @@ class _UserListBoxState extends State<UserListBox> {
     required BuildContext context,
   }) {
     final int displayRank = user.rank > 0 ? user.rank : index;
-    final String youTag =
-        currentUserId == user.id ? ' ${locale.parcoursRanking_youTag}' : '';
+    final String youTag = currentUserId == user.id ? ' ${locale.parcoursRanking_youTag}' : '';
     return TableRow(
       decoration: BoxDecoration(
         border: Border(
-          bottom: isLast
-              ? BorderSide.none
-              : const BorderSide(color: AppColors.borderLight),
+          bottom: isLast ? BorderSide.none : const BorderSide(color: AppColors.borderLight),
         ),
       ),
       children: [
@@ -389,8 +383,7 @@ class _UserListBoxState extends State<UserListBox> {
                       )
                     : null,
               ),
-              padding:
-                  const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,9 +395,7 @@ class _UserListBoxState extends State<UserListBox> {
                     ),
                   ),
                   Text(
-                    user.lastName.isEmpty
-                        ? locale.user_lastName_placeholder
-                        : user.lastName,
+                    user.lastName.isEmpty ? locale.user_lastName_placeholder : user.lastName,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: AppColors.textPrimary,
                     ),
@@ -438,8 +429,7 @@ class _UserListBoxState extends State<UserListBox> {
                       )
                     : null,
               ),
-              padding:
-                  const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -455,8 +445,7 @@ class _UserListBoxState extends State<UserListBox> {
                   SvgPicture.asset(
                     AppIcons.diamondIconPath,
                     height: 14,
-                    colorFilter: const ColorFilter.mode(
-                        AppColors.primaryFocus, BlendMode.srcIn),
+                    colorFilter: const ColorFilter.mode(AppColors.primaryFocus, BlendMode.srcIn),
                   )
                 ],
               ),
@@ -487,8 +476,7 @@ class _UserListBoxState extends State<UserListBox> {
                       )
                     : null,
               ),
-              padding:
-                  const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: user.completedQuizzes > 0
@@ -534,8 +522,7 @@ class _UserListBoxState extends State<UserListBox> {
                       )
                     : null,
               ),
-              padding:
-                  const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.spacing12),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -548,8 +535,7 @@ class _UserListBoxState extends State<UserListBox> {
                               AppIcons.businessChartIconPath,
                               height: 16,
                               width: 16,
-                              colorFilter: const ColorFilter.mode(
-                                  AppColors.textSecondary, BlendMode.srcATop),
+                              colorFilter: const ColorFilter.mode(AppColors.textSecondary, BlendMode.srcATop),
                             ),
                             AppSpacing.spacing4_Box,
                             Text(
@@ -560,8 +546,7 @@ class _UserListBoxState extends State<UserListBox> {
                             ),
                           ],
                         )
-                      : pendingChip(
-                          theme, locale.parcoursRanking_status_pending),
+                      : pendingChip(theme, locale.parcoursRanking_status_pending),
                 ],
               ),
             ),
@@ -596,19 +581,16 @@ class _UserListBoxState extends State<UserListBox> {
     final userJobId = user.userJobId;
     if (userJobId == null || userJobId.isEmpty) return;
     final profileState = context.read<ProfileBloc>().state;
-    final isSelected = profileState.previewCompetencyRequested &&
-        profileState.previewCompetencyUserJobId == userJobId;
+    final isSelected = profileState.previewCompetencyRequested && profileState.previewCompetencyUserJobId == userJobId;
     if (isSelected) {
       context.read<ProfileBloc>().add(CloseProfilPreview());
       return;
     }
     final cachedProfile = profileState.previewCompetencyProfile;
-    final alreadyRequested = profileState.previewCompetencyRequested &&
-        profileState.previewCompetencyUserJobId == userJobId;
-    final hasCachedProfile =
-        cachedProfile != null && cachedProfile.userJobId == userJobId;
-    if (alreadyRequested &&
-        (profileState.previewCompetencyProfileLoading || hasCachedProfile)) {
+    final alreadyRequested =
+        profileState.previewCompetencyRequested && profileState.previewCompetencyUserJobId == userJobId;
+    final hasCachedProfile = cachedProfile != null && cachedProfile.userJobId == userJobId;
+    if (alreadyRequested && (profileState.previewCompetencyProfileLoading || hasCachedProfile)) {
       return;
     }
     context.read<ProfileBloc>().add(OpenProfilPreview(
@@ -694,10 +676,113 @@ class UserInfoBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations locale = AppLocalizations.of(context);
+    final ThemeData theme = Theme.of(context);
+    final isMobile = DeviceHelper.isMobile(context);
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         final dynamic user = this.user ?? state.user;
+        if (user?.id == state.user.id && user?.id != null) {
+          return AppXButton(
+            onPressed: () {
+              goToSettingsTab(context, user);
+            },
+            isLoading: false,
+            shrinkWrap: false,
+            height: isMobile ? mobileCTAHeight * 3 : tabletAndAboveCTAHeight * 2.25,
+            bgColor: AppButtonColors.secondarySurfaceDefault,
+            hoverColor: AppButtonColors.secondarySurfaceHover,
+            shadowColor: AppButtonColors.secondaryShadowDefault,
+            borderColor: AppButtonColors.secondaryBorderDefault,
+            onPressedColor: AppButtonColors.secondarySurfaceDefault,
+            children: [
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 56,
+                      width: 56,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: (user.profilePictureUrl as String?).isEmptyOrNull
+                          ? Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: AppColors.borderMedium,
+                                  width: 2,
+                                  strokeAlign: BorderSide.strokeAlignInside,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: SvgPicture.asset(
+                                AppIcons.avatarPlaceholderPath,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: AppColors.borderMedium,
+                                  width: 2,
+                                  strokeAlign: BorderSide.strokeAlignInside,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: user.profilePictureUrl!,
+                                  fit: BoxFit.cover,
+                                  width: 56,
+                                  height: 56,
+                                  placeholder: (context, url) {
+                                    return SvgPicture.asset(
+                                      AppIcons.avatarPlaceholderPath,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                  errorWidget: (context, url, error) {
+                                    return SvgPicture.asset(
+                                      AppIcons.avatarPlaceholderPath,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                    ),
+                    AppSpacing.spacing8_Box,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          user.firstName ?? locale.user_firstName_placeholder,
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                color: AppColors.textPrimary,
+                              ),
+                        ),
+                        Text(
+                          user.lastName ?? locale.user_lastName_placeholder,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: AppColors.textPrimary,
+                              ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    ScoreWidget(value: user.diamonds ?? 0),
+                  ],
+                ),
+              ),
+            ],
+          );
+        }
+
         return Container(
+          width: double.infinity,
           constraints: const BoxConstraints(
             minHeight: 100,
           ),
@@ -790,90 +875,155 @@ class UserInfoBox extends StatelessWidget {
       },
     );
   }
+
+  void goToSettingsTab(BuildContext context, user) {
+    if (user.id == context.read<ProfileBloc>().state.user.id) {
+      DefaultTabController.of(context).animateTo(3);
+    }
+  }
 }
 
 class QuestInfoBox extends StatelessWidget {
+  final PreviewUser? user;
   final PreviewObjective? objective;
 
-  const QuestInfoBox({super.key, this.objective});
+  const QuestInfoBox({super.key, this.objective, this.user});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final AppLocalizations locale = AppLocalizations.of(context);
+    final isMobile = DeviceHelper.isMobile(context);
     const scale = 1.0;
 
     return LayoutBuilder(builder: (context, constraints) {
       return BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
-          final questGroup =
-              state.questGroups.groups.firstOrNull ?? const QuestGroup();
-          return InkWell(
-            onTap: () {
-              // Navigate to quests tab
-              DefaultTabController.of(context).animateTo(1);
-            },
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border.all(color: AppColors.borderMedium),
-                borderRadius: AppRadius.small,
-              ),
-              padding: const EdgeInsets.all(AppSpacing.spacing24 * scale),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    locale.parcoursObjective_inProgress,
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                      color: AppColors.textSecondary,
-                      fontSize: 14 * scale,
-                    ),
-                  ),
-                  AppSpacing.spacing4_Box,
-                  Flexible(
-                    child: AutoSizeText(
-                      (objective?.title ?? questGroup.group?.title ?? '')
-                          .toString(),
-                      style: theme.textTheme.labelLarge!.copyWith(
-                        color: AppColors.textPrimary,
-                        fontSize: math.max(16 * scale, 2),
-                      ),
-                      maxFontSize: math.max(16 * scale, 2),
-                      minFontSize: math.max(10 * scale, 2),
-                      maxLines: 2,
-                    ),
-                  ),
-                  AppSpacing.spacing16_Box,
-                  // Progress bar
-                  Stack(
+          final questGroup = state.questGroups.groups.firstOrNull ?? const QuestGroup();
+          final dynamic user = this.user ?? state.user;
+          if (user.id == state.user.id) {
+            return AppXButton(
+              onPressed: () {
+                goToQuestsTab(context);
+              },
+              isLoading: false,
+              shrinkWrap: false,
+              height: (isMobile ? mobileCTAHeight * 4 : tabletAndAboveCTAHeight * 3) * scale,
+              bgColor: AppButtonColors.secondarySurfaceDefault,
+              hoverColor: AppButtonColors.secondarySurfaceHover,
+              shadowColor: AppButtonColors.secondaryShadowDefault,
+              borderColor: AppButtonColors.secondaryBorderDefault,
+              onPressedColor: AppButtonColors.secondarySurfaceDefault,
+              children: [
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 16 * scale,
-                        decoration: BoxDecoration(
-                          color: AppColors.borderLight,
-                          borderRadius: BorderRadius.circular(
-                              AppRadius.tinyRadius / 2 * scale),
+                      Text(
+                        locale.parcoursObjective_inProgress,
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          color: AppColors.textSecondary,
+                          fontSize: 14 * scale,
                         ),
                       ),
-                      Container(
-                        height: 16 * scale,
-                        width: (constraints.maxWidth -
-                                2 * AppSpacing.spacing24 * scale) *
-                            (completionPercentage(
-                                objective?.toQuestGroup() ?? questGroup)),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryFocus,
-                          borderRadius: BorderRadius.circular(
-                              AppRadius.tinyRadius / 2 * scale),
+                      AppSpacing.spacing4_Box,
+                      Flexible(
+                        child: AutoSizeText(
+                          (objective?.title ?? questGroup.group?.title ?? '').toString(),
+                          style: theme.textTheme.labelLarge!.copyWith(
+                            color: AppColors.textPrimary,
+                            fontSize: math.max(16 * scale, 2),
+                          ),
+                          maxFontSize: math.max(16 * scale, 2),
+                          minFontSize: math.max(10 * scale, 2),
+                          maxLines: 2,
                         ),
+                      ),
+                      AppSpacing.spacing16_Box,
+                      // Progress bar
+                      Stack(
+                        children: [
+                          Container(
+                            height: 16 * scale,
+                            decoration: BoxDecoration(
+                              color: AppColors.borderLight,
+                              borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                            ),
+                          ),
+                          Container(
+                            height: 16 * scale,
+                            width: (constraints.maxWidth - 2 * AppSpacing.spacing24 * scale) *
+                                (completionPercentage(objective?.toQuestGroup() ?? questGroup)),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryFocus,
+                              borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
+            );
+          }
+          return Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.borderMedium),
+              borderRadius: AppRadius.small,
+            ),
+            padding: const EdgeInsets.all(AppSpacing.spacing24 * scale),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  locale.parcoursObjective_inProgress,
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    color: AppColors.textSecondary,
+                    fontSize: 14 * scale,
+                  ),
+                ),
+                AppSpacing.spacing4_Box,
+                Flexible(
+                  child: AutoSizeText(
+                    (objective?.title ?? questGroup.group?.title ?? '').toString(),
+                    style: theme.textTheme.labelLarge!.copyWith(
+                      color: AppColors.textPrimary,
+                      fontSize: math.max(16 * scale, 2),
+                    ),
+                    maxFontSize: math.max(16 * scale, 2),
+                    minFontSize: math.max(10 * scale, 2),
+                    maxLines: 2,
+                  ),
+                ),
+                AppSpacing.spacing16_Box,
+                // Progress bar
+                Stack(
+                  children: [
+                    Container(
+                      height: 16 * scale,
+                      decoration: BoxDecoration(
+                        color: AppColors.borderLight,
+                        borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                      ),
+                    ),
+                    Container(
+                      height: 16 * scale,
+                      width: (constraints.maxWidth - 2 * AppSpacing.spacing24 * scale) *
+                          (completionPercentage(objective?.toQuestGroup() ?? questGroup)),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryFocus,
+                        borderRadius: BorderRadius.circular(AppRadius.tinyRadius / 2 * scale),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           );
         },
@@ -897,6 +1047,10 @@ class QuestInfoBox extends StatelessWidget {
     }
     return questGroup.requiredCompleted / questGroup.requiredTotal;
   }
+
+  void goToQuestsTab(BuildContext context) {
+    DefaultTabController.of(context).animateTo(1);
+  }
 }
 
 class PossibleRewardsBox extends StatefulWidget {
@@ -912,6 +1066,10 @@ class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations locale = AppLocalizations.of(context);
+    void openRewardsTab() {
+      DefaultTabController.of(context).animateTo(2);
+    }
+
     final demoRewards = <RewardItem>[
       const RewardItem(
         id: "reward_le_dietrich",
@@ -1000,93 +1158,73 @@ class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
       ),
     ];
 
-    return Container(
-      constraints: const BoxConstraints(minHeight: 100, maxHeight: 500),
-      decoration: BoxDecoration(
-        // color: AppColors.primaryPressed,
-        borderRadius: AppRadius.small,
-        border: Border.all(color: AppColors.borderLight, width: 2),
-      ),
-      padding: const EdgeInsets.only(
-        top: AppSpacing.spacing24,
-        right: AppSpacing.spacing24,
-        left: AppSpacing.spacing24,
-        bottom: AppSpacing.spacing12 + AppSpacing.spacing4,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => {
+        _isHovering = true,
+        setState(() {}),
+      },
+      onExit: (_) => {
+        _isHovering = false,
+        setState(() {}),
+      },
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: openRewardsTab,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 100, maxHeight: 500),
+          decoration: BoxDecoration(
+            color: _isHovering ? AppButtonColors.secondarySurfaceHover : null,
+            borderRadius: AppRadius.small,
+            border: Border.all(color: AppColors.borderLight, width: 2),
+          ),
+          padding: const EdgeInsets.only(
+            top: AppSpacing.spacing24,
+            right: AppSpacing.spacing24,
+            left: AppSpacing.spacing24,
+            bottom: AppSpacing.spacing12 + AppSpacing.spacing4,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Flexible(
-                child: AutoSizeText(
-                  locale.parcoursRewards_possibleTitle,
-                  style: GoogleFonts.anton(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w400,
-                    height: 44 / 28,
-                    letterSpacing: -0.56,
-                    color: AppButtonColors.secondaryTextDefault,
-                  ),
-                  maxFontSize: 28,
-                  minFontSize: 14,
-                  maxLines: 1,
+              AutoSizeText(
+                locale.parcoursRewards_possibleTitle,
+                style: GoogleFonts.anton(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w400,
+                  height: 44 / 28,
+                  letterSpacing: -0.56,
+                  color: AppButtonColors.secondaryTextDefault,
                 ),
+                maxFontSize: 28,
+                minFontSize: 14,
+                maxLines: 1,
               ),
-              MouseRegion(
-                onEnter: (event) {
-                  _isHovering = true;
-                  setState(() {});
-                },
-                onExit: (event) {
-                  _isHovering = false;
-                  setState(() {});
-                },
-                child: AppXButton(
-                  text: locale.parcoursRewards_seeAll,
-                  onPressed: () {
-                    // Switch to rewards tab
-                    DefaultTabController.of(context).animateTo(2);
+              AppSpacing.spacing16_Box,
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: math.min(demoRewards.length, 3),
+                  itemBuilder: (context, index) {
+                    final reward = demoRewards[index];
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        bottom: index == math.min(demoRewards.length, 3) - 1 ? 0 : AppSpacing.spacing16,
+                      ),
+                      child: RewardListItem(
+                        reward: reward,
+                        onTap: openRewardsTab,
+                      ),
+                    );
                   },
-                  fgColor: !_isHovering
-                      ? AppButtonColors.tertiaryTextDefault
-                      : AppButtonColors.tertiaryTextHover,
-                  bgColor: Colors.transparent,
-                  borderColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  onPressedColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  elevation: 0,
-                  isLoading: false,
                 ),
               ),
             ],
           ),
-          AppSpacing.spacing16_Box,
-          Flexible(
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: math.min(demoRewards.length, 3),
-              // itemExtent: 100,
-              itemBuilder: (context, index) {
-                final reward = demoRewards[index];
-                return Padding(
-                  padding: EdgeInsets.only(
-                    bottom: index == math.min(demoRewards.length, 3) - 1
-                        ? 0
-                        : AppSpacing.spacing16,
-                  ),
-                  child: RewardListItem(reward: reward),
-                );
-              },
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -1094,10 +1232,12 @@ class _PossibleRewardsBoxState extends State<PossibleRewardsBox> {
 
 class RewardListItem extends StatefulWidget {
   final RewardItem reward;
+  final VoidCallback? onTap;
 
   const RewardListItem({
     super.key,
     required this.reward,
+    this.onTap,
   });
 
   @override
@@ -1105,127 +1245,86 @@ class RewardListItem extends StatefulWidget {
 }
 
 class _RewardListItemState extends State<RewardListItem> {
-  bool _isHovering = false;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final locale = AppLocalizations.of(context);
     final isMobile = DeviceHelper.isMobile(context);
     return LayoutBuilder(builder: (context, constraints) {
-      return MouseRegion(
-        cursor: MouseCursor.defer,
-        onEnter: (event) {
-          // _isHovering = true;
-          setState(() {});
-        },
-        onExit: (event) {
-          _isHovering = false;
-          setState(() {});
-        },
-        child: GestureDetector(
-          onTap: () {},
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              // color: Colors.yellow,
-              color: AppColors.backgroundDefault,
-              border: Border.all(
-                  color: _isHovering
-                      ? AppColors.primaryHover
-                      : AppColors.borderLight,
-                  width: 2),
-              borderRadius: AppRadius.small,
-              boxShadow: [
-                BoxShadow(
-                  color: _isHovering
-                      ? AppColors.primaryHover
-                      : AppColors.secondaryHover,
-                  blurRadius: 1,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-              image: _isHovering
-                  ? const DecorationImage(
-                      image: AssetImage(AppImages.CFCardBackgroundPath),
-                      fit: BoxFit.cover,
-                      alignment: Alignment.center,
-                      opacity: 1,
-                    )
-                  : null,
-            ),
-            padding: const EdgeInsets.all(AppSpacing.spacing12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox(
-                  width: constraints.maxWidth * 0.25,
-                  height: 48,
-                  child: ClipRRect(
-                    borderRadius: AppRadius.tinyTiny,
-                    child: CachedNetworkImage(
-                      imageUrl: widget.reward.imageUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) {
-                        return Container(color: AppColors.borderLight);
-                      },
-                      errorWidget: (context, url, error) {
-                        return Container(
-                          color: AppColors.borderLight,
-                          child: const Center(
-                            child: Icon(
-                              Icons.broken_image,
-                              color: AppColors.textSecondary,
-                            ),
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: AppColors.backgroundDefault,
+            border: Border.all(color: AppColors.borderLight, width: 2),
+            borderRadius: AppRadius.small,
+          ),
+          padding: const EdgeInsets.all(AppSpacing.spacing12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(
+                width: constraints.maxWidth * 0.25,
+                height: 48,
+                child: ClipRRect(
+                  borderRadius: AppRadius.tinyTiny,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.reward.imageUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) {
+                      return Container(color: AppColors.borderLight);
+                    },
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        color: AppColors.borderLight,
+                        child: const Center(
+                          child: Icon(
+                            Icons.broken_image,
+                            color: AppColors.textSecondary,
                           ),
-                        );
-                      },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              AppSpacing.spacing16_Box,
+              Expanded(
+                flex: 100,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    AutoSizeText(
+                      widget.reward.title,
+                      maxLines: 1,
+                      maxFontSize: theme.textTheme.bodyLarge!.fontSize!,
+                      minFontSize: theme.textTheme.bodySmall!.fontSize!,
+                      style: GoogleFonts.inter(
+                        color: AppColors.textPrimary,
+                        fontSize: isMobile
+                            ? theme.textTheme.displayMedium!.fontSize
+                            : theme.textTheme.headlineSmall!.fontSize,
+                        fontWeight: FontWeight.w600,
+                        // height: 1 / 3.8,
+                      ),
                     ),
-                  ),
-                ),
-                AppSpacing.spacing16_Box,
-                Expanded(
-                  flex: 100,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      AutoSizeText(
-                        widget.reward.title,
-                        maxLines: 1,
-                        maxFontSize: theme.textTheme.bodyLarge!.fontSize!,
-                        minFontSize: theme.textTheme.bodySmall!.fontSize!,
-                        style: GoogleFonts.inter(
-                          color: _isHovering
-                              ? AppColors.textInverted
-                              : AppColors.textPrimary,
-                          fontSize: isMobile
-                              ? theme.textTheme.displayMedium!.fontSize
-                              : theme.textTheme.headlineSmall!.fontSize,
-                          fontWeight: FontWeight.w600,
-                          // height: 1 / 3.8,
-                        ),
+                    AppSpacing.spacing2_Box,
+                    Text(
+                      "${widget.reward.kind.label(locale)} • ${widget.reward.city}",
+                      style: (isMobile ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge)?.copyWith(
+                        color: AppColors.textSecondary,
+                        // height: 1 / 2.4,
                       ),
-                      AppSpacing.spacing2_Box,
-                      Text(
-                        "${widget.reward.kind.label(locale)} • ${widget.reward.city}",
-                        style: (isMobile
-                                ? theme.textTheme.bodyMedium
-                                : theme.textTheme.bodyLarge)
-                            ?.copyWith(
-                          color: _isHovering
-                              ? AppColors.textInverted
-                              : AppColors.textSecondary,
-                          // height: 1 / 2.4,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );
@@ -1273,17 +1372,11 @@ class _UserKiviatsBoxState extends State<UserKiviatsBox> {
       return Container();
     }
     var families = widget.kiviats?.families ?? [];
-    var defaults =
-        widget.kiviats?.defaultValuesForFamilies(families, _detailsLevel) ?? [];
+    var defaults = widget.kiviats?.defaultValuesForFamilies(families, _detailsLevel) ?? [];
     var userValues = widget.kiviats?.userValuesForFamilies(families) ?? [];
     final theme = Theme.of(context);
     final locale = AppLocalizations.of(context);
-    var options = [
-      locale.skillLevel_easy,
-      locale.skillLevel_medium,
-      locale.skillLevel_hard,
-      locale.skillLevel_expert
-    ];
+    var options = [locale.skillLevel_easy, locale.skillLevel_medium, locale.skillLevel_hard, locale.skillLevel_expert];
     return _diagramBuilder(locale, theme, options);
     return Container(
       color: Colors.yellow,
@@ -1308,11 +1401,9 @@ class _UserKiviatsBoxState extends State<UserKiviatsBox> {
     );
   }
 
-  _diagramBuilder(
-      AppLocalizations locale, ThemeData theme, List<String> options) {
+  _diagramBuilder(AppLocalizations locale, ThemeData theme, List<String> options) {
     var families = widget.kiviats?.families ?? [];
-    var defaults =
-        widget.kiviats?.defaultValuesForFamilies(families, _detailsLevel) ?? [];
+    var defaults = widget.kiviats?.defaultValuesForFamilies(families, _detailsLevel) ?? [];
     var userValues = widget.kiviats?.userValuesForFamilies(families) ?? [];
     return Container(
       height: 400,
@@ -1354,8 +1445,7 @@ class _UserKiviatsBoxState extends State<UserKiviatsBox> {
                     ),
                   ),
                   AppXDropdown<int>(
-                    controller: TextEditingController(
-                        text: options[_detailsLevel.index]),
+                    controller: TextEditingController(text: options[_detailsLevel.index]),
                     items: options.map((level) => DropdownMenuEntry(
                           value: options.indexOf(level),
                           label: level,
@@ -1400,12 +1490,7 @@ class UserRankingBox extends StatelessWidget {
   final bool isLoading;
   final String? userId;
 
-  const UserRankingBox(
-      {super.key,
-      this.ranking,
-      this.isLoading = false,
-      required this.jobId,
-      this.userId});
+  const UserRankingBox({super.key, this.ranking, this.isLoading = false, required this.jobId, this.userId});
 
   @override
   Widget build(BuildContext context) {
