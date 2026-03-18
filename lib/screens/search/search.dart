@@ -63,6 +63,7 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
   static const _debounceDuration = Duration(milliseconds: 550);
 
   String selectedFilter = '';
+  String hoveredFilter = '';
 
   @override
   initState() {
@@ -253,28 +254,58 @@ class _MainSearchScreenState extends State<MainSearchScreen> {
 
   selectorItem(String title, ThemeData theme) {
     bool isSelected = title == selectedFilter;
-    return InkWell(
-      onTap: () {
+    bool isHovered = title == hoveredFilter;
+    return MouseRegion(
+      onEnter: (_) {
         setState(() {
-          selectedFilter = title;
+          hoveredFilter = title;
         });
-        _triggerSearchForFilter(title);
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryFocus : Colors.transparent,
-          borderRadius: AppRadius.tiny,
-          border: Border.all(
-            color: isSelected ? AppColors.primaryFocus : const Color(0xFFA8A8A8),
-            width: 2,
+      onExit: (_) {
+        setState(() {
+          if (hoveredFilter == title) {
+            hoveredFilter = '';
+          }
+        });
+      },
+      child: InkWell(
+        borderRadius: AppRadius.tiny,
+        onTap: () {
+          setState(() {
+            selectedFilter = title;
+          });
+          _triggerSearchForFilter(title);
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          curve: Curves.easeOut,
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColors.primaryFocus
+                : isHovered
+                    ? AppButtonColors.secondarySurfaceHover
+                    : null,
+            borderRadius: AppRadius.tiny,
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.primaryFocus
+                  : isHovered
+                      ? AppButtonColors.secondaryBorderDefault
+                      : const Color(0xFFA8A8A8),
+              width: 2,
+            ),
           ),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Text(
-          title,
-          style: theme.textTheme.labelLarge?.copyWith(
-            height: 1,
-            color: isSelected ? AppColors.textInverted : AppColors.textPrimary,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Text(
+            title,
+            style: theme.textTheme.labelLarge?.copyWith(
+              height: 1,
+              color: isSelected
+                  ? AppColors.textInverted
+                  : isHovered
+                      ? AppButtonColors.tertiaryTextHover
+                      : AppColors.textPrimary,
+            ),
           ),
         ),
       ),

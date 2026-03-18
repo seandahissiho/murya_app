@@ -12,7 +12,7 @@ class _DesktopCustomAppBarState extends State<DesktopCustomAppBar> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
 
-  static const Duration _animationDuration = Duration(milliseconds: 1600);
+  static const Duration _animationDuration = Duration(milliseconds: 600);
   static const Curve _animationCurve = Curves.easeInOut;
 
   @override
