@@ -29,12 +29,6 @@ class _RankingChartState extends State<RankingChart> {
   static const double _lineStrokeWidth = 7.0;
   static const double _lineInset = 2.0;
   static const double _verticalSpanFactor = 0.65;
-  static const double _insetMultiplier = 0.45;
-  static const double _pointInsetPadding = 4.0;
-  static const double _mobileAdjustAbove = 0.05;
-  static const double _mobileAdjustBelow = 0.06;
-  static const double _desktopAdjustAbove = 0.065;
-  static const double _desktopAdjustBelow = 0.015;
 
   // ── State ──────────────────────────────────────────────────────────────
   JobRankings _ranking = JobRankings.empty();
@@ -118,115 +112,120 @@ class _RankingChartState extends State<RankingChart> {
         }
       },
       builder: (context, state) {
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            final isMobile = DeviceHelper.isMobile(context);
-            final currentUserId =
-                widget.userId ?? context.read<ProfileBloc>().state.user.id;
+        final isMobile = DeviceHelper.isMobile(context);
+        final currentUserId =
+            widget.userId ?? context.read<ProfileBloc>().state.user.id;
 
-            // ── Quartile rankings ──────────────────────────────────────
-            final rankings = _ranking.rankings;
-            final rankCount = rankings.length;
-            JobRanking? firstRanking =
-                rankings.firstWhereOrNull((r) => r.rank == 1);
-            JobRanking? firstQuartileRanking = rankings
-                .firstWhereOrNull((r) => r.rank == (rankCount / 4).ceil());
-            JobRanking? secondQuartileRanking = rankings
-                .firstWhereOrNull((r) => r.rank == (rankCount / 2).ceil());
-            JobRanking? thirdQuartileRanking = rankings.firstWhereOrNull(
-                (r) => r.rank == (3 * rankCount / 4).ceil());
-            JobRanking? userRanking =
-                rankings.firstWhereOrNull((r) => r.userId == currentUserId);
+        // ── Quartile rankings ──────────────────────────────────────
+        final rankings = _ranking.rankings;
+        final rankCount = rankings.length;
+        JobRanking? firstRanking =
+            rankings.firstWhereOrNull((r) => r.rank == 1);
+        JobRanking? firstQuartileRanking = rankings
+            .firstWhereOrNull((r) => r.rank == (rankCount / 4).ceil());
+        JobRanking? secondQuartileRanking = rankings
+            .firstWhereOrNull((r) => r.rank == (rankCount / 2).ceil());
+        JobRanking? thirdQuartileRanking = rankings.firstWhereOrNull(
+            (r) => r.rank == (3 * rankCount / 4).ceil());
+        JobRanking? userRanking =
+            rankings.firstWhereOrNull((r) => r.userId == currentUserId);
 
-            // ── Percentages ───────────────────────────────────────────
-            int max = rankCount + 1;
-            double rankToPercent(int? rank) =>
-                1.0 * (max - (rank ?? 0)) / (math.max(max, 2) - 1);
+        // ── Percentages ───────────────────────────────────────────
+        int max = rankCount + 1;
+        double rankToPercent(int? rank) =>
+            1.0 * (max - (rank ?? 0)) / (math.max(max, 2) - 1);
 
-            final firstPercentage = rankToPercent(firstRanking?.rank);
-            final firstQuartilePercentage =
-                rankToPercent(firstQuartileRanking?.rank);
-            final secondQuartilePercentage =
-                rankToPercent(secondQuartileRanking?.rank);
-            final thirdQuartilePercentage =
-                rankToPercent(thirdQuartileRanking?.rank);
-            final userPercentage = rankToPercent(userRanking?.rank);
+        final firstPercentage = rankToPercent(firstRanking?.rank);
+        final firstQuartilePercentage =
+            rankToPercent(firstQuartileRanking?.rank);
+        final secondQuartilePercentage =
+            rankToPercent(secondQuartileRanking?.rank);
+        final thirdQuartilePercentage =
+            rankToPercent(thirdQuartileRanking?.rank);
+        final userPercentage = rankToPercent(userRanking?.rank);
 
-            // ── Painter ───────────────────────────────────────────────
-            final size = Size(constraints.maxWidth, constraints.maxHeight);
-            final baseInset = (isMobile
-                    ? mobileCTAHeight
-                    : tabletAndAboveCTAHeight) *
-                _insetMultiplier;
-            final pointInset = baseInset + _pointInsetPadding;
-            final painter = _DiagonalLinePainter(
-              userPercentage,
-              lineInset: _lineInset,
-              pointInset: pointInset,
-              verticalSpanFactor: _verticalSpanFactor,
-            );
-
-            // Positions along the line (0.0 → left/bottom, 1.0 → right/top)
-            Offset pos(double pct) =>
-                painter.pointOnLine(size, pct, isMobile: isMobile);
-
-            final firstRank = pos(firstPercentage);
-            final firstQuartileRank = pos(firstQuartilePercentage);
-            final secondQuartileRank = pos(secondQuartilePercentage);
-            final thirdQuartileRank = pos(thirdQuartilePercentage);
-            final userRank = pos(userPercentage);
-
-            return Column(
-              children: [
-                // ── Header row ──────────────────────────────────────
-                Container(
-                  height:
-                      isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                  margin: const EdgeInsets.only(top: AppSpacing.spacing24),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.spacing24),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        locale.ranking,
-                        style: GoogleFonts.anton(
-                          fontSize: isMobile ? 24 : 32,
-                          color: AppColors.textPrimary,
-                          letterSpacing: -0.6,
-                        ),
-                      ),
-                      AppXDropdown<int>(
-                        controller: _dropdownController,
-                        items: options.asMap().entries.map(
-                              (entry) => DropdownMenuEntry(
-                                value: entry.key,
-                                label: entry.value,
-                              ),
-                            ),
-                        onSelected: (level) {
-                          setState(() {
-                            _detailsLevel = level!;
-                            _dropdownController.text =
-                                options[_detailsLevel];
-                          });
-                          _loadRanking();
-                        },
-                        shrinkWrap: false,
-                        maxDropdownWidth: 150,
-                        fgColor: AppColors.textPrimary,
-                      ),
-                    ],
+        return Column(
+          children: [
+            // ── Header row ──────────────────────────────────────
+            Container(
+              height:
+                  isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+              margin: const EdgeInsets.only(top: AppSpacing.spacing24),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.spacing24),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    locale.ranking,
+                    style: GoogleFonts.anton(
+                      fontSize: isMobile ? 24 : 32,
+                      color: AppColors.textPrimary,
+                      letterSpacing: -0.6,
+                    ),
                   ),
-                ),
+                  AppXDropdown<int>(
+                    controller: _dropdownController,
+                    items: options.asMap().entries.map(
+                          (entry) => DropdownMenuEntry(
+                            value: entry.key,
+                            label: entry.value,
+                          ),
+                        ),
+                    onSelected: (level) {
+                      setState(() {
+                        _detailsLevel = level!;
+                        _dropdownController.text =
+                            options[_detailsLevel];
+                      });
+                      _loadRanking();
+                    },
+                    shrinkWrap: false,
+                    maxDropdownWidth: 150,
+                    fgColor: AppColors.textPrimary,
+                  ),
+                ],
+              ),
+            ),
 
-                // ── Chart area ──────────────────────────────────────
-                Expanded(
-                  child: Stack(
+            // ── Chart area ──────────────────────────────────────
+            // Vertical padding = ~half a card height, so cards positioned
+            // at the top/bottom of the line never overflow into the header
+            // or get clipped at the bottom.
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: (isMobile
+                          ? mobileCTAHeight
+                          : tabletAndAboveCTAHeight) /
+                      2,
+                ),
+                child: LayoutBuilder(
+                builder: (context, chartConstraints) {
+                  final chartSize = Size(
+                    chartConstraints.maxWidth,
+                    chartConstraints.maxHeight,
+                  );
+                  final painter = _DiagonalLinePainter(
+                    userPercentage,
+                    lineInset: _lineInset,
+                    verticalSpanFactor: _verticalSpanFactor,
+                  );
+
+                  Offset pos(double pct) =>
+                      painter.pointOnLine(chartSize, pct);
+
+                  final firstRank = pos(firstPercentage);
+                  final firstQuartileRank = pos(firstQuartilePercentage);
+                  final secondQuartileRank = pos(secondQuartilePercentage);
+                  final thirdQuartileRank = pos(thirdQuartilePercentage);
+                  final userRank = pos(userPercentage);
+
+                  return Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      CustomPaint(size: size, painter: painter),
+                      CustomPaint(size: chartSize, painter: painter),
                       // First place
                       _buildPositionedCard(
                         offset: firstRank,
@@ -260,12 +259,13 @@ class _RankingChartState extends State<RankingChart> {
                         textColor: AppColors.textInverted,
                       ),
                     ],
-                  ),
+                  );
+                },
                 ),
-                AppSpacing.spacing12_Box,
-              ],
-            );
-          },
+              ),
+            ),
+            AppSpacing.spacing12_Box,
+          ],
         );
       },
     );
@@ -304,13 +304,11 @@ class _RankingChartState extends State<RankingChart> {
 class _DiagonalLinePainter extends CustomPainter {
   final double progress;
   final double lineInset;
-  final double pointInset;
   final double verticalSpanFactor;
 
   const _DiagonalLinePainter(
     this.progress, {
     required this.lineInset,
-    required this.pointInset,
     required this.verticalSpanFactor,
   });
 
@@ -342,21 +340,21 @@ class _DiagonalLinePainter extends CustomPainter {
     );
   }
 
-  /// Returns a point on the diagonal line for a given [percent] (0.0 → start, 1.0 → end)
-  Offset pointOnLine(Size size, double percent, {bool isMobile = false}) {
-    final start = _start(size, pointInset);
-    final end = _end(size, pointInset);
+  /// Returns a point on the **drawn** diagonal line for a given [percent]
+  /// (0.0 → start / bottom-left, 1.0 → end / top-right).
+  ///
+  /// Uses [lineInset] so that cards sit exactly on the visible line.
+  /// A small margin (5 %) is applied at both ends to keep cards from
+  /// being clipped at the edges.
+  Offset pointOnLine(Size size, double percent) {
+    // Same diagonal as the painted line
+    final start = _start(size, lineInset);
+    final end = _end(size, lineInset);
 
-    final double adjustedPercent = percent > .5
-        ? percent -
-            (isMobile
-                ? _RankingChartState._mobileAdjustAbove
-                : _RankingChartState._desktopAdjustAbove)
-        : percent +
-            (isMobile
-                ? _RankingChartState._mobileAdjustBelow
-                : _RankingChartState._desktopAdjustBelow);
-    final double clampedPercent = adjustedPercent.clamp(0.0, 1.0);
+    // Keep a 5 % margin at each end so edge cards stay visible
+    const double edgeMargin = 0.05;
+    final double clampedPercent =
+        percent.clamp(edgeMargin, 1.0 - edgeMargin);
 
     return Offset.lerp(start, end, clampedPercent)!;
   }
@@ -387,7 +385,6 @@ class _DiagonalLinePainter extends CustomPainter {
   bool shouldRepaint(covariant _DiagonalLinePainter oldDelegate) =>
       oldDelegate.progress != progress ||
       oldDelegate.lineInset != lineInset ||
-      oldDelegate.pointInset != pointInset ||
       oldDelegate.verticalSpanFactor != verticalSpanFactor;
 }
 
