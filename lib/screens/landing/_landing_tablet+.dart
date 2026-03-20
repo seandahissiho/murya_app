@@ -64,6 +64,17 @@ class _TabletLandingScreenState extends State<TabletLandingScreen> {
   @override
   Widget build(BuildContext context) {
     final local = AppLocalizations.of(context);
+    // return Column(
+    //   children: [
+    //     Flexible(
+    //       child: const DiamondLottie(
+    //         primaryColor: Color(0xFF00D4FF),
+    //         secondaryColor: Color(0xFF8B5CF6),
+    //         size: 820,
+    //       ),
+    //     ),
+    //   ],
+    // );
     return Column(
       children: [
         const CustomAppBar(),
@@ -386,6 +397,49 @@ extension on SizedBox {
     return SizedBox(
       width: width != null ? width! * other : null,
       height: height != null ? height! * other : null,
+    );
+  }
+}
+
+class DiamondLottie extends StatelessWidget {
+  const DiamondLottie({
+    super.key,
+    required this.primaryColor,
+    required this.secondaryColor,
+    this.size = 180,
+  });
+
+  final Color primaryColor;
+  final Color secondaryColor;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Lottie.asset(
+        'assets/lotties/Diamond.json',
+        repeat: false,
+        fit: BoxFit.contain,
+        delegates: LottieDelegates(
+          values: [
+            // Dans le JSON :
+            // gradient > secondary.design > Fill 1 = couleur "Primary"
+            ValueDelegate.color(
+              const ['gradient', 'secondary.design', 'Fill 1'],
+              value: primaryColor,
+            ),
+
+            // Dans le JSON :
+            // gradient > primary.design > Fill 1 = couleur "Secondary"
+            ValueDelegate.color(
+              const ['gradient', 'primary.design', 'Fill 1'],
+              value: secondaryColor,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

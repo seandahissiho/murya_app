@@ -24,8 +24,22 @@ class RankingChart extends StatefulWidget {
 }
 
 class _RankingChartState extends State<RankingChart> {
+  // ── Constants ──────────────────────────────────────────────────────────
+  static const double _goldenRatio = 1.618;
+  static const double _lineStrokeWidth = 7.0;
+  static const double _lineInset = 2.0;
+  static const double _verticalSpanFactor = 0.65;
+  static const double _insetMultiplier = 0.45;
+  static const double _pointInsetPadding = 4.0;
+  static const double _mobileAdjustAbove = 0.05;
+  static const double _mobileAdjustBelow = 0.06;
+  static const double _desktopAdjustAbove = 0.065;
+  static const double _desktopAdjustBelow = 0.015;
+
+  // ── State ──────────────────────────────────────────────────────────────
   JobRankings _ranking = JobRankings.empty();
   int _detailsLevel = 0;
+  late TextEditingController _dropdownController;
 
   DateTime get from {
     final DateTime now = DateTime.now();
@@ -55,223 +69,237 @@ class _RankingChartState extends State<RankingChart> {
     }
   }
 
-  @override
-  void initState() {
+  void _loadRanking() {
     context.read<JobBloc>().add(LoadRankingForJob(
           context: context,
           jobId: widget.jobId,
           from: from,
           to: to,
         ));
+  }
+
+  @override
+  void initState() {
     super.initState();
+    _dropdownController = TextEditingController();
+    _loadRanking();
+  }
+
+  @override
+  void dispose() {
+    _dropdownController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final locale = AppLocalizations.of(context);
-    final isMobile = DeviceHelper.isMobile(context);
-    List<String> options = [
+    final options = [
       locale.ranking_per_day,
       locale.ranking_per_week,
       locale.ranking_per_month,
     ];
 
-    return LayoutBuilder(builder: (context, constraints) {
-      return BlocConsumer<JobBloc, JobState>(
-        listener: (context, state) {
-          if (state is UserJobDetailsLoaded) {
-            context.read<JobBloc>().add(LoadRankingForJob(context: context, jobId: widget.jobId, from: from, to: to));
-          }
-          if (state is JobRankingLoaded) {
+    // Keep dropdown text in sync with current level
+    _dropdownController.text = options[_detailsLevel];
+
+    return BlocConsumer<JobBloc, JobState>(
+      listener: (context, state) {
+        if (state is UserJobDetailsLoaded) {
+          _loadRanking();
+        }
+        if (state is JobRankingLoaded) {
+          setState(() {
             _ranking = state.ranking;
             if (_ranking.isNotEmptyOrNull) {
-              // sort
               _ranking.rankings.sort((a, b) => a.rank.compareTo(b.rank));
             }
-          }
-          setState(() {});
-        },
-        builder: (context, state) {
-          return Stack(
-            children: [
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isMobile = DeviceHelper.isMobile(context);
-                  final currentUserId = widget.userId ?? context.read<ProfileBloc>().state.user.id;
-                  JobRanking? firstRanking = _ranking.rankings.firstWhereOrNull((r) => r.rank == 1);
-                  // first quartile
-                  JobRanking? firstQuartileRanking =
-                      _ranking.rankings.firstWhereOrNull((r) => r.rank == (_ranking.rankings.length / 4).ceil());
-                  // second quartile
-                  JobRanking? secondQuartileRanking =
-                      _ranking.rankings.firstWhereOrNull((r) => r.rank == (_ranking.rankings.length / 2).ceil());
-                  // third quartile
-                  JobRanking? thirdQuartileRanking =
-                      _ranking.rankings.firstWhereOrNull((r) => r.rank == (3 * _ranking.rankings.length / 4).ceil());
-                  JobRanking? userRanking = _ranking.rankings.firstWhereOrNull((r) => r.userId == currentUserId);
+          });
+        }
+      },
+      builder: (context, state) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final isMobile = DeviceHelper.isMobile(context);
+            final currentUserId =
+                widget.userId ?? context.read<ProfileBloc>().state.user.id;
 
-                  int max = _ranking.rankings.length + 1;
+            // ── Quartile rankings ──────────────────────────────────────
+            final rankings = _ranking.rankings;
+            final rankCount = rankings.length;
+            JobRanking? firstRanking =
+                rankings.firstWhereOrNull((r) => r.rank == 1);
+            JobRanking? firstQuartileRanking = rankings
+                .firstWhereOrNull((r) => r.rank == (rankCount / 4).ceil());
+            JobRanking? secondQuartileRanking = rankings
+                .firstWhereOrNull((r) => r.rank == (rankCount / 2).ceil());
+            JobRanking? thirdQuartileRanking = rankings.firstWhereOrNull(
+                (r) => r.rank == (3 * rankCount / 4).ceil());
+            JobRanking? userRanking =
+                rankings.firstWhereOrNull((r) => r.userId == currentUserId);
 
-                  final firstPercentage = 1.0 * (max - (firstRanking?.rank ?? 0)) / (math.max(max, 2) - 1);
-                  final firstQuartilePercentage =
-                      1.0 * (max - (firstQuartileRanking?.rank ?? 0)) / (math.max(max, 2) - 1);
-                  final secondQuartilePercentage =
-                      1.0 * (max - (secondQuartileRanking?.rank ?? 0)) / (math.max(max, 2) - 1);
-                  final thirdQuartilePercentage =
-                      1.0 * (max - (thirdQuartileRanking?.rank ?? 0)) / (math.max(max, 2) - 1);
-                  final userPercentage = 1.0 * (max - (userRanking?.rank ?? 0)) / (math.max(max, 2) - 1);
+            // ── Percentages ───────────────────────────────────────────
+            int max = rankCount + 1;
+            double rankToPercent(int? rank) =>
+                1.0 * (max - (rank ?? 0)) / (math.max(max, 2) - 1);
 
-                  final size = Size(constraints.maxWidth, constraints.maxHeight);
-                  final baseInset = (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * 0.45;
-                  final pointInset = baseInset + 4;
-                  final painter = _DiagonalLinePainter(
-                    userPercentage,
-                    lineInset: 2,
-                    pointInset: pointInset,
-                    verticalSpanFactor: 0.65,
-                  );
+            final firstPercentage = rankToPercent(firstRanking?.rank);
+            final firstQuartilePercentage =
+                rankToPercent(firstQuartileRanking?.rank);
+            final secondQuartilePercentage =
+                rankToPercent(secondQuartileRanking?.rank);
+            final thirdQuartilePercentage =
+                rankToPercent(thirdQuartileRanking?.rank);
+            final userPercentage = rankToPercent(userRanking?.rank);
 
-                  // Positions along the line (0.0 → left/bottom, 1.0 → right/top)
-                  final firstRank = painter.pointOnLine(size, firstPercentage, isMobile: isMobile); // #1
-                  final firstQuartileRank =
-                      painter.pointOnLine(size, firstQuartilePercentage, isMobile: isMobile); // #max/4
-                  final secondQuartileRank =
-                      painter.pointOnLine(size, secondQuartilePercentage, isMobile: isMobile); // #max/2
-                  final thirdQuartileRank =
-                      painter.pointOnLine(size, thirdQuartilePercentage, isMobile: isMobile); // #3max/4
-                  final userRank = painter.pointOnLine(size, userPercentage, isMobile: isMobile); // user's rank
+            // ── Painter ───────────────────────────────────────────────
+            final size = Size(constraints.maxWidth, constraints.maxHeight);
+            final baseInset = (isMobile
+                    ? mobileCTAHeight
+                    : tabletAndAboveCTAHeight) *
+                _insetMultiplier;
+            final pointInset = baseInset + _pointInsetPadding;
+            final painter = _DiagonalLinePainter(
+              userPercentage,
+              lineInset: _lineInset,
+              pointInset: pointInset,
+              verticalSpanFactor: _verticalSpanFactor,
+            );
 
-                  return Column(
+            // Positions along the line (0.0 → left/bottom, 1.0 → right/top)
+            Offset pos(double pct) =>
+                painter.pointOnLine(size, pct, isMobile: isMobile);
+
+            final firstRank = pos(firstPercentage);
+            final firstQuartileRank = pos(firstQuartilePercentage);
+            final secondQuartileRank = pos(secondQuartilePercentage);
+            final thirdQuartileRank = pos(thirdQuartilePercentage);
+            final userRank = pos(userPercentage);
+
+            return Column(
+              children: [
+                // ── Header row ──────────────────────────────────────
+                Container(
+                  height:
+                      isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+                  margin: const EdgeInsets.only(top: AppSpacing.spacing24),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.spacing24),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
-                        margin: const EdgeInsets.only(
-                          top: AppSpacing.spacing24,
-                        ),
-                        padding: const EdgeInsets.only(
-                          left: AppSpacing.spacing24,
-                          right: AppSpacing.spacing24,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              locale.ranking,
-                              style: GoogleFonts.anton(
-                                fontSize: isMobile ? 24 : 32,
-                                color: AppColors.textPrimary,
-                                letterSpacing: -0.6,
-                              ),
-                            ),
-                            AppXDropdown<int>(
-                              controller: TextEditingController(text: options[_detailsLevel]),
-                              items: options.map(
-                                (level) => DropdownMenuEntry(
-                                  value: options.indexOf(level),
-                                  label: level,
-                                ),
-                              ),
-                              onSelected: (level) {
-                                setState(() {
-                                  _detailsLevel = level!;
-                                });
-                              },
-                              // labelInside: null,
-                              shrinkWrap: false,
-                              maxDropdownWidth: 150,
-                              fgColor: AppColors.textPrimary,
-                            ),
-                          ],
+                      Text(
+                        locale.ranking,
+                        style: GoogleFonts.anton(
+                          fontSize: isMobile ? 24 : 32,
+                          color: AppColors.textPrimary,
+                          letterSpacing: -0.6,
                         ),
                       ),
-                      Expanded(
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            // The line
-                            CustomPaint(
-                              size: size,
-                              painter: painter,
-                            ),
-
-                            // First place
-                            Positioned(
-                              left: firstRank.dx,
-                              top: firstRank.dy,
-                              child: const FractionalTranslation(
-                                translation: Offset(-0.5, -0.5),
-                                child: RankingCard(rank: 1),
+                      AppXDropdown<int>(
+                        controller: _dropdownController,
+                        items: options.asMap().entries.map(
+                              (entry) => DropdownMenuEntry(
+                                value: entry.key,
+                                label: entry.value,
                               ),
                             ),
-                            // First quartile place
-                            if (firstQuartileRanking != null)
-                              Positioned(
-                                left: firstQuartileRank.dx,
-                                top: firstQuartileRank.dy,
-                                child: FractionalTranslation(
-                                  translation: const Offset(-0.5, -0.5),
-                                  child: RankingCard(
-                                    rank: firstQuartileRanking.rank ?? -1,
-                                  ),
-                                ),
-                              ),
-                            // Second quartile place
-                            if (secondQuartileRanking != null)
-                              Positioned(
-                                left: secondQuartileRank.dx,
-                                top: secondQuartileRank.dy,
-                                child: FractionalTranslation(
-                                  translation: const Offset(-0.5, -0.5),
-                                  child: RankingCard(
-                                    rank: secondQuartileRanking.rank ?? -1,
-                                  ),
-                                ),
-                              ),
-                            // Third quartile place
-                            if (thirdQuartileRanking != null)
-                              Positioned(
-                                left: thirdQuartileRank.dx,
-                                top: thirdQuartileRank.dy,
-                                child: FractionalTranslation(
-                                  translation: const Offset(-0.5, -0.5),
-                                  child: RankingCard(
-                                    rank: thirdQuartileRanking.rank ?? -1,
-                                  ),
-                                ),
-                              ),
-
-                            // User's place
-                            Positioned(
-                              left: userRank.dx,
-                              top: userRank.dy,
-                              child: FractionalTranslation(
-                                translation: const Offset(-0.5, -0.5), // center card on the point
-                                child: RankingCard(
-                                  rank: userRanking?.rank ?? -1,
-                                  color: AppColors.primaryFocus,
-                                  shadowColor: AppColors.primaryPressed,
-                                  imageBorderColor: AppColors.backgroundCard,
-                                  textColor: AppColors.textInverted,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        onSelected: (level) {
+                          setState(() {
+                            _detailsLevel = level!;
+                            _dropdownController.text =
+                                options[_detailsLevel];
+                          });
+                          _loadRanking();
+                        },
+                        shrinkWrap: false,
+                        maxDropdownWidth: 150,
+                        fgColor: AppColors.textPrimary,
                       ),
-                      AppSpacing.spacing12_Box,
                     ],
-                  );
-                },
-              ),
-            ],
-          );
-        },
-      );
-    });
+                  ),
+                ),
+
+                // ── Chart area ──────────────────────────────────────
+                Expanded(
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      CustomPaint(size: size, painter: painter),
+                      // First place
+                      _buildPositionedCard(
+                        offset: firstRank,
+                        rank: 1,
+                      ),
+                      // First quartile
+                      if (firstQuartileRanking != null)
+                        _buildPositionedCard(
+                          offset: firstQuartileRank,
+                          rank: firstQuartileRanking.rank ?? -1,
+                        ),
+                      // Second quartile (median)
+                      if (secondQuartileRanking != null)
+                        _buildPositionedCard(
+                          offset: secondQuartileRank,
+                          rank: secondQuartileRanking.rank ?? -1,
+                        ),
+                      // Third quartile
+                      if (thirdQuartileRanking != null)
+                        _buildPositionedCard(
+                          offset: thirdQuartileRank,
+                          rank: thirdQuartileRanking.rank ?? -1,
+                        ),
+                      // User's rank (highlighted)
+                      _buildPositionedCard(
+                        offset: userRank,
+                        rank: userRanking?.rank ?? -1,
+                        color: AppColors.primaryFocus,
+                        shadowColor: AppColors.primaryPressed,
+                        imageBorderColor: AppColors.backgroundCard,
+                        textColor: AppColors.textInverted,
+                      ),
+                    ],
+                  ),
+                ),
+                AppSpacing.spacing12_Box,
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// Helper to build a positioned [RankingCard] centered on [offset].
+  Widget _buildPositionedCard({
+    required Offset offset,
+    required int rank,
+    Color? color,
+    Color? shadowColor,
+    Color? imageBorderColor,
+    Color? textColor,
+  }) {
+    return Positioned(
+      left: offset.dx,
+      top: offset.dy,
+      child: FractionalTranslation(
+        translation: const Offset(-0.5, -0.5),
+        child: RankingCard(
+          rank: rank,
+          color: color ?? AppColors.secondaryFocus,
+          shadowColor: shadowColor ?? AppColors.primaryDisabled,
+          imageBorderColor: imageBorderColor ?? AppColors.backgroundCard,
+          textColor: textColor ?? AppColors.textSecondary,
+        ),
+      ),
+    );
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Diagonal line painter
+// ═══════════════════════════════════════════════════════════════════════════
 
 class _DiagonalLinePainter extends CustomPainter {
   final double progress;
@@ -286,7 +314,11 @@ class _DiagonalLinePainter extends CustomPainter {
     required this.verticalSpanFactor,
   });
 
-  double _effectiveInset(Size size, double inset) => math.min(inset, math.min(size.width, size.height) * 0.45);
+  static const double _strokeWidth = 7.0;
+  static const double _maxInsetFactor = 0.45;
+
+  double _effectiveInset(Size size, double inset) =>
+      math.min(inset, math.min(size.width, size.height) * _maxInsetFactor);
 
   Offset _start(Size size, double inset) {
     final effectiveInset = _effectiveInset(size, inset);
@@ -315,21 +347,25 @@ class _DiagonalLinePainter extends CustomPainter {
     final start = _start(size, pointInset);
     final end = _end(size, pointInset);
 
-    final double adjustedPercent = percent > .5 ? percent - (isMobile ? .05 : .065) : percent + (isMobile ? .06 : .015);
+    final double adjustedPercent = percent > .5
+        ? percent -
+            (isMobile
+                ? _RankingChartState._mobileAdjustAbove
+                : _RankingChartState._desktopAdjustAbove)
+        : percent +
+            (isMobile
+                ? _RankingChartState._mobileAdjustBelow
+                : _RankingChartState._desktopAdjustBelow);
     final double clampedPercent = adjustedPercent.clamp(0.0, 1.0);
 
-    return Offset(
-      start.dx + (end.dx - start.dx) * clampedPercent,
-      start.dy + (end.dy - start.dy) * clampedPercent,
-    );
-    // or: return Offset.lerp(start, end, percent)!;
+    return Offset.lerp(start, end, clampedPercent)!;
   }
 
   @override
   void paint(Canvas canvas, Size size) {
     final backgroundPaint = Paint()
       ..color = AppColors.borderLight
-      ..strokeWidth = 7
+      ..strokeWidth = _strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
@@ -339,22 +375,25 @@ class _DiagonalLinePainter extends CustomPainter {
 
     final foregroundPaint = Paint()
       ..color = AppColors.primaryFocus
-      ..strokeWidth = 7
+      ..strokeWidth = _strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    final foregroundStart = start;
-    final foregroundEnd = Offset(
-      foregroundStart.dx + (end.dx - foregroundStart.dx) * progress,
-      foregroundStart.dy + (end.dy - foregroundStart.dy) * progress,
-    );
-
-    canvas.drawLine(foregroundStart, foregroundEnd, foregroundPaint);
+    final foregroundEnd = Offset.lerp(start, end, progress)!;
+    canvas.drawLine(start, foregroundEnd, foregroundPaint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _DiagonalLinePainter oldDelegate) =>
+      oldDelegate.progress != progress ||
+      oldDelegate.lineInset != lineInset ||
+      oldDelegate.pointInset != pointInset ||
+      oldDelegate.verticalSpanFactor != verticalSpanFactor;
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Ranking card widget
+// ═══════════════════════════════════════════════════════════════════════════
 
 class RankingCard extends StatelessWidget {
   final String pictureUrl;
@@ -363,6 +402,8 @@ class RankingCard extends StatelessWidget {
   final Color shadowColor;
   final Color imageBorderColor;
   final Color textColor;
+
+  static const double _goldenRatio = 1.618;
 
   const RankingCard({
     super.key,
@@ -378,137 +419,135 @@ class RankingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isMobile = DeviceHelper.isMobile(context);
-    return Stack(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(
-            left: AppSpacing.spacing12,
-            right: AppSpacing.spacing12,
-            top: AppSpacing.spacing12,
-            bottom: AppSpacing.spacing8,
-          ),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: AppRadius.small,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 2,
-                offset: const Offset(0, 5),
-                color: shadowColor,
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: imageBorderColor,
-                    width: 4,
-                    strokeAlign: BorderSide.strokeAlignOutside,
-                  ),
+    final avatarSize = isMobile
+        ? mobileCTAHeight / _goldenRatio
+        : tabletAndAboveCTAHeight / _goldenRatio;
+    final iconSize = isMobile
+        ? mobileCTAHeight / 2
+        : tabletAndAboveCTAHeight / 2;
+
+    return FittedBox(
+      fit: BoxFit.fitHeight,
+      child: Stack(
+        children: [
+          // ── Background card with shadow ──────────────────────────────
+          Container(
+            padding: const EdgeInsets.only(
+              left: AppSpacing.spacing12,
+              right: AppSpacing.spacing12,
+              top: AppSpacing.spacing12,
+              bottom: AppSpacing.spacing8,
+            ),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: AppRadius.small,
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 2,
+                  offset: const Offset(0, 5),
+                  color: shadowColor,
                 ),
-                child: SizedBox(
-                  height: isMobile ? mobileCTAHeight / 1.618 : tabletAndAboveCTAHeight / 1.618,
-                  width: isMobile ? mobileCTAHeight / 1.618 : tabletAndAboveCTAHeight / 1.618,
-                  child: ClipOval(
-                    child: pictureUrl.isNotEmpty
-                        ? CachedNetworkImage(
-                            imageUrl: pictureUrl,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) {
-                              return Container(color: color);
-                            },
-                            errorWidget: (context, url, error) {
-                              return Container(color: color);
-                            },
-                          )
-                        : Container(
-                            color: color,
-                            child: Icon(
-                              Icons.person,
-                              size: isMobile ? mobileCTAHeight / 2 : tabletAndAboveCTAHeight / 2,
-                              color: AppColors.primaryDisabled,
-                            ),
-                          ),
-                  ),
+              ],
+            ),
+            child: Column(
+              children: [
+                _buildAvatar(avatarSize, iconSize, imageBorderColor),
+                AppSpacing.spacing8_Box,
+                Text(
+                  "#$rank",
+                  style: theme.textTheme.labelMedium
+                      ?.copyWith(color: textColor),
                 ),
-              ),
-              AppSpacing.spacing8_Box,
-              Text("#$rank", style: theme.textTheme.labelMedium?.copyWith(color: textColor)),
-            ],
-          ),
-        ),
-        if (rank == 1) ...[
-          Positioned.fill(
-            child: Image.asset(
-              AppImages.starsPath,
-              colorBlendMode: BlendMode.srcATop,
-              color: AppColors.primaryFocus.withValues(alpha: 10),
-              fit: BoxFit.cover,
-              // width: isMobile ? mobileCTAHeight / 2 : tabletAndAboveCTAHeight / 2,
-              // height: isMobile ? mobileCTAHeight / 2 : tabletAndAboveCTAHeight / 2,
+              ],
             ),
           ),
+
+          // ── Stars overlay for rank 1 ────────────────────────────────
+          if (rank == 1)
+            Positioned.fill(
+              child: Image.asset(
+                AppImages.starsPath,
+                colorBlendMode: BlendMode.srcATop,
+                color: AppColors.primaryFocus.withValues(alpha: 10),
+                fit: BoxFit.cover,
+              ),
+            ),
+
+          // ── Foreground content (above stars, transparent bg) ─────────
+          if (rank == 1)
+            Container(
+              padding: const EdgeInsets.only(
+                left: AppSpacing.spacing12,
+                right: AppSpacing.spacing12,
+                top: AppSpacing.spacing12,
+                bottom: AppSpacing.spacing8,
+              ),
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: AppRadius.small,
+              ),
+              child: Column(
+                children: [
+                  _buildAvatar(
+                      avatarSize, iconSize, Colors.transparent,
+                      placeholderColor: Colors.transparent),
+                  AppSpacing.spacing8_Box,
+                  Container(
+                    color: color,
+                    child: Text(
+                      "#$rank",
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: textColor),
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
-        Container(
-          padding: const EdgeInsets.only(
-            left: AppSpacing.spacing12,
-            right: AppSpacing.spacing12,
-            top: AppSpacing.spacing12,
-            bottom: AppSpacing.spacing8,
-          ),
-          decoration: const BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: AppRadius.small,
-          ),
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.transparent,
-                    width: 4,
-                    strokeAlign: BorderSide.strokeAlignOutside,
-                  ),
-                ),
-                child: SizedBox(
-                  height: isMobile ? mobileCTAHeight / 1.618 : tabletAndAboveCTAHeight / 1.618,
-                  width: isMobile ? mobileCTAHeight / 1.618 : tabletAndAboveCTAHeight / 1.618,
-                  child: ClipOval(
-                    child: pictureUrl.isNotEmpty
-                        ? CachedNetworkImage(
-                            imageUrl: pictureUrl,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) {
-                              return Container(color: Colors.transparent);
-                            },
-                            errorWidget: (context, url, error) {
-                              return Container(color: Colors.transparent);
-                            },
-                          )
-                        : Container(
-                            color: Colors.transparent,
-                            child: Icon(
-                              Icons.person,
-                              size: isMobile ? mobileCTAHeight / 2 : tabletAndAboveCTAHeight / 2,
-                              color: AppColors.primaryDisabled,
-                            ),
-                          ),
-                  ),
-                ),
-              ),
-              AppSpacing.spacing8_Box,
-              Container(
-                color: color,
-                child: Text("#$rank", style: theme.textTheme.labelMedium?.copyWith(color: textColor)),
-              ),
-            ],
-          ),
+      ),
+    );
+  }
+
+  /// Builds the circular avatar widget, factored out to avoid duplication.
+  Widget _buildAvatar(
+    double size,
+    double iconSize,
+    Color borderColor, {
+    Color? placeholderColor,
+  }) {
+    final effectivePlaceholder = placeholderColor ?? color;
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: borderColor,
+          width: 4,
+          strokeAlign: BorderSide.strokeAlignOutside,
         ),
-      ],
+      ),
+      child: SizedBox(
+        height: size,
+        width: size,
+        child: ClipOval(
+          child: pictureUrl.isNotEmpty
+              ? CachedNetworkImage(
+                  imageUrl: pictureUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      Container(color: effectivePlaceholder),
+                  errorWidget: (context, url, error) =>
+                      Container(color: effectivePlaceholder),
+                )
+              : Container(
+                  color: effectivePlaceholder,
+                  child: Icon(
+                    Icons.person,
+                    size: iconSize,
+                    color: AppColors.primaryDisabled,
+                  ),
+                ),
+        ),
+      ),
     );
   }
 }

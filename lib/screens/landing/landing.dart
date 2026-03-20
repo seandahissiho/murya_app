@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
@@ -29,14 +30,12 @@ import 'package:murya/screens/base.dart';
 part '_landing_mobile.dart';
 part '_landing_tablet+.dart';
 
-class LandingLocation
-    extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class LandingLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.landing];
 
   @override
-  List<BeamPage> buildPages(
-      BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     final locale = AppLocalizations.of(context);
     return [
@@ -68,8 +67,7 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AppBloc, AppState>(
       listenWhen: (previous, current) =>
-          previous.language.code != current.language.code ||
-          previous.newRoute != current.newRoute,
+          previous.language.code != current.language.code || previous.newRoute != current.newRoute,
       listener: (context, state) {
         log('LandingScreen: Reloading modules for ${state.newRoute} (${state.language.code}).');
         if (!state.newRoute.startsWith(AppRoutes.landing)) return;
@@ -100,9 +98,7 @@ class AddModuleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isMobile = DeviceHelper.isMobile(context);
-    final double ctaHeight = DeviceHelper.isMobile(context)
-        ? mobileCTAHeight
-        : tabletAndAboveCTAHeight;
+    final double ctaHeight = DeviceHelper.isMobile(context) ? mobileCTAHeight : tabletAndAboveCTAHeight;
     return Padding(
       padding: EdgeInsets.only(
         bottom: isMobile
@@ -171,10 +167,9 @@ class LandingCustomizationDialog extends StatelessWidget {
                   children: [
                     Text(
                       locale.landing_customize_title,
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: AppColors.primary.shade900,
-                              ),
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            color: AppColors.primary.shade900,
+                          ),
                     ),
                     const AppXCloseButton(),
                   ],
@@ -206,8 +201,7 @@ class LandingCustomizationDialog extends StatelessWidget {
                           itemCount: modules.length,
                           onReorder: (oldIndex, newIndex) {
                             if (newIndex > oldIndex) newIndex -= 1;
-                            context.read<ModulesBloc>().add(
-                                ReorderModules(from: oldIndex, to: newIndex));
+                            context.read<ModulesBloc>().add(ReorderModules(from: oldIndex, to: newIndex));
                           },
                           itemBuilder: (context, index) {
                             final module = modules[index];
@@ -277,8 +271,7 @@ class _LandingModuleRow extends StatelessWidget {
     final locale = AppLocalizations.of(context);
     return Container(
       key: key,
-      margin: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.spacing8, vertical: AppSpacing.spacing4),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing8, vertical: AppSpacing.spacing4),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.spacing12,
         vertical: AppSpacing.spacing12,
@@ -332,9 +325,7 @@ class _LandingModuleRow extends StatelessWidget {
           else
             AppXButton(
               onPressed: () {
-                context
-                    .read<ModulesBloc>()
-                    .add(RemoveLandingModule(moduleId: module.id ?? ''));
+                context.read<ModulesBloc>().add(RemoveLandingModule(moduleId: module.id ?? ''));
               },
               isLoading: false,
               text: locale.action_remove,
@@ -369,10 +360,7 @@ class ModuleCatalogDialog extends StatelessWidget {
         child: BlocBuilder<ModulesBloc, ModulesState>(
           builder: (context, state) {
             final modules = state.catalogModules;
-            final landingIds = state.modules
-                .map((module) => module.id)
-                .whereType<String>()
-                .toSet();
+            final landingIds = state.modules.map((module) => module.id).whereType<String>().toSet();
             return Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,10 +370,9 @@ class ModuleCatalogDialog extends StatelessWidget {
                   children: [
                     Text(
                       locale.modules_catalog_title,
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: AppColors.primary.shade900,
-                              ),
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            color: AppColors.primary.shade900,
+                          ),
                     ),
                     const AppXCloseButton(),
                   ],
@@ -407,8 +394,7 @@ class ModuleCatalogDialog extends StatelessWidget {
                       separatorBuilder: (_, __) => AppSpacing.spacing4_Box,
                       itemBuilder: (context, index) {
                         final module = modules[index];
-                        final bool alreadyAdded =
-                            landingIds.contains(module.id);
+                        final bool alreadyAdded = landingIds.contains(module.id);
                         return Container(
                           padding: const EdgeInsets.all(AppSpacing.spacing12),
                           decoration: BoxDecoration(
@@ -423,34 +409,23 @@ class ModuleCatalogDialog extends StatelessWidget {
                                   children: [
                                     Text(
                                       module.title(context),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge
-                                          ?.copyWith(
+                                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                             fontWeight: FontWeight.w600,
                                           ),
                                     ),
-                                    if (module.description != null &&
-                                        module.description!.isNotEmpty) ...[
+                                    if (module.description != null && module.description!.isNotEmpty) ...[
                                       AppSpacing.spacing2_Box,
                                       Text(
                                         module.description!,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                               color: AppColors.textSecondary,
                                             ),
                                       ),
-                                    ] else if (module.slug != null &&
-                                        module.slug!.isNotEmpty) ...[
+                                    ] else if (module.slug != null && module.slug!.isNotEmpty) ...[
                                       AppSpacing.spacing2_Box,
                                       Text(
                                         module.slug!,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                               color: AppColors.textSecondary,
                                             ),
                                       ),
@@ -460,22 +435,16 @@ class ModuleCatalogDialog extends StatelessWidget {
                               ),
                               if (module.defaultOnLanding == true)
                                 Container(
-                                  margin: const EdgeInsets.only(
-                                      right: AppSpacing.spacing8),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 6),
+                                  margin: const EdgeInsets.only(right: AppSpacing.spacing8),
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                   decoration: BoxDecoration(
                                     color: AppColors.backgroundColor,
                                     borderRadius: AppRadius.tiny,
-                                    border: Border.all(
-                                        color: AppColors.borderMedium),
+                                    border: Border.all(color: AppColors.borderMedium),
                                   ),
                                   child: Text(
                                     locale.label_default,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelSmall
-                                        ?.copyWith(
+                                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                           color: AppColors.textSecondary,
                                         ),
                                   ),
@@ -484,14 +453,10 @@ class ModuleCatalogDialog extends StatelessWidget {
                                 onPressed: alreadyAdded
                                     ? null
                                     : () {
-                                        context.read<ModulesBloc>().add(
-                                            AddLandingModule(
-                                                moduleId: module.id ?? ''));
+                                        context.read<ModulesBloc>().add(AddLandingModule(moduleId: module.id ?? ''));
                                       },
                                 isLoading: false,
-                                text: alreadyAdded
-                                    ? locale.status_added
-                                    : locale.action_add,
+                                text: alreadyAdded ? locale.status_added : locale.action_add,
                                 shrinkWrap: true,
                                 disabled: alreadyAdded,
                                 height: 34,
@@ -539,10 +504,9 @@ class LandingAuditDialog extends StatelessWidget {
                   children: [
                     Text(
                       locale.landing_audit_title,
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: AppColors.primary.shade900,
-                              ),
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            color: AppColors.primary.shade900,
+                          ),
                     ),
                     const AppXCloseButton(),
                   ],
@@ -564,17 +528,14 @@ class LandingAuditDialog extends StatelessWidget {
                       separatorBuilder: (_, __) => AppSpacing.spacing4_Box,
                       itemBuilder: (context, index) {
                         final event = events[index];
-                        final moduleName = _moduleNameForEvent(context, event,
-                            state.modules, state.catalogModules);
+                        final moduleName = _moduleNameForEvent(context, event, state.modules, state.catalogModules);
                         final actorLabel = event.actor == LandingActor.system
                             ? locale.landing_audit_actor_system
                             : locale.landing_audit_actor_user;
                         final actionLabel = event.action == LandingAction.remove
                             ? locale.landing_audit_action_removed
                             : locale.landing_audit_action_added;
-                        final dateLabel = event.createdAt != null
-                            ? event.createdAt!.ddMMMyyyy()
-                            : '';
+                        final dateLabel = event.createdAt != null ? event.createdAt!.ddMMMyyyy() : '';
                         return Container(
                           padding: const EdgeInsets.all(AppSpacing.spacing12),
                           decoration: BoxDecoration(
@@ -598,10 +559,7 @@ class LandingAuditDialog extends StatelessWidget {
                                   children: [
                                     Text(
                                       '$actorLabel $actionLabel $moduleName',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                             fontWeight: FontWeight.w600,
                                           ),
                                     ),
@@ -609,10 +567,7 @@ class LandingAuditDialog extends StatelessWidget {
                                       AppSpacing.spacing2_Box,
                                       Text(
                                         dateLabel,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
+                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                               color: AppColors.textSecondary,
                                             ),
                                       ),
@@ -634,13 +589,10 @@ class LandingAuditDialog extends StatelessWidget {
     );
   }
 
-  String _moduleNameForEvent(BuildContext context, LandingEvent event,
-      List<Module> landing, List<Module> catalog) {
-    final fromLanding =
-        landing.firstWhereOrNull((module) => module.id == event.moduleId);
+  String _moduleNameForEvent(BuildContext context, LandingEvent event, List<Module> landing, List<Module> catalog) {
+    final fromLanding = landing.firstWhereOrNull((module) => module.id == event.moduleId);
     if (fromLanding != null) return fromLanding.title(context);
-    final fromCatalog =
-        catalog.firstWhereOrNull((module) => module.id == event.moduleId);
+    final fromCatalog = catalog.firstWhereOrNull((module) => module.id == event.moduleId);
     if (fromCatalog != null) return fromCatalog.title(context);
     return event.moduleId;
   }
@@ -670,8 +622,7 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
       builder: (context, state) {
         final modules = state.catalogModules
             .whereOrEmpty(
-              (module) => !state.modules
-                  .any((landingModule) => landingModule.id == module.id),
+              (module) => !state.modules.any((landingModule) => landingModule.id == module.id),
             )
             .toList();
         return ColoredBox(
@@ -685,8 +636,7 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     color: Color(0xFFE7E5DD),
-                    borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(AppRadius.tinyRadius)),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.tinyRadius)),
                   ),
                   padding: EdgeInsets.only(
                     left: isMobile
@@ -696,8 +646,7 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
                         ? mobileCTAHeight + AppSpacing.spacing16
                         : tabletAndAboveCTAHeight + AppSpacing.spacing16,
                     top: AppSpacing.spacing24,
-                    bottom: MediaQuery.of(context).viewInsets.bottom +
-                        AppSpacing.spacing24,
+                    bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.spacing24,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -723,25 +672,20 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
                                 runSpacing: AppSpacing.spacing16,
                                 children: modules.map(
                                   (module) {
-                                    final moduleKey = module.slug ??
-                                        module.id ??
-                                        module.name ??
-                                        'module-${module.index}';
-                                    final isHovered =
-                                        _hoveredModules[moduleKey] == true;
+                                    final moduleKey =
+                                        module.slug ?? module.id ?? module.name ?? 'module-${module.index}';
+                                    final isHovered = _hoveredModules[moduleKey] == true;
                                     return InkWell(
                                       mouseCursor: SystemMouseCursors.click,
                                       hoverColor: Colors.transparent,
                                       splashColor: Colors.transparent,
                                       highlightColor: Colors.transparent,
                                       onHover: (isHovering) {
-                                        if (_hoveredModules[moduleKey] ==
-                                            isHovering) {
+                                        if (_hoveredModules[moduleKey] == isHovering) {
                                           return;
                                         }
                                         setState(() {
-                                          _hoveredModules[moduleKey] =
-                                              isHovering;
+                                          _hoveredModules[moduleKey] = isHovering;
                                         });
                                       },
                                       onTap: () {
@@ -752,48 +696,38 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
                                           }
                                         }
                                         setState(() {
-                                          _pressedModules[moduleKey] =
-                                              !(_pressedModules[moduleKey] ==
-                                                  true);
+                                          _pressedModules[moduleKey] = !(_pressedModules[moduleKey] == true);
                                         });
                                       },
                                       child: AnimatedContainer(
-                                        duration:
-                                            const Duration(milliseconds: 120),
+                                        duration: const Duration(milliseconds: 120),
                                         curve: Curves.easeOut,
                                         height: constraints.maxHeight,
                                         width: constraints.maxHeight,
                                         decoration: BoxDecoration(
                                           color: isHovered
-                                              ? AppButtonColors
-                                                  .secondarySurfaceHover
-                                              : AppButtonColors
-                                                  .secondarySurfaceDefault,
+                                              ? AppButtonColors.secondarySurfaceHover
+                                              : AppButtonColors.secondarySurfaceDefault,
                                           borderRadius: AppRadius.tiny,
                                           border: Border.all(
                                             color: isHovered
                                                 ? AppColors.borderMedium
-                                                : AppButtonColors
-                                                    .secondaryBorderDefault,
+                                                : AppButtonColors.secondaryBorderDefault,
                                           ),
                                           boxShadow: isHovered
                                               ? const [
                                                   BoxShadow(
-                                                    color: AppButtonColors
-                                                        .secondaryShadowDefault,
+                                                    color: AppButtonColors.secondaryShadowDefault,
                                                     offset: Offset(0, 6),
                                                     blurRadius: 0,
                                                   ),
                                                 ]
                                               : const [],
                                         ),
-                                        padding: const EdgeInsets.all(
-                                            AppSpacing.spacing24),
+                                        padding: const EdgeInsets.all(AppSpacing.spacing24),
                                         child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.max,
                                           children: [
                                             Text(
@@ -816,15 +750,9 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
                                             ),
                                             AppSpacing.spacing24_Box,
                                             Expanded(
-                                              child:
-                                                  _pressedModules[moduleKey] !=
-                                                          true
-                                                      ? _defaultModuleContent(
-                                                          module)
-                                                      : _detailledModuleContent(
-                                                          module,
-                                                          locale,
-                                                          theme),
+                                              child: _pressedModules[moduleKey] != true
+                                                  ? _defaultModuleContent(module)
+                                                  : _detailledModuleContent(module, locale, theme),
                                             )
                                           ],
                                         ),
@@ -846,13 +774,11 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
                 height: 0,
               ),
               Container(
-                height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) +
-                    AppSpacing.spacing40 / (isMobile ? 2 : 1),
+                height:
+                    (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) + AppSpacing.spacing40 / (isMobile ? 2 : 1),
                 width: double.infinity,
                 color: const Color(0xFFE7E5DD),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.spacing24,
-                    vertical: AppSpacing.spacing16),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing24, vertical: AppSpacing.spacing16),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -876,8 +802,7 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
         height: double.infinity,
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) => const Center(
-          child: Icon(Icons.broken_image,
-              size: 48, color: AppColors.textSecondary),
+          child: Icon(Icons.broken_image, size: 48, color: AppColors.textSecondary),
         ),
       );
     }
@@ -889,8 +814,7 @@ class _BottomSheetContentState extends State<_BottomSheetContent> {
     );
   }
 
-  _detailledModuleContent(
-      Module module, AppLocalizations locale, ThemeData theme) {
+  _detailledModuleContent(Module module, AppLocalizations locale, ThemeData theme) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.end,
