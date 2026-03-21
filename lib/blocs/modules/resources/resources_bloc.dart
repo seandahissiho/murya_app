@@ -7,6 +7,7 @@ import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
 import 'package:murya/models/resource.dart';
 import 'package:murya/repositories/resources.repository.dart';
+import 'package:uuid/uuid.dart';
 
 part 'resources_event.dart';
 part 'resources_state.dart';
@@ -22,6 +23,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
   final Set<String> _readResourceIds = {};
   final Map<String, double> _lastReadProgress = {};
   final Set<String> _likingResourceIds = {};
+  final Uuid _uuid = const Uuid();
 
   final List<Resource> _articles = [];
   final List<Resource> _videos = [];
@@ -73,14 +75,23 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
   }
 
   FutureOr<void> _onGenerateResource(GenerateResource event, Emitter<ResourcesState> emit) async {
-    final result = await resourceRepository.generateResource(type: event.type, userJobId: event.userJobId);
+    final currentUserJob = jobBloc.state.userCurrentJob;
+    final topic =
+        currentUserJob?.job?.title ?? currentUserJob?.jobFamily?.title ?? 'current-role';
+    final level = currentUserJob?.level.name ?? 'beginner';
+
+    final result = await resourceRepository.generateResource(
+      type: event.type,
+      topic: topic,
+      level: level,
+      userJobId: event.userJobId,
+      idempotencyKey: _uuid.v4(),
+    );
     if (result.isError) {
-      // Handle error (e.g., emit an error state or log the error)
       return;
     }
-    final resource = result.data!;
-    _articles.insert(0, resource);
-    emit(ResourceDetailsLoaded(resource: resource));
+
+    emit(ResourcesLoaded(resources: [..._articles, ..._videos, ..._podcasts]));
     profileBloc.add(ProfileLoadEvent());
   }
 

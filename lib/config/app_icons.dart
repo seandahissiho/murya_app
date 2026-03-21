@@ -157,6 +157,11 @@ class AppIcons {
   static const String checkmarkIconPath = '$basePath/checkmark.svg';
   // delete_disabled_1.svg
   static const String deleteDisabled1IconPath = '$basePath/delete_disabled_1.svg';
+
+  // Ranking #1 sparkle stars
+  static const String rankingStar3Path = '$basePath/star_3.svg';
+  static const String rankingStar4Path = '$basePath/star_4.svg';
+  static const String rankingStar5Path = '$basePath/star_5.svg';
 }
 
 class AppImages {

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
@@ -113,46 +114,34 @@ class _RankingChartState extends State<RankingChart> {
       },
       builder: (context, state) {
         final isMobile = DeviceHelper.isMobile(context);
-        final currentUserId =
-            widget.userId ?? context.read<ProfileBloc>().state.user.id;
+        final currentUserId = widget.userId ?? context.read<ProfileBloc>().state.user.id;
 
         // ── Quartile rankings ──────────────────────────────────────
         final rankings = _ranking.rankings;
         final rankCount = rankings.length;
-        JobRanking? firstRanking =
-            rankings.firstWhereOrNull((r) => r.rank == 1);
-        JobRanking? firstQuartileRanking = rankings
-            .firstWhereOrNull((r) => r.rank == (rankCount / 4).ceil());
-        JobRanking? secondQuartileRanking = rankings
-            .firstWhereOrNull((r) => r.rank == (rankCount / 2).ceil());
-        JobRanking? thirdQuartileRanking = rankings.firstWhereOrNull(
-            (r) => r.rank == (3 * rankCount / 4).ceil());
-        JobRanking? userRanking =
-            rankings.firstWhereOrNull((r) => r.userId == currentUserId);
+        JobRanking? firstRanking = rankings.firstWhereOrNull((r) => r.rank == 1);
+        JobRanking? firstQuartileRanking = rankings.firstWhereOrNull((r) => r.rank == (rankCount / 4).ceil());
+        JobRanking? secondQuartileRanking = rankings.firstWhereOrNull((r) => r.rank == (rankCount / 2).ceil());
+        JobRanking? thirdQuartileRanking = rankings.firstWhereOrNull((r) => r.rank == (3 * rankCount / 4).ceil());
+        JobRanking? userRanking = rankings.firstWhereOrNull((r) => r.userId == currentUserId);
 
         // ── Percentages ───────────────────────────────────────────
         int max = rankCount + 1;
-        double rankToPercent(int? rank) =>
-            1.0 * (max - (rank ?? 0)) / (math.max(max, 2) - 1);
+        double rankToPercent(int? rank) => 1.0 * (max - (rank ?? 0)) / (math.max(max, 2) - 1);
 
         final firstPercentage = rankToPercent(firstRanking?.rank);
-        final firstQuartilePercentage =
-            rankToPercent(firstQuartileRanking?.rank);
-        final secondQuartilePercentage =
-            rankToPercent(secondQuartileRanking?.rank);
-        final thirdQuartilePercentage =
-            rankToPercent(thirdQuartileRanking?.rank);
+        final firstQuartilePercentage = rankToPercent(firstQuartileRanking?.rank);
+        final secondQuartilePercentage = rankToPercent(secondQuartileRanking?.rank);
+        final thirdQuartilePercentage = rankToPercent(thirdQuartileRanking?.rank);
         final userPercentage = rankToPercent(userRanking?.rank);
 
         return Column(
           children: [
             // ── Header row ──────────────────────────────────────
             Container(
-              height:
-                  isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
+              height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
               margin: const EdgeInsets.only(top: AppSpacing.spacing24),
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.spacing24),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing24),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -176,8 +165,7 @@ class _RankingChartState extends State<RankingChart> {
                     onSelected: (level) {
                       setState(() {
                         _detailsLevel = level!;
-                        _dropdownController.text =
-                            options[_detailsLevel];
+                        _dropdownController.text = options[_detailsLevel];
                       });
                       _loadRanking();
                     },
@@ -196,71 +184,78 @@ class _RankingChartState extends State<RankingChart> {
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: (isMobile
-                          ? mobileCTAHeight
-                          : tabletAndAboveCTAHeight) /
-                      2,
+                  vertical: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 2,
                 ),
                 child: LayoutBuilder(
-                builder: (context, chartConstraints) {
-                  final chartSize = Size(
-                    chartConstraints.maxWidth,
-                    chartConstraints.maxHeight,
-                  );
-                  final painter = _DiagonalLinePainter(
-                    userPercentage,
-                    lineInset: _lineInset,
-                    verticalSpanFactor: _verticalSpanFactor,
-                  );
+                  builder: (context, chartConstraints) {
+                    final chartSize = Size(
+                      chartConstraints.maxWidth,
+                      chartConstraints.maxHeight,
+                    );
+                    final painter = _DiagonalLinePainter(
+                      userPercentage,
+                      lineInset: _lineInset,
+                      verticalSpanFactor: _verticalSpanFactor,
+                    );
 
-                  Offset pos(double pct) =>
-                      painter.pointOnLine(chartSize, pct);
+                    Offset pos(double pct) => painter.pointOnLine(chartSize, pct);
 
-                  final firstRank = pos(firstPercentage);
-                  final firstQuartileRank = pos(firstQuartilePercentage);
-                  final secondQuartileRank = pos(secondQuartilePercentage);
-                  final thirdQuartileRank = pos(thirdQuartilePercentage);
-                  final userRank = pos(userPercentage);
+                    final firstRank = pos(firstPercentage);
+                    final firstQuartileRank = pos(firstQuartilePercentage);
+                    final secondQuartileRank = pos(secondQuartilePercentage);
+                    final thirdQuartileRank = pos(thirdQuartilePercentage);
+                    final userRank = pos(userPercentage);
 
-                  return Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      CustomPaint(size: chartSize, painter: painter),
-                      // First place
-                      _buildPositionedCard(
-                        offset: firstRank,
-                        rank: 1,
-                      ),
-                      // First quartile
-                      if (firstQuartileRanking != null)
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        CustomPaint(size: chartSize, painter: painter),
+                        // First place — always gold background, purple stars
                         _buildPositionedCard(
-                          offset: firstQuartileRank,
-                          rank: firstQuartileRanking.rank ?? -1,
+                          offset: firstRank,
+                          pictureUrl: firstRanking?.profilePictureUrl ?? '',
+                          rank: 1,
+                          color: const Color(0xFFFEC84B),
+                          shadowColor: const Color(0xFFFEC84B),
+                          imageBorderColor: AppColors.backgroundCard,
+                          textColor: AppColors.textInverted,
                         ),
-                      // Second quartile (median)
-                      if (secondQuartileRanking != null)
-                        _buildPositionedCard(
-                          offset: secondQuartileRank,
-                          rank: secondQuartileRanking.rank ?? -1,
-                        ),
-                      // Third quartile
-                      if (thirdQuartileRanking != null)
-                        _buildPositionedCard(
-                          offset: thirdQuartileRank,
-                          rank: thirdQuartileRanking.rank ?? -1,
-                        ),
-                      // User's rank (highlighted)
-                      _buildPositionedCard(
-                        offset: userRank,
-                        rank: userRanking?.rank ?? -1,
-                        color: AppColors.primaryFocus,
-                        shadowColor: AppColors.primaryPressed,
-                        imageBorderColor: AppColors.backgroundCard,
-                        textColor: AppColors.textInverted,
-                      ),
-                    ],
-                  );
-                },
+                        // First quartile
+                        if (firstQuartileRanking != null)
+                          _buildPositionedCard(
+                            pictureUrl: firstQuartileRanking.profilePictureUrl ?? '',
+                            offset: firstQuartileRank,
+                            rank: firstQuartileRanking.rank ?? -1,
+                          ),
+                        // Second quartile (median)
+                        if (secondQuartileRanking != null)
+                          _buildPositionedCard(
+                            pictureUrl: secondQuartileRanking.profilePictureUrl ?? '',
+                            offset: secondQuartileRank,
+                            rank: secondQuartileRanking.rank ?? -1,
+                          ),
+                        // Third quartile
+                        if (thirdQuartileRanking != null)
+                          _buildPositionedCard(
+                            pictureUrl: thirdQuartileRanking.profilePictureUrl ?? '',
+                            offset: thirdQuartileRank,
+                            rank: thirdQuartileRanking.rank ?? -1,
+                          ),
+                        // User's rank (highlighted) — skipped if user is #1
+                        // since the first-place card already covers that slot.
+                        if (userRanking?.rank != 1)
+                          _buildPositionedCard(
+                            pictureUrl: userRanking?.profilePictureUrl ?? '',
+                            offset: userRank,
+                            rank: userRanking?.rank ?? -1,
+                            color: AppColors.primaryFocus,
+                            shadowColor: AppColors.primaryPressed,
+                            imageBorderColor: AppColors.backgroundCard,
+                            textColor: AppColors.textInverted,
+                          ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -273,6 +268,7 @@ class _RankingChartState extends State<RankingChart> {
 
   /// Helper to build a positioned [RankingCard] centered on [offset].
   Widget _buildPositionedCard({
+    required String pictureUrl,
     required Offset offset,
     required int rank,
     Color? color,
@@ -286,6 +282,7 @@ class _RankingChartState extends State<RankingChart> {
       child: FractionalTranslation(
         translation: const Offset(-0.5, -0.5),
         child: RankingCard(
+          pictureUrl: pictureUrl,
           rank: rank,
           color: color ?? AppColors.secondaryFocus,
           shadowColor: shadowColor ?? AppColors.primaryDisabled,
@@ -353,8 +350,7 @@ class _DiagonalLinePainter extends CustomPainter {
 
     // Keep a 5 % margin at each end so edge cards stay visible
     const double edgeMargin = 0.05;
-    final double clampedPercent =
-        percent.clamp(edgeMargin, 1.0 - edgeMargin);
+    final double clampedPercent = percent.clamp(edgeMargin, 1.0 - edgeMargin);
 
     return Offset.lerp(start, end, clampedPercent)!;
   }
@@ -404,7 +400,7 @@ class RankingCard extends StatelessWidget {
 
   const RankingCard({
     super.key,
-    this.pictureUrl = '',
+    required this.pictureUrl,
     required this.rank,
     this.color = AppColors.secondaryFocus,
     this.shadowColor = AppColors.primaryDisabled,
@@ -416,16 +412,13 @@ class RankingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isMobile = DeviceHelper.isMobile(context);
-    final avatarSize = isMobile
-        ? mobileCTAHeight / _goldenRatio
-        : tabletAndAboveCTAHeight / _goldenRatio;
-    final iconSize = isMobile
-        ? mobileCTAHeight / 2
-        : tabletAndAboveCTAHeight / 2;
+    final avatarSize = isMobile ? mobileCTAHeight / _goldenRatio : tabletAndAboveCTAHeight / _goldenRatio;
+    final iconSize = isMobile ? mobileCTAHeight / 2 : tabletAndAboveCTAHeight / 2;
 
     return FittedBox(
       fit: BoxFit.fitHeight,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           // ── Background card with shadow ──────────────────────────────
           Container(
@@ -452,52 +445,68 @@ class RankingCard extends StatelessWidget {
                 AppSpacing.spacing8_Box,
                 Text(
                   "#$rank",
-                  style: theme.textTheme.labelMedium
-                      ?.copyWith(color: textColor),
+                  style: theme.textTheme.labelMedium?.copyWith(color: textColor),
                 ),
               ],
             ),
           ),
-
-          // ── Stars overlay for rank 1 ────────────────────────────────
+          // ── Foreground content (above stars) ─────────────────────────
+          // Re-renders avatar + text above the stars overlay so they
+          // are never obscured by the sparkles.
           if (rank == 1)
-            Positioned.fill(
-              child: Image.asset(
-                AppImages.starsPath,
-                colorBlendMode: BlendMode.srcATop,
-                color: AppColors.primaryFocus.withValues(alpha: 10),
-                fit: BoxFit.cover,
-              ),
-            ),
-
-          // ── Foreground content (above stars, transparent bg) ─────────
-          if (rank == 1)
-            Container(
+            Padding(
               padding: const EdgeInsets.only(
                 left: AppSpacing.spacing12,
                 right: AppSpacing.spacing12,
                 top: AppSpacing.spacing12,
                 bottom: AppSpacing.spacing8,
               ),
-              decoration: const BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: AppRadius.small,
-              ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildAvatar(
-                      avatarSize, iconSize, Colors.transparent,
-                      placeholderColor: Colors.transparent),
+                  _buildAvatar(avatarSize, iconSize, imageBorderColor),
                   AppSpacing.spacing8_Box,
-                  Container(
-                    color: color,
-                    child: Text(
-                      "#$rank",
-                      style: theme.textTheme.labelMedium
-                          ?.copyWith(color: textColor),
-                    ),
+                  Text(
+                    "#$rank",
+                    style: theme.textTheme.labelMedium?.copyWith(color: textColor),
                   ),
                 ],
+              ),
+            ),
+
+          // ── Stars around the card for rank 1 ───────────────────────
+          // Star 5 (12×12) — top-right, outside the card
+          if (rank == 1)
+            Positioned(
+              bottom: 25,
+              right: 0,
+              child: SvgPicture.asset(
+                AppIcons.rankingStar5Path,
+                width: 12,
+                height: 12,
+              ),
+            ),
+
+          // Star 3 (12×12) — bottom-right, outside the card
+          if (rank == 1)
+            Positioned(
+              bottom: 6,
+              right: 0,
+              child: SvgPicture.asset(
+                AppIcons.rankingStar3Path,
+                width: 18,
+                height: 18,
+              ),
+            ),
+          // Star 4 (7×7) — top-left, outside the card
+          if (rank == 1)
+            Positioned(
+              top: 4,
+              left: 4,
+              child: SvgPicture.asset(
+                AppIcons.rankingStar4Path,
+                width: 17,
+                height: 17,
               ),
             ),
         ],
@@ -530,10 +539,8 @@ class RankingCard extends StatelessWidget {
               ? CachedNetworkImage(
                   imageUrl: pictureUrl,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                      Container(color: effectivePlaceholder),
-                  errorWidget: (context, url, error) =>
-                      Container(color: effectivePlaceholder),
+                  placeholder: (context, url) => Container(color: effectivePlaceholder),
+                  errorWidget: (context, url, error) => Container(color: effectivePlaceholder),
                 )
               : Container(
                   color: effectivePlaceholder,

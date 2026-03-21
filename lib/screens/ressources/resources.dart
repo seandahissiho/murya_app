@@ -71,7 +71,6 @@ class _RessourcesScreenState extends State<RessourcesScreen> {
 
   @override
   void initState() {
-    _pollResourcesOnce();
     super.initState();
     _sseService = context.read<SseService>();
     _sseConnected = _sseService.isConnected;
@@ -132,11 +131,16 @@ class _RessourcesScreenState extends State<RessourcesScreen> {
     if (!_isWaitingForResource) {
       return;
     }
+    if (connected) {
+      _pollTimer?.cancel();
+      _pollTimer = null;
+      return;
+    }
     _startPollingIfNeeded();
   }
 
   void _startPollingIfNeeded() {
-    if (!_isWaitingForResource || _pollTimer != null) {
+    if (!_isWaitingForResource || _sseConnected || _pollTimer != null) {
       return;
     }
     _pollResourcesOnce();

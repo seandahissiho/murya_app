@@ -21,18 +21,34 @@ class ResourcesRepository extends BaseRepository {
     prefs = await SharedPreferences.getInstance();
   }
 
-  Future<Result<Resource?>> generateResource(
-      {required ResourceType type, required String userJobId}) async {
+  Future<Result<ResourceGenerationReceipt?>> generateResource({
+    required ResourceType type,
+    required String topic,
+    required String level,
+    required String userJobId,
+    required String idempotencyKey,
+  }) async {
     return AppResponse.execute(
       action: () async {
         while (!initialized) {
           await Future.delayed(const Duration(milliseconds: 100));
         }
         final Response response = await api.dio.post(
-          '/userJobs/generateArticle/$userJobId',
+          '/resources/generate',
+          data: {
+            'type': type.toJson(),
+            'topic': topic,
+            'level': level,
+            'userJobId': userJobId,
+          },
+          options: Options(
+            headers: {
+              'Idempotency-Key': idempotencyKey,
+            },
+          ),
         );
 
-        return Resource.fromJson(response.data["data"]);
+        return ResourceGenerationReceipt.fromJson(response.data);
       },
       parentFunctionName: "ResourcesRepository.generateResource",
     );
@@ -198,5 +214,44 @@ class ResourcesRepository extends BaseRepository {
     }
 
     throw Exception('Invalid tracking response data');
+  }
+}
+
+class ResourceGenerationReceipt {
+  final String requestId;
+  final String status;
+  final ResourceType type;
+  final String topic;
+  final String level;
+  final String userJobId;
+  final int? costDiamonds;
+  final int? walletDiamonds;
+
+  const ResourceGenerationReceipt({
+    required this.requestId,
+    required this.status,
+    required this.type,
+    required this.topic,
+    required this.level,
+    required this.userJobId,
+    this.costDiamonds,
+    this.walletDiamonds,
+  });
+
+  factory ResourceGenerationReceipt.fromJson(Map<String, dynamic> json) {
+    final wallet = json['wallet'];
+    final walletDiamonds =
+        wallet is Map<String, dynamic> ? (wallet['diamonds'] as num?)?.toInt() : null;
+
+    return ResourceGenerationReceipt(
+      requestId: json['requestId'] as String? ?? '',
+      status: json['status'] as String? ?? '',
+      type: ResourceTypeX.fromJson(json['type'] as String?),
+      topic: json['topic'] as String? ?? '',
+      level: json['level'] as String? ?? '',
+      userJobId: json['userJobId'] as String? ?? '',
+      costDiamonds: (json['costDiamonds'] as num?)?.toInt(),
+      walletDiamonds: walletDiamonds,
+    );
   }
 }
