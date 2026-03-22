@@ -66,7 +66,8 @@ class RealtimeCoordinator {
       case 'progress.updated':
         final userId = event.data['userId'];
         if (userId is String && userId.isNotEmpty) {
-          _profileBloc.add(ProfileLoadEvent(userId: userId, notifyIfNotFound: false));
+          _profileBloc
+              .add(ProfileLoadEvent(userId: userId, notifyIfNotFound: false));
         } else {
           _profileBloc.add(ProfileLoadEvent(notifyIfNotFound: false));
         }
@@ -74,10 +75,15 @@ class RealtimeCoordinator {
       case 'content.available':
         _handleContentAvailable(event);
         break;
+      case 'content.failed':
+        _handleContentFailed(event);
+        break;
       case 'notification.created':
         final message = event.data['message'];
         _notificationBloc.add(InfoNotificationEvent(
-          message: message is String && message.isNotEmpty ? message : 'Nouvelle notification.',
+          message: message is String && message.isNotEmpty
+              ? message
+              : 'Nouvelle notification.',
           isImportant: true,
         ));
         _notificationBloc.add(InitializeNotifications());
@@ -89,6 +95,36 @@ class RealtimeCoordinator {
         debugPrint('Unhandled SSE event: ${event.type}');
         break;
     }
+  }
+
+  void _handleContentFailed(SseEvent event) {
+    final payload = event.data['payload'];
+    if (payload is! Map<String, dynamic>) {
+      debugPrint('content.failed payload missing or invalid.');
+      return;
+    }
+
+    final userId = event.data['userId'];
+    if (userId is String && userId.isNotEmpty) {
+      _profileBloc
+          .add(ProfileLoadEvent(userId: userId, notifyIfNotFound: false));
+    } else {
+      _profileBloc.add(ProfileLoadEvent(notifyIfNotFound: false));
+    }
+
+    final rawMessage = payload['message'];
+    String message = rawMessage is String && rawMessage.isNotEmpty
+        ? rawMessage
+        : 'La génération a échoué.';
+    final refunded = payload['refunded'] == true;
+    if (refunded && !message.toLowerCase().contains('rembours')) {
+      message = '$message Vos diamants ont été remboursés.';
+    }
+
+    _notificationBloc.add(ErrorNotificationEvent(
+      message: message,
+      isImportant: true,
+    ));
   }
 
   void _handleContentAvailable(SseEvent event) {
@@ -109,12 +145,14 @@ class RealtimeCoordinator {
       final resourceId = payload['resourceId'];
       if (resourceId is String && resourceId.isNotEmpty) {
         if (!_canNavigate()) {
-          debugPrint('Skipping auto navigation: app not active or context unmounted.');
+          debugPrint(
+              'Skipping auto navigation: app not active or context unmounted.');
           return;
         }
         navigateToPath(
           _context,
-          to: AppRoutes.userResourceViewerModule.replaceFirst(':id', resourceId),
+          to: AppRoutes.userResourceViewerModule
+              .replaceFirst(':id', resourceId),
         );
       }
     }
