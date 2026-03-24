@@ -13,6 +13,7 @@ import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/job_ranking.dart';
+import 'package:murya/services/timezone.service.dart';
 
 class RankingChart extends StatefulWidget {
   final String jobId;
@@ -36,31 +37,16 @@ class _RankingChartState extends State<RankingChart> {
   int _detailsLevel = 0;
   late TextEditingController _dropdownController;
 
-  DateTime get from {
-    final DateTime now = DateTime.now();
+  SharedPeriod get period {
     switch (_detailsLevel) {
       case 0:
-        return now.dayStart;
+        return SharedPeriod.today;
       case 1:
-        return now.firstDayOfTheWeek;
+        return SharedPeriod.week;
       case 2:
-        return now.firstDayOfTheMonth;
+        return SharedPeriod.month;
       default:
-        return now.date;
-    }
-  }
-
-  DateTime get to {
-    final DateTime now = DateTime.now();
-    switch (_detailsLevel) {
-      case 0:
-        return now.nextDayStart;
-      case 1:
-        return now.nextWeekStart;
-      case 2:
-        return now.nextMonthStart;
-      default:
-        return now.nextDayStart;
+        return SharedPeriod.today;
     }
   }
 
@@ -68,8 +54,7 @@ class _RankingChartState extends State<RankingChart> {
     context.read<JobBloc>().add(LoadRankingForJob(
           context: context,
           jobId: widget.jobId,
-          from: from,
-          to: to,
+          period: period,
         ));
   }
 
@@ -114,25 +99,35 @@ class _RankingChartState extends State<RankingChart> {
       },
       builder: (context, state) {
         final isMobile = DeviceHelper.isMobile(context);
-        final currentUserId = widget.userId ?? context.read<ProfileBloc>().state.user.id;
+        final currentUserId =
+            widget.userId ?? context.read<ProfileBloc>().state.user.id;
 
         // ── Quartile rankings ──────────────────────────────────────
         final rankings = _ranking.rankings;
         final rankCount = rankings.length;
-        JobRanking? firstRanking = rankings.firstWhereOrNull((r) => r.rank == 1);
-        JobRanking? firstQuartileRanking = rankings.firstWhereOrNull((r) => r.rank == (rankCount / 4).ceil());
-        JobRanking? secondQuartileRanking = rankings.firstWhereOrNull((r) => r.rank == (rankCount / 2).ceil());
-        JobRanking? thirdQuartileRanking = rankings.firstWhereOrNull((r) => r.rank == (3 * rankCount / 4).ceil());
-        JobRanking? userRanking = rankings.firstWhereOrNull((r) => r.userId == currentUserId);
+        JobRanking? firstRanking =
+            rankings.firstWhereOrNull((r) => r.rank == 1);
+        JobRanking? firstQuartileRanking =
+            rankings.firstWhereOrNull((r) => r.rank == (rankCount / 4).ceil());
+        JobRanking? secondQuartileRanking =
+            rankings.firstWhereOrNull((r) => r.rank == (rankCount / 2).ceil());
+        JobRanking? thirdQuartileRanking = rankings
+            .firstWhereOrNull((r) => r.rank == (3 * rankCount / 4).ceil());
+        JobRanking? userRanking =
+            rankings.firstWhereOrNull((r) => r.userId == currentUserId);
 
         // ── Percentages ───────────────────────────────────────────
         int max = rankCount + 1;
-        double rankToPercent(int? rank) => 1.0 * (max - (rank ?? 0)) / (math.max(max, 2) - 1);
+        double rankToPercent(int? rank) =>
+            1.0 * (max - (rank ?? 0)) / (math.max(max, 2) - 1);
 
         final firstPercentage = rankToPercent(firstRanking?.rank);
-        final firstQuartilePercentage = rankToPercent(firstQuartileRanking?.rank);
-        final secondQuartilePercentage = rankToPercent(secondQuartileRanking?.rank);
-        final thirdQuartilePercentage = rankToPercent(thirdQuartileRanking?.rank);
+        final firstQuartilePercentage =
+            rankToPercent(firstQuartileRanking?.rank);
+        final secondQuartilePercentage =
+            rankToPercent(secondQuartileRanking?.rank);
+        final thirdQuartilePercentage =
+            rankToPercent(thirdQuartileRanking?.rank);
         final userPercentage = rankToPercent(userRanking?.rank);
 
         return Column(
@@ -141,7 +136,8 @@ class _RankingChartState extends State<RankingChart> {
             Container(
               height: isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight,
               margin: const EdgeInsets.only(top: AppSpacing.spacing24),
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing24),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppSpacing.spacing24),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -184,7 +180,9 @@ class _RankingChartState extends State<RankingChart> {
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) / 2,
+                  vertical:
+                      (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) /
+                          2,
                 ),
                 child: LayoutBuilder(
                   builder: (context, chartConstraints) {
@@ -198,7 +196,8 @@ class _RankingChartState extends State<RankingChart> {
                       verticalSpanFactor: _verticalSpanFactor,
                     );
 
-                    Offset pos(double pct) => painter.pointOnLine(chartSize, pct);
+                    Offset pos(double pct) =>
+                        painter.pointOnLine(chartSize, pct);
 
                     final firstRank = pos(firstPercentage);
                     final firstQuartileRank = pos(firstQuartilePercentage);
@@ -213,21 +212,24 @@ class _RankingChartState extends State<RankingChart> {
                         // First quartile
                         if (firstQuartileRanking != null)
                           _buildPositionedCard(
-                            pictureUrl: firstQuartileRanking.profilePictureUrl ?? '',
+                            pictureUrl:
+                                firstQuartileRanking.profilePictureUrl ?? '',
                             offset: firstQuartileRank,
                             rank: firstQuartileRanking.rank ?? -1,
                           ),
                         // Second quartile (median)
                         if (secondQuartileRanking != null)
                           _buildPositionedCard(
-                            pictureUrl: secondQuartileRanking.profilePictureUrl ?? '',
+                            pictureUrl:
+                                secondQuartileRanking.profilePictureUrl ?? '',
                             offset: secondQuartileRank,
                             rank: secondQuartileRanking.rank ?? -1,
                           ),
                         // Third quartile
                         if (thirdQuartileRanking != null)
                           _buildPositionedCard(
-                            pictureUrl: thirdQuartileRanking.profilePictureUrl ?? '',
+                            pictureUrl:
+                                thirdQuartileRanking.profilePictureUrl ?? '',
                             offset: thirdQuartileRank,
                             rank: thirdQuartileRanking.rank ?? -1,
                           ),
@@ -412,8 +414,11 @@ class RankingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isMobile = DeviceHelper.isMobile(context);
-    final avatarSize = isMobile ? mobileCTAHeight / _goldenRatio : tabletAndAboveCTAHeight / _goldenRatio;
-    final iconSize = isMobile ? mobileCTAHeight / 2 : tabletAndAboveCTAHeight / 2;
+    final avatarSize = isMobile
+        ? mobileCTAHeight / _goldenRatio
+        : tabletAndAboveCTAHeight / _goldenRatio;
+    final iconSize =
+        isMobile ? mobileCTAHeight / 2 : tabletAndAboveCTAHeight / 2;
 
     return FittedBox(
       fit: BoxFit.fitHeight,
@@ -445,7 +450,8 @@ class RankingCard extends StatelessWidget {
                 AppSpacing.spacing8_Box,
                 Text(
                   "#$rank",
-                  style: theme.textTheme.labelMedium?.copyWith(color: textColor),
+                  style:
+                      theme.textTheme.labelMedium?.copyWith(color: textColor),
                 ),
               ],
             ),
@@ -468,7 +474,8 @@ class RankingCard extends StatelessWidget {
                   AppSpacing.spacing8_Box,
                   Text(
                     "#$rank",
-                    style: theme.textTheme.labelMedium?.copyWith(color: textColor),
+                    style:
+                        theme.textTheme.labelMedium?.copyWith(color: textColor),
                   ),
                 ],
               ),
@@ -539,8 +546,10 @@ class RankingCard extends StatelessWidget {
               ? CachedNetworkImage(
                   imageUrl: pictureUrl,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(color: effectivePlaceholder),
-                  errorWidget: (context, url, error) => Container(color: effectivePlaceholder),
+                  placeholder: (context, url) =>
+                      Container(color: effectivePlaceholder),
+                  errorWidget: (context, url, error) =>
+                      Container(color: effectivePlaceholder),
                 )
               : Container(
                   color: effectivePlaceholder,

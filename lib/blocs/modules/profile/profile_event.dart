@@ -68,12 +68,14 @@ final class ProfileLoadLeaderboardEvent extends ProfileEvent {
   final String jobId;
   final DateTime? from;
   final DateTime? to;
+  final SharedPeriod? period;
   final bool notifyOnError;
 
   ProfileLoadLeaderboardEvent({
     required this.jobId,
     this.from,
     this.to,
+    this.period,
     this.notifyOnError = true,
   });
 }

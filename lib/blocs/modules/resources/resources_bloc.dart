@@ -146,7 +146,6 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     try {
       final result = await resourceRepository.collectResource(
         resourceId: event.resourceId,
-        timezone: _timezone(),
       );
       if (result.isError || result.data == null) {
         return;
@@ -211,11 +210,6 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     _loadingResourceIds.remove(event.resourceId);
   }
 
-  String _timezone() {
-    final timezone = DateTime.now().timeZoneName;
-    return timezone.isNotEmpty ? timezone : '';
-  }
-
   FutureOr<void> _onOpenResource(
       OpenResource event, Emitter<ResourcesState> emit) async {
     if (event.resourceId.isEmpty) return;
@@ -224,7 +218,6 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
     final result = await resourceRepository.openResource(
       resourceId: event.resourceId,
-      timezone: _timezone(),
     );
     if (result.isError || result.data == null) {
       return;
@@ -252,7 +245,6 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
     final result = await resourceRepository.readResource(
       resourceId: event.resourceId,
-      timezone: _timezone(),
       progress: progress,
     );
     if (result.isError || result.data == null) {
@@ -290,7 +282,6 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
       final result = await resourceRepository.likeResource(
         resourceId: event.resourceId,
         like: event.like,
-        timezone: _timezone(),
       );
       if (result.isError || result.data == null) {
         return;

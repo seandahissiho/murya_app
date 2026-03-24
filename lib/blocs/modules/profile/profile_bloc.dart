@@ -12,6 +12,7 @@ import 'package:murya/models/quest.dart';
 import 'package:murya/models/reward.dart';
 import 'package:murya/repositories/jobs.repository.dart';
 import 'package:murya/repositories/profile.repository.dart';
+import 'package:murya/services/timezone.service.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
@@ -65,6 +66,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if (cachedResult.data != null &&
         (cachedResult.data!.id?.isNotEmpty ?? false)) {
       _userProfile = cachedResult.data!;
+      await AppTimezoneService.instance.rememberServerTimezone(
+        _userProfile.timezone,
+      );
       unawaited(AnalyticsService.instance.identifyUser(_userProfile));
       emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
     }
@@ -80,6 +84,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
     _userProfile = result.data!;
+    await AppTimezoneService.instance.rememberServerTimezone(
+      _userProfile.timezone,
+    );
     await AnalyticsService.instance.identifyUser(_userProfile);
     emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
     add(ProfileLoadQuestGroupsEvent(scope: QuestScope.all));
@@ -274,7 +281,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ));
 
     final cachedResult = await jobRepository.getRankingForJobCached(
-        event.jobId, event.from, event.to);
+      event.jobId,
+      from: event.from,
+      to: event.to,
+      period: event.period,
+    );
     if (cachedResult.data != null) {
       emit(state.copyWith(
         kind: ProfileStateKind.loaded,
@@ -290,8 +301,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     if (!context.mounted) return;
 
-    final result =
-        await jobRepository.getRankingForJob(event.jobId, event.from, event.to);
+    final result = await jobRepository.getRankingForJob(
+      event.jobId,
+      from: event.from,
+      to: event.to,
+      period: event.period,
+    );
     if (result.isError) {
       if (event.notifyOnError) {
         notificationBloc.add(ErrorNotificationEvent(message: result.error));
@@ -371,6 +386,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
     _userProfile = result.data!;
+    await AppTimezoneService.instance.rememberServerTimezone(
+      _userProfile.timezone,
+    );
     emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
   }
 

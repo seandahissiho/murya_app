@@ -98,6 +98,7 @@ dependencies:
   graphview: ^1.5.1
   posthog_flutter: ^5.21.0
   package_info_plus: ^9.0.0
+  flutter_timezone: ^5.0.2
 #  flutter_inappwebview: ^6.1.5
 #  vector_math: ^2.1.4  # or whatever minimum fl_chart needs
 

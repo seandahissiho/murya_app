@@ -1,4 +1,4 @@
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/widgets.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/l10n/l10n.dart';
 import 'package:murya/models/diploma.dart';
@@ -15,6 +15,7 @@ class User {
   final DateTime? birthDate;
   final String? genre;
   final String? preferredLangCode;
+  final String? timezone;
   final Diploma? diploma;
   final DiplomaYear? diplomaYear;
   final DiplomaSchool? diplomaSchool;
@@ -22,7 +23,8 @@ class User {
   final int diamonds;
   final int streakDays;
 
-  static const User zero = User(id: '', email: '', phone: '', deviceId: '', firstName: '', lastName: '');
+  static const User zero = User(
+      id: '', email: '', phone: '', deviceId: '', firstName: '', lastName: '');
 
   const User({
     this.id,
@@ -35,6 +37,7 @@ class User {
     this.birthDate,
     this.genre,
     this.preferredLangCode,
+    this.timezone,
     this.diploma,
     this.diplomaYear,
     this.diplomaSchool,
@@ -71,7 +74,8 @@ class User {
   }
 
   String get displayPhotoURL {
-    return avatarUrl ?? 'https://example.com/default-avatar.png'; // Default avatar URL
+    return avatarUrl ??
+        'https://example.com/default-avatar.png'; // Default avatar URL
   }
 
   String? get photoURL => avatarUrl;
@@ -94,6 +98,7 @@ class User {
         birthDate == otherUser.birthDate &&
         genre == otherUser.genre &&
         preferredLangCode == otherUser.preferredLangCode &&
+        timezone == otherUser.timezone &&
         diploma == otherUser.diploma &&
         diplomaYear == otherUser.diplomaYear &&
         diplomaSchool == otherUser.diplomaSchool &&
@@ -112,6 +117,7 @@ class User {
         birthDate.hashCode ^
         genre.hashCode ^
         preferredLangCode.hashCode ^
+        timezone.hashCode ^
         diploma.hashCode ^
         diplomaYear.hashCode ^
         diplomaSchool.hashCode ^
@@ -130,6 +136,7 @@ class User {
       birthDate: null,
       genre: null,
       preferredLangCode: null,
+      timezone: null,
       diploma: null,
       diplomaYear: null,
       diplomaSchool: null,
@@ -145,18 +152,23 @@ class User {
     final String? email = json['email'];
     final String? phone = json['phone'];
     final String? deviceId = json['deviceId'];
-    final String? avatarUrl =
-        (json['avatarUrl'] ?? json['avatarURL'] ?? json['photoURL'] ?? json['photoUrl']) as String?;
-    final String? firstName = (json['firstname'] ?? json['firstName']) as String?;
+    final String? avatarUrl = (json['avatarUrl'] ??
+        json['avatarURL'] ??
+        json['photoURL'] ??
+        json['photoUrl']) as String?;
+    final String? firstName =
+        (json['firstname'] ?? json['firstName']) as String?;
     final String? lastName = (json['lastname'] ?? json['lastName']) as String?;
     final int diamonds = json['diamonds'] ?? 0;
     final Diploma? diploma = diplomaFromJson(json['diploma']);
     final DiplomaYear? diplomaYear = diplomaYearFromJson(json['diplomaYear']);
-    final DiplomaSchool? diplomaSchool = diplomaSchoolFromJson(json['diplomaSchool']);
+    final DiplomaSchool? diplomaSchool =
+        diplomaSchoolFromJson(json['diplomaSchool']);
     final int streakDays = _toInt(json['streakDays'] ?? json['streak']);
     final DateTime? birthDate = _toDate(json['birthDate']);
     final String? genre = json['genre'] as String?;
     final String? preferredLangCode = json['preferredLangCode'] as String?;
+    final String? timezone = json['timezone'] as String?;
 
     return User(
       id: id,
@@ -169,6 +181,7 @@ class User {
       birthDate: birthDate,
       genre: genre,
       preferredLangCode: preferredLangCode,
+      timezone: timezone,
       diploma: diploma,
       diplomaYear: diplomaYear,
       diplomaSchool: diplomaSchool,
@@ -180,7 +193,10 @@ class User {
   get isNotEmpty => id.isNotEmptyOrNull;
 
   get isRegistered =>
-      (email.isNotEmptyOrNull || phone.isNotEmptyOrNull || deviceId.isNotEmptyOrNull) && id.isNotEmptyOrNull;
+      (email.isNotEmptyOrNull ||
+          phone.isNotEmptyOrNull ||
+          deviceId.isNotEmptyOrNull) &&
+      id.isNotEmptyOrNull;
 
   Map<String, dynamic> toJson({User? baseline}) {
     final Map<String, dynamic> data = {};
@@ -197,8 +213,10 @@ class User {
       }
     }
 
-    final String? birthDateValue = birthDate != null ? _formatDate(birthDate!) : null;
-    final String? birthDateBaseline = baseline?.birthDate != null ? _formatDate(baseline!.birthDate!) : null;
+    final String? birthDateValue =
+        birthDate != null ? _formatDate(birthDate!) : null;
+    final String? birthDateBaseline =
+        baseline?.birthDate != null ? _formatDate(baseline!.birthDate!) : null;
 
     setField('firstname', firstName, baseline?.firstName);
     setField('lastname', lastName, baseline?.lastName);
@@ -207,7 +225,9 @@ class User {
     setField('avatarUrl', avatarUrl, baseline?.avatarUrl);
     setField('birthDate', birthDateValue, birthDateBaseline);
     setField('genre', genre, baseline?.genre);
-    setField('preferredLangCode', preferredLangCode, baseline?.preferredLangCode);
+    setField(
+        'preferredLangCode', preferredLangCode, baseline?.preferredLangCode);
+    setField('timezone', timezone, baseline?.timezone);
 
     return data;
   }
@@ -230,6 +250,7 @@ class User {
     DateTime? birthDate,
     String? genre,
     String? preferredLangCode,
+    String? timezone,
     Diploma? diploma,
     DiplomaYear? diplomaYear,
     DiplomaSchool? diplomaSchool,
@@ -247,6 +268,7 @@ class User {
       birthDate: birthDate ?? this.birthDate,
       genre: genre ?? this.genre,
       preferredLangCode: preferredLangCode ?? this.preferredLangCode,
+      timezone: timezone ?? this.timezone,
       diploma: diploma ?? this.diploma,
       diplomaYear: diplomaYear ?? this.diplomaYear,
       diplomaSchool: diplomaSchool ?? this.diplomaSchool,
@@ -331,24 +353,33 @@ class LeaderBoardUser {
 
   // fromJson factory
   factory LeaderBoardUser.fromJson(Map<String, dynamic> json) {
-    final String firstName = (json['firstName'] ?? json['firstname'] ?? '').toString();
-    final String lastName = (json['lastName'] ?? json['lastname'] ?? '').toString();
+    final String firstName =
+        (json['firstName'] ?? json['firstname'] ?? '').toString();
+    final String lastName =
+        (json['lastName'] ?? json['lastname'] ?? '').toString();
     final double performance = _toDouble(json['performance']);
-    final double percentage = json['percentage'] != null ? _toDouble(json['percentage']) : performance * 100;
+    final double percentage = json['percentage'] != null
+        ? _toDouble(json['percentage'])
+        : performance * 100;
     return LeaderBoardUser(
       id: (json['id'] ?? json['userId'] ?? '').toString(),
       userJobId: json['userJobId']?.toString(),
       firstName: firstName,
       lastName: lastName,
-      profilePictureUrl: json['profilePictureUrl']?.toString() ?? json['avatarURL']?.toString(),
+      profilePictureUrl: json['profilePictureUrl']?.toString() ??
+          json['avatarURL']?.toString(),
       diamonds: _toInt(json['diamonds']),
       questionsAnswered: _toInt(json['questionsAnswered']),
       performance: performance,
-      sinceDate: json['sinceDate'] != null ? DateTime.parse(json['sinceDate'] as String) : null,
+      sinceDate: json['sinceDate'] != null
+          ? DateTime.parse(json['sinceDate'] as String)
+          : null,
       rank: _toInt(json['rank']),
       percentage: percentage,
       completedQuizzes: _toInt(json['completedQuizzes']),
-      lastQuizAt: json['lastQuizAt'] != null ? DateTime.parse(json['lastQuizAt'] as String) : null,
+      lastQuizAt: json['lastQuizAt'] != null
+          ? DateTime.parse(json['lastQuizAt'] as String)
+          : null,
     );
   }
 }

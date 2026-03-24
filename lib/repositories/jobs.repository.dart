@@ -7,6 +7,7 @@ import 'package:murya/models/preview_competency_profile.dart';
 import 'package:murya/models/user_job_competency_profile.dart';
 import 'package:murya/repositories/base.repository.dart';
 import 'package:murya/services/cache.service.dart';
+import 'package:murya/services/timezone.service.dart';
 
 class JobRepository extends BaseRepository {
   final CacheService cacheService;
@@ -18,6 +19,34 @@ class JobRepository extends BaseRepository {
 
   String _searchCacheKey(String normalizedQuery, String languageCode) {
     return 'job_search_${Uri.encodeComponent(normalizedQuery)}_$languageCode';
+  }
+
+  String _rankingCacheKey(
+    String jobId,
+    String languageCode, {
+    DateTime? from,
+    DateTime? to,
+    SharedPeriod? period,
+  }) {
+    final windowKey = period != null
+        ? 'period_${period.apiValue}'
+        : '${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}';
+    return 'job_ranking_${jobId}_${windowKey}_$languageCode';
+  }
+
+  String _previewCompetencyCacheKey(
+    String userJobId,
+    String languageCode, {
+    DateTime? from,
+    DateTime? to,
+    String? timezone,
+    SharedPeriod? period,
+  }) {
+    final windowKey = period != null
+        ? 'period_${period.apiValue}'
+        : '${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}';
+    final tzKey = (timezone != null && timezone.isNotEmpty) ? timezone : 'null';
+    return 'user_job_preview_competency_profile_${userJobId}_${windowKey}_${tzKey}_$languageCode';
   }
 
   List<Job> _filterJobs(List<Job> jobs, String normalizedQuery) {
@@ -299,21 +328,31 @@ class JobRepository extends BaseRepository {
   }
 
   // /leaderboard/job/:jobId
-  Future<Result<JobRankings>> getRankingForJob(
-      String jobId, DateTime? from, DateTime? to) async {
+  Future<Result<JobRankings>> getRankingForJob(String jobId,
+      {DateTime? from, DateTime? to, SharedPeriod? period}) async {
     final languageCode =
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
-        final response = await api.dio
-            .get('/userJobs/leaderboard/job/$jobId/', queryParameters: {
-          if (from != null) 'from': from.toDbString(),
-          if (to != null) 'to': to.toDbString(),
-        });
+        final queryParameters = <String, dynamic>{
+          if (period != null) 'period': period.apiValue,
+          if (period == null && from != null) 'from': from.toDbString(),
+          if (period == null && to != null) 'to': to.toDbString(),
+        };
+        final response = await api.dio.get(
+          '/userJobs/leaderboard/job/$jobId/',
+          queryParameters: queryParameters.isEmpty ? null : queryParameters,
+        );
 
         if (response.data["data"] != null) {
           await cacheService.save(
-              'job_ranking_${jobId}-${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}_$languageCode',
+              _rankingCacheKey(
+                jobId,
+                languageCode,
+                from: from,
+                to: to,
+                period: period,
+              ),
               response.data["data"]);
         }
 
@@ -325,13 +364,18 @@ class JobRepository extends BaseRepository {
     );
   }
 
-  Future<Result<JobRankings>> getRankingForJobCached(
-      String jobId, DateTime? from, DateTime? to) async {
+  Future<Result<JobRankings>> getRankingForJobCached(String jobId,
+      {DateTime? from, DateTime? to, SharedPeriod? period}) async {
     final languageCode =
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
-      final cachedData = await cacheService.get(
-          'job_ranking_${jobId}-${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}_$languageCode');
+      final cachedData = await cacheService.get(_rankingCacheKey(
+        jobId,
+        languageCode,
+        from: from,
+        to: to,
+        period: period,
+      ));
       if (cachedData != null) {
         final JobRankings ranking = JobRankings.fromJson(cachedData);
         return Result.success(ranking, null);
@@ -388,14 +432,18 @@ class JobRepository extends BaseRepository {
       String userJobId,
       {DateTime? from,
       DateTime? to,
-      String? timezone}) async {
+      String? timezone,
+      SharedPeriod? period}) async {
     final languageCode =
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
         final queryParameters = <String, dynamic>{};
-        if (from != null) queryParameters['from'] = from.toDbString();
-        if (to != null) queryParameters['to'] = to.toDbString();
+        if (period != null) queryParameters['period'] = period.apiValue;
+        if (period == null && from != null)
+          queryParameters['from'] = from.toDbString();
+        if (period == null && to != null)
+          queryParameters['to'] = to.toDbString();
         if (timezone != null && timezone.isNotEmpty) {
           queryParameters['timezone'] = timezone;
         }
@@ -406,10 +454,15 @@ class JobRepository extends BaseRepository {
         );
 
         if (response.data["data"] != null) {
-          final tzKey =
-              (timezone != null && timezone.isNotEmpty) ? timezone : 'null';
           await cacheService.save(
-              'user_job_preview_competency_profile_${userJobId}_${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}_${tzKey}_$languageCode',
+              _previewCompetencyCacheKey(
+                userJobId,
+                languageCode,
+                from: from,
+                to: to,
+                timezone: timezone,
+                period: period,
+              ),
               response.data["data"]);
         }
 
@@ -426,14 +479,19 @@ class JobRepository extends BaseRepository {
       String userJobId,
       {DateTime? from,
       DateTime? to,
-      String? timezone}) async {
+      String? timezone,
+      SharedPeriod? period}) async {
     final languageCode =
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
-      final tzKey =
-          (timezone != null && timezone.isNotEmpty) ? timezone : 'null';
-      final cachedData = await cacheService.get(
-          'user_job_preview_competency_profile_${userJobId}_${from?.toDbString() ?? 'null'}_${to?.toDbString() ?? 'null'}_${tzKey}_$languageCode');
+      final cachedData = await cacheService.get(_previewCompetencyCacheKey(
+        userJobId,
+        languageCode,
+        from: from,
+        to: to,
+        timezone: timezone,
+        period: period,
+      ));
       if (cachedData != null) {
         final PreviewCompetencyProfile profile =
             PreviewCompetencyProfile.fromJson(cachedData);

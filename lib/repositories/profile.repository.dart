@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:murya/models/app_user.dart';
 import 'package:murya/models/quest.dart';
 import 'package:murya/services/cache.service.dart';
+import 'package:murya/services/timezone.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'base.repository.dart';
@@ -24,6 +25,10 @@ class ProfileRepository extends BaseRepository {
     final jobId =
         userJobId != null && userJobId.isNotEmpty ? userJobId : 'null';
     return 'quests_${type}_${scope.apiValue}_${tz}_${jobId}_$languageCode';
+  }
+
+  Future<String> _resolveTimezone(String? timezone) {
+    return AppTimezoneService.instance.getRequestTimezone(preferred: timezone);
   }
 
   Future<void> initPrefs() async {
@@ -90,8 +95,8 @@ class ProfileRepository extends BaseRepository {
   Future<Result<bool>> updatePreferredLanguage(String languageCode) async {
     return AppResponse.execute(
       action: () async {
-        final Response response =
-            await api.dio.put('/auth/me/language', data: {'lang': languageCode});
+        final Response response = await api.dio
+            .put('/auth/me/language', data: {'lang': languageCode});
         return response.statusCode != null &&
             response.statusCode! >= 200 &&
             response.statusCode! < 300;
@@ -114,9 +119,10 @@ class ProfileRepository extends BaseRepository {
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
+        final effectiveTimezone = await _resolveTimezone(timezone);
         final queryParameters = <String, dynamic>{
           'scope': scope.apiValue,
-          if (timezone != null && timezone.isNotEmpty) 'timezone': timezone,
+          'timezone': effectiveTimezone,
           if (scope != QuestScope.user &&
               userJobId != null &&
               userJobId.isNotEmpty)
@@ -126,7 +132,8 @@ class ProfileRepository extends BaseRepository {
             await api.dio.get('/quests', queryParameters: queryParameters);
         final data = response.data['data'] as Map<String, dynamic>? ?? const {};
         await cacheService.save(
-          _questCacheKey('list', scope, timezone, userJobId, languageCode),
+          _questCacheKey(
+              'list', scope, effectiveTimezone, userJobId, languageCode),
           Map<String, dynamic>.from(data),
         );
         return QuestList.fromJson(Map<String, dynamic>.from(data));
@@ -148,8 +155,9 @@ class ProfileRepository extends BaseRepository {
     final languageCode =
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
-      final cachedData = await cacheService.get(
-          _questCacheKey('list', scope, timezone, userJobId, languageCode));
+      final effectiveTimezone = await _resolveTimezone(timezone);
+      final cachedData = await cacheService.get(_questCacheKey(
+          'list', scope, effectiveTimezone, userJobId, languageCode));
       if (cachedData != null) {
         return Result.success(
             QuestList.fromJson(Map<String, dynamic>.from(cachedData)), null);
@@ -173,9 +181,10 @@ class ProfileRepository extends BaseRepository {
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
+        final effectiveTimezone = await _resolveTimezone(timezone);
         final queryParameters = <String, dynamic>{
           'scope': scope.apiValue,
-          if (timezone != null && timezone.isNotEmpty) 'timezone': timezone,
+          'timezone': effectiveTimezone,
           if (scope != QuestScope.user &&
               userJobId != null &&
               userJobId.isNotEmpty)
@@ -185,7 +194,8 @@ class ProfileRepository extends BaseRepository {
             .get('/quest-groups', queryParameters: queryParameters);
         final data = response.data['data'] as Map<String, dynamic>? ?? const {};
         await cacheService.save(
-          _questCacheKey('groups', scope, timezone, userJobId, languageCode),
+          _questCacheKey(
+              'groups', scope, effectiveTimezone, userJobId, languageCode),
           Map<String, dynamic>.from(data),
         );
         return QuestGroupList.fromJson(Map<String, dynamic>.from(data));
@@ -207,8 +217,9 @@ class ProfileRepository extends BaseRepository {
     final languageCode =
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
-      final cachedData = await cacheService.get(
-          _questCacheKey('groups', scope, timezone, userJobId, languageCode));
+      final effectiveTimezone = await _resolveTimezone(timezone);
+      final cachedData = await cacheService.get(_questCacheKey(
+          'groups', scope, effectiveTimezone, userJobId, languageCode));
       if (cachedData != null) {
         return Result.success(
             QuestGroupList.fromJson(Map<String, dynamic>.from(cachedData)),
@@ -233,9 +244,10 @@ class ProfileRepository extends BaseRepository {
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
       action: () async {
+        final effectiveTimezone = await _resolveTimezone(timezone);
         final queryParameters = <String, dynamic>{
           'scope': scope.apiValue,
-          if (timezone != null && timezone.isNotEmpty) 'timezone': timezone,
+          'timezone': effectiveTimezone,
           if (scope != QuestScope.user &&
               userJobId != null &&
               userJobId.isNotEmpty)
@@ -245,7 +257,8 @@ class ProfileRepository extends BaseRepository {
             .get('/quests/lineage', queryParameters: queryParameters);
         final data = response.data['data'] as Map<String, dynamic>? ?? const {};
         await cacheService.save(
-          _questCacheKey('lineage', scope, timezone, userJobId, languageCode),
+          _questCacheKey(
+              'lineage', scope, effectiveTimezone, userJobId, languageCode),
           Map<String, dynamic>.from(data),
         );
         return QuestLineage.fromJson(Map<String, dynamic>.from(data));
@@ -267,8 +280,9 @@ class ProfileRepository extends BaseRepository {
     final languageCode =
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {
-      final cachedData = await cacheService.get(
-          _questCacheKey('lineage', scope, timezone, userJobId, languageCode));
+      final effectiveTimezone = await _resolveTimezone(timezone);
+      final cachedData = await cacheService.get(_questCacheKey(
+          'lineage', scope, effectiveTimezone, userJobId, languageCode));
       if (cachedData != null) {
         return Result.success(
             QuestLineage.fromJson(Map<String, dynamic>.from(cachedData)), null);
@@ -282,8 +296,10 @@ class ProfileRepository extends BaseRepository {
   Future<Result<QuestInstance>> claimUserJobQuest(String questId) async {
     return AppResponse.execute(
       action: () async {
-        final Response response =
-            await api.dio.post('/user-job-quests/$questId/claim');
+        final timezone = await AppTimezoneService.instance.getRequestTimezone();
+        final Response response = await api.dio.post(
+            '/user-job-quests/$questId/claim',
+            data: {'timezone': timezone});
         final data = response.data['data'] as Map<String, dynamic>? ?? const {};
         return QuestInstance.fromJson(Map<String, dynamic>.from(data));
       },
@@ -295,8 +311,9 @@ class ProfileRepository extends BaseRepository {
   Future<Result<QuestInstance>> claimUserQuest(String questId) async {
     return AppResponse.execute(
       action: () async {
-        final Response response =
-            await api.dio.post('/user-quests/$questId/claim');
+        final timezone = await AppTimezoneService.instance.getRequestTimezone();
+        final Response response = await api.dio
+            .post('/user-quests/$questId/claim', data: {'timezone': timezone});
         final data = response.data['data'] as Map<String, dynamic>? ?? const {};
         return QuestInstance.fromJson(Map<String, dynamic>.from(data));
       },

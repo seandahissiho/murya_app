@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'base.repository.dart';
 
 import 'package:murya/services/cache.service.dart';
+import 'package:murya/services/timezone.service.dart';
 
 class AuthenticationRepository extends BaseRepository {
   late final SharedPreferences prefs;
@@ -32,6 +33,7 @@ class AuthenticationRepository extends BaseRepository {
         }
 
         // retrieve new access token from the server
+        final timezone = await AppTimezoneService.instance.getRequestTimezone();
         final Response response = await Dio(BaseOptions(
             baseUrl: ApiEndPoint.baseUrl,
             receiveTimeout: const Duration(seconds: 120),
@@ -44,6 +46,7 @@ class AuthenticationRepository extends BaseRepository {
           '/auth/refresh',
           data: {
             "refresh_token": refreshToken,
+            "timezone": timezone,
           },
         );
 
@@ -63,9 +66,12 @@ class AuthenticationRepository extends BaseRepository {
         while (!initialized) {
           await Future.delayed(const Duration(milliseconds: 100));
         }
+        final payload = Map<String, dynamic>.from(data);
+        payload['timezone'] =
+            await AppTimezoneService.instance.getRequestTimezone();
         final Response response = await api.dio.post(
           '/auth/signup',
-          data: data,
+          data: payload,
         );
         return ResultWithMessage(
           response.statusCode == 201,
@@ -80,9 +86,12 @@ class AuthenticationRepository extends BaseRepository {
       {required Map<String, dynamic> data}) async {
     return AppResponse.execute(
       action: () async {
+        final payload = Map<String, dynamic>.from(data);
+        payload['timezone'] =
+            await AppTimezoneService.instance.getRequestTimezone();
         final Response response = await api.dio.post(
           '/auth/signin',
-          data: data,
+          data: payload,
         );
         final String accessToken = response.data["data"]["access_token"];
         final String refreshToken = response.data["data"]["refresh_token"];
@@ -125,9 +134,12 @@ class AuthenticationRepository extends BaseRepository {
       {required Map<String, dynamic> data}) async {
     return AppResponse.execute(
       action: () async {
+        final payload = Map<String, dynamic>.from(data);
+        payload['timezone'] =
+            await AppTimezoneService.instance.getRequestTimezone();
         final Response response = await api.dio.post(
           '/auth/register',
-          data: data,
+          data: payload,
         );
         final String accessToken = response.data["data"]["access_token"];
         final String refreshToken = response.data["data"]["refresh_token"];
@@ -146,9 +158,12 @@ class AuthenticationRepository extends BaseRepository {
       {required Map<String, dynamic> data}) async {
     return AppResponse.execute(
       action: () async {
+        final payload = Map<String, dynamic>.from(data);
+        payload['timezone'] =
+            await AppTimezoneService.instance.getRequestTimezone();
         final Response response = await api.dio.post(
           '/auth/register',
-          data: data,
+          data: payload,
         );
         final String accessToken = response.data["data"]["access_token"];
         final String refreshToken = response.data["data"]["refresh_token"];

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:murya/models/resource.dart';
 import 'package:murya/services/cache.service.dart';
+import 'package:murya/services/timezone.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'base.repository.dart';
@@ -81,10 +82,11 @@ class ResourcesRepository extends BaseRepository {
   }) async {
     return AppResponse.execute(
       action: () async {
-        final payload = <String, dynamic>{};
-        if (timezone != null && timezone.isNotEmpty) {
-          payload['timezone'] = timezone;
-        }
+        final payload = <String, dynamic>{
+          'timezone': await AppTimezoneService.instance.getRequestTimezone(
+            preferred: timezone,
+          ),
+        };
         final response = await api.dio.post('/resources/$resourceId/open',
             data: payload.isEmpty ? null : payload);
         return _resourceFromTrackingResponse(response.data);
@@ -99,10 +101,11 @@ class ResourcesRepository extends BaseRepository {
   }) async {
     return AppResponse.execute(
       action: () async {
-        final payload = <String, dynamic>{};
-        if (timezone != null && timezone.isNotEmpty) {
-          payload['timezone'] = timezone;
-        }
+        final payload = <String, dynamic>{
+          'timezone': await AppTimezoneService.instance.getRequestTimezone(
+            preferred: timezone,
+          ),
+        };
         final response = await api.dio.post(
           '/resources/$resourceId/collect',
           data: payload.isEmpty ? null : payload,
@@ -129,10 +132,11 @@ class ResourcesRepository extends BaseRepository {
   }) async {
     return AppResponse.execute(
       action: () async {
-        final payload = <String, dynamic>{};
-        if (timezone != null && timezone.isNotEmpty) {
-          payload['timezone'] = timezone;
-        }
+        final payload = <String, dynamic>{
+          'timezone': await AppTimezoneService.instance.getRequestTimezone(
+            preferred: timezone,
+          ),
+        };
         if (progress != null) {
           payload['progress'] = progress;
         }
@@ -151,10 +155,12 @@ class ResourcesRepository extends BaseRepository {
   }) async {
     return AppResponse.execute(
       action: () async {
-        final payload = <String, dynamic>{'like': like};
-        if (timezone != null && timezone.isNotEmpty) {
-          payload['timezone'] = timezone;
-        }
+        final payload = <String, dynamic>{
+          'like': like,
+          'timezone': await AppTimezoneService.instance.getRequestTimezone(
+            preferred: timezone,
+          ),
+        };
         final response = await api.dio.post(
           '/resources/$resourceId/like',
           data: payload,

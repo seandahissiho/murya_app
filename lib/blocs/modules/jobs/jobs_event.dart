@@ -34,6 +34,7 @@ final class LoadRankingForJob extends JobEvent {
   final String jobId;
   final DateTime? from;
   final DateTime? to;
+  final SharedPeriod? period;
   final BuildContext context;
 
   LoadRankingForJob({
@@ -41,6 +42,7 @@ final class LoadRankingForJob extends JobEvent {
     required this.context,
     this.from,
     this.to,
+    this.period,
   });
 }
 
@@ -57,5 +59,9 @@ final class LoadCFDetails extends JobEvent {
   final BuildContext context;
   final String? userJobId;
 
-  LoadCFDetails({required this.jobId, required this.cfId, required this.context, this.userJobId});
+  LoadCFDetails(
+      {required this.jobId,
+      required this.cfId,
+      required this.context,
+      this.userJobId});
 }

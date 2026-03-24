@@ -275,13 +275,13 @@ extension ExtensionDateTime on DateTime {
   }
 
   String toDbString() {
-    // Format the date as "YYYY-MM-DDTHH:mm:ss"
-    return "$year"
-        "-${month.toString().padLeft(2, '0')}"
-        "-${day.toString().padLeft(2, '0')}"
-        "T${hour.toString().padLeft(2, '0')}"
-        ":${minute.toString().padLeft(2, '0')}"
-        ":${second.toString().padLeft(2, '0')}"
+    final utc = toUtc();
+    return "${utc.year}"
+        "-${utc.month.toString().padLeft(2, '0')}"
+        "-${utc.day.toString().padLeft(2, '0')}"
+        "T${utc.hour.toString().padLeft(2, '0')}"
+        ":${utc.minute.toString().padLeft(2, '0')}"
+        ":${utc.second.toString().padLeft(2, '0')}"
         ".000Z";
   }
 }
