@@ -40,7 +40,7 @@ class _RankingChartState extends State<RankingChart> {
     final DateTime now = DateTime.now();
     switch (_detailsLevel) {
       case 0:
-        return now.dateStart;
+        return now.dayStart;
       case 1:
         return now.firstDayOfTheWeek;
       case 2:
@@ -54,13 +54,13 @@ class _RankingChartState extends State<RankingChart> {
     final DateTime now = DateTime.now();
     switch (_detailsLevel) {
       case 0:
-        return now.dateEnd;
+        return now.nextDayStart;
       case 1:
-        return now.lastDayOfTheWeek;
+        return now.nextWeekStart;
       case 2:
-        return now.lastDayOfTheMonth;
+        return now.nextMonthStart;
       default:
-        return now.date;
+        return now.nextDayStart;
     }
   }
 
@@ -210,16 +210,6 @@ class _RankingChartState extends State<RankingChart> {
                       clipBehavior: Clip.none,
                       children: [
                         CustomPaint(size: chartSize, painter: painter),
-                        // First place — always gold background, purple stars
-                        _buildPositionedCard(
-                          offset: firstRank,
-                          pictureUrl: firstRanking?.profilePictureUrl ?? '',
-                          rank: 1,
-                          color: const Color(0xFFFEC84B),
-                          shadowColor: const Color(0xFFFEC84B),
-                          imageBorderColor: AppColors.backgroundCard,
-                          textColor: AppColors.textInverted,
-                        ),
                         // First quartile
                         if (firstQuartileRanking != null)
                           _buildPositionedCard(
@@ -253,6 +243,16 @@ class _RankingChartState extends State<RankingChart> {
                             imageBorderColor: AppColors.backgroundCard,
                             textColor: AppColors.textInverted,
                           ),
+                        // First place — always gold background, purple stars
+                        _buildPositionedCard(
+                          offset: firstRank,
+                          pictureUrl: firstRanking?.profilePictureUrl ?? '',
+                          rank: 1,
+                          color: const Color(0xFFFEC84B),
+                          shadowColor: const Color(0xFFFEC84B),
+                          imageBorderColor: AppColors.backgroundCard,
+                          textColor: AppColors.textInverted,
+                        ),
                       ],
                     );
                   },

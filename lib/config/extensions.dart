@@ -26,7 +26,8 @@ extension ExtensionList<T> on Iterable<T> {
 
     String? biggest;
     forEach((element) {
-      if (element.isNotNull && ((element as String).length) > (biggest?.length ?? 0)) {
+      if (element.isNotNull &&
+          ((element as String).length) > (biggest?.length ?? 0)) {
         biggest = element;
       }
     });
@@ -94,6 +95,14 @@ extension ExtensionList<T> on Iterable<T> {
 }
 
 extension ExtensionDateTime on DateTime {
+  DateTime get dayStart {
+    return DateTime(year, month, day);
+  }
+
+  DateTime get nextDayStart {
+    return dayStart.add(const Duration(days: 1));
+  }
+
   DateTime get yesterday {
     return subtract(const Duration(days: 1));
   }
@@ -116,30 +125,21 @@ extension ExtensionDateTime on DateTime {
   }
 
   DateTime get firstDayOfTheWeek {
-    // Calculate how many days to subtract to get to the previous Monday (first day of the week)
-    // Dart's DateTime days are 1-based and Monday is 1, so we calculate the difference accordingly.
-    int daysToSubtract = weekday - DateTime.monday;
-    DateTime firstDayOfTheWeek = subtract(Duration(days: daysToSubtract));
-
-    return firstDayOfTheWeek;
+    final int daysToSubtract = weekday - DateTime.monday;
+    final DateTime start = dayStart.subtract(Duration(days: daysToSubtract));
+    return DateTime(start.year, start.month, start.day);
   }
 
-  DateTime get lastDayOfTheWeek {
-    // Calculate how many days to add to get to the next Sunday (last day of the week)
-    // Dart's DateTime days are 1-based and Sunday is 7, so we calculate the difference accordingly.
-    int daysToAdd = DateTime.sunday - weekday;
-    DateTime lastDayOfTheWeek = add(Duration(days: daysToAdd));
-
-    return lastDayOfTheWeek;
+  DateTime get nextWeekStart {
+    return firstDayOfTheWeek.add(const Duration(days: 7));
   }
 
   DateTime get firstDayOfTheMonth {
     return DateTime(year, month, 1);
   }
 
-  DateTime get lastDayOfTheMonth {
-    final DateTime nextMonth = month < 12 ? DateTime(year, month + 1, 1) : DateTime(year + 1, 1, 1);
-    return nextMonth.subtract(const Duration(days: 1));
+  DateTime get nextMonthStart {
+    return month < 12 ? DateTime(year, month + 1, 1) : DateTime(year + 1, 1, 1);
   }
 
   DateTime get date {
@@ -147,7 +147,8 @@ extension ExtensionDateTime on DateTime {
   }
 
   bool overlaps(DateTime other) {
-    return (isBefore(other) && other.isAfter(this)) || (isAfter(other) && other.isBefore(this));
+    return (isBefore(other) && other.isAfter(this)) ||
+        (isAfter(other) && other.isBefore(this));
   }
 
   DateTime get dateStart {
@@ -175,7 +176,10 @@ extension ExtensionDateTime on DateTime {
   }
 
   bool isSameHour(DateTime other) {
-    return year == other.year && month == other.month && day == other.day && hour == other.hour;
+    return year == other.year &&
+        month == other.month &&
+        day == other.day &&
+        hour == other.hour;
   }
 
   String get fromDateString {
@@ -327,12 +331,16 @@ extension StringExtension on String {
   String noAccent() {
     // Mappings of accented characters to their unaccented counterparts.
     // Lowercase mappings
-    const accentsLower = 'àáâäãåăąæçćčđďèéêëěęìíîïıłĺľńňñòóôöõőøřŕśšşťùúûüůűýÿŷźžż';
-    const plainLower = 'aaaaaaaaaceccddeeeeeeiiiiiilllnnnooooooorrsssstuuuuuuyyyyzzz';
+    const accentsLower =
+        'àáâäãåăąæçćčđďèéêëěęìíîïıłĺľńňñòóôöõőøřŕśšşťùúûüůűýÿŷźžż';
+    const plainLower =
+        'aaaaaaaaaceccddeeeeeeiiiiiilllnnnooooooorrsssstuuuuuuyyyyzzz';
 
     // Uppercase mappings
-    const accentsUpper = 'ÀÁÂÄÃÅĂĄÆÇĆČĐĎÈÉÊËĚĘÌÍÎÏIŁĹĽŃŇÑÒÓÔÖÕŐØŘŔŚŠŞŤÙÚÛÜŮŰÝŸŶŹŽŻ';
-    const plainUpper = 'AAAAAAAAACECCDDEEEEEEIIIIIILLLNNOOOOOOORRSSSTUUUUUUYYYZZZ';
+    const accentsUpper =
+        'ÀÁÂÄÃÅĂĄÆÇĆČĐĎÈÉÊËĚĘÌÍÎÏIŁĹĽŃŇÑÒÓÔÖÕŐØŘŔŚŠŞŤÙÚÛÜŮŰÝŸŶŹŽŻ';
+    const plainUpper =
+        'AAAAAAAAACECCDDEEEEEEIIIIIILLLNNOOOOOOORRSSSTUUUUUUYYYZZZ';
 
     String result = this;
 
@@ -350,16 +358,28 @@ extension StringExtension on String {
   }
 
   String noWhiteSpace() {
-    return replaceAll("  ", " ").trim().replaceAll("  ", " ").replaceAll("‪", "").replaceAll("‬", "");
+    return replaceAll("  ", " ")
+        .trim()
+        .replaceAll("  ", " ")
+        .replaceAll("‪", "")
+        .replaceAll("‬", "");
   }
 
   String noSpace() {
-    return replaceAll(" ", "").replaceAll(" ", "").replaceAll("‪", "").replaceAll("‬", "").trim();
+    return replaceAll(" ", "")
+        .replaceAll(" ", "")
+        .replaceAll("‪", "")
+        .replaceAll("‬", "")
+        .trim();
   }
 
   String get snakeCase {
     final regex = RegExp(r'(?<!^)(?=[A-Z])');
-    return toLowerCase().split(regex).join('_').replaceAll(' ', '_').replaceAll('__', '_');
+    return toLowerCase()
+        .split(regex)
+        .join('_')
+        .replaceAll(' ', '_')
+        .replaceAll('__', '_');
   }
 
   String firstLetterUpperCase() {
