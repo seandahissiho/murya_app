@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/analytics/analytics_events.dart';
+import 'package:murya/analytics/analytics_service.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/modules_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
@@ -146,12 +148,23 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   FutureOr<void> _onChangeLanguage(
       AppChangeLanguage event, Emitter<AppState> emit) {
-    // if (event.language == state.language) {
-    //   return null;
-    // }
+    final previousLanguageCode = state.language.code;
     _appLanguage = event.language;
 
     _updateRepositoriesLanguage(event.context, _appLanguage.code);
+    AnalyticsService.instance.updateLanguage(_appLanguage.code);
+
+    if (previousLanguageCode != _appLanguage.code) {
+      unawaited(
+        AnalyticsService.instance.captureUi(
+          AnalyticsEventNames.languageChanged,
+          properties: {
+            'lang': _appLanguage.code,
+            'previous_lang': previousLanguageCode,
+          },
+        ),
+      );
+    }
 
     if (event.persistPreferredLanguage) {
       unawaited(
@@ -211,6 +224,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     _appLanguage = resolvedLanguage;
     _updateRepositoriesLanguage(context, _appLanguage.code);
+    AnalyticsService.instance.updateLanguage(_appLanguage.code);
 
     if (!context.mounted) return;
     if (state.language.code != resolvedLanguage.code) {

@@ -31,15 +31,18 @@ import 'package:murya/screens/base.dart';
 part '_resources_mobile.dart';
 part '_resources_tablet+.dart';
 
-class RessourcesLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class RessourcesLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.userRessourcesModule];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     final Map<String, dynamic>? routeData = data as Map<String, dynamic>?;
     final dynamic payload = routeData?['data'];
-    final bool openWaitingModal = payload is Map<String, dynamic> && payload['openWaitingModal'] == true;
+    final bool openWaitingModal =
+        payload is Map<String, dynamic> && payload['openWaitingModal'] == true;
     return [
       BeamPage(
         title: AppLocalizations.of(context).resourcesPageTitle,
@@ -166,7 +169,11 @@ class _RessourcesScreenState extends State<RessourcesScreen> {
   Set<String> _collectResourceIds() {
     final resourcesBloc = context.read<ResourcesBloc>();
     final ids = <String>{};
-    for (final resource in [...resourcesBloc.articles, ...resourcesBloc.videos, ...resourcesBloc.podcasts]) {
+    for (final resource in [
+      ...resourcesBloc.articles,
+      ...resourcesBloc.videos,
+      ...resourcesBloc.podcasts
+    ]) {
       final id = resource.id;
       if (id != null && id.isNotEmpty) {
         ids.add(id);
@@ -190,7 +197,9 @@ class _RessourcesScreenState extends State<RessourcesScreen> {
       }
       if (_knownResourceIds.isEmpty) {
         final createdAt = resource.createdAt;
-        if (createdAt != null && _waitingStartedAt != null && !createdAt.isAfter(_waitingStartedAt!)) {
+        if (createdAt != null &&
+            _waitingStartedAt != null &&
+            !createdAt.isAfter(_waitingStartedAt!)) {
           continue;
         }
       }
@@ -207,7 +216,8 @@ class _RessourcesScreenState extends State<RessourcesScreen> {
     _dismissWaitingModal();
     navigateToPath(
       context,
-      to: AppRoutes.userResourceViewerModule.replaceFirst(':id', newResource.id!),
+      to: AppRoutes.userResourceViewerModule
+          .replaceFirst(':id', newResource.id!),
     );
   }
 
@@ -238,7 +248,8 @@ class ResourcesCarousel extends StatefulWidget {
   final ResourceType type;
   final List<Resource> resources;
 
-  const ResourcesCarousel({super.key, required this.resources, required this.type});
+  const ResourcesCarousel(
+      {super.key, required this.resources, required this.type});
 
   @override
   State<ResourcesCarousel> createState() => _ResourcesCarouselState();
@@ -279,7 +290,8 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
           pageSnapping: true,
           padEnds: false,
           // viewportFraction: (height * (isMobile ? 1.168 : 1.393)) / appSize.screenWidth,
-          viewportFraction: (height + AppSpacing.spacing16 * 4) / appSize.screenWidth,
+          viewportFraction:
+              (height + AppSpacing.spacing16 * 4) / appSize.screenWidth,
           // aspectRatio: 1,
         ),
         itemBuilder: (context, index, realIndex) {
@@ -287,7 +299,8 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
             return InkWell(
               onTap: () async {
                 return await contentNotAvailableModal(context);
-                final int diamonds = context.read<ProfileBloc>().state.user.diamonds;
+                final int diamonds =
+                    context.read<ProfileBloc>().state.user.diamonds;
                 final int cost = Costs.byType(widget.type);
                 final canCreate = diamonds >= cost;
                 final int remaining = diamonds - cost;
@@ -303,7 +316,8 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        AppLocalizations.of(context).popup_unlock_resource_title,
+                        AppLocalizations.of(context)
+                            .popup_unlock_resource_title,
                         style: theme.textTheme.labelLarge?.copyWith(
                           fontSize: theme.textTheme.displayMedium?.fontSize,
                         ),
@@ -312,26 +326,40 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     ),
                     AppSpacing.spacing16_Box,
                     Text(
-                      AppLocalizations.of(context).popup_unlock_resource_description,
-                      style: theme.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                      AppLocalizations.of(context)
+                          .popup_unlock_resource_description,
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: AppColors.textSecondary),
                       textAlign: TextAlign.start,
                     ),
                     AppSpacing.spacing24_Box,
-                    _costRow(label: AppLocalizations.of(context).cost_creation_label, cost: cost),
+                    _costRow(
+                        label: AppLocalizations.of(context).cost_creation_label,
+                        cost: cost),
                     AppSpacing.spacing16_Box,
-                    _costRow(label: AppLocalizations.of(context).cost_current_balance_label, cost: diamonds),
+                    _costRow(
+                        label: AppLocalizations.of(context)
+                            .cost_current_balance_label,
+                        cost: diamonds),
                     AppSpacing.spacing16_Box,
-                    _costRow(label: AppLocalizations.of(context).cost_remaining_balance_label, cost: remaining),
+                    _costRow(
+                        label: AppLocalizations.of(context)
+                            .cost_remaining_balance_label,
+                        cost: remaining),
                     AppSpacing.spacing40_Box,
                   ],
                 );
                 if (result == true && mounted && context.mounted) {
                   _waitingModal(context, theme);
-                  final userJobId = context.read<JobBloc>().state.userCurrentJob?.id;
-                  if (mounted && context.mounted && userJobId.isNotEmptyOrNull) {
+                  final userJobId =
+                      context.read<JobBloc>().state.userCurrentJob?.id;
+                  if (mounted &&
+                      context.mounted &&
+                      userJobId.isNotEmptyOrNull) {
                     Future.delayed(const Duration(seconds: 0), () {
                       if (mounted && context.mounted) {
-                        context.read<ResourcesBloc>().add(GenerateResource(type: widget.type, userJobId: userJobId!));
+                        context.read<ResourcesBloc>().add(GenerateResource(
+                            type: widget.type, userJobId: userJobId!));
                       }
                     });
                   }
@@ -353,21 +381,24 @@ class _ResourcesCarouselState extends State<ResourcesCarousel> {
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.borderMedium, width: 2),
+                        border:
+                            Border.all(color: AppColors.borderMedium, width: 2),
                       ),
                       padding: const EdgeInsets.all(AppSpacing.spacing8),
                       child: SvgPicture.asset(
                         AppIcons.addResourceIconPath,
                         width: 20,
                         height: 20,
-                        colorFilter: const ColorFilter.mode(AppColors.textSecondary, BlendMode.srcIn),
+                        colorFilter: const ColorFilter.mode(
+                            AppColors.textSecondary, BlendMode.srcIn),
                       ),
                     ),
                     AppSpacing.spacing12_Box,
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        AppLocalizations.of(context).create_resource_button(ressourceLabelSingular),
+                        AppLocalizations.of(context)
+                            .create_resource_button(ressourceLabelSingular),
                         style: theme.textTheme.labelLarge?.copyWith(
                             color: AppColors.textSecondary,
                             fontSize: theme.textTheme.displayMedium?.fontSize,
@@ -457,7 +488,8 @@ void _waitingModal(BuildContext context, ThemeData theme) {
                       AppIcons.appIcon2Path,
                       width: 16,
                       height: 16,
-                      colorFilter: const ColorFilter.mode(AppColors.primaryFocus, BlendMode.srcIn),
+                      colorFilter: const ColorFilter.mode(
+                          AppColors.primaryFocus, BlendMode.srcIn),
                     ),
                   ),
                 ),
@@ -466,7 +498,8 @@ void _waitingModal(BuildContext context, ThemeData theme) {
                   height: 32,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryFocus),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(AppColors.primaryFocus),
                     constraints: BoxConstraints(
                       maxHeight: 32,
                       maxWidth: 26,
@@ -518,7 +551,9 @@ Widget ThumbnailBackground(String? url, {int? index}) {
     return _fallbackThumbnail(index: index);
   }
 
-  if (((url ?? '').contains("mqdefault") || (url ?? '').contains("hqdefault") || (url ?? '').contains("sqdefault")) &&
+  if (((url ?? '').contains("mqdefault") ||
+          (url ?? '').contains("hqdefault") ||
+          (url ?? '').contains("sqdefault")) &&
       (url ?? '').contains("youtube")) {
     url = url?.replaceAll("mqdefault", "maxresdefault");
     url = url?.replaceAll("hqdefault", "maxresdefault");
@@ -590,6 +625,9 @@ class ResourceItemWidget extends StatelessWidget {
             if (isMobile) {
               return await contentNotAvailableModal(context);
             }
+            context
+                .read<ResourcesBloc>()
+                .add(CollectResource(resourceId: resource.id!));
             navigateToPath(
               context,
               to: AppRoutes.userResourceViewerModule.replaceFirst(
@@ -608,10 +646,22 @@ class ResourceItemWidget extends StatelessWidget {
             color: AppColors.backgroundCard,
             borderRadius: AppRadius.borderRadius20,
             border: Border(
-              top: BorderSide(color: resource.borderColor, width: 20, strokeAlign: BorderSide.strokeAlignInside),
-              bottom: BorderSide(color: resource.borderColor, width: 2, strokeAlign: BorderSide.strokeAlignInside),
-              left: BorderSide(color: resource.borderColor, width: 2, strokeAlign: BorderSide.strokeAlignInside),
-              right: BorderSide(color: resource.borderColor, width: 2, strokeAlign: BorderSide.strokeAlignInside),
+              top: BorderSide(
+                  color: resource.borderColor,
+                  width: 20,
+                  strokeAlign: BorderSide.strokeAlignInside),
+              bottom: BorderSide(
+                  color: resource.borderColor,
+                  width: 2,
+                  strokeAlign: BorderSide.strokeAlignInside),
+              left: BorderSide(
+                  color: resource.borderColor,
+                  width: 2,
+                  strokeAlign: BorderSide.strokeAlignInside),
+              right: BorderSide(
+                  color: resource.borderColor,
+                  width: 2,
+                  strokeAlign: BorderSide.strokeAlignInside),
             ),
           ),
           padding: const EdgeInsets.all(AppSpacing.spacing24),
@@ -752,7 +802,8 @@ class ResourceIconWidget extends StatelessWidget {
       width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
       decoration: BoxDecoration(
         borderRadius: AppRadius.small,
-        color: outlined ? color.withValues(alpha: 0.2) : AppColors.backgroundCard,
+        color:
+            outlined ? color.withValues(alpha: 0.2) : AppColors.backgroundCard,
         border: Border.all(
           color: color,
           width: 2,
@@ -763,7 +814,8 @@ class ResourceIconWidget extends StatelessWidget {
         fit: BoxFit.scaleDown,
         child: SvgPicture.asset(
           resource.iconPath,
-          height: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
+          height:
+              (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
           width: (isMobile ? mobileCTAHeight : tabletAndAboveCTAHeight) * scale,
           colorFilter: ColorFilter.mode(
             color,

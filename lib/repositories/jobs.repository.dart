@@ -1,3 +1,5 @@
+import 'package:murya/analytics/analytics_events.dart';
+import 'package:murya/analytics/analytics_service.dart';
 import 'package:murya/config/custom_classes.dart';
 import 'package:murya/models/Job.dart';
 import 'package:murya/models/job_ranking.dart';
@@ -171,7 +173,10 @@ class JobRepository extends BaseRepository {
     return Result.success(null, null);
   }
 
-  Future<Result<UserJob?>> setUserCurrentJob(String jobId) async {
+  Future<Result<UserJob?>> setUserCurrentJob(
+    String jobId, {
+    bool trackAnalytics = true,
+  }) async {
     final languageCode =
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     return AppResponse.execute(
@@ -186,6 +191,18 @@ class JobRepository extends BaseRepository {
         final UserJob? job = response.data["data"] != null
             ? UserJob.fromJson(response.data["data"])
             : null;
+        if (trackAnalytics && job != null) {
+          await AnalyticsService.instance.captureUi(
+            AnalyticsEventNames.currentJobSelected,
+            properties: {
+              'job_family_id': job.jobFamilyId,
+              'job_id': job.jobId ?? job.job?.id,
+              'scope':
+                  (job.jobFamilyId?.isNotEmpty ?? false) ? 'job_family' : 'job',
+              'user_job_id': job.id,
+            },
+          );
+        }
         return job;
       },
       parentFunctionName: 'JobRepository -> setUserCurrentJob',
@@ -405,9 +422,11 @@ class JobRepository extends BaseRepository {
     );
   }
 
-  Future<Result<PreviewCompetencyProfile>>
-      fetchPreviewCompetencyProfileCached(String userJobId,
-          {DateTime? from, DateTime? to, String? timezone}) async {
+  Future<Result<PreviewCompetencyProfile>> fetchPreviewCompetencyProfileCached(
+      String userJobId,
+      {DateTime? from,
+      DateTime? to,
+      String? timezone}) async {
     final languageCode =
         api.dio.options.headers['accept-language']?.toString() ?? 'en';
     try {

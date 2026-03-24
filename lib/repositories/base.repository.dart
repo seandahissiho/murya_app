@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:murya/analytics/analytics_service.dart';
 
 // bool WE_ARE_BEFORE_QUIZZ = true;
 // bool WE_ARE_BEFORE_FIRST_USER_FETCH = true;
@@ -73,7 +76,10 @@ class BaseInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    // final responseData = err.response?.data;
+    if (err.requestOptions.extra['analytics_dio_error_captured'] != true) {
+      err.requestOptions.extra['analytics_dio_error_captured'] = true;
+      unawaited(AnalyticsService.instance.captureApiError(err));
+    }
 
     if (err.response?.statusCode == 401) {
       // try {
@@ -94,7 +100,9 @@ class AppInterceptors extends BaseInterceptor {
 
 class AppResponse {
   static Future<Result<T>> execute<T>(
-      {required Future<dynamic> Function() action, required String parentFunctionName, dynamic errorResult}) async {
+      {required Future<dynamic> Function() action,
+      required String parentFunctionName,
+      dynamic errorResult}) async {
     try {
       final dynamic result = await action();
       if (result is ResultWithMessage) {
@@ -102,7 +110,7 @@ class AppResponse {
       } else {
         return Result.success(result, null);
       }
-    } on DioException catch (error, stacktrace) {
+    } on DioException catch (error) {
       // debugPrintStack(
       //   stackTrace: stacktrace,
       //   label: "$error [$parentFunctionName]",
@@ -110,7 +118,8 @@ class AppResponse {
       // );
       // debugPrint("\n\n\n");
       if (error.response?.statusCode == 404) {
-        debugPrint("404 Not Found Error in $parentFunctionName: ${error.requestOptions.uri}");
+        debugPrint(
+            "404 Not Found Error in $parentFunctionName: ${error.requestOptions.uri}");
       }
       String? errorToDisplay = error.response?.statusCode == 404
           ? "Ressource non trouvée"
@@ -118,12 +127,24 @@ class AppResponse {
               ? "Erreur interne du serveur"
               : null;
 
-      errorToDisplay ??=
-          error.response?.data is Map ? (error.response?.data["error"] ?? error.response?.data["message"]) : null;
+      errorToDisplay ??= error.response?.data is Map
+          ? (error.response?.data["error"] ?? error.response?.data["message"])
+          : null;
 
       errorToDisplay ??= _handleBackEndValidatorsException(error);
 
-      return Result(errorResult, errorToDisplay ?? "Une erreur est survenue", null);
+      if (error.requestOptions.extra['analytics_dio_error_captured'] != true) {
+        error.requestOptions.extra['analytics_dio_error_captured'] = true;
+        unawaited(
+          AnalyticsService.instance.captureApiError(
+            error,
+            parentFunctionName: parentFunctionName,
+          ),
+        );
+      }
+
+      return Result(
+          errorResult, errorToDisplay ?? "Une erreur est survenue", null);
     } catch (error, stacktrace) {
       debugPrintStack(
         stackTrace: stacktrace,
@@ -132,7 +153,16 @@ class AppResponse {
       );
       debugPrint("\n\n\n");
 
-      return Result(errorResult, error is String ? error : "Une erreur est survenue", null);
+      unawaited(
+        AnalyticsService.instance.captureHandledError(
+          error,
+          stacktrace,
+          source: parentFunctionName,
+        ),
+      );
+
+      return Result(errorResult,
+          error is String ? error : "Une erreur est survenue", null);
     }
   }
 
@@ -179,7 +209,8 @@ String? _handleBackEndValidatorsException(DioException error) {
       final errors = data["errors"] as List<dynamic>;
       if (errors.isNotEmpty) {
         final firstError = errors.first;
-        if (firstError is Map<String, dynamic> && firstError.containsKey("msg")) {
+        if (firstError is Map<String, dynamic> &&
+            firstError.containsKey("msg")) {
           return firstError["msg"] as String?;
         }
       }
@@ -201,7 +232,8 @@ class Result<T> {
 
   bool get isError => error != null || data == null;
 
-  static Result<T> success<T>(T? data, String? message) => Result<T>(data, null, message);
+  static Result<T> success<T>(T? data, String? message) =>
+      Result<T>(data, null, message);
 
   static Result<T> failure<T>(String error) => Result<T>(null, error, null);
 }

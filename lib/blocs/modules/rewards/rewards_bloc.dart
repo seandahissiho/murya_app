@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/analytics/analytics_events.dart';
+import 'package:murya/analytics/analytics_service.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/models/reward.dart';
 import 'package:murya/models/reward_catalog.dart';
@@ -46,7 +48,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     });
   }
 
-  FutureOr<void> _onLoadRewards(LoadRewardsEvent event, Emitter<RewardsState> emit) async {
+  FutureOr<void> _onLoadRewards(
+      LoadRewardsEvent event, Emitter<RewardsState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -106,7 +109,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     ));
   }
 
-  FutureOr<void> _onLoadRewardDetails(LoadRewardDetailsEvent event, Emitter<RewardsState> emit) async {
+  FutureOr<void> _onLoadRewardDetails(
+      LoadRewardDetailsEvent event, Emitter<RewardsState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -115,7 +119,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       rewardDetailsLoading: true,
       rewardDetailsError: null,
     ));
-    final cachedResult = await rewardsRepository.getRewardByIdCached(event.rewardId);
+    final cachedResult =
+        await rewardsRepository.getRewardByIdCached(event.rewardId);
     final cachedReward = cachedResult.data;
     final hasCached = cachedReward != null && cachedReward.id.isNotEmpty;
     if (hasCached) {
@@ -143,7 +148,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     ));
   }
 
-  FutureOr<void> _onLoadRewardPurchases(LoadRewardPurchasesEvent event, Emitter<RewardsState> emit) async {
+  FutureOr<void> _onLoadRewardPurchases(
+      LoadRewardPurchasesEvent event, Emitter<RewardsState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -158,7 +164,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       limit: event.limit,
     );
     final cachedPurchases = cachedResult.data;
-    final hasCached = cachedPurchases != null && cachedPurchases.items.isNotEmpty;
+    final hasCached =
+        cachedPurchases != null && cachedPurchases.items.isNotEmpty;
     if (hasCached) {
       emit(RewardPurchasesLoaded.from(
         state,
@@ -197,7 +204,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     ));
   }
 
-  FutureOr<void> _onLoadRewardPurchaseDetails(LoadRewardPurchaseDetailsEvent event, Emitter<RewardsState> emit) async {
+  FutureOr<void> _onLoadRewardPurchaseDetails(
+      LoadRewardPurchaseDetailsEvent event, Emitter<RewardsState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -206,7 +214,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       purchaseDetailsLoading: true,
       purchaseDetailsError: null,
     ));
-    final cachedResult = await rewardsRepository.getPurchaseByIdCached(event.purchaseId);
+    final cachedResult =
+        await rewardsRepository.getPurchaseByIdCached(event.purchaseId);
     final cachedPurchase = cachedResult.data;
     final hasCached = cachedPurchase != null && cachedPurchase.id.isNotEmpty;
     if (hasCached) {
@@ -234,7 +243,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     ));
   }
 
-  FutureOr<void> _onPurchaseReward(PurchaseRewardEvent event, Emitter<RewardsState> emit) async {
+  FutureOr<void> _onPurchaseReward(
+      PurchaseRewardEvent event, Emitter<RewardsState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -246,6 +256,16 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       purchaseSubmitting: true,
       purchaseError: null,
     ));
+
+    unawaited(
+      AnalyticsService.instance.captureUi(
+        AnalyticsEventNames.rewardPurchaseClicked,
+        properties: {
+          'quantity': event.quantity,
+          'reward_id': event.rewardId,
+        },
+      ),
+    );
 
     final idempotencyKey = event.idempotencyKey ?? _uuid.v4();
     final result = await rewardsRepository.purchaseReward(
@@ -281,7 +301,8 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     add(const LoadRewardsEvent());
   }
 
-  FutureOr<void> _onLoadWallet(LoadWalletEvent event, Emitter<RewardsState> emit) async {
+  FutureOr<void> _onLoadWallet(
+      LoadWalletEvent event, Emitter<RewardsState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -316,7 +337,9 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     ));
   }
 
-  FutureOr<void> _onClearPurchaseFeedback(ClearRewardPurchaseFeedbackEvent event, Emitter<RewardsState> emit) async {
+  FutureOr<void> _onClearPurchaseFeedback(
+      ClearRewardPurchaseFeedbackEvent event,
+      Emitter<RewardsState> emit) async {
     emit(RewardPurchaseFeedbackCleared.from(
       state,
       purchaseError: null,

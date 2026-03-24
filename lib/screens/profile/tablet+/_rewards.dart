@@ -4,7 +4,8 @@ class TabletJourneyRewardsTab extends StatefulWidget {
   const TabletJourneyRewardsTab({super.key});
 
   @override
-  State<TabletJourneyRewardsTab> createState() => _TabletJourneyRewardsTabState();
+  State<TabletJourneyRewardsTab> createState() =>
+      _TabletJourneyRewardsTabState();
 }
 
 class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
@@ -118,140 +119,158 @@ class _TabletJourneyRewardsTabState extends State<TabletJourneyRewardsTab> {
           ),
         ];
         final rewards = demoRewards; // state.rewards;
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return Wrap(
-              alignment: WrapAlignment.start,
-              spacing: AppSpacing.spacing16,
-              runSpacing: AppSpacing.spacing16,
-              children: rewards.map((reward) {
-                final lacksDiamonds = reward.costDiamonds > state.wallet.diamonds;
-                final isRewardDisabled = !reward.canBuy || reward.remainingPlaces <= 0 || lacksDiamonds;
-                return Container(
-                  height: 325,
-                  width: (constraints.maxWidth / 4) - 3 * AppSpacing.spacing16,
-                  constraints: const BoxConstraints(
-                    maxWidth: 313,
-                    minWidth: 250,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: AppRadius.small,
-                    border: Border.all(
-                      color: AppColors.borderLight,
-                      width: 2,
+        return AnalyticsSensitive(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Wrap(
+                alignment: WrapAlignment.start,
+                spacing: AppSpacing.spacing16,
+                runSpacing: AppSpacing.spacing16,
+                children: rewards.map((reward) {
+                  final lacksDiamonds =
+                      reward.costDiamonds > state.wallet.diamonds;
+                  final isRewardDisabled = !reward.canBuy ||
+                      reward.remainingPlaces <= 0 ||
+                      lacksDiamonds;
+                  return Container(
+                    height: 325,
+                    width:
+                        (constraints.maxWidth / 4) - 3 * AppSpacing.spacing16,
+                    constraints: const BoxConstraints(
+                      maxWidth: 313,
+                      minWidth: 250,
                     ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: AppRadius.small,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 140,
-                          width: double.infinity,
-                          child: Stack(
-                            children: [
-                              CachedNetworkImage(
-                                imageUrl: reward.imageUrl,
-                                height: 140,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) {
-                                  return Container(
-                                    color: AppColors.borderLight,
-                                    height: 150,
-                                  );
-                                },
-                                errorWidget: (context, url, error) {
-                                  return Container(
-                                    color: AppColors.borderLight,
-                                    height: 150,
-                                    child: const Center(
-                                      child: Icon(Icons.broken_image, color: AppColors.textSecondary),
+                    decoration: BoxDecoration(
+                      borderRadius: AppRadius.small,
+                      border: Border.all(
+                        color: AppColors.borderLight,
+                        width: 2,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: AppRadius.small,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 140,
+                            width: double.infinity,
+                            child: Stack(
+                              children: [
+                                CachedNetworkImage(
+                                  imageUrl: reward.imageUrl,
+                                  height: 140,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) {
+                                    return Container(
+                                      color: AppColors.borderLight,
+                                      height: 150,
+                                    );
+                                  },
+                                  errorWidget: (context, url, error) {
+                                    return Container(
+                                      color: AppColors.borderLight,
+                                      height: 150,
+                                      child: const Center(
+                                        child: Icon(Icons.broken_image,
+                                            color: AppColors.textSecondary),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Positioned(
+                                  top: 16,
+                                  right: 16,
+                                  child: Container(
+                                    height: 24,
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: const BoxDecoration(
+                                      borderRadius: AppRadius.tinyTiny,
+                                      color: Color.fromRGBO(255, 214, 0, 0.85),
                                     ),
-                                  );
-                                },
-                              ),
-                              Positioned(
-                                top: 16,
-                                right: 16,
-                                child: Container(
-                                  height: 24,
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: const BoxDecoration(
-                                    borderRadius: AppRadius.tinyTiny,
-                                    // rgba(255, 214, 0, 1)
-                                    color: Color.fromRGBO(255, 214, 0, 0.85),
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        AppIcons.fireIconPath,
-                                        height: 16,
-                                        width: 16,
-                                      ),
-                                      AppSpacing.spacing8_Box,
-                                      Text(
-                                        locale.reward_remainingPlaces(reward.remainingPlaces),
-                                        style: theme.textTheme.labelSmall?.copyWith(
-                                          color: AppColors.textPrimary,
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.0,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          AppIcons.fireIconPath,
+                                          height: 16,
+                                          width: 16,
                                         ),
-                                      ),
-                                    ],
+                                        AppSpacing.spacing8_Box,
+                                        Text(
+                                          locale.reward_remainingPlaces(
+                                              reward.remainingPlaces),
+                                          style: theme.textTheme.labelSmall
+                                              ?.copyWith(
+                                            color: AppColors.textPrimary,
+                                            fontWeight: FontWeight.w600,
+                                            height: 1.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
+                          AppSpacing.spacing16_Box,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.spacing16),
+                            child: Text(
+                              reward.title,
+                              style: theme.textTheme.displayMedium
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                              maxLines: 2,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.spacing16),
+                            child: Text(
+                              "${reward.kind.label(locale)} • ${reward.city}",
+                              style: theme.textTheme.bodyLarge
+                                  ?.copyWith(color: AppColors.textSecondary),
+                            ),
+                          ),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.spacing16),
+                            child: Tooltip(
+                              message: lacksDiamonds
+                                  ? locale
+                                      .reward_unlock_insufficientDiamonds_tooltip
+                                  : '',
+                              decoration: const BoxDecoration(
+                                color: AppColors.primaryDefault,
+                                borderRadius: AppRadius.tinyTiny,
                               ),
-                            ],
-                          ),
-                        ),
-                        AppSpacing.spacing16_Box,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
-                          child: Text(
-                            reward.title,
-                            style: theme.textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600),
-                            maxLines: 2,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
-                          child: Text(
-                            "${reward.kind.label(locale)} • ${reward.city}",
-                            style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
-                          ),
-                        ),
-                        const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16),
-                          child: Tooltip(
-                            message: lacksDiamonds ? locale.reward_unlock_insufficientDiamonds_tooltip : '',
-                            decoration: const BoxDecoration(
-                              color: AppColors.primaryDefault,
-                              borderRadius: AppRadius.tinyTiny,
-                            ),
-                            waitDuration: const Duration(milliseconds: 250),
-                            child: AppXButton(
-                              shrinkWrap: false,
-                              text: locale.reward_unlock_cta,
-                              disabled: isRewardDisabled,
-                              onPressed: () async {
-                                return await contentNotAvailableModal(context);
-                              },
-                              isLoading: state is RewardsLoading,
+                              waitDuration: const Duration(milliseconds: 250),
+                              child: AppXButton(
+                                shrinkWrap: false,
+                                text: locale.reward_unlock_cta,
+                                disabled: isRewardDisabled,
+                                onPressed: () async {
+                                  return await contentNotAvailableModal(
+                                      context);
+                                },
+                                isLoading: state is RewardsLoading,
+                              ),
                             ),
                           ),
-                        ),
-                        AppSpacing.spacing16_Box,
-                      ],
+                          AppSpacing.spacing16_Box,
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
-            );
-          },
+                  );
+                }).toList(),
+              );
+            },
+          ),
         );
       },
     );

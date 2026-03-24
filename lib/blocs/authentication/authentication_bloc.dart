@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/analytics/analytics_events.dart';
+import 'package:murya/analytics/analytics_service.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/config/app_config.dart';
@@ -30,7 +32,7 @@ class AuthenticationBloc
 
   String _token = "";
 
-  User _user = User.empty();
+  final User _user = User.empty();
   bool _initialized = false;
 
   User get user => _user;
@@ -83,7 +85,10 @@ class AuthenticationBloc
     }
     const maxAttempts = 2;
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
-      final result = await jobRepository.setUserCurrentJob(jobId);
+      final result = await jobRepository.setUserCurrentJob(
+        jobId,
+        trackAnalytics: false,
+      );
       if (!result.isError && result.data != null) {
         return true;
       }
@@ -149,6 +154,16 @@ class AuthenticationBloc
 
   FutureOr<void> _onSignInEvent(
       SignInEvent event, Emitter<AuthenticationState> emit) async {
+    unawaited(
+      AnalyticsService.instance.captureUi(
+        AnalyticsEventNames.authSubmitClicked,
+        properties: const {
+          'auth_action': 'sign_in',
+          'auth_mode': 'email',
+          'is_temp_account': false,
+        },
+      ),
+    );
     final result = await authenticationRepository.signIn(
       data: event.toJson(),
     );
@@ -249,6 +264,7 @@ class AuthenticationBloc
 
   Future<void> unAuthenticate(Emitter<AuthenticationState> emit) async {
     await authenticationRepository.deleteToken();
+    await AnalyticsService.instance.reset();
     if (context.mounted) {
       while (Navigator.canPop(context)) {
         Navigator.pop(context);
@@ -300,6 +316,16 @@ class AuthenticationBloc
 
   FutureOr<void> _onRegisterEvent(
       RegisterEvent event, Emitter<AuthenticationState> emit) async {
+    unawaited(
+      AnalyticsService.instance.captureUi(
+        AnalyticsEventNames.authSubmitClicked,
+        properties: const {
+          'auth_action': 'register',
+          'auth_mode': 'email',
+          'is_temp_account': false,
+        },
+      ),
+    );
     final result = await authenticationRepository.register(
       data: event.toJson(),
     );

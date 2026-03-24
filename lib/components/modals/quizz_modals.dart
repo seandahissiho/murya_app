@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:murya/analytics/analytics_events.dart';
+import 'package:murya/analytics/analytics_service.dart';
 import 'package:murya/components/app_button.dart';
 import 'package:murya/components/popup.dart';
 import 'package:murya/components/score.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
-import 'package:murya/config/routes.dart';
-import 'package:murya/helpers.dart';
 import 'package:murya/l10n/l10n.dart';
 
 Future<dynamic> quizzStartModal(
@@ -44,21 +46,25 @@ Future<dynamic> quizzStartModal(
         ],
       ),
       AppSpacing.spacing12_Box,
-      const Divider(color: AppColors.borderMedium, height: 0, endIndent: 0, indent: 0),
+      const Divider(
+          color: AppColors.borderMedium, height: 0, endIndent: 0, indent: 0),
       AppSpacing.spacing16_Box,
       // Répondez à 10 questions rapides pour générer votre ressource sur-mesure.
       RichText(
           text: TextSpan(
         text: locale.quiz_start_prompt_prefix,
-        style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
+        style: theme.textTheme.bodyMedium!
+            .copyWith(color: AppColors.textSecondary),
         children: [
           TextSpan(
             text: locale.quiz_start_prompt_emphasis,
-            style: theme.textTheme.labelMedium!.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+            style: theme.textTheme.labelMedium!.copyWith(
+                color: AppColors.textSecondary, fontWeight: FontWeight.w600),
           ),
           TextSpan(
             text: locale.quiz_start_prompt_suffix,
-            style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
+            style: theme.textTheme.bodyMedium!
+                .copyWith(color: AppColors.textSecondary),
           ),
         ],
       )),
@@ -66,7 +72,8 @@ Future<dynamic> quizzStartModal(
       // Durée : Moins de 5 min
       Text(
         locale.quiz_start_duration,
-        style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
+        style: theme.textTheme.bodyMedium!
+            .copyWith(color: AppColors.textSecondary),
       ),
       AppSpacing.spacing16_Box,
       // 💡 Conseil
@@ -83,12 +90,14 @@ Future<dynamic> quizzStartModal(
           children: [
             Text(
               locale.quiz_start_tip_title,
-              style: theme.textTheme.labelMedium!.copyWith(color: AppColors.textSecondary, fontWeight: FontWeight.w600),
+              style: theme.textTheme.labelMedium!.copyWith(
+                  color: AppColors.textSecondary, fontWeight: FontWeight.w600),
             ),
             AppSpacing.spacing8_Box,
             Text(
               locale.quiz_start_tip_text,
-              style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
+              style: theme.textTheme.bodyMedium!
+                  .copyWith(color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -98,6 +107,14 @@ Future<dynamic> quizzStartModal(
         text: locale.quiz_lets_go,
         shrinkWrap: false,
         onPressed: () {
+          unawaited(
+            AnalyticsService.instance.captureUi(
+              AnalyticsEventNames.quizStartClicked,
+              properties: {
+                'job_id': jobId,
+              },
+            ),
+          );
           Navigator.of(context, rootNavigator: true).pop(true);
         },
         isLoading: false,
@@ -164,7 +181,8 @@ Future<bool?> quizzExitModal(
                 Text(
                   locale.quiz_exit_body,
                   textAlign: TextAlign.start,
-                  style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
+                  style: theme.textTheme.bodyMedium!
+                      .copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -172,7 +190,8 @@ Future<bool?> quizzExitModal(
         ],
       ),
       AppSpacing.spacing16_Box,
-      const Divider(color: AppColors.borderMedium, height: 0, endIndent: 0, indent: 0),
+      const Divider(
+          color: AppColors.borderMedium, height: 0, endIndent: 0, indent: 0),
       AppSpacing.spacing16_Box,
       Row(
         mainAxisSize: MainAxisSize.max,
@@ -238,16 +257,19 @@ Future<dynamic> quizzEndModal(
         ],
       ),
       AppSpacing.spacing12_Box,
-      const Divider(color: AppColors.borderMedium, height: 0, endIndent: 0, indent: 0),
+      const Divider(
+          color: AppColors.borderMedium, height: 0, endIndent: 0, indent: 0),
       AppSpacing.spacing16_Box,
       Text(
         locale.quiz_completed_subtitle,
-        style: theme.textTheme.labelLarge!.copyWith(color: AppColors.textPrimary),
+        style:
+            theme.textTheme.labelLarge!.copyWith(color: AppColors.textPrimary),
       ),
       AppSpacing.spacing20_Box,
       Text(
         locale.quiz_completed_description,
-        style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textSecondary),
+        style: theme.textTheme.bodyMedium!
+            .copyWith(color: AppColors.textSecondary),
       ),
       AppSpacing.spacing24_Box,
       Stack(
@@ -258,7 +280,8 @@ Future<dynamic> quizzEndModal(
               Container(
                 decoration: const BoxDecoration(
                   borderRadius: AppRadius.small,
-                  border: Border.fromBorderSide(BorderSide(color: AppColors.borderMedium)),
+                  border: Border.fromBorderSide(
+                      BorderSide(color: AppColors.borderMedium)),
                 ),
                 padding: const EdgeInsets.only(
                   top: AppSpacing.spacing16 + AppSpacing.spacing12,
@@ -286,12 +309,14 @@ Future<dynamic> quizzEndModal(
                                 AppIcons.checkmarkIconPath,
                                 width: 40,
                                 height: 40,
-                                colorFilter: const ColorFilter.mode(AppColors.successText, BlendMode.srcIn),
+                                colorFilter: const ColorFilter.mode(
+                                    AppColors.successText, BlendMode.srcIn),
                               ),
                               AppSpacing.spacing2_Box,
                               Text(
                                 locale.quiz_result_correct,
-                                style: theme.textTheme.bodyLarge!.copyWith(color: AppColors.successText),
+                                style: theme.textTheme.bodyLarge!
+                                    .copyWith(color: AppColors.successText),
                               ),
                             ],
                           ),
@@ -304,8 +329,9 @@ Future<dynamic> quizzEndModal(
                         color: AppColors.backgroundCard,
                         borderRadius: AppRadius.tiny,
                       ),
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: AppSpacing.spacing16, vertical: AppSpacing.spacing12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.spacing16,
+                          vertical: AppSpacing.spacing12),
                       child: Text(
                         "$goodAnswers - $badAnswers",
                         // font-family: Anton;
@@ -340,12 +366,14 @@ Future<dynamic> quizzEndModal(
                                 AppIcons.deleteDisabled1IconPath,
                                 width: 40,
                                 height: 40,
-                                colorFilter: const ColorFilter.mode(AppColors.errorText, BlendMode.srcIn),
+                                colorFilter: const ColorFilter.mode(
+                                    AppColors.errorText, BlendMode.srcIn),
                               ),
                               AppSpacing.spacing2_Box,
                               Text(
                                 locale.quiz_result_incorrect,
-                                style: theme.textTheme.bodyLarge!.copyWith(color: AppColors.errorText),
+                                style: theme.textTheme.bodyLarge!
+                                    .copyWith(color: AppColors.errorText),
                               ),
                             ],
                           ),
@@ -372,11 +400,14 @@ Future<dynamic> quizzEndModal(
                     color: AppColors.primaryDefault,
                     borderRadius: AppRadius.tiny,
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.spacing8, vertical: AppSpacing.spacing4),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.spacing8,
+                      vertical: AppSpacing.spacing4),
                   // Temps : 5 min
                   child: Text(
                     locale.quiz_time_minutes(duration),
-                    style: theme.textTheme.bodyMedium!.copyWith(color: AppColors.textInverted),
+                    style: theme.textTheme.bodyMedium!
+                        .copyWith(color: AppColors.textInverted),
                   ),
                 ),
               ],

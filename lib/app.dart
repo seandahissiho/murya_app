@@ -1,10 +1,14 @@
-import 'dart:ui';
+import 'dart:async';
 
 import 'package:beamer/beamer.dart';
 // import 'package:country_picker/country_picker.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:murya/analytics/analytics_events.dart';
+import 'package:murya/analytics/analytics_service.dart';
+import 'package:murya/analytics/analytics_widgets.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
@@ -39,7 +43,8 @@ import 'config/DS.dart';
 import 'l10n/l10n.dart';
 
 List<BlocProvider> getBlocProviders(BuildContext context) {
-  final List<BlocProvider<StateStreamableSource<Object?>>> sharedBlocProviders = [
+  final List<BlocProvider<StateStreamableSource<Object?>>> sharedBlocProviders =
+      [
     BlocProvider<NotificationBloc>(
       lazy: false,
       create: (BuildContext context) => NotificationBloc(context: context),
@@ -74,7 +79,8 @@ List<BlocProvider> getBlocProviders(BuildContext context) {
     // ModulesBloc
     BlocProvider<ModulesBloc>(
       lazy: false,
-      create: (BuildContext context) => ModulesBloc(context: context)..add(InitializeModules(context: context)),
+      create: (BuildContext context) => ModulesBloc(context: context)
+        ..add(InitializeModules(context: context)),
     ),
     // ResourcesBloc
     BlocProvider<ResourcesBloc>(
@@ -109,7 +115,8 @@ List<RepositoryProvider> getRepositoryProviders(BuildContext context) {
     ),
     RepositoryProvider<SseService>(
       create: (BuildContext context) {
-        final authRepository = RepositoryProvider.of<AuthenticationRepository>(context);
+        final authRepository =
+            RepositoryProvider.of<AuthenticationRepository>(context);
         return SseService(
           tokenProvider: () async {
             final cached = await authRepository.getCachedAccessToken();
@@ -162,6 +169,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // Locale? _overrideLocale;
+  String? _lastTrackedScreenKey;
 
   final beamerDelegate = BeamerDelegate(
     transitionDelegate: const NoAnimationTransitionDelegate(),
@@ -191,6 +199,44 @@ class _MyAppState extends State<MyApp> {
     ],
   );
 
+  @override
+  void initState() {
+    super.initState();
+    beamerDelegate.addListener(_handleRouteChange);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleRouteChange();
+    });
+  }
+
+  @override
+  void dispose() {
+    beamerDelegate.removeListener(_handleRouteChange);
+    super.dispose();
+  }
+
+  void _handleRouteChange() {
+    final routeInformation =
+        beamerDelegate.currentBeamLocation.state.routeInformation;
+    final route = normalizeAnalyticsRoute(routeInformation.uri.toString());
+    final screenName = resolveAnalyticsScreenName(route);
+    if (route.isEmpty || screenName == null) {
+      return;
+    }
+
+    final nextScreenKey = '$route::$screenName';
+    if (_lastTrackedScreenKey == nextScreenKey) {
+      return;
+    }
+
+    _lastTrackedScreenKey = nextScreenKey;
+    unawaited(
+      AnalyticsService.instance.screen(
+        route: route,
+        screenName: screenName,
+      ),
+    );
+  }
+
   // void _changeLocale(Locale? locale) {
   //   setState(() => _overrideLocale = locale);
   // }
@@ -199,10 +245,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<LocaleProvider>(context);
-    beamerDelegate.addListener(() {
-      // debugPrint(
-      //     '📍 Current route: ${beamerDelegate.currentBeamLocation.state.routeInformation.uri}');
-    });
     return ResponsiveSizer(
       builder: (context, orientation, deviceType) {
         return MaterialApp.router(
@@ -217,8 +259,10 @@ class _MyAppState extends State<MyApp> {
                 providers: getRepositoryProviders(context),
                 child: MultiBlocProvider(
                   providers: getBlocProviders(context),
-                  child: AppScaffold(
-                    child: child ?? const SizedBox.shrink(),
+                  child: AnalyticsReplay(
+                    child: AppScaffold(
+                      child: child ?? const SizedBox.shrink(),
+                    ),
                   ),
                 ),
               ),
@@ -282,9 +326,6 @@ class _MyAppState extends State<MyApp> {
 extension on BuildContext {
   isUserAuthenticated() {
     return true;
-    if (!mounted) return true;
-    final AuthenticationBloc bloc = read<AuthenticationBloc>();
-    return bloc.state.isAuthenticated;
   }
 }
 
@@ -300,7 +341,8 @@ ThemeData buildLightTheme(BuildContext context, {double fontSizeIndex = 0}) {
     textButtonTheme: AppTextButtonStyle.buildTheme(lightTheme, context),
     popupMenuTheme: AppPopupMenuThemeData.buildTheme(lightTheme, context),
     dropdownMenuTheme: AppDropdownMenuThemeData.buildTheme(lightTheme, context),
-    inputDecorationTheme: AppInputDecorationTheme.buildTheme(lightTheme, context),
+    inputDecorationTheme:
+        AppInputDecorationTheme.buildTheme(lightTheme, context),
     tabBarTheme: AppTabBarTheme.buildTheme(lightTheme, context),
   );
   return lightTheme;
@@ -316,7 +358,8 @@ ThemeData buildDarkTheme(BuildContext context, {double fontSizeIndex = 0}) {
     textButtonTheme: AppTextButtonStyle.buildTheme(darkTheme, context),
     popupMenuTheme: AppPopupMenuThemeData.buildTheme(darkTheme, context),
     dropdownMenuTheme: AppDropdownMenuThemeData.buildTheme(darkTheme, context),
-    inputDecorationTheme: AppInputDecorationTheme.buildTheme(darkTheme, context),
+    inputDecorationTheme:
+        AppInputDecorationTheme.buildTheme(darkTheme, context),
     tabBarTheme: AppTabBarTheme.buildTheme(darkTheme, context),
   );
   return darkTheme;

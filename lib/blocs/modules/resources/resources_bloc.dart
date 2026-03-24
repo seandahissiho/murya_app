@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/analytics/analytics_events.dart';
+import 'package:murya/analytics/analytics_service.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
@@ -19,6 +21,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
   late final AuthenticationBloc _authenticationBloc;
   late final StreamSubscription<AuthenticationState> _authSubscription;
   final Set<String> _loadingResourceIds = {};
+  final Set<String> _collectingResourceIds = {};
   final Set<String> _openedResourceIds = {};
   final Set<String> _readResourceIds = {};
   final Map<String, double> _lastReadProgress = {};
@@ -40,12 +43,18 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
   ResourcesBloc({required this.context}) : super(ResourcesInitial()) {
     on<ResourcesEvent>((event, emit) {
-      if (event is OpenResource || event is ReadResource || event is LikeResource) return;
+      if (event is CollectResource ||
+          event is OpenResource ||
+          event is ReadResource ||
+          event is LikeResource) {
+        return;
+      }
       emit(ResourcesLoading());
     });
     on<GenerateResource>(_onGenerateResource);
     on<LoadResourceDetails>(_onLoadResourceDetails);
     on<LoadResources>(_onLoadResources);
+    on<CollectResource>(_onCollectResource);
     on<OpenResource>(_onOpenResource);
     on<ReadResource>(_onReadResource);
     on<LikeResource>(_onLikeResource);
@@ -74,11 +83,31 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     });
   }
 
-  FutureOr<void> _onGenerateResource(GenerateResource event, Emitter<ResourcesState> emit) async {
+  @override
+  Future<void> close() {
+    _jobSubscription.cancel();
+    _authSubscription.cancel();
+    return super.close();
+  }
+
+  FutureOr<void> _onGenerateResource(
+      GenerateResource event, Emitter<ResourcesState> emit) async {
     final currentUserJob = jobBloc.state.userCurrentJob;
-    final topic =
-        currentUserJob?.job?.title ?? currentUserJob?.jobFamily?.title ?? 'current-role';
+    final topic = currentUserJob?.job?.title ??
+        currentUserJob?.jobFamily?.title ??
+        'current-role';
     final level = currentUserJob?.level.name ?? 'beginner';
+
+    unawaited(
+      AnalyticsService.instance.captureUi(
+        AnalyticsEventNames.resourceGenerateClicked,
+        properties: {
+          'job_id': currentUserJob?.jobId,
+          'resource_type': event.type.name,
+          'user_job_id': event.userJobId,
+        },
+      ),
+    );
 
     final result = await resourceRepository.generateResource(
       type: event.type,
@@ -95,7 +124,43 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     profileBloc.add(ProfileLoadEvent());
   }
 
-  FutureOr<void> _onLoadResourceDetails(LoadResourceDetails event, Emitter<ResourcesState> emit) async {
+  FutureOr<void> _onCollectResource(
+      CollectResource event, Emitter<ResourcesState> emit) async {
+    if (event.resourceId.isEmpty) return;
+    if (_collectingResourceIds.contains(event.resourceId)) return;
+
+    final resource = _findResourceById(event.resourceId);
+    _collectingResourceIds.add(event.resourceId);
+
+    unawaited(
+      AnalyticsService.instance.captureUi(
+        AnalyticsEventNames.resourceCollectClicked,
+        properties: {
+          'job_id': resource?.jobId,
+          'resource_id': event.resourceId,
+          'user_job_id': resource?.userJobId,
+        },
+      ),
+    );
+
+    try {
+      final result = await resourceRepository.collectResource(
+        resourceId: event.resourceId,
+        timezone: _timezone(),
+      );
+      if (result.isError || result.data == null) {
+        return;
+      }
+      _updateResource(result.data!);
+      emit(
+          ResourcesLoaded(resources: [..._articles, ..._videos, ..._podcasts]));
+    } finally {
+      _collectingResourceIds.remove(event.resourceId);
+    }
+  }
+
+  FutureOr<void> _onLoadResourceDetails(
+      LoadResourceDetails event, Emitter<ResourcesState> emit) async {
     if (event.resourceId.isEmpty) {
       return;
     }
@@ -118,7 +183,8 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
       return;
     }
 
-    final cachedResult = await resourceRepository.fetchResourcesCached(userJobId);
+    final cachedResult =
+        await resourceRepository.fetchResourcesCached(userJobId);
     if (cachedResult.data != null && cachedResult.data!.isNotEmpty) {
       _replaceResources(cachedResult.data!);
       final cachedResource = _findResourceById(event.resourceId);
@@ -150,7 +216,8 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     return timezone.isNotEmpty ? timezone : '';
   }
 
-  FutureOr<void> _onOpenResource(OpenResource event, Emitter<ResourcesState> emit) async {
+  FutureOr<void> _onOpenResource(
+      OpenResource event, Emitter<ResourcesState> emit) async {
     if (event.resourceId.isEmpty) return;
     if (_openedResourceIds.contains(event.resourceId)) return;
     _openedResourceIds.add(event.resourceId);
@@ -168,13 +235,14 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     emit(ResourcesLoaded(resources: [..._articles, ..._videos, ..._podcasts]));
   }
 
-  FutureOr<void> _onReadResource(ReadResource event, Emitter<ResourcesState> emit) async {
+  FutureOr<void> _onReadResource(
+      ReadResource event, Emitter<ResourcesState> emit) async {
     if (event.resourceId.isEmpty) return;
 
     final double? progress = event.progress;
     final double lastProgress = _lastReadProgress[event.resourceId] ?? -1;
-    final bool shouldSkip =
-        _readResourceIds.contains(event.resourceId) && (progress == null || progress <= lastProgress + 0.01);
+    final bool shouldSkip = _readResourceIds.contains(event.resourceId) &&
+        (progress == null || progress <= lastProgress + 0.01);
     if (shouldSkip) return;
 
     _readResourceIds.add(event.resourceId);
@@ -196,12 +264,27 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
     emit(ResourcesLoaded(resources: [..._articles, ..._videos, ..._podcasts]));
   }
 
-  FutureOr<void> _onLikeResource(LikeResource event, Emitter<ResourcesState> emit) async {
+  FutureOr<void> _onLikeResource(
+      LikeResource event, Emitter<ResourcesState> emit) async {
     if (event.resourceId.isEmpty) return;
 
     if (_likingResourceIds.contains(event.resourceId)) return;
 
     _likingResourceIds.add(event.resourceId);
+    final resource = _findResourceById(event.resourceId);
+
+    if (event.like) {
+      unawaited(
+        AnalyticsService.instance.captureUi(
+          AnalyticsEventNames.resourceLikeClicked,
+          properties: {
+            'job_id': resource?.jobId,
+            'resource_id': event.resourceId,
+            'user_job_id': resource?.userJobId,
+          },
+        ),
+      );
+    }
 
     try {
       final result = await resourceRepository.likeResource(
@@ -215,20 +298,23 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
       final updated = result.data!;
       _updateResource(updated);
       _updateCacheUserState(updated);
-      emit(ResourcesLoaded(resources: [..._articles, ..._videos, ..._podcasts]));
+      emit(
+          ResourcesLoaded(resources: [..._articles, ..._videos, ..._podcasts]));
     } finally {
       _likingResourceIds.remove(event.resourceId);
     }
   }
 
-  FutureOr<void> _onLoadResources(LoadResources event, Emitter<ResourcesState> emit) async {
+  FutureOr<void> _onLoadResources(
+      LoadResources event, Emitter<ResourcesState> emit) async {
     final userJobId = event.userJobId;
     if (userJobId == null || userJobId.isEmpty) {
       return;
     }
 
     // cache first
-    final cachedResult = await resourceRepository.fetchResourcesCached(userJobId);
+    final cachedResult =
+        await resourceRepository.fetchResourcesCached(userJobId);
     if (cachedResult.data != null && cachedResult.data!.isNotEmpty) {
       final resources = cachedResult.data!;
 

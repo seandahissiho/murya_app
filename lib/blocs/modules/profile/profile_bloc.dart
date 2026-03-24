@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/analytics/analytics_service.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/notifications/notification_bloc.dart';
 import 'package:murya/models/app_user.dart';
@@ -54,14 +55,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
   }
 
-  FutureOr<void> _onProfileLoadEvent(ProfileLoadEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> _onProfileLoadEvent(
+      ProfileLoadEvent event, Emitter<ProfileState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
     // Attempt to load from cache
     final cachedResult = await profileRepository.getMeCached();
-    if (cachedResult.data != null && (cachedResult.data!.id?.isNotEmpty ?? false)) {
+    if (cachedResult.data != null &&
+        (cachedResult.data!.id?.isNotEmpty ?? false)) {
       _userProfile = cachedResult.data!;
+      unawaited(AnalyticsService.instance.identifyUser(_userProfile));
       emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
     }
 
@@ -76,11 +80,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
     _userProfile = result.data!;
+    await AnalyticsService.instance.identifyUser(_userProfile);
     emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
     add(ProfileLoadQuestGroupsEvent(scope: QuestScope.all));
   }
 
-  FutureOr<void> _onProfileLoadQuestsEvent(ProfileLoadQuestsEvent event, Emitter<ProfileState> emit) async {
+  @override
+  Future<void> close() {
+    _authSubscription.cancel();
+    return super.close();
+  }
+
+  FutureOr<void> _onProfileLoadQuestsEvent(
+      ProfileLoadQuestsEvent event, Emitter<ProfileState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -148,7 +160,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ));
   }
 
-  FutureOr<void> _onProfileLoadQuestGroupsEvent(ProfileLoadQuestGroupsEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> _onProfileLoadQuestGroupsEvent(
+      ProfileLoadQuestGroupsEvent event, Emitter<ProfileState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -167,7 +180,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       userJobId: event.userJobId,
     );
     final cachedGroups = cachedResult.data;
-    final hasCachedGroups = cachedGroups != null && cachedGroups.groups.isNotEmpty;
+    final hasCachedGroups =
+        cachedGroups != null && cachedGroups.groups.isNotEmpty;
     if (hasCachedGroups) {
       emit(state.copyWith(
         kind: ProfileStateKind.loaded,
@@ -234,7 +248,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }).toList();
     users.sort((a, b) => a.rank.compareTo(b.rank));
     // retrieve current user and put them at the top
-    final currentUserIndex = users.indexWhere((user) => user.id == _userProfile.id);
+    final currentUserIndex =
+        users.indexWhere((user) => user.id == _userProfile.id);
     if (currentUserIndex != -1) {
       final currentUser = users.removeAt(currentUserIndex);
       users.insert(0, currentUser);
@@ -242,7 +257,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     return users;
   }
 
-  FutureOr<void> _onProfileLoadLeaderboardEvent(ProfileLoadLeaderboardEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> _onProfileLoadLeaderboardEvent(
+      ProfileLoadLeaderboardEvent event, Emitter<ProfileState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -257,11 +273,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       leaderboardTo: event.to,
     ));
 
-    final cachedResult = await jobRepository.getRankingForJobCached(event.jobId, event.from, event.to);
+    final cachedResult = await jobRepository.getRankingForJobCached(
+        event.jobId, event.from, event.to);
     if (cachedResult.data != null) {
       emit(state.copyWith(
         kind: ProfileStateKind.loaded,
-        leaderboardUsers: _mapLeaderboardUsers(cachedResult.data ?? JobRankings.empty()),
+        leaderboardUsers:
+            _mapLeaderboardUsers(cachedResult.data ?? JobRankings.empty()),
         leaderboardLoading: false,
         leaderboardError: null,
         leaderboardJobId: event.jobId,
@@ -272,7 +290,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     if (!context.mounted) return;
 
-    final result = await jobRepository.getRankingForJob(event.jobId, event.from, event.to);
+    final result =
+        await jobRepository.getRankingForJob(event.jobId, event.from, event.to);
     if (result.isError) {
       if (event.notifyOnError) {
         notificationBloc.add(ErrorNotificationEvent(message: result.error));
@@ -290,7 +309,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     emit(state.copyWith(
       kind: ProfileStateKind.loaded,
-      leaderboardUsers: _mapLeaderboardUsers(result.data ?? JobRankings.empty()),
+      leaderboardUsers:
+          _mapLeaderboardUsers(result.data ?? JobRankings.empty()),
       leaderboardLoading: false,
       leaderboardError: null,
       leaderboardJobId: event.jobId,
@@ -299,7 +319,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ));
   }
 
-  FutureOr<void> _onProfileClaimQuestEvent(ProfileClaimQuestEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> _onProfileClaimQuestEvent(
+      ProfileClaimQuestEvent event, Emitter<ProfileState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -326,7 +347,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     final QuestInstance updated = result.data ?? QuestInstance.empty();
     final QuestList? updatedQuests = state.quests?.updateInstance(updated);
-    final QuestGroupList? updatedGroups = state.questGroups?.updateInstance(updated);
+    final QuestGroupList? updatedGroups =
+        state.questGroups?.updateInstance(updated);
 
     emit(state.copyWith(
       kind: ProfileStateKind.loaded,
@@ -336,12 +358,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ));
   }
 
-  FutureOr<void> _onProfileUpdateEvent(ProfileUpdateEvent event, Emitter<ProfileState> emit) async {
+  FutureOr<void> _onProfileUpdateEvent(
+      ProfileUpdateEvent event, Emitter<ProfileState> emit) async {
     final User previousUser = state.user;
     _userProfile = event.user;
     emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
 
-    final result = await profileRepository.updateMe(event.user, baseline: previousUser);
+    final result =
+        await profileRepository.updateMe(event.user, baseline: previousUser);
     if (result.isError) {
       notificationBloc.add(ErrorNotificationEvent(message: result.error));
       return;
@@ -350,7 +374,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(state.copyWith(kind: ProfileStateKind.loaded, user: _userProfile));
   }
 
-  FutureOr<void> _onOpenProfilePreview(OpenProfilPreview event, Emitter<ProfileState> emit) async {
+  FutureOr<void> _onOpenProfilePreview(
+      OpenProfilPreview event, Emitter<ProfileState> emit) async {
     if (!authBloc.state.isAuthenticated) {
       return;
     }
@@ -377,7 +402,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       previewCompetencyRequested: true,
     ));
 
-    final cachedResult = await jobRepository.fetchPreviewCompetencyProfileCached(
+    final cachedResult =
+        await jobRepository.fetchPreviewCompetencyProfileCached(
       event.userJobId,
       from: event.from,
       to: event.to,
@@ -437,7 +463,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ));
   }
 
-  FutureOr<void> _onCloseProfilePreview(CloseProfilPreview event, Emitter<ProfileState> emit) {
+  FutureOr<void> _onCloseProfilePreview(
+      CloseProfilPreview event, Emitter<ProfileState> emit) {
     emit(state.copyWith(
       kind: ProfileStateKind.previewLoaded,
       previewCompetencyProfile: null,

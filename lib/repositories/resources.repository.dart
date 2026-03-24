@@ -93,6 +93,35 @@ class ResourcesRepository extends BaseRepository {
     );
   }
 
+  Future<Result<Resource>> collectResource({
+    required String resourceId,
+    String? timezone,
+  }) async {
+    return AppResponse.execute(
+      action: () async {
+        final payload = <String, dynamic>{};
+        if (timezone != null && timezone.isNotEmpty) {
+          payload['timezone'] = timezone;
+        }
+        final response = await api.dio.post(
+          '/resources/$resourceId/collect',
+          data: payload.isEmpty ? null : payload,
+        );
+        final data = response.data is Map<String, dynamic>
+            ? response.data['data']
+            : null;
+        if (data is Map<String, dynamic>) {
+          return Resource.fromJson(data);
+        }
+        if (response.data is Map<String, dynamic>) {
+          return Resource.fromJson(response.data);
+        }
+        throw Exception('Invalid collect resource response data');
+      },
+      parentFunctionName: 'ResourcesRepository -> collectResource',
+    );
+  }
+
   Future<Result<Resource>> readResource({
     required String resourceId,
     String? timezone,
@@ -240,8 +269,9 @@ class ResourceGenerationReceipt {
 
   factory ResourceGenerationReceipt.fromJson(Map<String, dynamic> json) {
     final wallet = json['wallet'];
-    final walletDiamonds =
-        wallet is Map<String, dynamic> ? (wallet['diamonds'] as num?)?.toInt() : null;
+    final walletDiamonds = wallet is Map<String, dynamic>
+        ? (wallet['diamonds'] as num?)?.toInt()
+        : null;
 
     return ResourceGenerationReceipt(
       requestId: json['requestId'] as String? ?? '',

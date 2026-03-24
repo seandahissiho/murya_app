@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/analytics/analytics_events.dart';
+import 'package:murya/analytics/analytics_service.dart';
 import 'package:murya/blocs/authentication/authentication_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
@@ -45,7 +47,18 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     return super.close();
   }
 
-  Future<void> _onSaveQuizResults(SaveQuizResults event, Emitter<QuizState> emit) async {
+  Future<void> _onSaveQuizResults(
+      SaveQuizResults event, Emitter<QuizState> emit) async {
+    unawaited(
+      AnalyticsService.instance.captureUi(
+        AnalyticsEventNames.quizSubmitClicked,
+        properties: {
+          'job_id': event.jobId,
+          'quiz_id': event.quizId,
+        },
+      ),
+    );
+
     Result<UserQuizResult?>? result;
     if (authBloc.state.isAuthenticated) {
       // Here you would typically save the quiz results to a repository or database
@@ -75,13 +88,16 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     }
     await Future.delayed(const Duration(milliseconds: 150));
     if (event.context.mounted) {
-      event.context.read<JobBloc>().add(LoadUserCurrentJob(context: event.context));
+      event.context
+          .read<JobBloc>()
+          .add(LoadUserCurrentJob(context: event.context));
     }
     emit(QuizSaved(result: result.data));
     profileBloc.add(ProfileLoadEvent());
   }
 
-  FutureOr<void> _loadQuizForJob(LoadQuizForJob event, Emitter<QuizState> emit) async {
+  FutureOr<void> _loadQuizForJob(
+      LoadQuizForJob event, Emitter<QuizState> emit) async {
     final cachedResult = await quizRepository.getQuizForJobCached(event.jobId);
     if (cachedResult.data != null) {
       emit(QuizLoaded(quiz: cachedResult.data!));

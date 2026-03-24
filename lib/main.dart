@@ -4,6 +4,7 @@ import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
+import 'package:murya/analytics/analytics_service.dart';
 import 'package:murya/app.dart';
 import 'package:murya/localization/locale_controller.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ Future<void> main() async {
   await dotenv.load(
     fileName: ".env",
   );
+  await AnalyticsService.instance.init();
 
   Beamer.setPathUrlStrategy();
   final systemLocale = WidgetsBinding.instance.platformDispatcher.locale;

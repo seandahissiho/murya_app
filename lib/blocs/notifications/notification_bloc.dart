@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:murya/analytics/analytics_events.dart';
+import 'package:murya/analytics/analytics_service.dart';
 import 'package:murya/config/DS.dart';
 import 'package:murya/config/app_icons.dart';
 import 'package:murya/config/custom_classes.dart';
@@ -130,7 +132,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   int totalPages = 0;
   int unreadCount = 0;
 
-  NotificationBloc({required BuildContext this.context}) : super(NotificationInitial()) {
+  NotificationBloc({required BuildContext this.context})
+      : super(NotificationInitial()) {
     on<NotificationEvent>((event, emit) {
       emit(NotificationsLoading(
         notificationStream: state.notificationStream,
@@ -152,7 +155,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     on<SubscribeToNotificationsEvent>(_onSubscribeToNotificationsEvent);
     on<ChangeNotificationReadStatusEvent>(_onChangeNotificationReadStatusEvent);
 
-    notificationRepository = RepositoryProvider.of<NotificationRepository>(context!);
+    notificationRepository =
+        RepositoryProvider.of<NotificationRepository>(context!);
     _webSocketService = WebSocketService();
 
     _webSocketService.stream.listen(
@@ -166,9 +170,11 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         }));
 
         if (decodedMessage["type"] == "notification") {
-          final notification = AppNotification.fromJson(Map<String, dynamic>.from(decodedMessage["data"]));
+          final notification = AppNotification.fromJson(
+              Map<String, dynamic>.from(decodedMessage["data"]));
 
-          add(InfoNotificationEvent(message: notification.postTreatmentBody, isImportant: true));
+          add(InfoNotificationEvent(
+              message: notification.postTreatmentBody, isImportant: true));
 
           add(NewWebHookNotificationEvent(notification: notification));
 
@@ -187,7 +193,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     // _webSocketService.connectionStatus.listen((isConnected) {});
   }
 
-  Future<void> _onInitializeNotifications(InitializeNotifications event, Emitter<NotificationState> emit) async {
+  Future<void> _onInitializeNotifications(
+      InitializeNotifications event, Emitter<NotificationState> emit) async {
     // await Firebase.initializeApp(
     //   // options: DefaultFirebaseOptions.currentPlatform,
     // );
@@ -316,7 +323,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     return super.close();
   }
 
-  Future<void> _onNewNotificationEvent(NewNotificationEvent event, Emitter<NotificationState> emit) async {
+  Future<void> _onNewNotificationEvent(
+      NewNotificationEvent event, Emitter<NotificationState> emit) async {
     emit(NewNotificationState(
       notification: event.notification,
       notificationStream: notificationStream,
@@ -329,7 +337,16 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     ));
   }
 
-  FutureOr<void> _onErrorNotificationEvent(ErrorNotificationEvent event, Emitter<NotificationState> emit) {
+  FutureOr<void> _onErrorNotificationEvent(
+      ErrorNotificationEvent event, Emitter<NotificationState> emit) {
+    unawaited(
+      AnalyticsService.instance.captureUi(
+        AnalyticsEventNames.apiErrorShown,
+        properties: {
+          'error_message': event.message ?? 'Erreur inconnue',
+        },
+      ),
+    );
     AppNotification notification = AppNotification(
       title: 'Erreur',
       body: event.message ?? 'Erreur inconnue',
@@ -348,7 +365,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     ));
   }
 
-  FutureOr<void> _onInfoNotificationEvent(InfoNotificationEvent event, Emitter<NotificationState> emit) {
+  FutureOr<void> _onInfoNotificationEvent(
+      InfoNotificationEvent event, Emitter<NotificationState> emit) {
     AppNotification notification = AppNotification(
       title: 'Information',
       body: event.message ?? 'Une information importante vous concerne.',
@@ -367,7 +385,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     ));
   }
 
-  FutureOr<void> _onSuccessNotificationEvent(SuccessNotificationEvent event, Emitter<NotificationState> emit) {
+  FutureOr<void> _onSuccessNotificationEvent(
+      SuccessNotificationEvent event, Emitter<NotificationState> emit) {
     AppNotification notification = AppNotification(
       title: 'Succès',
       body: event.message ?? 'Votre action a été effectuée avec succès.',
@@ -387,7 +406,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   FutureOr<void> _onNewWebHookNotificationEvent(
-      NewWebHookNotificationEvent event, Emitter<NotificationState> emit) async {
+      NewWebHookNotificationEvent event,
+      Emitter<NotificationState> emit) async {
     page = 1;
     totalPages = 0;
 
@@ -453,7 +473,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   Future<void> _onChangeNotificationCategoryEvent(
-      ChangeNotificationCategoryEvent event, Emitter<NotificationState> emit) async {
+      ChangeNotificationCategoryEvent event,
+      Emitter<NotificationState> emit) async {
     categories = event.categories;
     page = 1;
     totalPages = 0;
@@ -521,8 +542,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     ));
   }
 
-  Future<void> _onChangeNotificationPageEvent(
-      ChangeNotificationPageEvent event, Emitter<NotificationState> emit) async {
+  Future<void> _onChangeNotificationPageEvent(ChangeNotificationPageEvent event,
+      Emitter<NotificationState> emit) async {
     page = event.page;
 
     final cachedResult = await notificationRepository.getNotificationsCached(
@@ -594,9 +615,12 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   FutureOr<void> _onChangeNotificationReadStatusEvent(
-      ChangeNotificationReadStatusEvent event, Emitter<NotificationState> emit) async {
-    final notificationIndex = notifications.indexWhere((element) => element.id == event.notification.id);
-    notifications[notificationIndex] = notifications[notificationIndex].copyWith(
+      ChangeNotificationReadStatusEvent event,
+      Emitter<NotificationState> emit) async {
+    final notificationIndex = notifications
+        .indexWhere((element) => element.id == event.notification.id);
+    notifications[notificationIndex] =
+        notifications[notificationIndex].copyWith(
       status: AppNotificationStatus.read,
       readAt: DateTime.now(),
     );
@@ -610,7 +634,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       unreadCount: unreadCount,
     ));
 
-    final result = await notificationRepository.markNotificationAsRead(event.notification);
+    final result =
+        await notificationRepository.markNotificationAsRead(event.notification);
 
     if (result.error != null) {
       add(ErrorNotificationEvent(message: result.error));
@@ -671,7 +696,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   void _appendNotifications(List<AppNotification> incoming) {
-    final existingIds = notifications.map((n) => n.id).whereType<String>().toSet();
+    final existingIds =
+        notifications.map((n) => n.id).whereType<String>().toSet();
     for (final notification in incoming) {
       final id = notification.id;
       if (id == null || !existingIds.contains(id)) {

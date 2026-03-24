@@ -4,7 +4,8 @@ class TabletJourneySettingsTab extends StatefulWidget {
   const TabletJourneySettingsTab({super.key});
 
   @override
-  State<TabletJourneySettingsTab> createState() => _TabletJourneySettingsTabState();
+  State<TabletJourneySettingsTab> createState() =>
+      _TabletJourneySettingsTabState();
 }
 
 class _TabletJourneySettingsTabState extends State<TabletJourneySettingsTab> {
@@ -34,182 +35,168 @@ class _TabletJourneySettingsTabState extends State<TabletJourneySettingsTab> {
       builder: (context, state) {
         return AppSkeletonizer(
           enabled: _currentUser == null,
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                AppSpacing.spacing16_Box,
-                Text(
-                  locale.profile_account_title,
-                  // font-family: Anton;
-                  // font-style: Regular;
-                  style: GoogleFonts.anton(
-                    color: AppColors.textPrimary,
-                    // font-size: 32px;
-                    fontSize: theme.textTheme.headlineSmall?.fontSize,
-                    // font-weight: 400;
-                    fontWeight: FontWeight.w400,
-                    // letter-spacing: -2%;
-                    letterSpacing: -0.02,
-                    // line-height: 38px;
-                    height: 38 / (theme.textTheme.headlineSmall?.fontSize ?? 38),
-                    // vertical-align: middle;
-                    textBaseline: TextBaseline.alphabetic,
-                    // leading-trim: NONE;
-                    textStyle: const TextStyle(leadingDistribution: TextLeadingDistribution.even),
+          child: AnalyticsSensitive(
+            child: Form(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  AppSpacing.spacing16_Box,
+                  Text(
+                    locale.profile_account_title,
+                    style: GoogleFonts.anton(
+                      color: AppColors.textPrimary,
+                      fontSize: theme.textTheme.headlineSmall?.fontSize,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: -0.02,
+                      height:
+                          38 / (theme.textTheme.headlineSmall?.fontSize ?? 38),
+                      textBaseline: TextBaseline.alphabetic,
+                      textStyle: const TextStyle(
+                          leadingDistribution: TextLeadingDistribution.even),
+                    ),
                   ),
-                ),
-                AppSpacing.spacing24_Box,
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 94 / 2,
-                      backgroundColor: AppColors.whiteSwatch,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: AppColors.borderMedium,
-                            width: 2,
-                            strokeAlign: BorderSide.strokeAlignInside,
+                  AppSpacing.spacing24_Box,
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 94 / 2,
+                        backgroundColor: AppColors.whiteSwatch,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.borderMedium,
+                              width: 2,
+                              strokeAlign: BorderSide.strokeAlignInside,
+                            ),
+                            shape: BoxShape.circle,
                           ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl: _currentUser?.avatarUrl ?? "",
-                            width: 94,
-                            height: 94,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: AppColors.borderMedium,
-                                    width: 2,
-                                    strokeAlign: BorderSide.strokeAlignInside,
+                          child: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: _currentUser?.avatarUrl ?? "",
+                              width: 94,
+                              height: 94,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: AppColors.borderMedium,
+                                      width: 2,
+                                      strokeAlign: BorderSide.strokeAlignInside,
+                                    ),
+                                    shape: BoxShape.circle,
                                   ),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: SvgPicture.asset(
+                                  child: SvgPicture.asset(
+                                    AppIcons.avatarPlaceholderPath,
+                                    width: 94,
+                                    height: 94,
+                                  ),
+                                );
+                              },
+                              errorWidget: (context, url, error) {
+                                return SvgPicture.asset(
                                   AppIcons.avatarPlaceholderPath,
                                   width: 94,
                                   height: 94,
-                                ),
-                              );
-                            },
-                            errorWidget: (context, url, error) {
-                              return SvgPicture.asset(
-                                AppIcons.avatarPlaceholderPath,
-                                width: 94,
-                                height: 94,
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    AppSpacing.spacing16_Box,
-                    Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Text(
-                        //   state.user.contextName(context),
-                        //   // font-family: Inter;
-                        //   // font-weight: 600;
-                        //   // font-style: Semi Bold;
-                        //   // font-size: 20px;
-                        //   // line-height: 34px;
-                        //   // letter-spacing: -2%;
-                        //   style: theme.textTheme.displayMedium!.copyWith(
-                        //     color: AppColors.textPrimary,
-                        //     fontWeight: FontWeight.w600,
-                        //     letterSpacing: -0.02,
-                        //     height: 34 / (theme.textTheme.displayMedium?.fontSize ?? 34),
-                        //     // leading-trim: CAP_HEIGHT;
-                        //     leadingDistribution: TextLeadingDistribution.proportional,
-                        //   ),
-                        // ),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 24,
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: ScoreWidget(value: state.user.diamonds, reverse: true, iconSize: 24),
+                      AppSpacing.spacing16_Box,
+                      Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 24,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: ScoreWidget(
+                                      value: state.user.diamonds,
+                                      reverse: true,
+                                      iconSize: 24),
+                                ),
                               ),
-                            ),
-                            AppSpacing.spacing4_Box,
-                            // Streak widget
-                            SizedBox(
-                              height: 24,
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: StreakWidget(streakDays: state.user.streakDays, iconSize: 24),
+                              AppSpacing.spacing4_Box,
+                              SizedBox(
+                                height: 24,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: StreakWidget(
+                                      streakDays: state.user.streakDays,
+                                      iconSize: 24),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                AppSpacing.spacing24_Box,
-                Container(
-                  constraints: const BoxConstraints(maxWidth: 864),
-                  child: TabletJourneySettingsForm(
-                      user: _currentUser ?? User.empty(),
-                      onUserChanged: (updatedUser) {
-                        _currentUser = updatedUser;
-                      },
-                      modificationEnabled: modificationEnabled),
-                ),
-                AppSpacing.spacing40_Box,
-                Builder(
-                  builder: (formContext) {
-                    return AppXButton(
-                      text: modificationEnabled == false ? locale.editChanges_button : locale.saveChanges_button,
-                      onPressed: () async {
-                        await contentNotAvailableModal(context);
-                        return;
-                        if (modificationEnabled == false) {
-                          // Enable modification
-                          setState(() {
-                            modificationEnabled = true;
-                          });
+                            ],
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  AppSpacing.spacing24_Box,
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 864),
+                    child: TabletJourneySettingsForm(
+                        user: _currentUser ?? User.empty(),
+                        onUserChanged: (updatedUser) {
+                          _currentUser = updatedUser;
+                        },
+                        modificationEnabled: modificationEnabled),
+                  ),
+                  AppSpacing.spacing40_Box,
+                  Builder(
+                    builder: (formContext) {
+                      return AppXButton(
+                        text: modificationEnabled == false
+                            ? locale.editChanges_button
+                            : locale.saveChanges_button,
+                        onPressed: () async {
+                          await contentNotAvailableModal(context);
                           return;
-                        }
-                        if ((Form.of(formContext).validate() ?? false) == false) {
-                          return;
-                        }
-                        // Save changes
-                        if (_currentUser != null) {
-                          context.read<ProfileBloc>().add(ProfileUpdateEvent(user: _currentUser!));
-                          setState(() {
-                            modificationEnabled = false;
-                          });
-                        }
-                      },
-                      isLoading: state is ProfileLoading,
-                      shadowColor: AppColors.borderMedium,
-                      bgColor: AppColors.backgroundColor,
-                      fgColor: AppColors.textPrimary,
-                      borderColor: AppColors.borderMedium,
-                      hoverColor: AppButtonColors.secondarySurfaceHover,
-                      onPressedColor: AppButtonColors.secondarySurfacePressed,
-                    );
-                  },
-                ),
-              ],
+                          if (modificationEnabled == false) {
+                            setState(() {
+                              modificationEnabled = true;
+                            });
+                            return;
+                          }
+                          if ((Form.of(formContext).validate() ?? false) ==
+                              false) {
+                            return;
+                          }
+                          if (_currentUser != null) {
+                            context
+                                .read<ProfileBloc>()
+                                .add(ProfileUpdateEvent(user: _currentUser!));
+                            setState(() {
+                              modificationEnabled = false;
+                            });
+                          }
+                        },
+                        isLoading: state is ProfileLoading,
+                        shadowColor: AppColors.borderMedium,
+                        bgColor: AppColors.backgroundColor,
+                        fgColor: AppColors.textPrimary,
+                        borderColor: AppColors.borderMedium,
+                        hoverColor: AppButtonColors.secondarySurfaceHover,
+                        onPressedColor: AppButtonColors.secondarySurfacePressed,
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -224,10 +211,14 @@ class TabletJourneySettingsForm extends StatefulWidget {
   final Function(User updatedUser) onUserChanged;
 
   const TabletJourneySettingsForm(
-      {super.key, required this.user, required this.onUserChanged, this.modificationEnabled = false});
+      {super.key,
+      required this.user,
+      required this.onUserChanged,
+      this.modificationEnabled = false});
 
   @override
-  State<TabletJourneySettingsForm> createState() => _TabletJourneySettingsFormState();
+  State<TabletJourneySettingsForm> createState() =>
+      _TabletJourneySettingsFormState();
 }
 
 class _TabletJourneySettingsFormState extends State<TabletJourneySettingsForm> {
@@ -325,7 +316,8 @@ class _TabletJourneySettingsFormState extends State<TabletJourneySettingsForm> {
               return null;
             }
             // Best email regex ever
-            final emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+            final emailRegex = RegExp(
+                r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
             if (!emailRegex.hasMatch(value)) {
               return locale.email_invalid_error;
             }
@@ -359,7 +351,8 @@ class _TabletJourneySettingsFormState extends State<TabletJourneySettingsForm> {
                       disabled: widget.modificationEnabled == false,
                       labelInside: false,
                       labelText: locale.diploma_label,
-                      controller: TextEditingController(text: selectedDiploma.displayName),
+                      controller: TextEditingController(
+                          text: selectedDiploma.displayName),
                       items: Diploma.values.map((element) {
                         return _dropDownItem(element, element.displayName);
                       }),
@@ -379,7 +372,8 @@ class _TabletJourneySettingsFormState extends State<TabletJourneySettingsForm> {
                       disabled: widget.modificationEnabled == false,
                       labelInside: false,
                       labelText: locale.diplomaYear_label,
-                      controller: TextEditingController(text: selectedDiplomaYear.displayName),
+                      controller: TextEditingController(
+                          text: selectedDiplomaYear.displayName),
                       items: DiplomaYear.values.map((element) {
                         return _dropDownItem(element, element.displayName);
                       }),
@@ -388,7 +382,8 @@ class _TabletJourneySettingsFormState extends State<TabletJourneySettingsForm> {
                           selectedDiplomaYear = value as DiplomaYear;
                         });
                         widget.onUserChanged(
-                          widget.user.copyWith(diplomaYear: selectedDiplomaYear),
+                          widget.user
+                              .copyWith(diplomaYear: selectedDiplomaYear),
                         );
                       },
                     ),
@@ -403,7 +398,8 @@ class _TabletJourneySettingsFormState extends State<TabletJourneySettingsForm> {
                 disabled: widget.modificationEnabled == false,
                 labelInside: false,
                 labelText: locale.diplomaSchool_label,
-                controller: TextEditingController(text: selectedDiplomaSchool.displayName),
+                controller: TextEditingController(
+                    text: selectedDiplomaSchool.displayName),
                 items: DiplomaSchool.values.map((element) {
                   return _dropDownItem(element, element.displayName);
                 }),

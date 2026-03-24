@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:murya/analytics/analytics_widgets.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/config/routes.dart';
 import 'package:murya/screens/base.dart';
@@ -15,12 +16,14 @@ enum AuthenticationTab {
 
 int _tabIndex(AuthenticationTab tab) => tab == AuthenticationTab.login ? 0 : 1;
 
-class LoginLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class LoginLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.login];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(
@@ -32,29 +35,34 @@ class LoginLocation extends BeamLocation<RouteInformationSerializable<dynamic>> 
   }
 }
 
-class RegisterLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class RegisterLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.register];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(
         key: ValueKey('register-page-$languageCode'),
         title: 'Murya - Inscription',
-        child: const AuthenticationScreen(initialTab: AuthenticationTab.register),
+        child:
+            const AuthenticationScreen(initialTab: AuthenticationTab.register),
       ),
     ];
   }
 }
 
-class ForgotPasswordLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class ForgotPasswordLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.forgotPassword];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(
@@ -73,10 +81,12 @@ class AuthenticationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
-      mobileScreen: MobileAuthenticationScreen(initialTab: initialTab),
-      tabletScreen: TabletAuthenticationScreen(initialTab: initialTab),
-      desktopScreen: TabletAuthenticationScreen(initialTab: initialTab),
+    return AnalyticsSensitive(
+      child: BaseScreen(
+        mobileScreen: MobileAuthenticationScreen(initialTab: initialTab),
+        tabletScreen: TabletAuthenticationScreen(initialTab: initialTab),
+        desktopScreen: TabletAuthenticationScreen(initialTab: initialTab),
+      ),
     );
   }
 }

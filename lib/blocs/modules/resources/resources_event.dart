@@ -28,6 +28,12 @@ final class OpenResource extends ResourcesEvent {
   OpenResource({required this.resourceId});
 }
 
+final class CollectResource extends ResourcesEvent {
+  final String resourceId;
+
+  CollectResource({required this.resourceId});
+}
+
 final class ReadResource extends ResourcesEvent {
   final String resourceId;
   final double? progress;

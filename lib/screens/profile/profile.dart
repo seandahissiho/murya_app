@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart' show GoogleFonts;
+import 'package:murya/analytics/analytics_widgets.dart';
 import 'package:murya/blocs/app/app_bloc.dart';
 import 'package:murya/blocs/modules/jobs/jobs_bloc.dart';
 import 'package:murya/blocs/modules/profile/profile_bloc.dart';
@@ -42,12 +43,14 @@ part 'tablet+/_profils.dart';
 part 'tablet+/_rewards.dart';
 part 'tablet+/_settings.dart';
 
-class ProfileLocation extends BeamLocation<RouteInformationSerializable<dynamic>> {
+class ProfileLocation
+    extends BeamLocation<RouteInformationSerializable<dynamic>> {
   @override
   List<String> get pathPatterns => [AppRoutes.profile];
 
   @override
-  List<BeamPage> buildPages(BuildContext context, RouteInformationSerializable state) {
+  List<BeamPage> buildPages(
+      BuildContext context, RouteInformationSerializable state) {
     final languageCode = context.read<AppBloc>().appLanguage.code;
     return [
       BeamPage(
@@ -103,7 +106,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<JobBloc, JobState>(
-      listenWhen: (previous, current) => previous.userCurrentJob?.id != current.userCurrentJob?.id,
+      listenWhen: (previous, current) =>
+          previous.userCurrentJob?.id != current.userCurrentJob?.id,
       listener: (context, state) {
         final jobId = _resolveJobId(state.userCurrentJob);
         if (jobId != null) {
