@@ -3,6 +3,8 @@
 *.log
 *.pyc
 *.swp
+*.swo
+*~
 .DS_Store
 .atom/
 .build/
@@ -39,6 +41,7 @@ build/
 .pub-cache/
 .pub/
 /build/
+coverage/
 
 # Symbolication related
 app.*.symbols
@@ -52,5 +55,22 @@ app.*.map.json
 /android/app/release
 android/*
 android/
+
+# Runtime environment files
 .env
+.env.*
+!.env.example
+!.env.ovh.example
 /.env.bak
+.envrc
+
+# Signing material / local mobile secrets
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.mobileprovision
+android/key.properties
+android/local.properties
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
