@@ -1,0 +1,16 @@
+.DS_Store
+.git/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.idea/
+*.iml
+
+build/
+android/
+ios/
+macos/
+
+.env.bak
+test/
+vercel.json

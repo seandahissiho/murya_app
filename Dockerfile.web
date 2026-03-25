@@ -1,0 +1,19 @@
+# Match the SDK family recorded in murya_app/.metadata and pubspec.lock.
+FROM ghcr.io/cirruslabs/flutter:3.32.5 AS build
+
+WORKDIR /app
+
+COPY pubspec.yaml pubspec.lock ./
+RUN flutter config --enable-web && flutter pub get
+
+COPY . .
+
+# The web build embeds values from .env via flutter_dotenv. This file must be
+# prepared before building the image and must never contain secrets.
+RUN test -f .env
+RUN flutter build web --release
+
+FROM nginx:1.27-alpine
+
+COPY nginx.web.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build/web /usr/share/nginx/html
